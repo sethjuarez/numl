@@ -1,0 +1,12 @@
+glob:*scc
+glob:*.user
+glob:*.suo
+glob:*/bin
+glob:*.suo
+glob:*/obj
+glob:*/Thumbs.db
+glob:*/TestResults/*
+glob:*.orig
+glob:TestResults/*
+glob:*.dat
+
