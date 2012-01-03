@@ -44,8 +44,9 @@
     <Compile Include="Exceptions\InvalidDescriptionException.cs" />
     <Compile Include="Model\Description.cs" />
     <Compile Include="Model\Property.cs" />
+    <Compile Include="Model\StringHelpers.cs" />
     <Compile Include="Model\StringProperty.cs" />
-    <Compile Include="Model\StringType.cs" />
+    <Compile Include="Model\StringSplitType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

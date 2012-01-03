@@ -59,6 +59,12 @@ namespace numl
         }
 
         #region Internal Conversion Utility Methods
+        /// <summary>
+        /// Get a property or dictionary value in an object by name
+        /// </summary>
+        /// <param name="o">object</param>
+        /// <param name="name">key</param>
+        /// <returns>value of keyed item</returns>
         internal static object GetItem(object o, string name)
         {
             var type = o.GetType();

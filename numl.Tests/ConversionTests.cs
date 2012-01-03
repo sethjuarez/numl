@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using NUnit.Framework;
 using System.Collections.Generic;
+using numl.Data;
 
 
 namespace numl.Tests
@@ -110,6 +111,20 @@ namespace numl.Tests
 
             Matrix target = o.ToMatrix(d);
             Assert.AreEqual(truth, target);
+        }
+
+        [Test]
+        public void Test_Matrix_Conversion_Numbers_Strings()
+        {
+            Description d = new Description();
+            d.Features = new Property[]
+            {
+                new StringProperty { Name = "Content", Type = typeof(string), SplitType = StringSplitType.Word },
+                new Property { Name = "Number", Type = typeof(double)},
+            };
+
+            var feed = Feed.GetData();
+            Matrix target = feed.ToMatrix(d);
         }
     }
 }
