@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace numl.Model
 {
-    public enum StringType
+    public enum StringSplitType
     {
         Character,
         Word
