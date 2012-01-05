@@ -1,4 +1,4 @@
-/*
+﻿/*
  Copyright (c) 2012 Seth Juarez
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,14 +21,38 @@
 */
 
 using System;
-using System.Collections.Generic;
+using numl.Math;
 using System.Linq;
+using numl.Math.Metrics;
+using System.Collections.Generic;
 
-namespace numl.Model
+namespace numl.Unsupervised.Linkers
 {
-    public class Property
+    public class CompleteLinker : ILinker
     {
-        public string Name { get; set; }
-        public Type Type { get; set; }
+         private IDistance _distanceMetric;
+
+        public CompleteLinker(IDistance distanceMetric)
+        {
+            _distanceMetric = distanceMetric;
+        }
+        public double Distance(IEnumerable<Vector> x, IEnumerable<Vector> y)
+        {
+            double distance = -1;
+            double maxDistance = double.MinValue;
+
+            for (int i = 0; i < x.Count(); i++)
+            {
+                for (int j = i+1; j < y.Count(); j++)
+                {
+                    distance = _distanceMetric.Compute(x.ElementAt(i), y.ElementAt(j));
+
+                    if (distance > maxDistance)
+                        maxDistance = distance;
+                }
+            }
+
+            return maxDistance;
+        }
     }
 }

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2012 Seth Juarez
+ Copyright (c) 2011 Seth Juarez
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -21,14 +21,14 @@
 */
 
 using System;
-using System.Collections.Generic;
+using numl.Math;
 using System.Linq;
+using System.Collections.Generic;
 
-namespace numl.Model
+namespace numl.Supervised
 {
-    public class Property
+    public interface IGenerator
     {
-        public string Name { get; set; }
-        public Type Type { get; set; }
+        IModel Generate(Matrix x, Vector y);
     }
 }

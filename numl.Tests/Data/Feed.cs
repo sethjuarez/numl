@@ -1,5 +1,5 @@
 ﻿/*
- Copyright (c) 2011 Seth Juarez
+ Copyright (c) 2012 Seth Juarez
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -21,29 +21,48 @@
 */
 
 using System;
+using numl.Math;
 
 namespace numl.Data
 {
-    public class Feed
-    {
-        public string Content { get; set; }
-        public double Number { get; set; }
+	public class Feed
+	{
+		public int Cluster { get; set; }
+		public string Content { get; set; }
+		public double Number { get; set; }
 
-        public static Feed[] GetData()
-        {
-            return new Feed[]
-            {
-                new Feed { Number = 0, Content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet consectetur adipisci velit" },
-                new Feed { Number = 1, Content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet consectetur adipisci velit" },
-                new Feed { Number = 2, Content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet consectetur adipisci velit" },
-                new Feed { Number = 3, Content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet consectetur adipisci velit" },
-                new Feed { Number = 4, Content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet consectetur adipisci velit" },
-                new Feed { Number = 5, Content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet consectetur adipisci velit" },
-                new Feed { Number = 6, Content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet consectetur adipisci velit" },
-                new Feed { Number = 7, Content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet consectetur adipisci velit" },
-                new Feed { Number = 8, Content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet consectetur adipisci velit" },
-                new Feed { Number = 9, Content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet consectetur adipisci velit" },
-            };
-        }
-    }
+		public static Feed[] GetData()
+		{
+			return new Feed[]
+			{
+				new Feed { Cluster = 9, Number = 0, Content="the quick 5 brown fox" },
+				new Feed { Cluster = 8, Number = 1, Content="eating is for dogs (10)" },
+				new Feed { Cluster = 7, Number = 2, Content="never eat yellow 52 snow" },
+				new Feed { Cluster = 6, Number = 3, Content="kids like 3.5 robotic arms" },
+				new Feed { Cluster = 5, Number = 4, Content="don't kill nice animals" },
+				new Feed { Cluster = 4, Number = 5, Content="buy things {23.32} with money not fame" },
+				new Feed { Cluster = 3, Number = 6, Content="I'm already tired of sentences" },
+				new Feed { Cluster = 2, Number = 7, Content="3.14159 fake words flummox 8 life" },
+				new Feed { Cluster = 1, Number = 8, Content="jumbled characters ($) are funny" },
+				new Feed { Cluster = 0, Number = 9, Content="people often steal [25] dreams" },
+			};
+		}
+
+		public static Matrix GetDataMatrix()
+		{
+			return new[,] {																																												
+				{   9,	1,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,  0 },
+				{   8,	1,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	1,	0,	0,	0,	1,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,  1 },
+				{   7,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	1,  2 },
+				{   6,	1,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,  3 },
+				{   5,	0,	0,	1,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,  4 },
+				{   4,	1,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	1,	0,	0,  5 },
+				{   3,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,  6 },
+				{   2,	2,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,  7 },
+				{   1,	0,	0,	0,	1,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,  8 },
+				{   0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	1,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,  9 }
+			};																																												
+																																										
+		}
+	}
 }

@@ -22,6 +22,7 @@
 
 using System;
 using numl.Math;
+using numl.Math.Information;
 using NUnit.Framework;
 
 namespace numl.Math.Tests

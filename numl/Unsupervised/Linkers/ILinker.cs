@@ -1,4 +1,4 @@
-/*
+﻿/*
  Copyright (c) 2012 Seth Juarez
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,15 +20,14 @@
  THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
+using numl.Math;
 using System.Linq;
+using System.Collections.Generic;
 
-namespace numl.Model
+namespace numl.Unsupervised.Linkers
 {
-    public class Property
+    public interface ILinker
     {
-        public string Name { get; set; }
-        public Type Type { get; set; }
+        double Distance(IEnumerable<Vector> x, IEnumerable<Vector> y);
     }
 }

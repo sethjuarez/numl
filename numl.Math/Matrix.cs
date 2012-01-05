@@ -28,6 +28,7 @@ using System.Xml.Serialization;
 using System.Xml.Schema;
 using System.Xml;
 using System.Linq;
+using numl.Math.Probability;
 
 namespace numl.Math
 {

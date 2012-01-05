@@ -23,7 +23,7 @@
 using System;
 using System.Linq.Expressions;
 
-namespace numl.Math
+namespace numl.Math.Optimization
 {
     public class OptimizeBy
     {

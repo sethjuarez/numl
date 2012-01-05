@@ -24,7 +24,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace numl.Math
+namespace numl.Math.Information
 {
     public enum ImpurityType
     {

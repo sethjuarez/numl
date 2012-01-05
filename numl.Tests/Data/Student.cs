@@ -24,29 +24,29 @@ using System;
 
 namespace numl.Data
 {
-    public enum Grade
-    {
-        A,
-        B,
-        C,
-        D,
-        F
-    }
+	public enum Grade
+	{
+		A,
+		B,
+		C,
+		D,
+		F
+	}
 
-    public class Student
-    {
-        public string Name { get; set; }
-        public Grade Grade { get; set; }
-        public double GPA { get; set; }
-        public int Age { get; set; }
-        public bool Tall { get; set; }
-        public int Friends { get; set; }
-        public bool Nice { get; set; }
+	public class Student
+	{
+		public string Name { get; set; }
+		public Grade Grade { get; set; }
+		public double GPA { get; set; }
+		public int Age { get; set; }
+		public bool Tall { get; set; }
+		public int Friends { get; set; }
+		public bool Nice { get; set; }
 
-        public static Student[] GetData()
-        {
-            return new Student[]
-            {
+		public static Student[] GetData()
+		{
+			return new Student[]
+			{
 				new Student { Name = "Aidan", Age = 27, Friends = 3, GPA = 0.54, Grade = Grade.F, Tall = true, Nice = false},
 				new Student { Name = "2A!@m3el3ia", Age = 40, Friends = 7, GPA = 2.60, Grade = Grade.A, Tall = true, Nice = true},
 				new Student { Name = "Noah", Age = 26, Friends = 0, GPA = 2.39, Grade = Grade.C, Tall = false, Nice = false},
@@ -248,6 +248,6 @@ namespace numl.Data
 				new Student { Name = "John", Age = 22, Friends = 1, GPA = 1.17, Grade = Grade.C, Tall = false, Nice = false},
 				new Student { Name = "Jasmine", Age = 20, Friends = 8, GPA = 2.53, Grade = Grade.B, Tall = false, Nice = true},
 			};
-        }
-    }
+		}
+	}
 }

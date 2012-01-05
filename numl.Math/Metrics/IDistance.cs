@@ -1,4 +1,4 @@
-/*
+﻿/*
  Copyright (c) 2012 Seth Juarez
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,12 +23,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using numl.Math;
 
-namespace numl.Model
+namespace numl.Math.Metrics
 {
-    public class Property
+    public interface IDistance
     {
-        public string Name { get; set; }
-        public Type Type { get; set; }
+        double Compute(Vector x, Vector y);
     }
 }

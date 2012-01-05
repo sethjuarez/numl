@@ -23,9 +23,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace numl.Math
+
+namespace numl.Math.Information
 {
     public class Gini : Impurity
     {
@@ -58,11 +58,6 @@ namespace numl.Math
             var g = 1 - (from j in px
                          select j * j).Sum();
             
-            // thought this was the right one...
-            //for (int i = 0; i < px.Length; i++)
-            //    for (int j = i + 1; j < px.Length; j++)
-            //        imp += px[i] * px[j];
-
             return System.Math.Round(g, 4); ;
         }
 

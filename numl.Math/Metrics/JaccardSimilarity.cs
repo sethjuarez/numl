@@ -21,14 +21,18 @@
 */
 
 using System;
-using System.Collections.Generic;
+using numl.Math;
 using System.Linq;
 
-namespace numl.Model
+namespace numl.Math.Metrics
 {
-    public class Property
+    public sealed class JaccardSimilarity : ISimilarity
     {
-        public string Name { get; set; }
-        public Type Type { get; set; }
+        public double Compute(Vector x, Vector y)
+        {
+            double union = x.Union(y).Count();
+            double inter = x.Intersect(y).Count();
+            return inter / union;
+        }
     }
 }

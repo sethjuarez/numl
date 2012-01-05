@@ -21,14 +21,15 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using numl.Math;
 
-namespace numl.Model
+namespace numl.Math.Metrics
 {
-    public class Property
+    public sealed class ManhattanDistance : IDistance
     {
-        public string Name { get; set; }
-        public Type Type { get; set; }
+        public double Compute(Vector x, Vector y)
+        {
+            return (x - y).LpNorm(1);
+        }
     }
 }

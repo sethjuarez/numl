@@ -22,7 +22,7 @@
 
 using System;
 
-namespace numl.Math
+namespace numl.Math.Information
 {
     public static class ImpurityExtensions
     {
@@ -66,6 +66,17 @@ namespace numl.Math
         {
             e._width = width;
             return e;
+        }
+
+
+        public static double Entropy(this Vector x)
+        {
+            return numl.Math.Information.Entropy.Of(x).Value;
+        }
+
+        public static double Gini(this Vector x)
+        {
+            return numl.Math.Information.Gini.Of(x).Value;
         }
     }
 }

@@ -1,7 +1,31 @@
-﻿using System;
+﻿/*
+ Copyright (c) 2012 Seth Juarez
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace numl.Model
 {
@@ -130,7 +154,7 @@ namespace numl.Model
             // perhaps statistic is interesting
             // for model purposes?
             var sum = d.Select(kv => kv.Value).Sum();
-            foreach (var key in d.Select(kv => kv.Key))
+            foreach (var key in d.Select(kv => kv.Key).ToArray())
                 d[key] /= sum;
 
             return d;
@@ -150,10 +174,39 @@ namespace numl.Model
                 // get dictionary of terms/chars to use in word vector
                 StringProperty sprop = p as StringProperty;
                 var d = BuildDictionary(examples, sprop);
-                sprop.Dictionary = d.Keys.ToArray();
+                // put into alphabetical order 
+                // (helps with predicability for testing
+                // but might be extra overhead)
+                sprop.Dictionary = d.Keys.OrderBy(s=>s).ToArray();
             }
 
             return desc;
+        }
+
+        internal static double[] GetWordCount(string item, StringProperty property)
+        {
+            double[] counts = new double[property.Dictionary.Length];
+            var d = new Dictionary<string, int>();
+
+            for (int i = 0; i < counts.Length; i++)
+            {
+                counts[i] = 0;
+                // for quick index lookup
+                d.Add(property.Dictionary[i], i);
+            }
+
+            IEnumerable<string> words = property.SplitType == StringSplitType.Character ? 
+                                                 GetChars(item) : 
+                                                 GetWords(item, property.Separator);
+
+            // TODO: this is not too efficient. Perhaps reconsider how to do this
+            foreach (var s in words)
+            {
+                if (property.Dictionary.Contains(s))
+                    counts[d[s]]++;
+            }
+
+            return counts;
         }
     }
 }

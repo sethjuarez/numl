@@ -1,4 +1,4 @@
-﻿/*
+/*
  Copyright (c) 2012 Seth Juarez
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,48 +21,33 @@
 */
 
 using System;
+using numl.Math;
 using System.Linq;
 
-namespace numl.Math
+namespace numl.Supervised
 {
-    public class Entropy : Impurity
+    public class KNNPredictor : IModel
     {
-        internal Entropy()
+        public int K { get; set; }
+        public Matrix X { get; set; }
+        public Vector Y { get; set; }
+
+        public double Predict(Vector y)
         {
-            _conditional = false;
-            _width = Int16.MaxValue;
-        }
+            Tuple<int, double>[] distances = new Tuple<int, double>[y.Length];
 
-        public Entropy(Vector x, Vector y = null, int width = 2)
-        {
-            _x = x;
-            if (y != null)
-                _y = y;
-            _width = width;
-            _conditional = false;
-        }
-        
-        internal override double Calculate(Vector x)
-        {
-            if (x == null)
-                throw new InvalidOperationException("x does not exist!");
+            for (int i = 0; i < X.Rows; i++)
+            {
+                var x = X[i, VectorType.Row];
+                distances[i] = new Tuple<int, double>(i, (y - x).Norm());
+            }
 
-            var px = (from i in x.Distinct()
-                      let q = (from j in x
-                               where j == i
-                               select j).Count()
-                      select q / (double)x.Length);
+            var slice = distances
+                            .OrderBy(t => t.Item2)
+                            .Take(K)
+                            .Select(i => i.Item1);
 
-            double imp = (from p in px
-                          select -1 * p * System.Math.Log(p, 2)).Sum();
-
-            // rouding off to 4 sig figs...
-            return System.Math.Round(imp, 4);
-        }
-
-        public static Entropy Of(Vector x)
-        {
-            return new Entropy { _x = x, _conditional = false };
+            return Y.Slice(slice).Mode();
         }
     }
 }

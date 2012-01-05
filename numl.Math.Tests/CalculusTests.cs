@@ -23,6 +23,7 @@
 using System;
 using numl.Math;
 using NUnit.Framework;
+using numl.Math.Optimization;
 
 namespace numl.Math.Tests
 {

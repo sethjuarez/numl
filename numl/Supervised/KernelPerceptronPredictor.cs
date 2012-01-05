@@ -1,4 +1,4 @@
-/*
+﻿/*
  Copyright (c) 2012 Seth Juarez
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,14 +21,44 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using numl.Math;
+using System.Xml.Serialization;
 
-namespace numl.Model
+namespace numl.Supervised
 {
-    public class Property
+    [XmlRoot("KernelPerceptron")]
+    public class KernelPerceptronPredictor : IModel
     {
-        public string Name { get; set; }
-        public Type Type { get; set; }
+        public KernelType Type { get; set; }
+        public double Param { get; set; }
+        public Matrix X { get; set; }
+        public Vector Y { get; set; }
+        public Vector A { get; set; }
+
+        public double Predict(Vector y)
+        {
+            var K = GetKernel(y);
+            double v = 0;
+            for (int i = 0; i < A.Length; i++)
+                v += A[i] * Y[i] * K[i];
+
+            return v;
+        }
+
+        private Vector GetKernel(Vector x)
+        {
+            Vector K = Vector.Zeros(1);
+            switch (Type)
+            {
+                case KernelType.Polynomial:
+                    K = X.PolyKernel(x, Param);
+                    break;
+                case KernelType.RBF:
+                    K = X.RBFKernel(x, Param);
+                    break;
+            }
+
+            return K;
+        }
     }
 }

@@ -21,35 +21,48 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Runtime.Serialization;
 
-namespace numl.Exceptions
+namespace numl.Math.Information
 {
-    public class InvalidDescriptionException : Exception
+    public class Entropy : Impurity
     {
-        public InvalidDescriptionException()
+        internal Entropy()
         {
-            
+            _conditional = false;
+            _width = Int16.MaxValue;
         }
 
-        public InvalidDescriptionException(string message)
-            : base(message)
+        public Entropy(Vector x, Vector y = null, int width = 2)
         {
-            
+            _x = x;
+            if (y != null)
+                _y = y;
+            _width = width;
+            _conditional = false;
         }
-        public InvalidDescriptionException(string message, Exception innerException)
-            : base(message, innerException)
+        
+        internal override double Calculate(Vector x)
         {
-            
+            if (x == null)
+                throw new InvalidOperationException("x does not exist!");
+
+            var px = (from i in x.Distinct()
+                      let q = (from j in x
+                               where j == i
+                               select j).Count()
+                      select q / (double)x.Length);
+
+            double imp = (from p in px
+                          select -1 * p * System.Math.Log(p, 2)).Sum();
+
+            // rouding off to 4 sig figs...
+            return System.Math.Round(imp, 4);
         }
-        protected InvalidDescriptionException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
+
+        public static Entropy Of(Vector x)
         {
-            
+            return new Entropy { _x = x, _conditional = false };
         }
-         
     }
 }

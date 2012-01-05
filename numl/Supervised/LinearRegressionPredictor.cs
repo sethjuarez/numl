@@ -1,4 +1,4 @@
-/*
+﻿/*
  Copyright (c) 2012 Seth Juarez
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,14 +21,19 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using numl.Math;
 
-namespace numl.Model
+namespace numl.Supervised
 {
-    public class Property
+    public class LinearRegressionPredictor : IModel
     {
-        public string Name { get; set; }
-        public Type Type { get; set; }
+        public Vector W { get; set; }
+        public double B { get; set; }
+
+        public double Predict(Vector y)
+        {
+            // calculate estimate using normalized example
+            return W.Dot(y / y.Norm()) + B;
+        }
     }
 }

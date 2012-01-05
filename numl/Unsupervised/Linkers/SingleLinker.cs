@@ -21,22 +21,38 @@
 */
 
 using System;
-using System.Collections.Generic;
+using numl.Math;
 using System.Linq;
-using System.Text;
+using numl.Math.Metrics;
+using System.Collections.Generic;
 
-namespace numl.Math
+namespace numl.Unsupervised.Linkers
 {
-    public static class Helper
+    public class SingleLinker : ILinker
     {
-        public static double Entropy(this Vector x)
+        private readonly IDistance _distanceMetric;
+        public SingleLinker(IDistance distanceMetric)
         {
-            return numl.Math.Entropy.Of(x).Value;
+            _distanceMetric = distanceMetric;
         }
 
-        public static double Gini(this Vector x)
+        public double Distance(IEnumerable<Vector> x, IEnumerable<Vector> y)
         {
-            return numl.Math.Gini.Of(x).Value;
+            double distance = -1;
+            double leastDistance = Int32.MaxValue;
+
+            for (int i = 0; i < x.Count(); i++)
+            {
+                for (int j = i + 1; j < y.Count(); j++)
+                {
+                    distance = _distanceMetric.Compute(x.ElementAt(i), y.ElementAt(j));
+
+                    if (distance < leastDistance)
+                        leastDistance = distance;
+                }
+            }
+
+            return leastDistance;
         }
     }
 }

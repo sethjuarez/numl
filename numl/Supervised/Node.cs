@@ -1,5 +1,5 @@
-/*
- Copyright (c) 2012 Seth Juarez
+﻿/*
+ Copyright (c) 2011 Seth Juarez
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -21,14 +21,26 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Xml.Serialization;
 
-namespace numl.Model
+namespace numl.Supervised
 {
-    public class Property
+    [XmlRoot("n")]
+    public class Node
     {
-        public string Name { get; set; }
-        public Type Type { get; set; }
+        [XmlAttribute("Leaf")]
+        public bool IsLeaf { get; set; }
+        [XmlAttribute("Label")]
+        public double Label { get; set; }
+        [XmlArray("Values")]
+        public double[] Values { get; set; }
+        [XmlAttribute("Segmented")]
+        public bool Segmented { get; set; }
+        [XmlArray("Children")]
+        public Node[] Children { get; set; }
+        [XmlAttribute("Feature")]
+        public int Feature { get; set; }
+        [XmlAttribute("Gain")]
+        public double Gain { get; set; }
     }
 }

@@ -21,14 +21,12 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace numl.Model
+namespace numl.Supervised
 {
-    public class Property
+    public enum KernelType
     {
-        public string Name { get; set; }
-        public Type Type { get; set; }
+        Polynomial,
+        RBF
     }
 }

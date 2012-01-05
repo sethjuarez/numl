@@ -21,14 +21,16 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using numl.Math;
 
-namespace numl.Model
+namespace numl.Math.Metrics
 {
-    public class Property
+    public sealed class TanimotoCoefficient : ISimilarity
     {
-        public string Name { get; set; }
-        public Type Type { get; set; }
+        public double Compute(Vector x, Vector y)
+        {
+            double dot = x.Dot(y);
+            return dot / (System.Math.Pow(x.Norm(), 2) + System.Math.Pow(y.Norm(), 2) - dot);
+        }
     }
 }

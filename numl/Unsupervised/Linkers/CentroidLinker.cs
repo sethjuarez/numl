@@ -1,4 +1,4 @@
-/*
+﻿/*
  Copyright (c) 2012 Seth Juarez
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,14 +21,24 @@
 */
 
 using System;
-using System.Collections.Generic;
+using numl.Math;
 using System.Linq;
+using numl.Math.Metrics;
+using System.Collections.Generic;
 
-namespace numl.Model
+namespace numl.Unsupervised.Linkers
 {
-    public class Property
+    public class CentroidLinker : ILinker
     {
-        public string Name { get; set; }
-        public Type Type { get; set; }
+        private readonly IDistance _distanceMetric;
+        public CentroidLinker(IDistance distanceMetric)
+        {
+            _distanceMetric = distanceMetric;
+        }
+
+        public double Distance(IEnumerable<Vector> x, IEnumerable<Vector> y)
+        {
+            return _distanceMetric.Compute(x.Mean(), y.Mean());
+        }
     }
 }
