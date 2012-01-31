@@ -6,19 +6,19 @@ using numl.Supervised;
 using numl.Math;
 using numl.Model;
 using System.Threading.Tasks;
+using numl.Math.Probability;
 
 namespace numl
 {
     public class Learner
     {
-        private static readonly Random r = new Random(DateTime.Now.Millisecond);
         public IGenerator[] Generators { get; private set; }
         public IModel[] Models { get; private set; }
         public Vector Accuracy { get; private set; }
 
-
         public Learner(params IGenerator[] generators)
         {
+            MLRandom.SetSeedFromSystemTime();
             Generators = generators;
         }
 
@@ -86,7 +86,7 @@ namespace numl
             List<int> taken = new List<int>(testCount);
             while (taken.Count < testCount)
             {
-                int i = r.Next(total);
+                int i = MLRandom.GetUniform(total);
                 if (!taken.Contains(i))
                 {
                     taken.Add(i);

@@ -71,7 +71,7 @@ namespace numl.Supervised
 
             var n = BuildTree(x, y, Depth, new List<int>(x.Cols));
 
-            return new DecisionTreePredictor
+            return new DecisionTreeModel
             {
                 Description = Description,
                 Tree = n,

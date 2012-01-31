@@ -58,7 +58,7 @@
     <Compile Include="Model\StringSplitType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Supervised\DecisionTreeGenerator.cs" />
-    <Compile Include="Supervised\DecisionTreePredictor.cs" />
+    <Compile Include="Supervised\DecisionTreeModel.cs" />
     <Compile Include="Supervised\IGenerator.cs" />
     <Compile Include="Supervised\IModel.cs" />
     <Compile Include="Supervised\KernelPerceptronGenerator.cs" />
