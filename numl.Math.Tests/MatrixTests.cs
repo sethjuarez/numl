@@ -93,15 +93,15 @@ namespace numl.Math.Tests
         [Test]
         public void Matrix_Not_Equal_Test()
         {
-            Matrix one = new Matrix(new double[,]
+            Matrix one = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
-                 {7, 8, 10}});
+                 {7, 8, 10}};
 
-            Matrix two = new Matrix(new double[,]
+            Matrix two = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
-                 {7, 8, 9}});
+                 {7, 8, 9}};
 
             Assert.AreEqual(false, one.Equals(two));
             Assert.AreEqual(false, one == two);
@@ -111,21 +111,21 @@ namespace numl.Math.Tests
         [Test]
         public void Matrix_Identity_Test()
         {
-            Matrix eye1 = new Matrix(new double[,]
+            Matrix eye1 = new[,]
                 {{1, 0, 0},
                  {0, 1, 0},
-                 {0, 0, 1}});
+                 {0, 0, 1}};
 
-            Matrix eye2 = new Matrix(new double[,]
+            Matrix eye2 = new[,]
                 {{1, 0, 0, 0},
                  {0, 1, 0, 0},
-                 {0, 0, 1, 0}});
+                 {0, 0, 1, 0}};
 
-            Matrix eye3 = new Matrix(new double[,]
+            Matrix eye3 = new[,]
                 {{1, 0, 0},
                  {0, 1, 0},
                  {0, 0, 1},
-                 {0, 0, 0}});
+                 {0, 0, 0}};
 
             Assert.AreEqual(eye1, Matrix.Identity(3));
             Assert.AreEqual(eye2, Matrix.Identity(3, 4));
@@ -135,21 +135,21 @@ namespace numl.Math.Tests
         [Test]
         public void Matrix_Trace_Test()
         {
-            Matrix one = new Matrix(new double[,]
+            Matrix one = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
-                 {7, 8, 10}});
+                 {7, 8, 10}};
 
-            Matrix two = new Matrix(new double[,]
+            Matrix two = new[,]
                 {{1, 2, 3, 9},
                  {4, 5, 6, 12},
-                 {7, 8, 10, 13}});
+                 {7, 8, 10, 13}};
 
-            Matrix three = new Matrix(new double[,]
+            Matrix three = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
                  {7, 8, 10},
-                 {11,12,13}});
+                 {11,12,13}};
 
             Assert.AreEqual(16, one.Trace());
             Assert.AreEqual(16, two.Trace());
@@ -159,21 +159,21 @@ namespace numl.Math.Tests
         [Test]
         public void Matrix_Zeros_Test()
         {
-            Matrix one = new Matrix(new double[,]
+            Matrix one = new[,]
                 {{0, 0, 0},
                  {0, 0, 0},
-                 {0, 0, 0}});
+                 {0, 0, 0}};
 
-            Matrix two = new Matrix(new double[,]
+            Matrix two = new[,]
                 {{0, 0, 0, 0},
                  {0, 0, 0, 0},
-                 {0, 0, 0, 0}});
+                 {0, 0, 0, 0}};
 
-            Matrix three = new Matrix(new double[,]
+            Matrix three = new[,]
                 {{0, 0, 0},
                  {0, 0, 0},
                  {0, 0, 0},
-                 {0, 0, 0}});
+                 {0, 0, 0}};
 
             Assert.AreEqual(one, Matrix.Zeros(3));
             Assert.AreEqual(two, Matrix.Zeros(3, 4));
@@ -183,21 +183,21 @@ namespace numl.Math.Tests
         [Test]
         public void Matrix_Ones_Test()
         {
-            Matrix one = new Matrix(new double[,]
+            Matrix one = new[,]
                 {{1, 1, 1},
                  {1, 1, 1},
-                 {1, 1, 1}});
+                 {1, 1, 1}};
 
-            Matrix two = new Matrix(new double[,]
+            Matrix two = new[,]
                 {{1, 1, 1, 1},
                  {1, 1, 1, 1},
-                 {1, 1, 1, 1}});
+                 {1, 1, 1, 1}};
 
-            Matrix three = new Matrix(new double[,]
+            Matrix three = new[,]
                 {{1, 1, 1},
                  {1, 1, 1},
                  {1, 1, 1},
-                 {1, 1, 1}});
+                 {1, 1, 1}};
 
             Assert.AreEqual(one, Matrix.Ones(3));
             Assert.AreEqual(two, Matrix.Ones(3, 4));
@@ -207,26 +207,26 @@ namespace numl.Math.Tests
         [Test]
         public void Matrix_Transpose_Test()
         {
-            Matrix one = new Matrix(new double[,]
+            Matrix one = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
-                 {7, 8, 9}});
+                 {7, 8, 9}};
 
-            Matrix oneT = new Matrix(new double[,]
+            Matrix oneT = new[,]
                 {{1, 4, 7},
                  {2, 5, 8},
-                 {3, 6, 9}});
+                 {3, 6, 9}};
 
-            Matrix two = new Matrix(new double[,]
+            Matrix two = new[,]
                 {{1, 2, 3, 9},
                  {4, 5, 6, 12},
-                 {7, 8, 10, 13}});
+                 {7, 8, 10, 13}};
 
-            Matrix twoT = new Matrix(new double[,]
+            Matrix twoT = new[,]
                 {{1, 4, 7},
                  {2, 5, 8},
                  {3, 6, 10},
-                 {9,12, 13}});
+                 {9,12, 13}};
 
             Assert.AreEqual(oneT, one.Transpose());
             Assert.AreEqual(oneT, one.T);
@@ -241,10 +241,10 @@ namespace numl.Math.Tests
         [Test]
         public void Matrix_Assign_Value_Test()
         {
-            Matrix one = new Matrix(new double[,]
+            Matrix one = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
-                 {7, 8, 9}});
+                 {7, 8, 9}};
 
             one[1, 1] = 14.5;
             Assert.AreEqual(14.5, one[1, 1]);
@@ -254,10 +254,10 @@ namespace numl.Math.Tests
         [ExpectedException(typeof(IndexOutOfRangeException))]
         public void Matrix_Assign_Value_Bad_Index_Test()
         {
-            Matrix one = new Matrix(new double[,]
+            Matrix one = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
-                 {7, 8, 9}});
+                 {7, 8, 9}};
 
             one[5, 5] = 14.5;
         }
@@ -266,10 +266,10 @@ namespace numl.Math.Tests
         [ExpectedException(typeof(IndexOutOfRangeException))]
         public void Matrix_Read_Value_Bad_Index_Test()
         {
-            Matrix one = new Matrix(new double[,]
+            Matrix one = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
-                 {7, 8, 9}});
+                 {7, 8, 9}};
 
             var d = one[5, 5];
         }
@@ -277,53 +277,53 @@ namespace numl.Math.Tests
         [Test]
         public void Matrix_Add_Aligned_Test()
         {
-            Matrix one = new Matrix(new double[,]
+            Matrix one = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
-                 {7, 8, 9}});
+                 {7, 8, 9}};
 
-            Matrix two = new Matrix(new double[,]
+            Matrix two = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
-                 {7, 8, 9}});
+                 {7, 8, 9}};
 
-            Matrix sum = new Matrix(new double[,]
+            Matrix sum = new[,]
                 {{2, 4, 6},
                  {8, 10, 12},
-                 {14, 16, 18}});
+                 {14, 16, 18}};
 
-            Matrix a = new Matrix(new double[,]
+            Matrix a = new[,]
                 {{1, 2, 3, 1},
                  {4, 5, 6, 2},
-                 {7, 8, 9, 3}});
+                 {7, 8, 9, 3}};
 
-            Matrix b = new Matrix(new double[,]
+            Matrix b = new[,]
                 {{1, 2, 3, 5},
                  {4, 5, 6, 6},
-                 {7, 8, 9, 7}});
+                 {7, 8, 9, 7}};
 
-            Matrix c = new Matrix(new double[,]
+            Matrix c = new[,]
                 {{2, 4, 6, 6},
                  {8, 10, 12, 8},
-                 {14, 16, 18, 10}});
+                 {14, 16, 18, 10}};
 
-            Matrix d = new Matrix(new double[,]
+            Matrix d = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
                  {7, 8, 9},
-                 {1, 2, 3}});
+                 {1, 2, 3}};
 
-            Matrix e = new Matrix(new double[,]
+            Matrix e = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
                  {7, 8, 9},
-                 {3, 2, 1}});
+                 {3, 2, 1}};
 
-            Matrix f = new Matrix(new double[,]
+            Matrix f = new[,]
                 {{2, 4, 6},
                  {8, 10, 12},
                  {14, 16, 18},
-                 {4, 4, 4}});
+                 {4, 4, 4}};
 
             Assert.AreEqual(sum, one + two);
             Assert.AreEqual(c, a + b);
@@ -334,15 +334,15 @@ namespace numl.Math.Tests
         [ExpectedException(typeof(InvalidOperationException))]
         public void Matrix_Add_Non_Aligned_Test_1()
         {
-            Matrix a = new Matrix(new double[,]
+            Matrix a = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
-                 {7, 8, 9}});
+                 {7, 8, 9}};
 
-            Matrix b = new Matrix(new double[,]
+            Matrix b = new[,]
                 {{2, 4, 6, 6},
                  {8, 10, 12, 8},
-                 {14, 16, 18, 10}});
+                 {14, 16, 18, 10}};
 
             var x = a + b;
         }
@@ -351,16 +351,16 @@ namespace numl.Math.Tests
         [ExpectedException(typeof(InvalidOperationException))]
         public void Matrix_Add_Non_Aligned_Test_2()
         {
-            Matrix a = new Matrix(new double[,]
+            Matrix a = new[,]
                 {{2, 4, 6},
                  {8, 10, 12},
                  {14, 16, 18},
-                 {4, 4, 4}});
+                 {4, 4, 4}};
 
-            Matrix b = new Matrix(new double[,]
+            Matrix b = new[,]
                 {{2, 4, 6, 6},
                  {8, 10, 12, 8},
-                 {14, 16, 18, 10}});
+                 {14, 16, 18, 10}};
 
             var x = a + b;
         }
@@ -368,53 +368,53 @@ namespace numl.Math.Tests
         [Test]
         public void Matrix_Subtract_Aligned_Test()
         {
-            Matrix one = new Matrix(new double[,]
+            Matrix one = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
-                 {7, 8, 9}});
+                 {7, 8, 9}};
 
-            Matrix two = new Matrix(new double[,]
+            Matrix two = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
-                 {7, 8, 9}});
+                 {7, 8, 9}};
 
-            Matrix sum = new Matrix(new double[,]
+            Matrix sum = new[,]
                 {{0, 0, 0},
                  {0, 0, 0},
-                 {0, 0, 0}});
+                 {0, 0, 0}};
 
-            Matrix a = new Matrix(new double[,]
+            Matrix a = new[,]
                 {{1, 2, 3, 1},
                  {4, 5, 6, 2},
-                 {7, 8, 9, 3}});
+                 {7, 8, 9, 3}};
 
-            Matrix b = new Matrix(new double[,]
+            Matrix b = new[,]
                 {{1, 2, 3, 5},
                  {4, 5, 6, 6},
-                 {7, 8, 9, 7}});
+                 {7, 8, 9, 7}};
 
-            Matrix c = new Matrix(new double[,]
+            Matrix c = new[,]
                 {{0, 0, 0, -4},
                  {0, 0, 0, -4},
-                 {0, 0, 0, -4}});
+                 {0, 0, 0, -4}};
 
-            Matrix d = new Matrix(new double[,]
+            Matrix d = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
                  {7, 8, 9},
-                 {1, 2, 3}});
+                 {1, 2, 3}};
 
-            Matrix e = new Matrix(new double[,]
+            Matrix e = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
                  {7, 8, 9},
-                 {3, 2, 1}});
+                 {3, 2, 1}};
 
-            Matrix f = new Matrix(new double[,]
+            Matrix f = new[,]
                 {{0, 0, 0},
                  {0, 0, 0},
                  {0, 0, 0},
-                 {-2, 0, 2}});
+                 {-2, 0, 2}};
 
             Assert.AreEqual(sum, one - two);
             Assert.AreEqual(c, a - b);
@@ -425,15 +425,15 @@ namespace numl.Math.Tests
         [ExpectedException(typeof(InvalidOperationException))]
         public void Matrix_Subtract_Non_Aligned_Test_1()
         {
-            Matrix a = new Matrix(new double[,]
+            Matrix a = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
-                 {7, 8, 9}});
+                 {7, 8, 9}};
 
-            Matrix b = new Matrix(new double[,]
+            Matrix b = new[,]
                 {{2, 4, 6, 6},
                  {8, 10, 12, 8},
-                 {14, 16, 18, 10}});
+                 {14, 16, 18, 10}};
 
             var x = a - b;
         }
@@ -442,16 +442,16 @@ namespace numl.Math.Tests
         [ExpectedException(typeof(InvalidOperationException))]
         public void Matrix_Subtract_Non_Aligned_Test_2()
         {
-            Matrix a = new Matrix(new double[,]
+            Matrix a = new[,]
                 {{2, 4, 6},
                  {8, 10, 12},
                  {14, 16, 18},
-                 {4, 4, 4}});
+                 {4, 4, 4}};
 
-            Matrix b = new Matrix(new double[,]
+            Matrix b = new[,]
                 {{2, 4, 6, 6},
                  {8, 10, 12, 8},
-                 {14, 16, 18, 10}});
+                 {14, 16, 18, 10}};
 
             var x = a - b;
         }
@@ -459,11 +459,11 @@ namespace numl.Math.Tests
         [Test]
         public void Matrix_Multiply_Vector_Aligned_Test()
         {
-            Matrix one = new Matrix(new double[,]
+            Matrix one = new[,]
                 {{ 2,  4,  6},
                  { 8, 10, 12},
-                 {14, 16, 18}});
-            Vector v = new Vector(new double[] { 0.5, 0.5, 0.5 });
+                 {14, 16, 18}};
+            Vector v = new[] { 0.5, 0.5, 0.5 };
 
             Matrix s1 = (new Vector(new double[] { 6, 15, 24 }))
                             .ToMatrix(VectorType.Column);
@@ -477,13 +477,13 @@ namespace numl.Math.Tests
         [Test]
         public void Matrix_Sum_Test()
         {
-            Matrix one = new Matrix(new double[,]
+            Matrix one = new[,]
                 {{1, 2, 3, 4},
                  {4, 5, 6, 5},
-                 {7, 8, 9, 6}});
+                 {7, 8, 9, 6}};
 
-            Vector row = new Vector(new double[] { 12, 15, 18, 15 });
-            Vector col = new Vector(new double[] { 10, 20, 30 });
+            Vector row = new[] { 12, 15, 18, 15 };
+            Vector col = new[] { 10, 20, 30 };
 
             Assert.AreEqual(row, one.Sum(VectorType.Row));
             Assert.AreEqual(col, one.Sum(VectorType.Column));
@@ -493,32 +493,32 @@ namespace numl.Math.Tests
         [Test]
         public void Matrix_Multiply_Aligned_Test()
         {
-            Matrix one = new Matrix(new double[,]
+            Matrix one = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
-                 {7, 8, 9}});
+                 {7, 8, 9}};
 
-            Matrix sol = new Matrix(new double[,]
+            Matrix sol = new[,]
                 {{30, 36, 42},
                  {66, 81, 96},
-                 {102, 126, 150}});
+                 {102, 126, 150}};
 
-            Matrix a = new Matrix(new double[,]
+            Matrix a = new[,]
                 {{2, 4, 6},
                  {8, 10, 12},
                  {14, 16, 18},
-                 {4, 4, 4}});
+                 {4, 4, 4}};
 
-            Matrix b = new Matrix(new double[,]
+            Matrix b = new[,]
                 {{2, 4, 6, 6},
                  {8, 10, 12, 8},
-                 {14, 16, 18, 10}});
+                 {14, 16, 18, 10}};
 
-            Matrix c = new Matrix(new double[,]
+            Matrix c = new[,]
                 {{120, 144, 168, 104},
                  {264, 324, 384, 248},
                  {408, 504, 600, 392},
-                 { 96, 120, 144,  96}});
+                 { 96, 120, 144,  96}};
 
 
             Assert.AreEqual(sol, one * one);
@@ -528,15 +528,15 @@ namespace numl.Math.Tests
         [Test]
         public void Matrix_Multiply_Scalar_Test()
         {
-            Matrix one = new Matrix(new double[,]
+            Matrix one = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
-                 {7, 8, 9}});
+                 {7, 8, 9}};
 
-            Matrix sol = new Matrix(new double[,]
+            Matrix sol = new[,]
                 {{ 2,  4,  6},
                  { 8, 10, 12},
-                 {14, 16, 18}});
+                 {14, 16, 18}};
 
             Assert.AreEqual(sol, 2 * one);
             Assert.AreEqual(sol, one * 2);
@@ -546,16 +546,16 @@ namespace numl.Math.Tests
         [ExpectedException(typeof(InvalidOperationException))]
         public void Matrix_Multiply_Non_Aligned_Test()
         {
-            Matrix a = new Matrix(new double[,]
+            Matrix a = new[,]
                 {{1, 2, 3},
                  {4, 5, 6},
-                 {7, 8, 9}});
+                 {7, 8, 9}};
 
-            Matrix b = new Matrix(new double[,]
+            Matrix b = new[,]
                 {{2, 4, 6},
                  {8, 10, 12},
                  {14, 16, 18},
-                 {4, 4, 4}});
+                 {4, 4, 4}};
 
             var x = a * b;
         }
@@ -563,18 +563,18 @@ namespace numl.Math.Tests
         [Test]
         public void Matrix_Inverse_Test()
         {
-            Matrix a = new Matrix(new double[,]
+            Matrix a = new[,]
                 {{4, 3},
-                 {3, 2}});
+                 {3, 2}};
 
-            Matrix aInv = new Matrix(new double[,]
+            Matrix aInv = new[,]
                 {{-2,  3},
-                 { 3, -4}});
+                 { 3, -4}};
 
-            Matrix b = new Matrix(new double[,]
+            Matrix b = new[,]
                 {{ 1,  2,  3},
                  { 0,  4,  5},
-                 { 1,  0,  6}});
+                 { 1,  0,  6}};
 
             Matrix bInv = new Matrix(new double[,]
                 {{ 12.0/11,  -6.0/11,  -1.0/11},
@@ -589,15 +589,15 @@ namespace numl.Math.Tests
         [Test]
         public void Matrix_Cholesky_Test()
         {
-            Matrix m = new Matrix(new double[,]
+            Matrix m = new[,]
                 {{ 25, 15, -5},
                  { 15, 18,  0},
-                 { -5,  0, 11}});
+                 { -5,  0, 11}};
 
-            Matrix sol = new Matrix(new double[,]
+            Matrix sol = new[,]
                 {{  5, 0, 0},
                  {  3, 3, 0},
-                 { -1, 1, 3}});
+                 { -1, 1, 3}};
 
             Assert.AreEqual(sol, Matrix.Cholesky(m));
             Assert.AreEqual(sol, m.Cholesky());
@@ -606,13 +606,13 @@ namespace numl.Math.Tests
         [Test]
         public void Matrix_LLS_Test()
         {
-            Matrix A = new Matrix(new double[,]
+            Matrix A = new[,]
                 {{ 3, -6},
                  { 4, -8},
-                 { 0,  1}});
+                 { 0,  1}};
 
-            Vector b = new Vector(new double[] { -1, 7, 2 });
-            Vector sol = new Vector(new double[] { 5, 2 });
+            Vector b = new[] { -1, 7, 2 };
+            Vector sol = new[] { 5, 2 };
 
             // LLS implementation
             Vector x = A / b;
@@ -631,8 +631,8 @@ namespace numl.Math.Tests
         public void Matrix_QR_Test()
         {
             Matrix A = new[,] {{ 4,  1,  2},
-                                 { 1,  4,  0},
-                                 { 2,  0,  4}};
+                               { 1,  4,  0},
+                               { 2,  0,  4}};
 
             var t = Matrix.QR(A);
             var Q = t.Item1;
@@ -646,10 +646,10 @@ namespace numl.Math.Tests
         [Test]
         public void Matrix_Eigs_Test()
         {
-            Matrix A = new Matrix(new double[,]
+            Matrix A = new[,]
                 {{  5,  2,  4 },
                  { -3,  6,  2 },
-                 {  3, -3,  1 }});
+                 {  3, -3,  1 }};
 
             var eigenValues = new[] { 7, 2, 3 };
             var eigs = A.Eigs();
@@ -680,7 +680,7 @@ namespace numl.Math.Tests
         [Test]
         public void Matrix_Extract_Test()
         {
-            Matrix A = new [,]
+            Matrix A = new[,]
                 {{  1,  2,  4 },
                  {  1,  6,  2 },
                  {  3,  1,  1 }};

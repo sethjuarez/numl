@@ -1,4 +1,4 @@
-/*
+﻿/*
  Copyright (c) 2012 Seth Juarez
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,38 +21,15 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ComponentModel;
 
-namespace numl.Model
+namespace numl.Attributes
 {
-    public class Property
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+    public class LabelAttribute : NumlAttribute
     {
-        public string Name { get; set; }
-        public virtual ItemType Type { get; set; }
-
-        internal static ItemType FindItemType(Type t)
+        public LabelAttribute()
         {
-            if (TypeDescriptor.GetConverter(t).CanConvertTo(typeof(double)))
-                return ItemType.Numeric;
-            else
-            {
-                if (t == typeof(string) || t == typeof(char))
-                    return ItemType.String;
-                else if (t == typeof(bool))
-                    return ItemType.Boolean;
-                else if (t.BaseType == typeof(Enum))
-                    return ItemType.Enumeration;
-                else
-                    throw new InvalidCastException(string.Format("{0} is an invalid integral type and cannot be used as a property.", t));
-            }
-        }
 
-        internal static ItemType FindItemType(object o)
-        {
-            Type t = o.GetType();
-            return FindItemType(t);
         }
     }
 }

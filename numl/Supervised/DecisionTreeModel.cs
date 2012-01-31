@@ -88,8 +88,10 @@ namespace numl.Supervised
                 var feature = x[i, VectorType.Column];
                 var fd = Description.Features[i];
 
-                // is feature discrete? ie enum or bool?
-                var discrete = fd.Type.IsEnum || fd.Type == typeof(bool);
+                // is feature discrete? ie enum or bool or string?
+                var discrete = fd.Type == ItemType.Enumeration 
+                                            || fd.Type == ItemType.Boolean
+                                            || fd.Type == ItemType.String;
 
                 switch (Type)
                 {
@@ -149,7 +151,9 @@ namespace numl.Supervised
             var bestFD = Description.Features[bestFeature];
 
             // multiway split - constant fan-out width (non-continuous)
-            if (bestFD.Type.IsEnum || bestFD.Type == typeof(bool))
+            if (bestFD.Type == ItemType.Enumeration || 
+                bestFD.Type == ItemType.Boolean ||
+                bestFD.Type == ItemType.String)
             {
                 n.Children = new Node[splitValues.Length];
                 for (int i = 0; i < n.Children.Length; i++)

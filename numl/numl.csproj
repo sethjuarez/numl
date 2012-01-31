@@ -40,8 +40,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\AttributeType.cs" />
+    <Compile Include="Attributes\FeatureAttribute.cs" />
+    <Compile Include="Attributes\LabelAttribute.cs" />
+    <Compile Include="Attributes\DescriptionAttribute.cs" />
+    <Compile Include="Attributes\StringAttribute.cs" />
+    <Compile Include="Attributes\StringFeatureAttribute.cs" />
+    <Compile Include="Attributes\StringLabelAttribute.cs" />
+    <Compile Include="Model\LabeledDescription.cs" />
     <Compile Include="Convert.cs" />
     <Compile Include="Exceptions\InvalidDescriptionException.cs" />
+    <Compile Include="Learner.cs" />
     <Compile Include="Model\Description.cs" />
     <Compile Include="Model\Property.cs" />
     <Compile Include="Model\StringHelpers.cs" />
@@ -77,7 +86,9 @@
       <Name>numl.Math</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Attributes\model.cd" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

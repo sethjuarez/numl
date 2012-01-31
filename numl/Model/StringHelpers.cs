@@ -21,10 +21,10 @@
 */
 
 using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.IO;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace numl.Model
@@ -108,7 +108,45 @@ namespace numl.Model
             }
         }
 
-        internal static Dictionary<string, double> BuildDictionary(IEnumerable<object> examples, StringProperty property)
+        internal static double[] GetWordCount(string item, StringProperty property)
+        {
+            double[] counts = new double[property.Dictionary.Length];
+            var d = new Dictionary<string, int>();
+
+            for (int i = 0; i < counts.Length; i++)
+            {
+                counts[i] = 0;
+                // for quick index lookup
+                d.Add(property.Dictionary[i], i);
+            }
+
+            IEnumerable<string> words = property.SplitType == StringSplitType.Character ?
+                                                 GetChars(item) :
+                                                 GetWords(item, property.Separator);
+
+            // TODO: this is not too efficient. Perhaps reconsider how to do this
+            foreach (var s in words)
+                if (property.Dictionary.Contains(s))
+                    counts[d[s]]++;
+
+            return counts;
+        }
+
+        internal static int GetWordPosition(string item, StringProperty property)
+        {
+            if (property.Dictionary == null || property.Dictionary.Length == 0)
+                throw new InvalidOperationException(string.Format("Cannot use StringProperty {0} with an empty property dictionary!", property.Name));
+
+            item = item.Trim().ToUpperInvariant();
+            for (int i = 0; i < property.Dictionary.Length; i++)
+                if (property.Dictionary[i] == item)
+                    return i;
+
+            throw new InvalidOperationException(
+                string.Format("\"{0}\" does not exist in the property dictionary for {1}", item, property.Name));
+        }
+
+        internal static Dictionary<string, double> BuildDataDictionary(IEnumerable<object> examples, StringProperty property)
         {
             Dictionary<string, double> d = new Dictionary<string, double>();
 
@@ -157,7 +195,21 @@ namespace numl.Model
             foreach (var key in d.Select(kv => kv.Key).ToArray())
                 d[key] /= sum;
 
+
             return d;
+        }
+
+        /// <summary>
+        /// Populate StringProperty dictionary for given property
+        /// </summary>
+        /// <param name="property">StringProperty</param>
+        /// <param name="examples">Examples</param>
+        /// <returns>PropertyDescription with Populated Dictionary</returns>
+        public static StringProperty BuildDictionary(this StringProperty property, IEnumerable<object> examples)
+        {
+            var d = BuildDataDictionary(examples, property);
+            property.Dictionary = d.Keys.OrderBy(s => s).ToArray();
+            return property;
         }
 
         /// <summary>
@@ -170,43 +222,13 @@ namespace numl.Model
         {
             // build dictionaries for string properties
             foreach (var p in desc.Features.Where(p => p is StringProperty))
-            {
-                // get dictionary of terms/chars to use in word vector
-                StringProperty sprop = p as StringProperty;
-                var d = BuildDictionary(examples, sprop);
-                // put into alphabetical order 
-                // (helps with predicability for testing
-                // but might be extra overhead)
-                sprop.Dictionary = d.Keys.OrderBy(s=>s).ToArray();
-            }
+                (p as StringProperty).BuildDictionary(examples);
+
+            // if it is a label description, build dictionaries for this as well
+            if (desc is LabeledDescription && ((LabeledDescription)desc).Label is StringProperty)
+                (((LabeledDescription)desc).Label as StringProperty).BuildDictionary(examples);
 
             return desc;
-        }
-
-        internal static double[] GetWordCount(string item, StringProperty property)
-        {
-            double[] counts = new double[property.Dictionary.Length];
-            var d = new Dictionary<string, int>();
-
-            for (int i = 0; i < counts.Length; i++)
-            {
-                counts[i] = 0;
-                // for quick index lookup
-                d.Add(property.Dictionary[i], i);
-            }
-
-            IEnumerable<string> words = property.SplitType == StringSplitType.Character ? 
-                                                 GetChars(item) : 
-                                                 GetWords(item, property.Separator);
-
-            // TODO: this is not too efficient. Perhaps reconsider how to do this
-            foreach (var s in words)
-            {
-                if (property.Dictionary.Contains(s))
-                    counts[d[s]]++;
-            }
-
-            return counts;
         }
     }
 }

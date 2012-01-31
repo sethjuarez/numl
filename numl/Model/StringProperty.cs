@@ -44,10 +44,23 @@ namespace numl.Model
         public string[] Dictionary { get; set; }
         public string[] Exclude { get; set; }
 
+        // can *only* be a string
+        public override ItemType Type
+        {
+            get
+            {
+                return ItemType.String;
+            }
+            set
+            {
+                ;
+            }
+        }
+
         public void ImportExclusions(string file)
         {
             // add exclusions
-            if (file != null && File.Exists(file))
+            if (!string.IsNullOrEmpty(file) && !string.IsNullOrWhiteSpace(file) && File.Exists(file))
             {
                 Regex regex;
                 if (SplitType == StringSplitType.Word)
