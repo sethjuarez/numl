@@ -1,4 +1,4 @@
-﻿/*
+/*
  Copyright (c) 2012 Seth Juarez
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,22 +26,28 @@ using System.Linq;
 
 namespace numl.Supervised
 {
-    public class KNNModel : IGenerator
+    public class KNNModel : IModel
     {
         public int K { get; set; }
-        public KNNModel(int k = 5)
-        {
-            K = k;
-        }
+        public Matrix X { get; set; }
+        public Vector Y { get; set; }
 
-        public IModel Generate(Matrix x, Vector y)
+        public double Predict(Vector y)
         {
-            return new KNNPredictor
+            Tuple<int, double>[] distances = new Tuple<int, double>[y.Length];
+
+            for (int i = 0; i < X.Rows; i++)
             {
-                X = x,
-                Y = y,
-                K = K
-            };
+                var x = X[i, VectorType.Row];
+                distances[i] = new Tuple<int, double>(i, (y - x).Norm());
+            }
+
+            var slice = distances
+                            .OrderBy(t => t.Item2)
+                            .Take(K)
+                            .Select(i => i.Item1);
+
+            return Y.Slice(slice).Mode();
         }
     }
 }

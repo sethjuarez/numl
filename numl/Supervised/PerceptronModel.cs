@@ -25,55 +25,18 @@ using numl.Math;
 
 namespace numl.Supervised
 {
-    public class PerceptronModel : IGenerator
+    public class PerceptronModel : IModel
     {
-        public bool Normalize { get; set; }
-        public PerceptronModel(bool normalize = true)
+        public Vector W { get; set; }
+        public double B { get; set; }
+        public bool Normalized { get; set; } 
+
+        public double Predict(Vector y)
         {
-            Normalize = normalize;
-        }
+            if (Normalized)
+                y = y / y.Norm();
 
-        public IModel Generate(Matrix X, Vector Y)
-        {
-            Vector w = Vector.Zeros(X[0].Length);
-            Vector a = w.Copy();
-
-            double wb = 0;
-            double ab = 0;
-
-            int n = 1;
-
-            if (Normalize)
-                for (int j = 0; j < X.Rows; j++)
-                    X[j] = X[j] / X[j].Norm();
-
-            // repeat 10 times for *convergence*
-            for (int i = 0; i < 10; i++)
-            {
-                for (int j = 0; j < X.Rows; j++)
-                {
-                    Vector x = X[j];
-                    double y = Y[j];
-
-                    // perceptron update
-                    if (y * (Vector.Dot(w, x) + wb) <= 0)
-                    {
-                        w += (y * x);
-                        wb += y;
-                        a += (y * x) * n;
-                        ab += y * n;
-                    }
-
-                    n += 1;
-                }
-            }
-
-            return new PerceptronPredictor
-            {
-                W = w - (a / n),
-                B = wb - (ab / n),
-                Normalized = Normalize
-            };
+            return Vector.Dot(W, y) + B;
         }
     }
 }

@@ -170,6 +170,23 @@ namespace numl.Tests
             Assert.AreEqual(yTruth, target.Item2);
         }
 
+        [Test, ExpectedException(typeof(InvalidOperationException))] // no dictionary ;)
+        public void Test_Matrix_Conversion_Numbers_Strings_Invalid_Dictionary()
+        {
+            Description d = new Description();
+            d.Features = new Property[]
+            {
+                new Property { Name = "Cluster", Type = ItemType.Numeric},
+                new StringProperty { Name = "Content", Type = ItemType.String },
+                new Property { Name = "Number", Type = ItemType.Numeric},
+            };
+
+            var feed = Feed.GetData();
+            Matrix target = feed.ToMatrix(d);
+            Matrix truth = Feed.GetDataMatrix();
+            Assert.AreEqual(truth, target);
+        }
+
         [Test]
         public void Test_Matrix_Conversion_Numbers_Strings()
         {
@@ -182,6 +199,7 @@ namespace numl.Tests
             };
 
             var feed = Feed.GetData();
+            (d.Features[1] as StringProperty).BuildDictionary(feed);
             Matrix target = feed.ToMatrix(d);
             Matrix truth = Feed.GetDataMatrix();
             Assert.AreEqual(truth, target);

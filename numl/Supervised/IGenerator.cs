@@ -22,6 +22,7 @@
 
 using System;
 using numl.Math;
+using numl.Model;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -29,6 +30,8 @@ namespace numl.Supervised
 {
     public interface IGenerator
     {
+        LabeledDescription Description { get; set; }
+        IModel Generate(LabeledDescription description, IEnumerable<object> examples);
         IModel Generate(Matrix x, Vector y);
     }
 }

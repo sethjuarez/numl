@@ -33,9 +33,11 @@ namespace numl.Attributes
         public StringSplitType SplitType { get; set; }
         public string Separator { get; set; }
         public string ExclusionFile { get; set; }
+        public bool AsEnum { get; set; }
 
         public StringAttribute()
         {
+            AsEnum = false;
             SplitType = StringSplitType.Word;
             Separator = " ";
         }
@@ -45,6 +47,11 @@ namespace numl.Attributes
             SplitType = splitType;
             Separator = separator;
             ExclusionFile = exclusions;
+        }
+
+        public StringAttribute(bool asEnum)
+        {
+            AsEnum = asEnum;
         }
     }
 }

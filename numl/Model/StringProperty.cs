@@ -37,12 +37,14 @@ namespace numl.Model
             Separator = " ";
             Dictionary = new string[] { };
             Exclude = new string[] { };
+            AsEnum = false;
         }
 
         public string Separator { get; set; }
         public StringSplitType SplitType { get; set; }
         public string[] Dictionary { get; set; }
         public string[] Exclude { get; set; }
+        public bool AsEnum { get; set; }
 
         // can *only* be a string
         public override ItemType Type

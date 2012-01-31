@@ -5,6 +5,7 @@ using System.Text;
 using numl.Supervised;
 using numl.Math;
 using numl.Model;
+using System.Threading.Tasks;
 
 namespace numl
 {
@@ -21,7 +22,7 @@ namespace numl
             Generators = generators;
         }
 
-        public void Learn(Description description, Property label, IEnumerable<object> examples)
+        public void Learn(LabeledDescription description, IEnumerable<object> examples)
         {
             var total = examples.Count();
             
@@ -33,7 +34,51 @@ namespace numl
             // 80% for training
             var trainingSlice = GetTrainingPoints(testingSlice, total);
 
+            var data = description.ToExamples(examples);
 
+            Matrix x = data.Item1;
+            Vector y = data.Item2;
+
+            // training
+            var x_t = x.Slice(trainingSlice, VectorType.Row);
+            var y_t = y.Slice(trainingSlice);
+
+            Models = new IModel[Models.Length];
+
+            // run in parallel since they all have 
+            // read-only references to the data model
+            // and update independently to different
+            // spots
+            Parallel.For(0, Models.Length, i =>
+                Models[i] = Generators[i].Generate(x_t, y_t)
+            );
+
+            // testing            
+            object[] test = GetTestExamples(testingSlice, examples);
+            Accuracy = Vector.Zeros(Models.Length);
+            for (int i = 0; i < Models.Length; i++)
+            {
+                Accuracy[i] = 0;
+                for (int j = 0; j < test.Length; j++)
+                {
+                    var truth = Convert.GetItem(test[j], description.Label.Name);
+                    double truthValue = Convert.ConvertObject(truth);
+
+                    var pred = Models[i].Predict(test[j].ToVector(description));
+
+                    if (System.Math.Round(truthValue, 4) == System.Math.Round(pred, 4))
+                        Accuracy[i] += 1;
+                }
+
+                Accuracy[i] /= test.Length;
+            };
+        }
+
+        private object[] GetTestExamples(IEnumerable<int> slice, IEnumerable<object> examples)
+        {
+            return examples
+                    .Where((o, i) => slice.Contains(i))
+                    .ToArray();
         }
 
         private IEnumerable<int> GetTestPoints(int testCount, int total)

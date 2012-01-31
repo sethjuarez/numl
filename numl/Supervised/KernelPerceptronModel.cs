@@ -22,76 +22,39 @@
 
 using System;
 using numl.Math;
-using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace numl.Supervised
 {
-    public class KernelPerceptronModel : IGenerator
+    [XmlRoot("KernelPerceptron")]
+    public class KernelPerceptronModel : IModel
     {
         public KernelType Type { get; set; }
-        public double P { get; set; }
+        public double Param { get; set; }
+        public Matrix X { get; set; }
+        public Vector Y { get; set; }
+        public Vector A { get; set; }
 
-        public KernelPerceptronModel(double kernelParam = 2, KernelType type = KernelType.Polynomial)
+        public double Predict(Vector y)
         {
-            Type = type;
-            P = kernelParam;
+            var K = GetKernel(y);
+            double v = 0;
+            for (int i = 0; i < A.Length; i++)
+                v += A[i] * Y[i] * K[i];
+
+            return v;
         }
 
-        public IModel Generate(Matrix x, Vector y)
+        private Vector GetKernel(Vector x)
         {
-
-            int N = y.Length;
-            Vector a = Vector.Zeros(N);
-            Matrix K = GetKernel(x);
-
-            int n = 1;
-
-            // hopefully enough to 
-            // converge right? ;)
-            // need to be smarter about
-            // storing SPD kernels...
-            bool found_error = true;
-            while (n < 500 && found_error)
-            {
-                found_error = false;
-                for (int i = 0; i < N; i++)
-                {
-                    if (y[i] * a.Dot(K[i, VectorType.Row]) <= 0)
-                    {
-                        a[i] += y[i];
-                        found_error = true;
-                    }
-                }
-
-                n++;
-            }
-
-            // anything that *matters*
-            // i.e. support vectors
-            var indices = a.Indices(d => d != 0);
-
-            // slice up examples to contain
-            // only support vectors
-            return new KernelPerceptronPredictor
-            {
-                A = a.Slice(indices),
-                Y = y.Slice(indices),
-                X = x.Slice(indices, VectorType.Row),
-                Type = Type,
-                Param = P
-            };
-        }
-
-        public Matrix GetKernel(Matrix X)
-        {
-            Matrix K = Matrix.Zeros(1);
+            Vector K = Vector.Zeros(1);
             switch (Type)
             {
                 case KernelType.Polynomial:
-                    K = X.PolyKernel(P);
+                    K = X.PolyKernel(x, Param);
                     break;
                 case KernelType.RBF:
-                    K = X.RBFKernel(P);
+                    K = X.RBFKernel(x, Param);
                     break;
             }
 

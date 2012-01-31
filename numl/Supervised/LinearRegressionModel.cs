@@ -25,35 +25,15 @@ using numl.Math;
 
 namespace numl.Supervised
 {
-    public class LinearRegressionModel : IGenerator
+    public class LinearRegressionModel : IModel
     {
-        public IModel Generate(Matrix x, Vector y)
+        public Vector W { get; set; }
+        public double B { get; set; }
+
+        public double Predict(Vector y)
         {
-            // normalize each each row
-            for (int i = 0; i < x.Rows; i++)
-                x[i, VectorType.Row] = x[i, VectorType.Row] / Vector.Norm(x[i, VectorType.Row]);
-
-            // calculate W 
-            // Could throw the following exceptions:
-            // 1. SingularMatrixException, inverse becomes unstable, 
-            //    This could happen if X.T * X is not full rank, although
-            //    this should ALWAYS be symmetric positive definite
-            //    Equivalent to Moore-Penrose pseudoinverse
-            // 2. InvalidOperationException because of invalid Matrix to Vector conversion
-
-            // this is dumb, I need to do a Cholesky factorization + backsolve
-            // to ensure stability of operation
-            var W = ((((x.T * x) ^ -1) * x.T) * y).ToVector();
-
-            // bias term
-            double B = y.Mean() - Vector.Dot(W, x.GetRows().Mean());
-
-            // create predictor
-            return new LinearRegressionPredictor
-            {
-                W = W,
-                B = B
-            };
+            // calculate estimate using normalized example
+            return W.Dot(y / y.Norm()) + B;
         }
     }
 }

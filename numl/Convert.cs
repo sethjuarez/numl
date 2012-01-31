@@ -85,6 +85,7 @@ namespace numl
                         var sp = (StringProperty)p;
                         sp.Separator = sf.Separator;
                         sp.SplitType = sf.SplitType;
+                        sp.AsEnum = sf.AsEnum;
 
                         // load exclusion file if it exists
                         sp.ImportExclusions(sf.ExclusionFile);
@@ -126,7 +127,16 @@ namespace numl
                         .Where(p => !(p is StringProperty)).Count() +
                     features
                         .Where(p => p is StringProperty)
-                        .Aggregate(0, (no, p) => no += (p as StringProperty).Dictionary.Length);
+                        .Aggregate(0, (no, p) => 
+                            {
+                                var sp = (p as StringProperty);
+                                if(sp.AsEnum)
+                                    no += 1;
+                                else
+                                    no += sp.Dictionary.Length;
+                                return no;
+                            }
+                        );
 
             Vector vector = Vector.Zeros(d);
 
@@ -136,57 +146,21 @@ namespace numl
                 object val = GetItem(o, f.Name);
                 if (f is StringProperty)
                 {
-                    var wc = StringHelpers.GetWordCount((string)val, (StringProperty)f);
-                    for (int k = 0; k < wc.Length; k++)
-                        vector[++i] = wc[k];
+                    StringProperty sf = (StringProperty)f;
+                    if (sf.AsEnum)
+                        vector[++i] = StringHelpers.GetWordPosition(val.ToString(), sf);
+                    else
+                    {
+                        var wc = StringHelpers.GetWordCount(val.ToString(), sf);
+                        for (int k = 0; k < wc.Length; k++)
+                            vector[++i] = wc[k];
+                    }
                 }
                 else
                     vector[++i] = ConvertObject(val);
             }
 
             return vector;
-        }
-
-        public static Vector ToColumnVector(this IEnumerable<object> objects, Property property)
-        {
-            // check for proper dictionaries
-            if (property is StringProperty)
-            {
-                // looking for valid dictionaries for string properties
-                StringProperty p = (StringProperty)property;
-                if (p.Dictionary == null || p.Dictionary.Length == 0)
-                    throw new InvalidOperationException(string.Format("Cannot convert StringProperty {0} with an empty property dictionary!", p.Name));
-            }
-
-            Vector v = new Vector(objects.Count());
-            int i = -1;
-            foreach (object o in objects)
-            {
-                object val = GetItem(o, property.Name);
-
-                if (property is StringProperty)
-                {
-                    StringProperty p = (StringProperty)property;
-                    var matches = p.Dictionary
-                                    .Select((item, index) => new { Item = item, Index = index })
-                                    .Where(a => a.Item == (string)val);
-
-                    int matched = matches.Count();
-                    if (matched != 1)
-                    {
-                        if (matched < 1)
-                            throw new InvalidOperationException(string.Format("There were not dictionary matches for {0} in {1}", (string)val, property.Name));
-                        else
-                            throw new InvalidOperationException(string.Format("There were too many dictionary matches for {0} in {1}", (string)val, property.Name));
-                    }
-
-                    v[++i] = matches.First().Index;
-                }
-                else
-                    v[++i] = ConvertObject(val);
-            }
-
-            return v;
         }
 
         public static Matrix ToMatrix(this IEnumerable<object> objects, Description description)
@@ -201,7 +175,7 @@ namespace numl
                 // looking for valid dictionaries for string properties
                 StringProperty property = (StringProperty)p;
                 if (property.Dictionary == null || property.Dictionary.Length == 0)
-                    throw new InvalidOperationException(string.Format("Cannot convert StringProperty {0} with an empty property dictionary!", p.Name));
+                    throw new InvalidOperationException(string.Format("Cannot convert StringProperty \"{0}\" with an empty property dictionary!", p.Name));
             }
 
             // TODO: This is being rebuilt *EACH TIME* need to fix this
@@ -215,7 +189,16 @@ namespace numl
                         .Where(p => !(p is StringProperty)).Count() +
                     features
                         .Where(p => p is StringProperty)
-                        .Aggregate(0, (no, p) => no += (p as StringProperty).Dictionary.Length);
+                        .Aggregate(0, (no, p) =>
+                            {
+                                var sp = (p as StringProperty);
+                                if (sp.AsEnum)
+                                    no += 1;
+                                else
+                                    no += sp.Dictionary.Length;
+                                return no;
+                            }
+                        );
 
             double[][] matrix = new double[n][];
 
@@ -230,9 +213,15 @@ namespace numl
                     object val = GetItem(o, f.Name);
                     if (f is StringProperty)
                     {
-                        var wc = StringHelpers.GetWordCount(val.ToString(), (StringProperty)f);
-                        for (int k = 0; k < wc.Length; k++)
-                            matrix[i][++j] = wc[k];
+                        StringProperty sf = (StringProperty)f;
+                        if (sf.AsEnum)
+                            matrix[i][++j] = StringHelpers.GetWordPosition(val.ToString(), sf);
+                        else
+                        {
+                            var wc = StringHelpers.GetWordCount(val.ToString(), (StringProperty)f);
+                            for (int k = 0; k < wc.Length; k++)
+                                matrix[i][++j] = wc[k];
+                        }
                     }
                     else
                         matrix[i][++j] = ConvertObject(val);
@@ -243,7 +232,12 @@ namespace numl
 
         }
 
-        public static Tuple<Matrix, Vector> ToExamples(this IEnumerable<object> objects, LabeledDescription description)
+        public static Tuple<Matrix, Vector> ToExamples(this LabeledDescription description, IEnumerable<object> examples)
+        {
+            return examples.ToExamples(description);
+        }
+
+        public static Tuple<Matrix, Vector> ToExamples(this IEnumerable<object> examples, LabeledDescription description)
         {
             Property[] features = description.Features;
             if (description == null || features == null || features.Length == 0)
@@ -262,21 +256,30 @@ namespace numl
             // description.BuildDictionaries(objects);
 
             // number of examples
-            int n = objects.Count();
+            int n = examples.Count();
 
             // number of features (including expanded string features)
             int d = features
                         .Where(p => !(p is StringProperty)).Count() +
                     features
                         .Where(p => p is StringProperty)
-                        .Aggregate(0, (no, p) => no += (p as StringProperty).Dictionary.Length);
+                        .Aggregate(0, (no, p) =>
+                            {
+                                var sp = (p as StringProperty);
+                                if (sp.AsEnum)
+                                    no += 1;
+                                else
+                                    no += sp.Dictionary.Length;
+                                return no;
+                            }
+                        );
 
             double[][] matrix = new double[n][];
             Vector y = new Vector(n);
 
             int i = -1;
             int j = -1;
-            foreach (object o in objects)
+            foreach (object o in examples)
             {
                 matrix[++i] = new double[d];
                 j = -1;
@@ -285,9 +288,15 @@ namespace numl
                     object val = GetItem(o, f.Name);
                     if (f is StringProperty)
                     {
-                        var wc = StringHelpers.GetWordCount(val.ToString(), (StringProperty)f);
-                        for (int k = 0; k < wc.Length; k++)
-                            matrix[i][++j] = wc[k];
+                        StringProperty sf = (StringProperty)f;
+                        if (sf.AsEnum)
+                            matrix[i][++j] = StringHelpers.GetWordPosition(val.ToString(), sf);
+                        else
+                        {
+                            var wc = StringHelpers.GetWordCount(val.ToString(), (StringProperty)f);
+                            for (int k = 0; k < wc.Length; k++)
+                                matrix[i][++j] = wc[k];
+                        }
                     }
                     else
                         matrix[i][++j] = ConvertObject(val);
