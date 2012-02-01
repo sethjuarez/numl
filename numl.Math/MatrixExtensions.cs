@@ -83,6 +83,16 @@ namespace numl.Math
             return v;
         }
 
+        public static Matrix Covariance(this Matrix source, VectorType t = VectorType.Column)
+        {
+            int length = t == VectorType.Row ? source.Rows : source.Cols;
+            Matrix m = new Matrix(length);
+            for (int i = 0; i < length; i++)
+                for (int j = i; j < length; j++) // symmetric matrix
+                    m[i, j] = m[j, i] = source[i, t].Covariance(source[j, t]);
+            return m;
+        }
+
         public static IEnumerable<int> Indices(this Matrix source, Func<Vector, bool> f, VectorType t)
         {
             int max = t == VectorType.Row ? source.Rows : source.Cols;

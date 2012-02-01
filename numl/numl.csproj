@@ -72,6 +72,7 @@
     <Compile Include="Supervised\PerceptronGenerator.cs" />
     <Compile Include="Supervised\PerceptronModel.cs" />
     <Compile Include="Unsupervised\Cluster.cs" />
+    <Compile Include="Unsupervised\GMM.cs" />
     <Compile Include="Unsupervised\HClusterModel.cs" />
     <Compile Include="Unsupervised\KMeans.cs" />
     <Compile Include="Unsupervised\Linkers\AverageLinker.cs" />
@@ -79,15 +80,16 @@
     <Compile Include="Unsupervised\Linkers\CompleteLinker.cs" />
     <Compile Include="Unsupervised\Linkers\ILinker.cs" />
     <Compile Include="Unsupervised\Linkers\SingleLinker.cs" />
+    <Compile Include="Unsupervised\PCA.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Attributes\model.cd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\numl.Math\numl.Math.csproj">
       <Project>{7BB3DA40-EEAF-4365-BC70-78174760891A}</Project>
       <Name>numl.Math</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Attributes\model.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

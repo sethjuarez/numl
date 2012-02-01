@@ -100,6 +100,36 @@ namespace numl.Math
             return source.Sum() / source.Length;
         }
 
+        public static double StdDev(this Vector source)
+        {
+            return System.Math.Sqrt(source.Variance());
+        }
+
+        public static double Variance(this Vector x)
+        {
+            var mean = x.Mean();
+            var sum = 0d;
+            for (int i = 0; i < x.Length; i++)
+                sum += System.Math.Pow(x[i] - mean, 2);
+
+            return sum / (x.Length - 1);
+        }
+
+        public static double Covariance(this Vector x, Vector y)
+        {
+            if(x.Length != y.Length)
+                throw new InvalidOperationException("Vectors must be the same length.");
+
+            var xmean = x.Mean();
+            var ymean = y.Mean();
+
+            var sum = 0d;
+            for (int i = 0; i < x.Length; i++)
+                sum += (x[i] - xmean) * (y[i] - ymean);
+
+            return sum / (x.Length - 1);
+        }
+
         public static double Mode(this Vector source)
         {
             var q = from i in source
@@ -250,8 +280,6 @@ namespace numl.Math
 
             return hash.Keys.OrderByDescending(i => i);
         }
-
-
 
         public static IEnumerable<int> Indices(this IEnumerable<double> source, Func<double, bool> f)
         {

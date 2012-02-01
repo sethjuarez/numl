@@ -108,6 +108,9 @@ namespace numl.Math
                 U[j, j] = v[j];
             }
 
+            int q = 0;
+            if(q < 1)
+                throw new NotImplementedException("Not quite done yet ;)");
 
             return new Tuple<Matrix, Matrix>(L, U);
         }

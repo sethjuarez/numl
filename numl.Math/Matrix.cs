@@ -40,7 +40,6 @@ namespace numl.Math
         public int Rows { get; private set; }
         public int Cols { get; private set; }
 
-
         /// <summary>
         /// Used only internally
         /// </summary>
@@ -110,14 +109,13 @@ namespace numl.Math
             _matrix = m;
         }
 
-
         /// <summary>
         /// Accessor
         /// </summary>
         /// <param name="i">Row</param>
         /// <param name="j">Column</param>
         /// <returns></returns>
-        public double this[int i, int j]
+        public virtual double this[int i, int j]
         {
             get
             {
@@ -160,7 +158,7 @@ namespace numl.Math
         /// </summary>
         /// <param name="i">row index</param>
         /// <returns></returns>
-        public Vector this[int i]
+        public virtual Vector this[int i]
         {
             get
             {
@@ -178,7 +176,7 @@ namespace numl.Math
         /// <param name="j">Col/Row</param>
         /// <param name="t">Row or Column</param>
         /// <returns>Vector</returns>
-        public Vector this[int i, VectorType t]
+        public virtual Vector this[int i, VectorType t]
         {
             get
             {
@@ -192,7 +190,7 @@ namespace numl.Math
                     if (i >= Rows)
                         throw new IndexOutOfRangeException();
 
-                    return new Vector(_matrix[i]);
+                    return new Vector(_matrix, i, true);
                 }
                 else
                 {
@@ -243,8 +241,6 @@ namespace numl.Math
                             this[i, j] = value;
             }
         }
-
-
 
         public Matrix this[Func<Vector, bool> f, VectorType t]
         {
@@ -657,6 +653,18 @@ namespace numl.Math
             int max = t == VectorType.Row ? Rows : Cols;
             for (int i = 0; i < max; i++)
                 this[i, t] /= this[i, t].Norm();
+        }
+
+        /// <summary>
+        /// In place centering.
+        /// WARNING: WILL UPDATE MATRIX!
+        /// </summary>
+        /// <param name="t"></param>
+        public void Center(VectorType t)
+        {
+            int max = t == VectorType.Row ? Rows : Cols;
+            for (int i = 0; i < max; i++)
+                this[i, t] -= this[i, t].Mean();
         }
 
         //---------------- Xml Serialization

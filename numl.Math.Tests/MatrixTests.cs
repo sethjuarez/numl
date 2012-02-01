@@ -34,6 +34,67 @@ namespace numl.Math.Tests
     [TestFixture]
     public class MatrixTests
     {
+        private Matrix _test = new[,]
+            {{ 1, 2, 3},
+             { 4, 5, 6},
+             { 7, 8, 9}};
+
+        [Test]
+        public void Test_Matrix_Vector_Enumeration_Row()
+        {
+            Vector[] a = new Vector[]
+            {
+                new[] { 1, 2, 3 },
+                new[] { 4, 5, 6 },
+                new[] { 7, 8, 9 },
+            };
+
+            for (int i = 0; i < 3; i++)
+                Assert.AreEqual(a[i], _test[i, VectorType.Row]);
+        }
+
+        [Test]
+        public void Test_Matrix_Vector_Enumeration_Col()
+        {
+            Vector[] a = new Vector[]
+            {
+                new[] { 1, 4, 7 },
+                new[] { 2, 5, 8 },
+                new[] { 3, 6, 9 },
+            };
+
+            for (int i = 0; i < 3; i++)
+                Assert.AreEqual(a[i], _test[i, VectorType.Column]);
+        }
+
+        [Test]
+        public void Test_Matrix_Vector_Enumeration_Row_Transpose()
+        {
+            Vector[] a = new Vector[]
+            {
+                new[] { 1, 4, 7 },
+                new[] { 2, 5, 8 },
+                new[] { 3, 6, 9 },
+            };
+
+            for (int i = 0; i < 3; i++)
+                Assert.AreEqual(a[i], _test.T[i, VectorType.Row]);
+        }
+
+        [Test]
+        public void Test_Matrix_Vector_Enumeration_Col_Transpose()
+        {
+            Vector[] a = new Vector[]
+            {
+                new[] { 1, 2, 3 },
+                new[] { 4, 5, 6 },
+                new[] { 7, 8, 9 },
+            };
+
+            for (int i = 0; i < 3; i++)
+                Assert.AreEqual(a[i], _test.T[i, VectorType.Column]);
+        }
+
         [Test]
         public void Matrix_Serialize_Test()
         {
@@ -651,13 +712,18 @@ namespace numl.Math.Tests
                  { -3,  6,  2 },
                  {  3, -3,  1 }};
 
-            var eigenValues = new[] { 7, 2, 3 };
+            Vector eigenValues = new[] { 7, 2, 3 };
+            Matrix eigenVectors = new[,] 
+                {{ -0.57735027,  0.42640143,  0.37139068},
+                 {  0.57735027,  0.63960215,  0.74278135},
+                 { -0.57735027, -0.63960215, -0.55708601}};
+
             var eigs = A.Eigs();
             var S = eigs.Item1;
             var V = eigs.Item2;
 
-            //Assert.AreEqual(eigenValues.Round(), S.Round());
-
+            Assert.AreEqual(eigenValues.Round(3), S.Round(3));
+            Assert.AreEqual(eigenVectors, V.Round(8));
         }
 
         [Test]
@@ -675,7 +741,6 @@ namespace numl.Math.Tests
 
             Assert.AreEqual(A.Round(8), (U * S.Diag() * V.T).Round(8));
         }
-
 
         [Test]
         public void Matrix_Extract_Test()
@@ -704,6 +769,27 @@ namespace numl.Math.Tests
                  {  3,  2 }};
 
             Assert.AreEqual(bSol, B.Extract(2, 1, 2, 3));
+        }
+
+        [Test]
+        public void Matrix_Covariance_Test()
+        {
+            // from: http://www.itl.nist.gov/div898/handbook/pmc/section5/pmc541.htm
+
+            Matrix x = new[,]
+               {{ 4.0, 2.0, .60 },
+                { 4.2, 2.1, .59 },
+                { 3.9, 2.0, .58 },
+                { 4.3, 2.1, .62 },
+                { 4.1, 2.2, .63 }};
+
+            Matrix covTruth = new[,]
+               {{ 0.02500, 0.00750, 0.00175 },
+                { 0.00750, 0.00700, 0.00135 },
+                { 0.00175, 0.00135, 0.00043 }};
+
+            var cov = x.Covariance().Round(5);
+            Assert.AreEqual(covTruth, cov);
         }
     }
 }

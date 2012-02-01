@@ -48,6 +48,7 @@
     <Compile Include="Data\Fake.cs" />
     <Compile Include="Data\Feed.cs" />
     <Compile Include="Data\Student.cs" />
+    <Compile Include="PCATests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

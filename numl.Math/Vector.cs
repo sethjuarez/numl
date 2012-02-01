@@ -35,7 +35,6 @@ namespace numl.Math
     public class Vector : IXmlSerializable, IEnumerable<double>
     {
         private double[] _vector;
-
         private bool _asMatrixRef;
         private double[][] _matrix = null;
         private int _staticIdx = -1;
@@ -46,8 +45,9 @@ namespace numl.Math
         /// </summary>
         /// <param name="m">private matrix vals</param>
         /// <param name="idx">static col reference</param>
-        internal Vector(double[][] m, int idx)
+        internal Vector(double[][] m, int idx, bool asCol = false)
         {
+            _asCol = asCol;
             _asMatrixRef = true;
             _matrix = m;
             _staticIdx = idx;
@@ -55,11 +55,13 @@ namespace numl.Math
 
         private Vector()
         {
-
+            _asCol = false;
+            _asMatrixRef = false;
         }
 
         public Vector(int n)
         {
+            _asCol = false;
             _asMatrixRef = false;
             _vector = new double[n];
             for (int i = 0; i < n; i++)
@@ -68,6 +70,7 @@ namespace numl.Math
 
         public Vector(double[] contents)
         {
+            _asCol = false;
             _asMatrixRef = false;
             _vector = contents;
         }
@@ -98,14 +101,24 @@ namespace numl.Math
                 if (!_asMatrixRef)
                     return _vector[i];
                 else
-                    return _matrix[i][_staticIdx];
+                {
+                    if (_asCol)
+                        return _matrix[_staticIdx][i];
+                    else
+                        return _matrix[i][_staticIdx];
+                }
             }
             set
             {
                 if (!_asMatrixRef)
                     _vector[i] = value;
                 else
-                    _matrix[i][_staticIdx] = value;
+                {
+                    if (_asCol)
+                        _matrix[_staticIdx][i] = value;
+                    else
+                        _matrix[i][_staticIdx] = value;
+                }
             }
         }
 
@@ -116,7 +129,12 @@ namespace numl.Math
                 if (!_asMatrixRef)
                     return _vector.Length;
                 else
-                    return _matrix.Length;
+                {
+                    if (_asCol)
+                        return _matrix[0].Length;
+                    else
+                        return _matrix.Length;
+                }
             }
         }
 
@@ -138,7 +156,10 @@ namespace numl.Math
 
         public double[] ToArray()
         {
-            return _vector;
+            double[] toReturn = new double[Length];
+            for (int i = 0; i < Length; i++)
+                toReturn[i] = this[i];
+            return toReturn;
         }
 
         public Matrix ToMatrix()
@@ -238,7 +259,7 @@ namespace numl.Math
             return total;
         }
 
-        
+
 
         //----------------- Xml Serialization
         public XmlSchema GetSchema()
@@ -597,6 +618,7 @@ namespace numl.Math
             return one.Each(d => System.Math.Pow(d, power));
         }
 
+        private readonly bool _asCol;
         public static readonly Vector Empty = new[] { 0 };
 
 
@@ -618,14 +640,14 @@ namespace numl.Math
             if (e > 0)
             {
                 Vector v = Vector.Zeros(e - s);
-                for (int i = s; i < e; i++) 
+                for (int i = s; i < e; i++)
                     v[i - s] = i;
                 return v;
             }
             else
             {
                 Vector v = Vector.Zeros(s);
-                for (int i = 0; i < s; i++) 
+                for (int i = 0; i < s; i++)
                     v[i] = i;
                 return v;
             }
