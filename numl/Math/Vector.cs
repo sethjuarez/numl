@@ -429,6 +429,15 @@ namespace numl.Math
             return m;
         }
 
+        public static Matrix Diag(Vector v, int n, int d)
+        {
+            Matrix m = Matrix.Zeros(n, d);
+            int min = System.Math.Min(n, d);
+            for (int i = 0; i < min; i++)
+                m[i, i] = v[i];
+            return m;
+        }
+
         public static Vector Round(Vector v, int decimals = 0)
         {
             for (int i = 0; i < v.Length; i++)

@@ -68,6 +68,11 @@ namespace numl.Math
             return Vector.Diag(v);
         }
 
+        public static Matrix Diag(this Vector v, int n, int d)
+        {
+            return Vector.Diag(v, n, d);
+        }
+
         public static double Norm(this Vector v)
         {
             return Vector.Norm(v);

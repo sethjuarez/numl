@@ -25,7 +25,7 @@ using numl.Math;
 using NUnit.Framework;
 using numl.Math.Optimization;
 
-namespace numl.Math.Tests
+namespace numl.Tests
 {
     /// <summary>
     /// Summary description for CalculusTests

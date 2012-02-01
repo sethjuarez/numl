@@ -660,11 +660,12 @@ namespace numl.Math
         /// WARNING: WILL UPDATE MATRIX!
         /// </summary>
         /// <param name="t"></param>
-        public void Center(VectorType t)
+        public Matrix Center(VectorType t)
         {
             int max = t == VectorType.Row ? Rows : Cols;
             for (int i = 0; i < max; i++)
                 this[i, t] -= this[i, t].Mean();
+            return this;
         }
 
         //---------------- Xml Serialization

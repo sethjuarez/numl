@@ -31,15 +31,49 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\lib\MathNet.Numerics.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="zlib.net">
+      <HintPath>..\lib\zlib.net.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Math\Information\Entropy.cs" />
+    <Compile Include="Math\Information\Error.cs" />
+    <Compile Include="Math\Information\Gini.cs" />
+    <Compile Include="Math\Information\Impurity.cs" />
+    <Compile Include="Math\Information\ImpurityExtensions.cs" />
+    <Compile Include="Math\Matrix.cs" />
+    <Compile Include="Math\MatrixExtensions.cs" />
+    <Compile Include="Math\MatrixOps.cs" />
+    <Compile Include="Math\Metrics\CosineDistance.cs" />
+    <Compile Include="Math\Metrics\CosineSimilarity.cs" />
+    <Compile Include="Math\Metrics\EuclidianDistance.cs" />
+    <Compile Include="Math\Metrics\EuclidianSimilarity.cs" />
+    <Compile Include="Math\Metrics\HammingDistance.cs" />
+    <Compile Include="Math\Metrics\IDistance.cs" />
+    <Compile Include="Math\Metrics\ISimilarity.cs" />
+    <Compile Include="Math\Metrics\JaccardDistance.cs" />
+    <Compile Include="Math\Metrics\JaccardSimilarity.cs" />
+    <Compile Include="Math\Metrics\ManhattanDistance.cs" />
+    <Compile Include="Math\Metrics\PearsonCorrelation.cs" />
+    <Compile Include="Math\Metrics\TanimotoCoefficient.cs" />
+    <Compile Include="Math\Numerics.cs" />
+    <Compile Include="Math\Optimization\OptimizeBy.cs" />
+    <Compile Include="Math\Probability\MLRandom.cs" />
+    <Compile Include="Math\SingularMatrixException.cs" />
+    <Compile Include="Math\Vector.cs" />
+    <Compile Include="Math\VectorExtensions.cs" />
+    <Compile Include="Math\VectorType.cs" />
     <Compile Include="Model\AttributeType.cs" />
     <Compile Include="Attributes\FeatureAttribute.cs" />
     <Compile Include="Attributes\LabelAttribute.cs" />
@@ -84,12 +118,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Attributes\model.cd" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\numl.Math\numl.Math.csproj">
-      <Project>{7BB3DA40-EEAF-4365-BC70-78174760891A}</Project>
-      <Name>numl.Math</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -21,6 +21,7 @@
 */
 
 using System;
+using System.Linq;
 
 namespace numl.Math
 {
@@ -57,8 +58,7 @@ namespace numl.Math
         /// <returns>Tuple(Eigen Values, Eigen Vectors)</returns>
         public static Tuple<Vector, Matrix> Eigs(Matrix A)
         {
-            var decomp = new EigenDecomposition(A.Copy());
-            return new Tuple<Vector, Matrix>(decomp.d, decomp.V);
+            return Numerics.Eigs(A);
         }
 
         /// <summary>
@@ -68,8 +68,7 @@ namespace numl.Math
         /// <returns>Tuple(Matrix U, Vector S, Matrix V)</returns>
         public static Tuple<Matrix, Vector, Matrix> SVD(Matrix A)
         {
-            var d = new SingularValueDecomposition(A.Copy());
-            return new Tuple<Matrix, Vector, Matrix>(d.U, d.S, d.V);
+            return Numerics.SVD(A);
         }
 
         /// <summary>
@@ -158,8 +157,8 @@ namespace numl.Math
         /// <returns>Rounded Matrix</returns>
         public static Matrix Round(Matrix m, int decimals = 0)
         {
-            for (int i = 0; i < m.Cols; i++)
-                for (int j = 0; j < m.Rows; j++)
+            for (int i = 0; i < m.Rows; i++)
+                for (int j = 0; j < m.Cols; j++)
                     m[i, j] = System.Math.Round(m[i, j], decimals);
             return m;
         }

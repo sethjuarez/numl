@@ -8,13 +8,19 @@ namespace numl.Unsupervised
 {
     public class PCA
     {
-        public void Generate(Matrix m)
+        public void Generate(Matrix matrix)
         {
-            m.Center(VectorType.Column);
-            var cov = m.Covariance();
+            // generate centered covariance matrix
+            // (using a copy since centering is in place)
+            var cov = matrix
+                        .Copy()
+                        .Center(VectorType.Column)
+                        .Covariance();
+            
+            // compute eigen-decomposition
             var eigs = cov.Eigs();
-            var eigenvalues = eigs.Item1;
-            var eigenvector = eigs.Item2;
+            var D = eigs.Item1;
+            var V = eigs.Item2;
 
         }
     }

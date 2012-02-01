@@ -27,7 +27,7 @@ using System.Linq;
 using System.Xml.Serialization;
 using NUnit.Framework;
 
-namespace numl.Math.Tests
+namespace numl.Tests
 {
     /// <summary>
     /// Summary description for VectorTests

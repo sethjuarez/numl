@@ -25,8 +25,9 @@ using numl.Math;
 using System.IO;
 using System.Xml.Serialization;
 using NUnit.Framework;
+using numl.Tests.Data;
 
-namespace numl.Math.Tests
+namespace numl.Tests
 {
     /// <summary>
     /// Summary description for MatrixTests
@@ -702,44 +703,6 @@ namespace numl.Math.Tests
             // close enough...
             var diff = A.Norm() - (Q * R).Norm();
             Assert.AreEqual(0, diff);
-        }
-
-        [Test]
-        public void Matrix_Eigs_Test()
-        {
-            Matrix A = new[,]
-                {{  5,  2,  4 },
-                 { -3,  6,  2 },
-                 {  3, -3,  1 }};
-
-            Vector eigenValues = new[] { 7, 2, 3 };
-            Matrix eigenVectors = new[,] 
-                {{ -0.57735027,  0.42640143,  0.37139068},
-                 {  0.57735027,  0.63960215,  0.74278135},
-                 { -0.57735027, -0.63960215, -0.55708601}};
-
-            var eigs = A.Eigs();
-            var S = eigs.Item1;
-            var V = eigs.Item2;
-
-            Assert.AreEqual(eigenValues.Round(3), S.Round(3));
-            Assert.AreEqual(eigenVectors, V.Round(8));
-        }
-
-        [Test]
-        public void Matrix_SVD_Test()
-        {
-            Matrix A = new[,]
-                {{  5,  2,  4 },
-                 { -3,  6,  2 },
-                 {  3, -3,  1 }};
-
-            var svd = A.SVD();
-            var U = svd.Item1;
-            var S = svd.Item2;
-            var V = svd.Item3;
-
-            Assert.AreEqual(A.Round(8), (U * S.Diag() * V.T).Round(8));
         }
 
         [Test]
