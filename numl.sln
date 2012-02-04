@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "numl", "numl\numl.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "numl.Tests", "numl.Tests\numl.Tests.csproj", "{A30D8EDE-B107-42DE-AF56-4A54209BC572}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "numl.Visualizers", "numl.Visualizers\numl.Visualizers.csproj", "{2AED714A-028C-41C9-8628-4653DDDFD6DB}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = numl.vsmdi
@@ -22,6 +24,10 @@ Global
 		{A30D8EDE-B107-42DE-AF56-4A54209BC572}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A30D8EDE-B107-42DE-AF56-4A54209BC572}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A30D8EDE-B107-42DE-AF56-4A54209BC572}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AED714A-028C-41C9-8628-4653DDDFD6DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AED714A-028C-41C9-8628-4653DDDFD6DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AED714A-028C-41C9-8628-4653DDDFD6DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AED714A-028C-41C9-8628-4653DDDFD6DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

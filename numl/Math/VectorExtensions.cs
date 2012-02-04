@@ -29,10 +29,15 @@ namespace numl.Math
 {
     public static class VectorExtensions
     {
-        public static Vector Each(this Vector v, Func<double, double> transform)
+        public static Vector Each(this Vector v, Func<double, double> transform, bool asCopy = false)
         {
-            for (int i = 0; i < v.Length; i++)
-                v[i] = transform(v[i]);
+            Vector vector = v;
+            if (asCopy)
+                vector = v.Copy();
+
+            for (int i = 0; i < vector.Length; i++)
+                vector[i] = transform(vector[i]);
+
             return v;
         }
 
@@ -122,7 +127,7 @@ namespace numl.Math
 
         public static double Covariance(this Vector x, Vector y)
         {
-            if(x.Length != y.Length)
+            if (x.Length != y.Length)
                 throw new InvalidOperationException("Vectors must be the same length.");
 
             var xmean = x.Mean();
@@ -133,6 +138,14 @@ namespace numl.Math
                 sum += (x[i] - xmean) * (y[i] - ymean);
 
             return sum / (x.Length - 1);
+        }
+
+        public static double Correlation(this Vector x, Vector y)
+        {
+            var s = (x.StdDev() * y.StdDev());
+            if (s == 0)
+                throw new InvalidOperationException("The products of the standard deviations on this correlation is zero!");
+            return x.Covariance(y) / s;
         }
 
         public static double Mode(this Vector source)
@@ -349,6 +362,15 @@ namespace numl.Math
             int i = -1;
             foreach (double item in seq)
                 v[++i] = item;
+            return v;
+        }
+
+        public static Vector ToVector<T>(this IEnumerable<T> seq, Func<T, double> f)
+        {
+            Vector v = Vector.Zeros(seq.Count());
+            int i = -1;
+            foreach (T item in seq)
+                v[++i] = f(item);
             return v;
         }
 

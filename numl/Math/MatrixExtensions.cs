@@ -83,6 +83,28 @@ namespace numl.Math
             return v;
         }
 
+        public static double Max(this Matrix source)
+        {
+            double max = double.MinValue;
+            for (int i = 0; i < source.Rows; i++)
+                for (int j = 0; j < source.Cols; j++)
+                    if (source[i, j] > max)
+                        max = source[i, j];
+
+                    return max;
+        }
+
+        public static double Min(this Matrix source)
+        {
+            double min = double.MaxValue;
+            for (int i = 0; i < source.Rows; i++)
+                for (int j = 0; j < source.Cols; j++)
+                    if (source[i, j] < min)
+                        min = source[i, j];
+
+            return min;
+        }
+
         public static Matrix Covariance(this Matrix source, VectorType t = VectorType.Column)
         {
             int length = t == VectorType.Row ? source.Rows : source.Cols;
@@ -90,6 +112,25 @@ namespace numl.Math
             for (int i = 0; i < length; i++)
                 for (int j = i; j < length; j++) // symmetric matrix
                     m[i, j] = m[j, i] = source[i, t].Covariance(source[j, t]);
+            return m;
+        }
+
+        public static Vector CovarianceDiag(this Matrix source, VectorType t = VectorType.Column)
+        {
+            int length = t == VectorType.Row ? source.Rows : source.Cols;
+            Vector vector = new Vector(length);
+            for (int i = 0; i < length; i++)
+                vector[i] = source[i, t].Variance();
+            return vector;
+        }
+
+        public static Matrix Correlation(this Matrix source, VectorType t = VectorType.Column)
+        {
+            int length = t == VectorType.Row ? source.Rows : source.Cols;
+            Matrix m = new Matrix(length);
+            for (int i = 0; i < length; i++)
+                for (int j = i; j < length; j++) // symmetric matrix
+                    m[i, j] = m[j, i] = source[i, t].Correlation(source[j, t]);
             return m;
         }
 

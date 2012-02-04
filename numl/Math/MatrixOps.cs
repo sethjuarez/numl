@@ -270,7 +270,7 @@ namespace numl.Math
 
         public static bool operator ==(Matrix m1, Matrix m2)
         {
-            return m1.Equals(m2);
+            return (object.ReferenceEquals(m1, null) && object.ReferenceEquals(m2, null) || m1.Equals(m2));
         }
 
         public static bool operator !=(Matrix m1, Matrix m2)

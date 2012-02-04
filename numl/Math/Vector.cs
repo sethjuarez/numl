@@ -28,10 +28,11 @@ using System.Xml.Schema;
 using System.Xml;
 using System.Collections;
 using numl.Math.Probability;
+using System.Linq;
 
 namespace numl.Math
 {
-    [XmlRoot("v")]
+    [XmlRoot("v"), Serializable]
     public class Vector : IXmlSerializable, IEnumerable<double>
     {
         private double[] _vector;
@@ -260,7 +261,14 @@ namespace numl.Math
         }
 
 
-
+        //public double Aggregate(Func<double, double, double> f, double initial = 0)
+        //{
+        //    var agg = initial;
+        //    for (int i = 0; i < Length; i++)
+        //        agg = f(agg, this[i]);
+        //    return agg;
+        //}
+        
         //----------------- Xml Serialization
         public XmlSchema GetSchema()
         {
@@ -636,7 +644,7 @@ namespace numl.Math
             StringBuilder sb = new StringBuilder("[");
             for (int i = 0; i < Length; i++)
             {
-                sb.Append(this[i]);
+                sb.Append(this[i].ToString("F8"));
                 if (i < Length - 1)
                     sb.Append(", ");
             }

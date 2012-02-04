@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{A30D8EDE-B107-42DE-AF56-4A54209BC572}</ProjectGuid>
+    <ProjectGuid>{2AED714A-028C-41C9-8628-4653DDDFD6DB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>numl.Tests</RootNamespace>
-    <AssemblyName>numl.Tests</AssemblyName>
+    <RootNamespace>numl.Visualizers</RootNamespace>
+    <AssemblyName>numl.Visualizers</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,50 +31,38 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MathNet.Numerics, Version=2011.4.17.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
-      <HintPath>..\lib\MathNet.Numerics.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.VisualStudio.DebuggerVisualizers, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <HintPath>..\lib\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="zlib.net, Version=1.0.3.0, Culture=neutral, PublicKeyToken=47d7877cb3620160">
-      <HintPath>..\lib\zlib.net.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AttributeTests.cs" />
-    <Compile Include="CalculusTests.cs" />
-    <Compile Include="ConversionTests.cs" />
-    <Compile Include="Data\Fake.cs" />
-    <Compile Include="Data\Feed.cs" />
-    <Compile Include="Data\Student.cs" />
-    <Compile Include="GMMTests.cs" />
-    <Compile Include="ImpurityTests.cs" />
-    <Compile Include="LanguageTests.cs" />
-    <Compile Include="MatrixTests.cs" />
-    <Compile Include="PCATests.cs" />
+    <Compile Include="MatrixVisualizer.cs" />
+    <Compile Include="DataVisualizerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataVisualizerForm.Designer.cs">
+      <DependentUpon>DataVisualizerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VectorTests.cs" />
-    <Compile Include="VisualizerTests.cs" />
+    <Compile Include="VectorVisualizer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\numl.Visualizers\numl.Visualizers.csproj">
-      <Project>{2AED714A-028C-41C9-8628-4653DDDFD6DB}</Project>
-      <Name>numl.Visualizers</Name>
-    </ProjectReference>
     <ProjectReference Include="..\numl\numl.csproj">
       <Project>{11022B54-2310-42AA-B80F-660733243406}</Project>
       <Name>numl</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DataVisualizerForm.resx">
+      <DependentUpon>DataVisualizerForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

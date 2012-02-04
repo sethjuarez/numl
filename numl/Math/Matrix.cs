@@ -32,7 +32,7 @@ using numl.Math.Probability;
 
 namespace numl.Math
 {
-    [XmlRoot("m")]
+    [XmlRoot("m"), Serializable]
     public partial class Matrix : IXmlSerializable
     {
         private double[][] _matrix;
@@ -444,6 +444,16 @@ namespace numl.Math
 
         public override string ToString()
         {
+            int maxlpad = int.MinValue;
+            for (int i = 0; i < Rows; i++)
+            {
+                for (int j = 0; j < Cols; j++)
+                {
+                    string lpart = this[i, j].ToString("F6");
+                    if (lpart.Length > maxlpad)
+                        maxlpad = lpart.Length;
+                }
+            }
             StringBuilder matrix = new StringBuilder();
             matrix.Append("[");
             for (int i = 0; i < Rows; i++)
@@ -456,16 +466,17 @@ namespace numl.Math
                 for (int j = 0; j < Cols; j++)
                 {
                     matrix.Append(" ");
-                    matrix.Append(this[i, j].ToString("G3", CultureInfo.InvariantCulture));
+                    matrix.Append(this[i, j].ToString("F6", CultureInfo.InvariantCulture).PadLeft(maxlpad));
                     if (j < Cols - 1)
                         matrix.Append(",");
                 }
 
                 if (i < Rows - 1)
-                    matrix.Append("]\n");
+                    matrix.Append("],");
                 else
-                    matrix.Append("]]\n");
+                    matrix.Append("]]");
             }
+
             return matrix.ToString();
         }
 

@@ -20,60 +20,46 @@
  THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using numl.Math.Metrics;
-using numl.Model;
-using numl.Math;
-using numl.Math.Probability;
 using numl;
+using System;
+using numl.Math;
+using numl.Model;
+using System.Linq;
+using numl.Math.Metrics;
+using numl.Math.Probability;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
-namespace ml.Unsupervised
+namespace numl.Unsupervised
 {
     public class KMeans
     {
         public Description Description { get; set; }
         public Matrix Centers { get; set; }
 
-        public int[] Generate(IEnumerable<object> examples, int k, IDistance metric = null)
+        public KMeans()
         {
-            #region Setup
-            if (examples == null)
-                throw new InvalidOperationException("Cannot generate a model will no data!");
+            
+        }
 
-            if (k < 2)
-                throw new InvalidOperationException("Can only cluter with k > 1");
+        public KMeans(Description description)
+        {
+            Description = description;
+        }
 
-            if (Description == null)
-                throw new InvalidOperationException("Invalid Description!");
-
-            Matrix X = examples.ToMatrix(Description);
-
-            // clear out zeros (if any...)
-            // var indices = X.Indices(v => !v.All(d => d == 0), VectorType.Row);
-            // X = X.Slice(indices, VectorType.Row);
-
-            // X.Normalize(VectorType.Row);
-
-            if (k >= X.Rows)
-                throw new InvalidOperationException(
-                    string.Format("Cannot cluster {0} items {1} different ways!", X.Rows, k));
+        public Tuple<Matrix, int[]> Generate(Matrix X, int k, IDistance metric = null)
+        {
+            if (metric == null)
+                metric = new EuclidianDistance();
 
             var means = InitializeRandom(X, k);
             var diff = double.MaxValue;
             int[] assignments = new int[X.Rows];
-            #endregion
-
-            if (metric == null)
-                metric = new EuclidianDistance();
 
             for (int i = 0; i < 100; i++)
             {
                 // Assignment step
                 Parallel.For(0, X.Rows, j =>
-                //for (int j = 0; j < X.Rows; j++)
                 {
                     var min_index = -1;
                     var min = double.MaxValue;
@@ -90,11 +76,9 @@ namespace ml.Unsupervised
                         }
                         assignments[j] = min_index;
                     }
-                //}
                 });
 
                 // Update Step
-
                 // new means has k rows and X.Cols columns
                 Matrix new_means = Matrix.Zeros(k, X.Cols);
                 Vector sum = Vector.Zeros(k);
@@ -107,7 +91,7 @@ namespace ml.Unsupervised
                 }
 
                 // Part 2: Divide by counts
-                for(int j = 0; j <new_means.Rows; j++)
+                for (int j = 0; j < new_means.Rows; j++)
                     new_means[j, VectorType.Row] /= sum[j];
 
                 // find sum of normdiff's of means
@@ -117,21 +101,43 @@ namespace ml.Unsupervised
 
                 // small diff? return
                 if (diff < .00001)
-                {
-                    Centers = means;
-                    return assignments;
-                }
+                    break;
 
                 means = new_means;
             }
 
-            Centers = means;
-            return assignments;
+            return new Tuple<Matrix, int[]>(means, assignments);
+        }
+
+        public int[] Generate(IEnumerable<object> examples, int k, IDistance metric = null)
+        {
+            #region Sanity Checks
+            if (examples == null)
+                throw new InvalidOperationException("Cannot generate a model will no data!");
+
+            if (k < 2)
+                throw new InvalidOperationException("Can only cluter with k > 1");
+
+            if (Description == null)
+                throw new InvalidOperationException("Invalid Description!");
+
+            int count = examples.Count();
+            if (k >= count)
+                throw new InvalidOperationException(
+                    string.Format("Cannot cluster {0} items {1} different ways!", count, k));
+            #endregion
+
+            Matrix X = examples.ToMatrix(Description);
+
+            var data = Generate(X, k, metric);
+
+            Centers = data.Item1;
+            return data.Item2;
         }
 
         private Matrix InitializeUniform(Matrix X, int k)
         {
-            int multiple = (int)Math.Floor((double)X.Rows / (double)k);
+            int multiple = (int)System.Math.Floor((double)X.Rows / (double)k);
 
             var m = Matrix.Zeros(k, X.Cols);
 
