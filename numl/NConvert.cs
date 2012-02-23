@@ -33,7 +33,7 @@ using numl.Attributes;
 
 namespace numl
 {
-    public static class Convert
+    public static class NConvert
     {
         /// <summary>
         /// Used to create a machine learning type description
@@ -98,8 +98,8 @@ namespace numl
                 }
             }
 
-            if (items.Count < 2)
-                throw new InvalidOperationException("Type has less than two attributes!");
+            //if (items.Count < 2)
+            //    throw new InvalidOperationException("Type has less than two attributes!");
 
             Description description = label == null ?
                 new Description { Features = items.OrderBy(c => c.Name).ToArray() } :

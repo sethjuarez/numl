@@ -30,7 +30,7 @@ namespace numl.Supervised
     {
         public Node Tree { get; set; }
         public double Hint { get; set; }
-        public Description Description { get; set; }
+        public LabeledDescription Description { get; set; }
         public DecisionTreeModel()
         {
             // no hint

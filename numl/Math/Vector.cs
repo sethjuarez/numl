@@ -37,6 +37,7 @@ namespace numl.Math
     {
         private double[] _vector;
         private bool _asMatrixRef;
+        private readonly bool _asCol;
         private double[][] _matrix = null;
         private int _staticIdx = -1;
 
@@ -259,15 +260,6 @@ namespace numl.Math
                     total += this[i];
             return total;
         }
-
-
-        //public double Aggregate(Func<double, double, double> f, double initial = 0)
-        //{
-        //    var agg = initial;
-        //    for (int i = 0; i < Length; i++)
-        //        agg = f(agg, this[i]);
-        //    return agg;
-        //}
         
         //----------------- Xml Serialization
         public XmlSchema GetSchema()
@@ -311,6 +303,20 @@ namespace numl.Math
         }
 
         //----------------- Static
+        public static Matrix Outer(Vector x, Vector y)
+        {
+            if (x.Length != y.Length)
+                throw new InvalidOperationException("Dimensions do not match!");
+
+            int n = x.Length;
+            Matrix m = new Matrix(n);
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
+                    m[i, j] = x[i] * y[j];
+
+            return m;
+        }
+
         public static Vector Exp(Vector v)
         {
             return Calc(v, d => System.Math.Exp(d));
@@ -635,16 +641,14 @@ namespace numl.Math
             return one.Each(d => System.Math.Pow(d, power));
         }
 
-        private readonly bool _asCol;
         public static readonly Vector Empty = new[] { 0 };
-
 
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder("[");
             for (int i = 0; i < Length; i++)
             {
-                sb.Append(this[i].ToString("F8"));
+                sb.Append(this[i].ToString("F4"));
                 if (i < Length - 1)
                     sb.Append(", ");
             }

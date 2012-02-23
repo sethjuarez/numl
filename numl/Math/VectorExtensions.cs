@@ -29,6 +29,11 @@ namespace numl.Math
 {
     public static class VectorExtensions
     {
+        public static Matrix Outer(this Vector x, Vector y)
+        {
+            return Vector.Outer(x, y);
+        }
+
         public static Vector Each(this Vector v, Func<double, double> transform, bool asCopy = false)
         {
             Vector vector = v;

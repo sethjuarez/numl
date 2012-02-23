@@ -156,7 +156,7 @@ namespace numl.Model
             foreach (object o in examples)
             {
                 // get proper string
-                s = (string)Convert.GetItem(o, property.Name);
+                s = (string)NConvert.GetItem(o, property.Name);
 
                 if (property.SplitType == StringSplitType.Character)
                 {

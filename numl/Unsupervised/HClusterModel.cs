@@ -37,25 +37,34 @@ namespace numl.Unsupervised
 
         public Cluster Generate(Description desc, IEnumerable<object> examples, ILinker linker)
         {
+            // Load data 
+            var exampleArray = examples.ToArray();
+            Description = desc;
+            Matrix X = examples.ToMatrix(Description);
+
+            return GenerateClustering(X, linker, exampleArray);
+        }
+
+        public Cluster Generate(Matrix x, ILinker linker)
+        {
+            return GenerateClustering(x, linker);
+        }
+
+        private Cluster GenerateClustering(Matrix X, ILinker linker, object[] data = null)
+        {
             // Initialize
             Linker = linker;
 
             var clusters = new List<Cluster>();
             var distances = new Dictionary<Tuple<int, int>, double>();
 
-            // Load data 
-            var ie = examples.ToArray();
-            Description = desc;
-            Matrix X = examples.ToMatrix(Description);
-
             // Create a new cluster for each data point
-
             for (int i = 0; i < X.Rows; i++)
                 clusters.Add(new Cluster
                 {
                     Id = i,
                     Points = new Vector[] { X[i, VectorType.Row] },
-                    Members = new object[] { ie[i] }
+                    Members = data != null ? new object[] { data[i] } : new object[] { X[i, VectorType.Row] }
                 });
 
             // Set the current closest distance/pair to the first pair of clusters
@@ -91,7 +100,7 @@ namespace numl.Unsupervised
                     }
                 }
 
-                // does this matter??
+                // order clusters by distance
                 var min = System.Math.Min(closestClusters.Item1, closestClusters.Item2);
                 var max = System.Math.Max(closestClusters.Item1, closestClusters.Item2);
 

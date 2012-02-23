@@ -71,5 +71,13 @@ namespace numl.Tests
 
             var o = matrix.ToString();
         }
+
+        [Test]
+        public void Test_Product_Vector()
+        {
+            Vector x = new[] { 1, 2, 3, 4, 5, 6 };
+            var result = x.Aggregate(1d, (a, i) => a *= i);
+            Assert.AreEqual(1 * 2 * 3 * 4 * 5 * 6, result);
+        }
     }
 }

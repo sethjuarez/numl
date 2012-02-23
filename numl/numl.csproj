@@ -82,7 +82,7 @@
     <Compile Include="Attributes\StringFeatureAttribute.cs" />
     <Compile Include="Attributes\StringLabelAttribute.cs" />
     <Compile Include="Model\LabeledDescription.cs" />
-    <Compile Include="Convert.cs" />
+    <Compile Include="NConvert.cs" />
     <Compile Include="Exceptions\InvalidDescriptionException.cs" />
     <Compile Include="Learner.cs" />
     <Compile Include="Model\Description.cs" />

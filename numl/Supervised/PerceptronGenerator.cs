@@ -32,7 +32,7 @@ namespace numl.Supervised
         public LabeledDescription Description { get; set; }
         public bool Normalize { get; set; }
 
-        public PerceptronGenerator(bool normalize = true)
+        public PerceptronGenerator(bool normalize = false)
         {
             Normalize = normalize;
         }

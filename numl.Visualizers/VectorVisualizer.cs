@@ -9,7 +9,7 @@ using numl.Math;
     assembly: System.Diagnostics.DebuggerVisualizer(
     typeof(numl.Visualizers.VectorVisualizer),
     typeof(VisualizerObjectSource),
-    Target = typeof(Matrix),
+    Target = typeof(Vector),
     Description = "Vector Visualizer")
 ]
 namespace numl.Visualizers

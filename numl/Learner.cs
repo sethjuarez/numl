@@ -16,12 +16,27 @@ namespace numl
         public IModel[] Models { get; private set; }
         public Vector Accuracy { get; private set; }
 
+        public virtual Tuple<IGenerator, IModel, double> this[int i]
+        {
+            get
+            {
+                return new Tuple<IGenerator, IModel, double>(Generators[i], Models[i], Accuracy[i]);
+            }
+        }
+
         public Learner(params IGenerator[] generators)
         {
             MLRandom.SetSeedFromSystemTime();
             Generators = generators;
         }
 
+        /// <summary>
+        /// Given the labeled description, this method creates models for
+        /// each generator provided in the ctor using an 80/20 training/test
+        /// slice
+        /// </summary>
+        /// <param name="description"></param>
+        /// <param name="examples"></param>
         public void Learn(LabeledDescription description, IEnumerable<object> examples)
         {
             var total = examples.Count();
@@ -61,8 +76,8 @@ namespace numl
                 Accuracy[i] = 0;
                 for (int j = 0; j < test.Length; j++)
                 {
-                    var truth = Convert.GetItem(test[j], description.Label.Name);
-                    double truthValue = Convert.ConvertObject(truth);
+                    var truth = NConvert.GetItem(test[j], description.Label.Name);
+                    double truthValue = NConvert.ConvertObject(truth);
 
                     var pred = Models[i].Predict(test[j].ToVector(description));
 

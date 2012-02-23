@@ -8,6 +8,8 @@ namespace numl.Unsupervised
 {
     public class PCA
     {
+        public Vector Eigenvalues { get; private set; }
+        public Matrix Eigenvectors { get; private set; }
         public void Generate(Matrix matrix)
         {
             // generate centered covariance matrix
@@ -19,9 +21,8 @@ namespace numl.Unsupervised
             
             // compute eigen-decomposition
             var eigs = cov.Eigs();
-            var D = eigs.Item1;
-            var V = eigs.Item2;
-
+            Eigenvalues = eigs.Item1;
+            Eigenvectors = eigs.Item2;
         }
     }
 }

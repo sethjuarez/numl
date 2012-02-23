@@ -32,6 +32,11 @@ namespace numl.Model
         public string Name { get; set; }
         public virtual ItemType Type { get; set; }
 
+        public override string ToString()
+        {
+            return string.Format("{0} ({1})", Name, Type);
+        }
+
         internal static ItemType FindItemType(Type t)
         {
             if (TypeDescriptor.GetConverter(t).CanConvertTo(typeof(double)))

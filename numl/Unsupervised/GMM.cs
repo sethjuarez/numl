@@ -39,23 +39,31 @@ namespace numl.Unsupervised
         {
             int n = X.Rows;
             int d = X.Cols;
+            
+            /***********************
+             * initialize parameters
+             ***********************/
+            // convergence params
+            var log_probability = 0d;
+            var probability_difference = double.MaxValue;
+            var mu_difference = double.MaxValue;
+
             // initialize centers with KMeans
             KMeans kmeans = new KMeans(Description);
             var data = kmeans.Generate(X, k);
             var asgn = data.Item2;
-            /***********************
-             * initialize parameters
-             ***********************/
             // tentative centers
             var mu_k = data.Item1;
+
             // initial covariances (stored as diag(cov) 1 of k)
-            var sg_k = new Matrix(d, k);
+            var sg_k = new Matrix(k, d);
             for (int i = 0; i < k; i++)
             {
                 var indices = asgn.Select((a, b) => new Tuple<int, int>(a, b)).Where(t => t.Item1 == i).Select(t => t.Item2);
                 var matrix = X.Slice(indices, VectorType.Row);
                 sg_k[i] = matrix.CovarianceDiag();
             }
+
             // mixing coefficient
             var pi_k = asgn
                         .OrderBy(i => i)
@@ -63,25 +71,97 @@ namespace numl.Unsupervised
                         .Select(g => (double)g.Count() / (double)asgn.Length)
                         .ToVector();
 
-            /***********************
-             * Expectation Step
-             ***********************/
-            // responsibilty matrix: how much is gaussian k responsible for this point x
-            var z_nk = new Matrix(n, k);
-            for (int i = 0; i < n; i++)
+            int max_iter = 100;
+            do
             {
-                //  pi_j * N(x_n | mu_j, sigma_j
-                for (int j = 0; j < k; j++)
-                    z_nk[i, j] = pi_k[j] * Normal(X[i], mu_k[j], sg_k[j]);
+                /***********************
+                 * Expectation Step
+                 ***********************/
+                // responsibilty matrix: how much is gaussian k responsible for this point x
+                var z_nk = new Matrix(n, k);
+                for (int i = 0; i < n; i++)
+                {
+                    //  pi_j * N(x_n | mu_j, sigma_j)
+                    for (int j = 0; j < k; j++)
+                        z_nk[i, j] = pi_k[j] * Normal(X[i], mu_k[j], sg_k[j]);
 
-                var denominator = z_nk[i].Sum();
-                z_nk[i].Each(z => z / denominator);
-            }
+                    var dn = z_nk[i].Sum();
+
+                    if(dn == 0)
+                        Console.WriteLine("Uh oh....");
+
+                    z_nk[i].Each(z => z / dn);
+                }
+
+                /***********************
+                 * Maximization Step
+                 ***********************/
+                var N_k = z_nk.Sum(VectorType.Row);
+
+                var mu_k_new = new Matrix(mu_k.Rows, mu_k.Cols);
+                for (int i = 0; i < k; i++)
+                {
+                    var sum = Vector.Zeros(d);
+                    for (int j = 0; j < n; j++)
+                        sum += z_nk[j, i] * X[j];
+                    mu_k_new[i] = sum / N_k[i];
+                }
+
+                var sg_k_new = new Matrix(k, d);
+                for (int i = 0; i < k; i++)
+                {
+                    var sum = Vector.Zeros(d);
+                    for (int j = 0; j < n; j++)
+                        sum += z_nk[j, i] * (X[j] - mu_k_new[i]).Each(s => s * s);
+                    sg_k_new[i] = sum / N_k[i];
+                }
+
+                var pi_k_new = N_k / n;
+
+                /***********************
+                 * Convergence Check
+                 ***********************/
+                var new_log_prob = 0d;
+                for (int i = 0; i < n; i++)
+                {
+                    var acc = 0d;
+                    //  pi_j * N(x_n | mu_j, sigma_j)
+                    for (int j = 0; j < k; j++)
+                        acc += pi_k[j] * Normal(X[i], mu_k[j], sg_k[j]);
+
+                    new_log_prob += System.Math.Log(acc, System.Math.E);
+                }
+
+                // log likelihood differences
+                probability_difference = System.Math.Abs(log_probability - new_log_prob);
+                Console.WriteLine("Log Likelihoods (Total Points: {0}, k={1}, d={2})\nO: {3}\nN: {4}\nDifference: {5}\n", n, k, d, log_probability, new_log_prob, probability_difference);
+                log_probability = new_log_prob;
 
 
-            /***********************
-             * Maximization Step
-             ***********************/
+                // centers differences
+                mu_difference = mu_k.GetRows()
+                            .Zip(mu_k_new.GetRows(), (v1, v2) => new { V1 = v1, V2 = v2 })
+                            .Sum(a => Vector.NormDiff(a.V1, a.V2));
+
+                Console.WriteLine("Centers:\nO: {0}\nN: {1}\nDifference: {2}\n", mu_k, mu_k_new, mu_difference);
+                mu_k = mu_k_new;
+
+                // covariance differences
+                var diff = sg_k.GetRows()
+                            .Zip(sg_k_new.GetRows(), (v1, v2) => new { V1 = v1, V2 = v2 })
+                            .Sum(a => Vector.NormDiff(a.V1, a.V2));
+
+                Console.WriteLine("Covariance:\nO: {0}\nN: {1}\nDifference: {2}\n", sg_k, sg_k_new, diff);
+                sg_k = sg_k_new;
+
+                // mixing differences
+                diff = (pi_k - pi_k_new).Each(s => System.Math.Abs(s)).Sum();
+                Console.WriteLine("Mixing Coeffs:\nO: {0}\nN: {1}\nDifference: {2}\n", pi_k, pi_k_new, diff);
+                pi_k = pi_k_new;
+
+                Console.WriteLine("-------------------------------------------------------------");
+
+            } while (probability_difference > .0000000001 && mu_difference > .0000000001 && --max_iter >= 0);
         }
 
         /// <summary>
@@ -94,9 +174,10 @@ namespace numl.Unsupervised
         private double Normal(Vector x, Vector mu, Vector sigma)
         {
             // 1 / (2pi)^(2/D) where D = length of sigma
-            var one_over_2pi = 1 / System.Math.Pow(2 * System.Math.PI, 2d / sigma.Length);
+            var one_over_2pi = 1 / System.Math.Pow(2 * System.Math.PI, 2 / sigma.Length);
 
             // 1 / sqrt(det(sigma)) where det(sigma) is the product of the diagonals
+            
             var one_over_det_sigma = System.Math.Sqrt(sigma.Aggregate(1d, (a, i) => a *= i));
 
             // -.5 (x-mu).T sigma^-1 (x-mu) I have taken some liberties ;)
@@ -104,8 +185,10 @@ namespace numl.Unsupervised
 
             // e^(exp)
             var e_exp = System.Math.Pow(System.Math.E, exp);
+            
+            var result = one_over_2pi * one_over_det_sigma * e_exp;
 
-            return one_over_2pi * one_over_det_sigma * e_exp;
+            return result;
         }
     }
 }

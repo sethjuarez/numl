@@ -51,11 +51,15 @@ namespace numl.Visualizers
             for (int i = 0; i < _x.Rows; i++)
                 for (int j = 0; j < _x.Cols; j++)
                     gridData.Rows[i].Cells[j].Value = _x[i, j];
+
+            labelCoordinates.Text = string.Format("({0}, {1}) = {2}",
+                                                        0,
+                                                        0,
+                                                        GetValue(0, 0));
         }
 
         private void BindVector()
         {
-            gridData.BeginEdit(false);
             gridData.Columns.Clear();
             gridData.Columns.Add("0", "0");
             gridData.Columns[0].Width = 160;
@@ -64,12 +68,24 @@ namespace numl.Visualizers
 
             for(int i = 0; i < _v.Length; i++)
                 gridData.Rows[i].Cells[0].Value = _v[i];
-            gridData.EndEdit();
+
+            labelCoordinates.Text = string.Format("({0}, {1}) = {2}",
+                                                        0,
+                                                        0,
+                                                        GetValue(0, 0));
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private double GetValue(int row, int col)
+        {
+            if (_x == null)
+                return _v[row];
+            else
+                return _x[row, col];
         }
 
         private void gridData_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -91,6 +107,14 @@ namespace numl.Visualizers
                 else
                     gridData.Rows[e.RowIndex].Cells[e.ColumnIndex].Value =_x[e.RowIndex, e.ColumnIndex];
             }
+        }
+
+        private void gridData_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            labelCoordinates.Text = string.Format("({0}, {1}) = {2}", 
+                                                        e.RowIndex, 
+                                                        e.ColumnIndex, 
+                                                        GetValue(e.RowIndex, e.ColumnIndex));
         }
     }
 }

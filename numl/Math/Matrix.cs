@@ -503,7 +503,7 @@ namespace numl.Math
 
         /// <summary>
         /// Generate a matrix n x d with numbers
-        /// 0 &lt; x &lt 1 drawn uniformly at
+        /// 0 less than x less than 1 drawn uniformly at
         /// random
         /// </summary>
         /// <param name="n">rows</param>
@@ -530,6 +530,24 @@ namespace numl.Math
                 m[i] = new double[d];
                 for (int j = 0; j < d; j++)
                     m[i][j] = MLRandom.GetNormal() + min;
+            }
+
+            return new Matrix { _matrix = m, _asTransposeRef = false, Cols = d, Rows = n };
+        }
+
+        public static Matrix NormRand(Vector means, Vector stdDev, int n)
+        {
+            if (means.Length != stdDev.Length)
+                throw new InvalidOperationException("Invalid Dimensionality");
+
+            int d = means.Length;
+            var m = new double[n][];
+            
+            for (int i = 0; i < n; i++)
+            {
+                m[i] = new double[d];
+                for (int j = 0; j < d; j++)
+                    m[i][j] = MLRandom.GetNormal(means[j], stdDev[j]);
             }
 
             return new Matrix { _matrix = m, _asTransposeRef = false, Cols = d, Rows = n };
