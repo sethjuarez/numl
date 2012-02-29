@@ -30,12 +30,13 @@ namespace numl.Supervised
     public class LinearRegressionGenerator : IGenerator
     {
         public LabeledDescription Description { get; set; }
-        
         public IModel Generate(LabeledDescription description, IEnumerable<object> examples)
         {
             Description = description;
             var data = examples.ToExamples(Description);
-            return Generate(data.Item1, data.Item2);
+            var model = Generate(data.Item1, data.Item2);
+            model.Description = Description;
+            return model;
         }
 
         public IModel Generate(Matrix x, Vector y)

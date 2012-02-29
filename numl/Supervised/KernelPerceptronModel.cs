@@ -23,12 +23,14 @@
 using System;
 using numl.Math;
 using System.Xml.Serialization;
+using numl.Model;
 
 namespace numl.Supervised
 {
     [XmlRoot("KernelPerceptron")]
     public class KernelPerceptronModel : IModel
     {
+        public LabeledDescription Description { get; set; }
         public KernelType Type { get; set; }
         public double Param { get; set; }
         public Matrix X { get; set; }

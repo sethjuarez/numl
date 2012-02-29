@@ -46,6 +46,12 @@ namespace numl.Math
             return v;
         }
 
+        public static IEnumerable<double> Reverse(this Vector v)
+        {
+            for (int i = v.Length - 1; i > -1; i--)
+                yield return v[i];
+        }
+
         public static Vector ToVector(this double[] array)
         {
             return new Vector(array);
@@ -57,15 +63,17 @@ namespace numl.Math
             if (c == 0)
                 throw new InvalidOperationException("Cannot create matrix from an empty set.");
 
-            Matrix m = new Matrix(c, source.First().Length);
             var i = 0;
+            double[][] m = new double[c][];
             foreach (var v in source)
             {
-                m[i, VectorType.Row] = v;
+                m[i] = new double[v.Length];
+                for (int j = 0; j < v.Length; j++)
+                    m[i][j] = v[j];
                 i++;
             }
 
-            return m;
+            return new Matrix(m);
         }
 
         public static Matrix ToMatrix(this IEnumerable<double[]> e)

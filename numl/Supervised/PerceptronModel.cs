@@ -22,11 +22,13 @@
 
 using System;
 using numl.Math;
+using numl.Model;
 
 namespace numl.Supervised
 {
     public class PerceptronModel : IModel
     {
+        public LabeledDescription Description { get; set; }
         public Vector W { get; set; }
         public double B { get; set; }
         public bool Normalized { get; set; } 

@@ -51,9 +51,9 @@ namespace numl.Unsupervised
             // initialize centers with KMeans
             KMeans kmeans = new KMeans(Description);
             var data = kmeans.Generate(X, k);
-            var asgn = data.Item2;
+            var asgn = data;
             // tentative centers
-            var mu_k = data.Item1;
+            var mu_k = kmeans.Centers;
 
             // initial covariances (stored as diag(cov) 1 of k)
             var sg_k = new Matrix(k, d);

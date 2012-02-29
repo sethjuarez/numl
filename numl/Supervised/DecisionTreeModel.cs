@@ -28,9 +28,10 @@ namespace numl.Supervised
 {
     public class DecisionTreeModel : IModel
     {
+        public LabeledDescription Description { get; set; }
         public Node Tree { get; set; }
         public double Hint { get; set; }
-        public LabeledDescription Description { get; set; }
+
         public DecisionTreeModel()
         {
             // no hint

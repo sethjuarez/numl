@@ -7,6 +7,7 @@ using numl.Math;
 using numl.Model;
 using System.Threading.Tasks;
 using numl.Math.Probability;
+using System.Collections;
 
 namespace numl
 {
@@ -58,15 +59,20 @@ namespace numl
             var x_t = x.Slice(trainingSlice, VectorType.Row);
             var y_t = y.Slice(trainingSlice);
 
-            Models = new IModel[Models.Length];
+            foreach (IGenerator generator in Generators)
+                generator.Description = description;
+
+            Models = new IModel[Generators.Length];
 
             // run in parallel since they all have 
             // read-only references to the data model
             // and update independently to different
             // spots
             Parallel.For(0, Models.Length, i =>
-                Models[i] = Generators[i].Generate(x_t, y_t)
-            );
+            {
+                Models[i] = Generators[i].Generate(x_t, y_t);
+                Models[i].Description = description;
+            });
 
             // testing            
             object[] test = GetTestExamples(testingSlice, examples);
@@ -76,13 +82,17 @@ namespace numl
                 Accuracy[i] = 0;
                 for (int j = 0; j < test.Length; j++)
                 {
-                    var truth = NConvert.GetItem(test[j], description.Label.Name);
-                    double truthValue = NConvert.ConvertObject(truth);
-
-                    var pred = Models[i].Predict(test[j].ToVector(description));
-
-                    if (System.Math.Round(truthValue, 4) == System.Math.Round(pred, 4))
+                    var truth = NConvert.GetPropertyValue(test[j], description.Label.Name);
+                    var p = Models[i].Predict(test[j].ToVector(description));
+                    // set prediction
+                    NConvert.SetItem(test[j], description.Label, p, test[j].GetType());
+                    // get prediction
+                    var pred = NConvert.GetPropertyValue(test[j], description.Label.Name);
+                    if (truth.Equals(pred))
                         Accuracy[i] += 1;
+                    // put it back to the way it was
+                    NConvert.SetPropertyValue(test[j], description.Label.Name, truth);
+
                 }
 
                 Accuracy[i] /= test.Length;

@@ -43,12 +43,13 @@ namespace numl.Supervised
         {
             Description = description;
             var data = examples.ToExamples(Description);
-            return Generate(data.Item1, data.Item2);
+            var model = Generate(data.Item1, data.Item2);
+            model.Description = Description;
+            return model;
         }
 
         public IModel Generate(Matrix x, Vector y)
         {
-
             int N = y.Length;
             Vector a = Vector.Zeros(N);
             Matrix K = GetKernel(x);

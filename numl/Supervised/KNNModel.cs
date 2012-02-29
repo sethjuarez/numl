@@ -23,11 +23,13 @@
 using System;
 using numl.Math;
 using System.Linq;
+using numl.Model;
 
 namespace numl.Supervised
 {
     public class KNNModel : IModel
     {
+        public LabeledDescription Description { get; set; }
         public int K { get; set; }
         public Matrix X { get; set; }
         public Vector Y { get; set; }

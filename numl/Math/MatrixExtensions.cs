@@ -134,6 +134,13 @@ namespace numl.Math
             return m;
         }
 
+        public static IEnumerable<Vector> Reverse(this Matrix source, VectorType t = VectorType.Row)
+        {
+            int length = t == VectorType.Row ? source.Rows : source.Cols;
+            for (int i = length - 1; i > -1; i--)
+                yield return source[i, t];
+        }
+
         public static IEnumerable<int> Indices(this Matrix source, Func<Vector, bool> f, VectorType t)
         {
             int max = t == VectorType.Row ? source.Rows : source.Cols;

@@ -24,11 +24,13 @@ using System;
 using numl.Math;
 using System.Linq;
 using System.Collections.Generic;
+using numl.Model;
 
 namespace numl.Supervised
 {
     public interface IModel
     {
         double Predict(Vector y);
+        LabeledDescription Description { get; set; }
     }
 }

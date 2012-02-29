@@ -47,7 +47,7 @@ namespace numl.Unsupervised
             Description = description;
         }
 
-        public Tuple<Matrix, int[]> Generate(Matrix X, int k, IDistance metric = null)
+        public int[] Generate(Matrix X, int k, IDistance metric = null)
         {
             if (metric == null)
                 metric = new EuclidianDistance();
@@ -106,7 +106,9 @@ namespace numl.Unsupervised
                 means = new_means;
             }
 
-            return new Tuple<Matrix, int[]>(means, assignments);
+            Centers = means;
+
+            return assignments;
         }
 
         public int[] Generate(IEnumerable<object> examples, int k, IDistance metric = null)
@@ -128,11 +130,9 @@ namespace numl.Unsupervised
             #endregion
 
             Matrix X = examples.ToMatrix(Description);
-
             var data = Generate(X, k, metric);
-
-            Centers = data.Item1;
-            return data.Item2;
+            // center set by previous method Centers = data.Item1;
+            return data;
         }
 
         private Matrix InitializeUniform(Matrix X, int k)

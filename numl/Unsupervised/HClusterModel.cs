@@ -78,6 +78,7 @@ namespace numl.Unsupervised
                 var closestClusters = new Tuple<int, int>(0, 1);
                 var smallestDistance = Linker.Distance(clusters[0].Points, clusters[1].Points);
 
+                // this needs to be parallelized....
                 // Loop through each of the clusters looking for the two closest
                 for (int i = 0; i < clusters.Count; i++)
                 {

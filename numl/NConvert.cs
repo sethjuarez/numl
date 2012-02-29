@@ -30,6 +30,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Reflection;
 using numl.Attributes;
+using numl.Supervised;
 
 namespace numl
 {
@@ -127,10 +128,10 @@ namespace numl
                         .Where(p => !(p is StringProperty)).Count() +
                     features
                         .Where(p => p is StringProperty)
-                        .Aggregate(0, (no, p) => 
+                        .Aggregate(0, (no, p) =>
                             {
                                 var sp = (p as StringProperty);
-                                if(sp.AsEnum)
+                                if (sp.AsEnum)
                                     no += 1;
                                 else
                                     no += sp.Dictionary.Length;
@@ -143,7 +144,7 @@ namespace numl
             int i = -1;
             foreach (var f in features)
             {
-                object val = GetItem(o, f.Name);
+                object val = GetPropertyValue(o, f.Name);
                 if (f is StringProperty)
                 {
                     StringProperty sf = (StringProperty)f;
@@ -210,7 +211,7 @@ namespace numl
                 j = -1;
                 foreach (var f in features)
                 {
-                    object val = GetItem(o, f.Name);
+                    object val = GetPropertyValue(o, f.Name);
                     if (f is StringProperty)
                     {
                         StringProperty sf = (StringProperty)f;
@@ -285,7 +286,7 @@ namespace numl
                 j = -1;
                 foreach (var f in features)
                 {
-                    object val = GetItem(o, f.Name);
+                    object val = GetPropertyValue(o, f.Name);
                     if (f is StringProperty)
                     {
                         StringProperty sf = (StringProperty)f;
@@ -302,7 +303,7 @@ namespace numl
                         matrix[i][++j] = ConvertObject(val);
                 }
 
-                object yval = GetItem(o, description.Label.Name);
+                object yval = GetPropertyValue(o, description.Label.Name);
                 if (description.Label is StringProperty)
                     y[i] = (double)StringHelpers.GetWordPosition((string)yval, (StringProperty)description.Label);
                 else
@@ -313,14 +314,54 @@ namespace numl
             return new Tuple<Matrix, Vector>(new Matrix(matrix), y);
         }
 
+        public static T Predict<T>(this IModel model, T o)
+        {
+            Vector y = o.ToVector(model.Description);
+            double value = model.Predict(y);
+            return SetItem(o, model.Description.Label, value);
+        }
+
+
         #region Internal Conversion Utility Methods
+        internal static void SetItem(object o, Property label, double value, Type oType)
+        {
+            var p = oType.GetProperty(label.Name);
+            switch (label.Type)
+            {
+                case ItemType.Boolean:
+                    p.SetValue(o, value > 0, null);
+                    break;
+                case ItemType.Numeric:
+                    p.SetValue(o, Convert.ChangeType(value, p.PropertyType), null);
+                    break;
+                case ItemType.Enumeration:
+                    var numericValue = Convert.ChangeType(value, System.Enum.GetUnderlyingType(p.PropertyType));
+                    object enumValue = System.Enum.ToObject(p.PropertyType, numericValue);
+                    p.SetValue(o, enumValue, null);
+                    break;
+                case ItemType.String:
+                    if (!(label is StringProperty))
+                        throw new InvalidOperationException("Type property mismatch!");
+                    string s = (label as StringProperty).Dictionary[(int)value];
+                    p.SetValue(o, s, null);
+                    break;
+            }
+        }
+
+        internal static T SetItem<T>(T o, Property label, double value)
+        {
+            Type oType = typeof(T);
+            SetItem(o, label, value, oType);
+            return o;
+        }
+
         /// <summary>
         /// Get a property or dictionary value in an object by name
         /// </summary>
         /// <param name="o">object</param>
         /// <param name="name">key</param>
         /// <returns>value of keyed item</returns>
-        internal static object GetItem(object o, string name)
+        public static object GetPropertyValue(object o, string name)
         {
             var type = o.GetType();
             object val = null;
@@ -339,6 +380,25 @@ namespace numl
                 val = prop.GetValue(o, new object[] { });
 
             return val;
+        }
+
+
+        public static void SetPropertyValue(object o, string name, object value)
+        {
+            var type = o.GetType();
+            var prop = type.GetProperty(name);
+            if (prop == null)
+            {
+                // treat as string indexable for objects with
+                // o["Feature"] type sets.
+                var method = type.GetMethod("set_Item", new Type[] { typeof(string), typeof(object) });
+                if (method == null)
+                    throw new InvalidOperationException(string.Format("Could not find a property named \"{0}\" in containing object.", name));
+
+                method.Invoke(o, new object[] { name, value });
+            }
+            else
+                prop.SetValue(o, value, new object[] { });
         }
 
         internal static double ConvertBoolPlusMinus(bool o)
