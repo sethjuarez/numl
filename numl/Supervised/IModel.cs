@@ -31,6 +31,8 @@ namespace numl.Supervised
     public interface IModel
     {
         double Predict(Vector y);
+        T Predict<T>(T o);
+        object Predict(object o);
         LabeledDescription Description { get; set; }
     }
 }

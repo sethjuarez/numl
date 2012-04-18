@@ -82,17 +82,22 @@ namespace numl
                 Accuracy[i] = 0;
                 for (int j = 0; j < test.Length; j++)
                 {
-                    var truth = NConvert.GetPropertyValue(test[j], description.Label.Name);
-                    var p = Models[i].Predict(test[j].ToVector(description));
+                    var truth = R.Get(test[j], description.Label.Name);
+
+                    var features = description.ToVector(test[j]);
+                    var p = Models[i].Predict(features);
+
                     // set prediction
-                    NConvert.SetItem(test[j], description.Label, p, test[j].GetType());
+                    Models[i].Predict(test[j]);
+
                     // get prediction
-                    var pred = NConvert.GetPropertyValue(test[j], description.Label.Name);
+                    var pred = R.Get(test[j], description.Label.Name);
+
                     if (truth.Equals(pred))
                         Accuracy[i] += 1;
-                    // put it back to the way it was
-                    NConvert.SetPropertyValue(test[j], description.Label.Name, truth);
 
+                    // put it back to the way it was
+                    R.Set(test[j], description.Label.Name, truth);
                 }
 
                 Accuracy[i] /= test.Length;

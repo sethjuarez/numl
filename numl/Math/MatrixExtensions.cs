@@ -23,6 +23,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using numl.Math.Information;
 
 namespace numl.Math
 {
@@ -42,6 +43,26 @@ namespace numl.Math
                         p[i, j] = m[i, j];
                     else
                         p[i, j] = t[i - m.Rows, j];
+                }
+            }
+
+            return p;
+        }
+
+        public static Matrix VStack(this Matrix m, Matrix t)
+        {
+            if (m.Rows != t.Rows)
+                throw new InvalidOperationException("Invalid dimension for stack operation!");
+
+            Matrix p = new Matrix(m.Rows, m.Cols + t.Cols);
+            for (int i = 0; i < p.Rows; i++)
+            {
+                for (int j = 0; j < p.Cols; j++)
+                {
+                    if (j < m.Cols)
+                        p[i, j] = m[i, j];
+                    else
+                        p[i, j] = t[i, j - m.Cols];
                 }
             }
 
@@ -91,7 +112,7 @@ namespace numl.Math
                     if (source[i, j] > max)
                         max = source[i, j];
 
-                    return max;
+            return max;
         }
 
         public static double Min(this Matrix source)
@@ -115,6 +136,24 @@ namespace numl.Math
             return m;
         }
 
+        public static Matrix Entropy(this Matrix source, VectorType t = VectorType.Column, int width = 10)
+        {
+            Entropy e = new Information.Entropy();
+            int length = t == VectorType.Row ? source.Rows : source.Cols;
+            Matrix m = new Matrix(length);
+            for (int i = 0; i < length; i++)
+                for (int j = 0; j < length; j++)
+                {
+                    e._y = source[i, t];
+                    e._x = source[j, t];
+                    var count = e._x.Distinct().Count();
+                    e._width = count > width ? 10 : width;
+                    e._relGain = -1;
+                    m[i, j] = e.RelativeGain(); // .CalculateConditional(source[i, t], source[j, t]);
+                }
+            return m;
+        }
+
         public static Vector CovarianceDiag(this Matrix source, VectorType t = VectorType.Column)
         {
             int length = t == VectorType.Row ? source.Rows : source.Cols;
@@ -131,6 +170,26 @@ namespace numl.Math
             for (int i = 0; i < length; i++)
                 for (int j = i; j < length; j++) // symmetric matrix
                     m[i, j] = m[j, i] = source[i, t].Correlation(source[j, t]);
+            return m;
+        }
+
+        public static Matrix Statistics(this Matrix source, VectorType t = VectorType.Column)
+        {
+            int length = t == VectorType.Row ? source.Rows : source.Cols;
+            Matrix m = new Matrix(length, 5);
+
+            for (int i = 0; i < length; i++)
+            {
+                m[i, VectorType.Row] = new[] 
+                { 
+                    source[i, t].Distinct().Count(), 
+                    source[i, t].Mean(), 
+                    source[i, t].StdDev(),
+                    source[i, t].Stats()[2, VectorType.Column].Max(),
+                    source[i, t].Entropy()
+                };
+            }
+
             return m;
         }
 
@@ -167,7 +226,7 @@ namespace numl.Math
             Matrix m2 = Matrix.Zeros(height, width);
             for (int i = y; i < y + height; i++)
                 for (int j = x; j < x + width; j++)
-                    if(safe && i < m.Rows && j < m.Cols)
+                    if (safe && i < m.Rows && j < m.Cols)
                         m2[i - y, j - x] = m[i, j];
 
             return m2;

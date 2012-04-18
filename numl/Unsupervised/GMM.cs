@@ -29,7 +29,7 @@ namespace numl.Unsupervised
             #endregion
 
             // Extract data
-            Matrix X = examples.ToMatrix(Description);
+            Matrix X = Description.ToMatrix(examples);
 
             // generate model
             Generate(X, k);

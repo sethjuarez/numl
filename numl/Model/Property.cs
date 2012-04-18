@@ -24,40 +24,60 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
+using System.Text;
 
 namespace numl.Model
 {
     public class Property
     {
+        public Property()
+        {
+            Start = -1;
+        }
+        /// <summary>
+        /// Property name that maps to object
+        /// </summary>
         public string Name { get; set; }
-        public virtual ItemType Type { get; set; }
+
+        /// <summary>
+        /// Property Type
+        /// </summary>
+        public Type Type { get; set; }
+
+        /// <summary>
+        /// Numeric value counts produced by property
+        /// </summary>
+        public virtual int Length { get { return 1; } }
+
+        /// <summary>
+        /// Offset into feature vector
+        /// </summary>
+        public int Start { get; set; }
+
+        public virtual double[] ToArray(object o)
+        {
+            return new[] { Convert(o) };
+        }
+
+        public virtual double Convert(object o)
+        {
+            return R.Convert(o);
+        }
+
+        public virtual object Convert(double val)
+        {
+            return R.Convert(val, Type);
+        }
 
         public override string ToString()
         {
-            return string.Format("{0} ({1})", Name, Type);
+            return string.Format("{0} ({1})", Name, Type.Name);
         }
 
-        internal static ItemType FindItemType(Type t)
-        {
-            if (TypeDescriptor.GetConverter(t).CanConvertTo(typeof(double)))
-                return ItemType.Numeric;
-            else
-            {
-                if (t == typeof(string) || t == typeof(char))
-                    return ItemType.String;
-                else if (t == typeof(bool))
-                    return ItemType.Boolean;
-                else if (t.BaseType == typeof(Enum))
-                    return ItemType.Enumeration;
-                else
-                    throw new InvalidCastException(string.Format("{0} is an invalid integral type and cannot be used as a property.", t));
-            }
-        }
-
-        internal static ItemType FindItemType(object o)
-        {
-            Type t = o.GetType();
-            return FindItemType(t);
-        }
+        /// <summary>
+        /// General purpose property storage
+        /// (will not get serialized)
+        /// </summary>
+        public object Tag { get; set; }
     }
 }

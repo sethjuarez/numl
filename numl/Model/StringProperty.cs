@@ -28,6 +28,18 @@ using System.IO;
 
 namespace numl.Model
 {
+    public enum StringSplitType
+    {
+        /// <summary>
+        /// Split string into corresponding characters
+        /// </summary>
+        Character,
+        /// <summary>
+        /// Split string into corresponding words
+        /// </summary>
+        Word
+    }
+
     public class StringProperty : Property
     {
         public StringProperty()
@@ -38,6 +50,7 @@ namespace numl.Model
             Dictionary = new string[] { };
             Exclude = new string[] { };
             AsEnum = false;
+            Type = typeof(string);
         }
 
         public string Separator { get; set; }
@@ -46,17 +59,45 @@ namespace numl.Model
         public string[] Exclude { get; set; }
         public bool AsEnum { get; set; }
 
-        // can *only* be a string
-        public override ItemType Type
+        public override int Length
         {
             get
             {
-                return ItemType.String;
+                if (AsEnum)
+                    return 1;
+                else
+                    return Dictionary.Length;
             }
-            set
-            {
-                ;
-            }
+        }
+
+        public override double[] ToArray(object o)
+        {
+            if (Dictionary == null || Dictionary.Length == 0)
+                throw new InvalidOperationException(string.Format("{0} dictionaries do not exist.", Name));
+
+            if (AsEnum)
+                return new[] { Convert(o) };
+            else
+                return StringHelpers.GetWordCount(o.ToString(), this);
+        }
+
+        public override double Convert(object o)
+        {
+            if (Dictionary == null || Dictionary.Length == 0)
+                throw new InvalidOperationException(string.Format("{0} dictionaries do not exist.", Name));
+
+            if (AsEnum)
+                return (double)StringHelpers.GetWordPosition(o.ToString(), this);
+            else
+                throw new InvalidCastException(string.Format("Cannot compress {0} to a single double", Name));
+        }
+
+        public override object Convert(double val)
+        {
+            if (AsEnum)
+                return Dictionary[(int)val];
+            else
+                throw new InvalidCastException(string.Format("Cannot exand {0} to a string", val));
         }
 
         public void ImportExclusions(string file)

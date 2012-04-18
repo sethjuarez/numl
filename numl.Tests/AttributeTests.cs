@@ -14,8 +14,7 @@ namespace numl.Tests
         [Test]
         public void Test_Fake1_Attributes()
         {
-            var description = NConvert.ToDescription<Fake1>();
-
+            var description = Description.Create<Fake1>();
             Assert.IsTrue(description is LabeledDescription);
         }
     }

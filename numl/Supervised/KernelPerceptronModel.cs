@@ -47,6 +47,20 @@ namespace numl.Supervised
             return v;
         }
 
+        public object Predict(object o)
+        {
+            var label = Description.Label;
+            var pred = Predict(Description.ToVector(o));
+            var val = R.Convert(pred, label.Type);
+            R.Set(o, label.Name, val);
+            return o;
+        }
+
+        public T Predict<T>(T o)
+        {
+            return (T)Predict((object)o);
+        }
+
         private Vector GetKernel(Vector x)
         {
             Vector K = Vector.Zeros(1);

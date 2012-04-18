@@ -21,12 +21,86 @@
 */
 
 using System;
+using numl.Math;
+using System.Linq;
 using System.Xml.Serialization;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace numl.Model
 {
     public class LabeledDescription : Description
     {
         public Property Label { get; set; }
+
+        public override Property this[int i]
+        {
+            get
+            {
+                if (i > -1 && i < Features.Length)
+                    return Features[i];
+                else if (i == Features.Length)
+                    return Label;
+                else
+                    throw new IndexOutOfRangeException();
+            }
+        }
+
+        public override int Length
+        {
+            get
+            {
+                // last element is label
+                return base.Length + 1;
+            }
+        }
+
+        public override bool Verify()
+        {
+            if (Label == null)
+                return false;
+
+            if (Label is StringProperty)
+            {
+                StringProperty p = (StringProperty)Label;
+                if (p.Dictionary == null || p.Dictionary.Length == 0)
+                    return false;
+            }
+
+            return base.Verify();
+        }
+
+        public Tuple<Matrix, Vector> ToExamples(IEnumerable<object> collection)
+        {
+            // number of examples
+            int n = collection.Count();
+            Vector y = new Vector(n);
+
+            double[][] matrix = new double[n][];
+
+            int i = -1;
+            foreach (object o in collection)
+            {
+                matrix[++i] = CreateFeatureArray(o);
+                y[i] = Label.Convert(R.Get(o, Label.Name));
+            }
+
+            return new Tuple<Matrix, Vector>(new Matrix(matrix), y);
+        }
+
+        public Tuple<Matrix, Vector> ToExamples(IEnumerable collection)
+        {
+            List<double[]> matrix = new List<double[]>();
+            List<double> y = new List<double>();
+            foreach (object o in collection)
+            {
+                matrix.Add(CreateFeatureArray(o));
+                y.Add(Label.ToArray(o)[0]);
+            }
+
+            return new Tuple<Matrix,Vector>(new Matrix(matrix.ToArray()), new Vector(y.ToArray()));
+        }
+
+
     }
 }

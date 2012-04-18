@@ -153,7 +153,7 @@ namespace numl.Math.Information
             return result;
         }
 
-        private double _gain = -1;
+        internal double _gain = -1;
         public double Gain()
         {
             if (_x == null && _y == null)
@@ -165,7 +165,7 @@ namespace numl.Math.Information
             return _gain;
         }
 
-        private double _relGain = -1;
+        internal double _relGain = -1;
         public double RelativeGain()
         {
             if (_x == null && _y == null)

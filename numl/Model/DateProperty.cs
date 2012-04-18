@@ -1,4 +1,4 @@
-/*
+﻿/*
  Copyright (c) 2012 Seth Juarez
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,12 +23,40 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace numl.Model
 {
-    public enum StringSplitType
-    {
-        Character,
-        Word
-    }
+	public class DateProperty : Property
+	{
+		public override int Length
+		{
+			get
+			{
+				return 8;
+			}
+		}
+
+		public override double[] ToArray(object o)
+		{
+			if (o is DateTime)
+			{
+				DateTime d = (DateTime)o;
+				return new double[] { d.Year, d.Month, d.Day, d.Hour, d.Minute, d.Second, (int)d.DayOfWeek, d.DayOfYear };
+			}
+			else
+				throw new InvalidOperationException("Invalid Date!");
+		}
+
+		public override double Convert(object o)
+		{
+			if (o is DateTime)
+			{
+				DateTime d = (DateTime)o;
+				return d.ToOADate();
+			}
+			else
+				throw new InvalidOperationException("Invalid Date!");
+		}
+	}
 }

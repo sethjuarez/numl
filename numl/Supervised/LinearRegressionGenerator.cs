@@ -33,7 +33,7 @@ namespace numl.Supervised
         public IModel Generate(LabeledDescription description, IEnumerable<object> examples)
         {
             Description = description;
-            var data = examples.ToExamples(Description);
+            var data = Description.ToExamples(examples);
             var model = Generate(data.Item1, data.Item2);
             model.Description = Description;
             return model;

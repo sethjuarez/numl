@@ -56,13 +56,16 @@
     <Compile Include="ConversionTests.cs" />
     <Compile Include="Data\Fake.cs" />
     <Compile Include="Data\Feed.cs" />
+    <Compile Include="Data\House.cs" />
     <Compile Include="Data\Student.cs" />
+    <Compile Include="DecisionTreeTests.cs" />
     <Compile Include="GMMTests.cs" />
     <Compile Include="ImpurityTests.cs" />
     <Compile Include="LanguageTests.cs" />
     <Compile Include="MatrixTests.cs" />
     <Compile Include="PCATests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScratchTests.cs" />
     <Compile Include="VectorTests.cs" />
   </ItemGroup>
   <ItemGroup>

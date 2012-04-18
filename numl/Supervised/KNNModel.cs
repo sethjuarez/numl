@@ -51,5 +51,19 @@ namespace numl.Supervised
 
             return Y.Slice(slice).Mode();
         }
+
+        public object Predict(object o)
+        {
+            var label = Description.Label;
+            var pred = Predict(Description.ToVector(o));
+            var val = R.Convert(pred, label.Type);
+            R.Set(o, label.Name, val);
+            return o;
+        }
+
+        public T Predict<T>(T o)
+        {
+            return (T)Predict((object)o);
+        }
     }
 }

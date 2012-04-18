@@ -40,7 +40,7 @@ namespace numl.Unsupervised
             // Load data 
             var exampleArray = examples.ToArray();
             Description = desc;
-            Matrix X = examples.ToMatrix(Description);
+            Matrix X = Description.ToMatrix(examples);
 
             return GenerateClustering(X, linker, exampleArray);
         }

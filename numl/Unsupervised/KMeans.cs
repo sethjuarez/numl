@@ -129,7 +129,7 @@ namespace numl.Unsupervised
                     string.Format("Cannot cluster {0} items {1} different ways!", count, k));
             #endregion
 
-            Matrix X = examples.ToMatrix(Description);
+            Matrix X = Description.ToMatrix(examples);
             var data = Generate(X, k, metric);
             // center set by previous method Centers = data.Item1;
             return data;

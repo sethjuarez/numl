@@ -26,11 +26,15 @@ using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Collections;
 
 namespace numl.Model
 {
     public static class StringHelpers
     {
+        public const string EMPTY_STRING = "#EMPTY#";
+        public const string NUMBER_STRING = "#NUM#";
+        public const string SYMBOL_STRING = "#SYM#";
         /// <summary>
         /// Lazy list of available characters in a given string
         /// </summary>
@@ -54,8 +58,8 @@ namespace numl.Model
 
                 // make numbers and symbols a single feature
                 // I think it is noise....
-                key = char.IsSymbol(a) || char.IsPunctuation(a) || char.IsSeparator(a) ? "#SYM#" : key;
-                key = char.IsNumber(a) ? "#NUM#" : key;
+                key = char.IsSymbol(a) || char.IsPunctuation(a) || char.IsSeparator(a) ? SYMBOL_STRING : key;
+                key = char.IsNumber(a) ? NUMBER_STRING : key;
 
                 yield return key;
             }
@@ -102,7 +106,7 @@ namespace numl.Model
 
                 // found a number! decimal pointed numbers should work since we
                 // killed all of the punctuation!
-                key = key.Where(c => char.IsNumber(c)).Count() == key.Length ? "#NUM#" : key;
+                key = key.Where(c => char.IsNumber(c)).Count() == key.Length ? NUMBER_STRING : key;
 
                 yield return key;
             }
@@ -146,7 +150,7 @@ namespace numl.Model
                 string.Format("\"{0}\" does not exist in the property dictionary for {1}", item, property.Name));
         }
 
-        internal static Dictionary<string, double> BuildDataDictionary(IEnumerable<object> examples, StringProperty property)
+        internal static Dictionary<string, double> BuildDataDictionary(IEnumerable examples, StringProperty property)
         {
             Dictionary<string, double> d = new Dictionary<string, double>();
 
@@ -156,26 +160,38 @@ namespace numl.Model
             foreach (object o in examples)
             {
                 // get proper string
-                s = (string)NConvert.GetPropertyValue(o, property.Name);
-
-                if (property.SplitType == StringSplitType.Character)
+                s = (string)R.Get(o, property.Name);
+                if (property.AsEnum)
                 {
-                    foreach (string key in GetChars(s, property.Exclude))
-                    {
-                        if (d.ContainsKey(key))
-                            d[key] += 1;
-                        else
-                            d.Add(key, 1);
-                    }
+                    if (string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s))
+                        s = EMPTY_STRING;
+                    s = s.Trim().ToUpperInvariant();
+                    if (d.ContainsKey(s))
+                        d[s] += 1;
+                    else
+                        d.Add(s, 1);
                 }
-                else if (property.SplitType == StringSplitType.Word)
+                else
                 {
-                    foreach (string key in GetWords(s, property.Separator, property.Exclude))
+                    if (property.SplitType == StringSplitType.Character)
                     {
-                        if (d.ContainsKey(key))
-                            d[key] += 1;
-                        else
-                            d.Add(key, 1);
+                        foreach (string key in GetChars(s, property.Exclude))
+                        {
+                            if (d.ContainsKey(key))
+                                d[key] += 1;
+                            else
+                                d.Add(key, 1);
+                        }
+                    }
+                    else if (property.SplitType == StringSplitType.Word)
+                    {
+                        foreach (string key in GetWords(s, property.Separator, property.Exclude))
+                        {
+                            if (d.ContainsKey(key))
+                                d[key] += 1;
+                            else
+                                d.Add(key, 1);
+                        }
                     }
                 }
             }
@@ -205,10 +221,10 @@ namespace numl.Model
         /// <param name="property">StringProperty</param>
         /// <param name="examples">Examples</param>
         /// <returns>PropertyDescription with Populated Dictionary</returns>
-        public static StringProperty BuildDictionary(this StringProperty property, IEnumerable<object> examples)
+        public static StringProperty BuildDictionary(this StringProperty property, IEnumerable examples)
         {
             var d = BuildDataDictionary(examples, property);
-            property.Dictionary = d.Keys.OrderBy(s => s).ToArray();
+            property.Dictionary = d.Keys.ToArray();
             return property;
         }
 
@@ -219,6 +235,25 @@ namespace numl.Model
         /// <param name="examples">Examples</param>
         /// <returns>Same Description with Populated Dictionaries</returns>
         public static Description BuildDictionaries(this Description desc, IEnumerable<object> examples)
+        {
+            // build dictionaries for string properties
+            foreach (var p in desc.Features.Where(p => p is StringProperty))
+                (p as StringProperty).BuildDictionary(examples);
+
+            // if it is a label description, build dictionaries for this as well
+            if (desc is LabeledDescription && ((LabeledDescription)desc).Label is StringProperty)
+                (((LabeledDescription)desc).Label as StringProperty).BuildDictionary(examples);
+
+            return desc;
+        }
+
+        /// <summary>
+        /// Populate StringProperty dictionaries in Model Description
+        /// </summary>
+        /// <param name="desc">Model Description</param>
+        /// <param name="examples">Examples</param>
+        /// <returns>Same Description with Populated Dictionaries</returns>
+        public static Description BuildDictionaries(this Description desc, IEnumerable examples)
         {
             // build dictionaries for string properties
             foreach (var p in desc.Features.Where(p => p is StringProperty))

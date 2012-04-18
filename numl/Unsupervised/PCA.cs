@@ -31,7 +31,7 @@ namespace numl.Unsupervised
         public void Generate(Description desciption, IEnumerable<object> examples)
         {
             // generate data matrix
-            var x = examples.ToMatrix(desciption);
+            var x = desciption.ToMatrix(examples);
             Generate(x);
         }
 

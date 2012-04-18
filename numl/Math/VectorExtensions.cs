@@ -156,9 +156,8 @@ namespace numl.Math
         public static double Correlation(this Vector x, Vector y)
         {
             var s = (x.StdDev() * y.StdDev());
-            if (s == 0)
-                throw new InvalidOperationException("The products of the standard deviations on this correlation is zero!");
-            return x.Covariance(y) / s;
+            if (s == 0) return double.NaN;
+            else return x.Covariance(y) / s;
         }
 
         public static double Mode(this Vector source)

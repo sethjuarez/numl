@@ -36,7 +36,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,6 +49,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="R.cs" />
     <Compile Include="Math\Information\Entropy.cs" />
     <Compile Include="Math\Information\Error.cs" />
     <Compile Include="Math\Information\Gini.cs" />
@@ -74,22 +77,20 @@
     <Compile Include="Math\Vector.cs" />
     <Compile Include="Math\VectorExtensions.cs" />
     <Compile Include="Math\VectorType.cs" />
-    <Compile Include="Model\AttributeType.cs" />
     <Compile Include="Attributes\FeatureAttribute.cs" />
     <Compile Include="Attributes\LabelAttribute.cs" />
     <Compile Include="Attributes\DescriptionAttribute.cs" />
     <Compile Include="Attributes\StringAttribute.cs" />
     <Compile Include="Attributes\StringFeatureAttribute.cs" />
     <Compile Include="Attributes\StringLabelAttribute.cs" />
+    <Compile Include="Model\DateProperty.cs" />
     <Compile Include="Model\LabeledDescription.cs" />
-    <Compile Include="NConvert.cs" />
     <Compile Include="Exceptions\InvalidDescriptionException.cs" />
     <Compile Include="Learner.cs" />
     <Compile Include="Model\Description.cs" />
     <Compile Include="Model\Property.cs" />
     <Compile Include="Model\StringHelpers.cs" />
     <Compile Include="Model\StringProperty.cs" />
-    <Compile Include="Model\StringSplitType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Supervised\DecisionTreeGenerator.cs" />
     <Compile Include="Supervised\DecisionTreeModel.cs" />

@@ -41,10 +41,10 @@ namespace numl.Supervised
         public LabeledDescription Description { get; set; }
 
         public DecisionTreeGenerator(
-            int depth = 5, 
-            int width = 2, 
+            int depth = 5,
+            int width = 2,
             LabeledDescription description = null,
-            ImpurityType type = ImpurityType.Entropy, 
+            ImpurityType type = ImpurityType.Entropy,
             double hint = double.Epsilon)
         {
             if (width < 2)
@@ -60,7 +60,7 @@ namespace numl.Supervised
         public IModel Generate(LabeledDescription description, IEnumerable<object> examples)
         {
             Description = description;
-            var data = examples.ToExamples(Description);
+            var data = Description.ToExamples(examples);
             return Generate(data.Item1, data.Item2);
         }
 
@@ -87,18 +87,20 @@ namespace numl.Supervised
 
             double bestGain = -1;
             int bestFeature = -1;
-            double[] splitValues = new double[] { };
-            Impurity measure = null;
+            // double[] splitValues = new double[] { };
+            Impurity bestMeasure = null;
 
             for (int i = 0; i < x.Cols; i++)
             {
+                // TODO: CORRECT SPLITS!! THIS COULD BE INCORRECT!
                 var feature = x[i, VectorType.Column];
                 var fd = Description.Features[i];
+                Impurity measure = null;
 
                 // is feature discrete? ie enum or bool or string?
-                var discrete = fd.Type == ItemType.Enumeration 
-                                            || fd.Type == ItemType.Boolean
-                                            || fd.Type == ItemType.String;
+                var discrete = fd.Type.BaseType == typeof(Enum) ||
+                                fd.Type == typeof(bool) ||
+                                fd.Type == typeof(string);
 
                 switch (Type)
                 {
@@ -137,7 +139,7 @@ namespace numl.Supervised
                 {
                     bestGain = gain;
                     bestFeature = i;
-                    splitValues = measure.SplitValues;
+                    bestMeasure = measure;
                 }
             }
 
@@ -158,14 +160,14 @@ namespace numl.Supervised
             var bestFD = Description.Features[bestFeature];
 
             // multiway split - constant fan-out width (non-continuous)
-            if (bestFD.Type == ItemType.Enumeration || 
-                bestFD.Type == ItemType.Boolean ||
-                bestFD.Type == ItemType.String)
+            if (bestFD.Type.BaseType == typeof(Enum) ||
+                            bestFD.Type == typeof(bool) ||
+                            bestFD.Type == typeof(string))
             {
-                n.Children = new Node[splitValues.Length];
+                n.Children = new Node[bestMeasure.SplitValues.Length];
                 for (int i = 0; i < n.Children.Length; i++)
                 {
-                    var slice = x.Indices(v => v[bestFeature] == splitValues[i], VectorType.Row);
+                    var slice = x.Indices(v => v[bestFeature] == bestMeasure.SplitValues[i], VectorType.Row);
                     n.Children[i] = BuildTree(x.Slice(slice, VectorType.Row), y.Slice(slice), depth - 1, used);
                 }
                 n.Segmented = false;
@@ -175,11 +177,12 @@ namespace numl.Supervised
             {
                 // since this is in ranges, need each slot
                 // represents two boundaries
-                n.Children = new Node[measure.Width];
+                n.Children = new Node[bestMeasure.Width];
                 for (int i = 0; i < n.Children.Length; i++)
                 {
                     var slice = x.Indices(
-                        v => v[bestFeature] >= splitValues[i] && v[bestFeature] < splitValues[i + 1],
+                        v => v[bestFeature] >= bestMeasure.SplitValues[i] &&
+                             v[bestFeature] <  bestMeasure.SplitValues[i + 1],
                         VectorType.Row);
 
                     n.Children[i] = BuildTree(x.Slice(slice, VectorType.Row), y.Slice(slice), depth - 1, used);
@@ -189,7 +192,7 @@ namespace numl.Supervised
 
             n.IsLeaf = false;
             n.Feature = bestFeature;
-            n.Values = splitValues;
+            n.Values = bestMeasure.SplitValues;
             return n;
         }
     }
