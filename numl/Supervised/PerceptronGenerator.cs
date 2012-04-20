@@ -27,9 +27,8 @@ using System.Collections.Generic;
 
 namespace numl.Supervised
 {
-    public class PerceptronGenerator : IGenerator
+    public class PerceptronGenerator : Generator
     {
-        public LabeledDescription Description { get; set; }
         public bool Normalize { get; set; }
 
         public PerceptronGenerator(bool normalize = false)
@@ -37,17 +36,7 @@ namespace numl.Supervised
             Normalize = normalize;
         }
 
-        
-        public IModel Generate(LabeledDescription description, IEnumerable<object> examples)
-        {
-            Description = description;
-            var data = Description.ToExamples(examples);
-            var model = Generate(data.Item1, data.Item2);
-            model.Description = Description;
-            return model;
-        }
-
-        public IModel Generate(Matrix X, Vector Y)
+        public override IModel Generate(Matrix X, Vector Y)
         {
             Vector w = Vector.Zeros(X[0].Length);
             Vector a = w.Copy();

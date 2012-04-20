@@ -94,6 +94,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Supervised\DecisionTreeGenerator.cs" />
     <Compile Include="Supervised\DecisionTreeModel.cs" />
+    <Compile Include="Supervised\Generator.cs" />
     <Compile Include="Supervised\IGenerator.cs" />
     <Compile Include="Supervised\IModel.cs" />
     <Compile Include="Supervised\KernelPerceptronGenerator.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="Supervised\KNNModel.cs" />
     <Compile Include="Supervised\LinearRegressionGenerator.cs" />
     <Compile Include="Supervised\LinearRegressionModel.cs" />
+    <Compile Include="Supervised\Model.cs" />
     <Compile Include="Supervised\Node.cs" />
     <Compile Include="Supervised\PerceptronGenerator.cs" />
     <Compile Include="Supervised\PerceptronModel.cs" />

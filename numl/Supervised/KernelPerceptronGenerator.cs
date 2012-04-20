@@ -27,9 +27,8 @@ using numl.Model;
 
 namespace numl.Supervised
 {
-    public class KernelPerceptronGenerator : IGenerator
+    public class KernelPerceptronGenerator : Generator
     {
-        public LabeledDescription Description { get; set; }
         public KernelType Type { get; set; }
         public double P { get; set; }
 
@@ -39,16 +38,7 @@ namespace numl.Supervised
             P = kernelParam;
         }
 
-        public IModel Generate(LabeledDescription description, IEnumerable<object> examples)
-        {
-            Description = description;
-            var data = Description.ToExamples(examples);
-            var model = Generate(data.Item1, data.Item2);
-            model.Description = Description;
-            return model;
-        }
-
-        public IModel Generate(Matrix x, Vector y)
+        public override IModel Generate(Matrix x, Vector y)
         {
             int N = y.Length;
             Vector a = Vector.Zeros(N);

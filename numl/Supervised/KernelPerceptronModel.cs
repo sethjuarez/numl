@@ -28,16 +28,15 @@ using numl.Model;
 namespace numl.Supervised
 {
     [XmlRoot("KernelPerceptron")]
-    public class KernelPerceptronModel : IModel
+    public class KernelPerceptronModel : Model
     {
-        public LabeledDescription Description { get; set; }
         public KernelType Type { get; set; }
         public double Param { get; set; }
         public Matrix X { get; set; }
         public Vector Y { get; set; }
         public Vector A { get; set; }
 
-        public double Predict(Vector y)
+        public override double Predict(Vector y)
         {
             var K = GetKernel(y);
             double v = 0;
@@ -45,20 +44,6 @@ namespace numl.Supervised
                 v += A[i] * Y[i] * K[i];
 
             return v;
-        }
-
-        public object Predict(object o)
-        {
-            var label = Description.Label;
-            var pred = Predict(Description.ToVector(o));
-            var val = R.Convert(pred, label.Type);
-            R.Set(o, label.Name, val);
-            return o;
-        }
-
-        public T Predict<T>(T o)
-        {
-            return (T)Predict((object)o);
         }
 
         private Vector GetKernel(Vector x)

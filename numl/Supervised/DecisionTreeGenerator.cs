@@ -32,13 +32,12 @@ using numl.Model;
 
 namespace numl.Supervised
 {
-    public class DecisionTreeGenerator : IGenerator
+    public class DecisionTreeGenerator : Generator
     {
         public int Depth { get; set; }
         public int Width { get; set; }
         public double Hint { get; set; }
         public ImpurityType Type { get; set; }
-        public LabeledDescription Description { get; set; }
 
         public DecisionTreeGenerator(
             int depth = 5,
@@ -57,14 +56,7 @@ namespace numl.Supervised
             Hint = hint;
         }
 
-        public IModel Generate(LabeledDescription description, IEnumerable<object> examples)
-        {
-            Description = description;
-            var data = Description.ToExamples(examples);
-            return Generate(data.Item1, data.Item2);
-        }
-
-        public IModel Generate(Matrix x, Vector y)
+        public override IModel Generate(Matrix x, Vector y)
         {
             if (Description == null)
                 throw new InvalidOperationException("Cannot build decision tree without type knowledge!");

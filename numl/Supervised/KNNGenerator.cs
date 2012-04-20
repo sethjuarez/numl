@@ -28,9 +28,8 @@ using System.Collections.Generic;
 
 namespace numl.Supervised
 {
-    public class KNNGenerator : IGenerator
+    public class KNNGenerator : Generator
     {
-        public LabeledDescription Description { get; set; }
         public int K { get; set; }
 
         public KNNGenerator(int k = 5)
@@ -38,16 +37,7 @@ namespace numl.Supervised
             K = k;
         }
 
-        public IModel Generate(LabeledDescription description, IEnumerable<object> examples)
-        {
-            Description = description;
-            var data = Description.ToExamples(examples);
-            var model = Generate(data.Item1, data.Item2);
-            model.Description = Description;
-            return model;
-        }
-
-        public IModel Generate(Matrix x, Vector y)
+        public override IModel Generate(Matrix x, Vector y)
         {
             return new KNNModel
             {

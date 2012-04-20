@@ -26,30 +26,15 @@ using numl.Model;
 
 namespace numl.Supervised
 {
-    public class LinearRegressionModel : IModel
+    public class LinearRegressionModel : Model
     {
-        public LabeledDescription Description { get; set; }
         public Vector W { get; set; }
         public double B { get; set; }
 
-        public double Predict(Vector y)
+        public override double Predict(Vector y)
         {
             // calculate estimate using normalized example
             return W.Dot(y / y.Norm()) + B;
-        }
-
-        public object Predict(object o)
-        {
-            var label = Description.Label;
-            var pred = Predict(Description.ToVector(o));
-            var val = R.Convert(pred, label.Type);
-            R.Set(o, label.Name, val);
-            return o;
-        }
-
-        public T Predict<T>(T o)
-        {
-            return (T)Predict((object)o);
         }
     }
 }

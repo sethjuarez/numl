@@ -26,33 +26,17 @@ using numl.Model;
 
 namespace numl.Supervised
 {
-    public class PerceptronModel : IModel
+    public class PerceptronModel : Model
     {
-        public LabeledDescription Description { get; set; }
         public Vector W { get; set; }
         public double B { get; set; }
         public bool Normalized { get; set; } 
 
-        public double Predict(Vector y)
+        public override double Predict(Vector y)
         {
             if (Normalized)
                 y = y / y.Norm();
-
-            return Vector.Dot(W, y) + B;
-        }
-
-        public object Predict(object o)
-        {
-            var label = Description.Label;
-            var pred = Predict(Description.ToVector(o));
-            var val = R.Convert(pred, label.Type);
-            R.Set(o, label.Name, val);
-            return o;
-        }
-
-        public T Predict<T>(T o)
-        {
-            return (T)Predict((object)o);
+            return W.Dot(y) + B;
         }
     }
 }

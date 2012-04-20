@@ -27,19 +27,9 @@ using System.Collections.Generic;
 
 namespace numl.Supervised
 {
-    public class LinearRegressionGenerator : IGenerator
+    public class LinearRegressionGenerator : Generator
     {
-        public LabeledDescription Description { get; set; }
-        public IModel Generate(LabeledDescription description, IEnumerable<object> examples)
-        {
-            Description = description;
-            var data = Description.ToExamples(examples);
-            var model = Generate(data.Item1, data.Item2);
-            model.Description = Description;
-            return model;
-        }
-
-        public IModel Generate(Matrix x, Vector y)
+        public override IModel Generate(Matrix x, Vector y)
         {
             // normalize each each row
             for (int i = 0; i < x.Rows; i++)
@@ -55,10 +45,11 @@ namespace numl.Supervised
 
             // this is dumb, I need to do a Cholesky factorization + backsolve
             // to ensure stability of operation
+            // NOTE: Somewhere in the math lib I added Cholesky + Forward/Backward
             var W = ((((x.T * x) ^ -1) * x.T) * y).ToVector();
 
             // bias term
-            double B = y.Mean() - Vector.Dot(W, x.GetRows().Mean());
+            double B = y.Mean() - W.Dot(x.GetRows().Mean());
 
             // create predictor
             return new LinearRegressionModel
