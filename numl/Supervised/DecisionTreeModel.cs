@@ -23,12 +23,16 @@
 using System;
 using numl.Math;
 using numl.Model;
+using System.Xml.Serialization;
 
 namespace numl.Supervised
 {
+    [XmlRoot("dt")]
     public class DecisionTreeModel : Model
     {
+        [XmlElement("tree")]
         public Node Tree { get; set; }
+        [XmlAttribute("hint")]
         public double Hint { get; set; }
 
         public DecisionTreeModel()

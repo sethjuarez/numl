@@ -21,6 +21,7 @@
 */
 
 using System;
+using numl.Attributes;
 
 namespace numl.Data
 {
@@ -36,11 +37,16 @@ namespace numl.Data
 	public class Student
 	{
 		public string Name { get; set; }
+        [Feature]
 		public Grade Grade { get; set; }
+        [Feature]
 		public double GPA { get; set; }
+        [Feature]
 		public int Age { get; set; }
 		public bool Tall { get; set; }
+        [Feature]
 		public int Friends { get; set; }
+        [Label]
 		public bool Nice { get; set; }
 
 		public static Student[] GetData()

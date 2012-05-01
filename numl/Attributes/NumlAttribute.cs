@@ -1,4 +1,4 @@
-/*
+﻿/*
  Copyright (c) 2012 Seth Juarez
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,34 +21,14 @@
 */
 
 using System;
-using numl.Math;
+using System.Collections.Generic;
 using System.Linq;
-using numl.Model;
+using System.Text;
 
-namespace numl.Supervised
+namespace numl.Attributes
 {
-    public class KNNModel : Model
+    public abstract class NumlAttribute : Attribute
     {
-        public int K { get; set; }
-        public Matrix X { get; set; }
-        public Vector Y { get; set; }
-
-        public override double Predict(Vector y)
-        {
-            Tuple<int, double>[] distances = new Tuple<int, double>[y.Length];
-
-            for (int i = 0; i < X.Rows; i++)
-            {
-                var x = X[i, VectorType.Row];
-                distances[i] = new Tuple<int, double>(i, (y - x).Norm());
-            }
-
-            var slice = distances
-                            .OrderBy(t => t.Item2)
-                            .Take(K)
-                            .Select(i => i.Item1);
-
-            return Y.Slice(slice).Mode();
-        }
+        
     }
 }

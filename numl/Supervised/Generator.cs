@@ -9,9 +9,9 @@ namespace numl.Supervised
 {
     public abstract class Generator : IGenerator
     {
-        public LabeledDescription Description { get; set; }
+        public Description Description { get; set; }
 
-        public IModel Generate(LabeledDescription description, IEnumerable<object> examples)
+        public IModel Generate(Description description, IEnumerable<object> examples)
         {
             Description = description;
             var data = Description.ToExamples(examples);

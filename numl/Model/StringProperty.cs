@@ -25,6 +25,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.Xml.Serialization;
+using System.Xml;
 
 namespace numl.Model
 {
@@ -40,6 +42,7 @@ namespace numl.Model
         Word
     }
 
+    [XmlRoot("sp"), Serializable]
     public class StringProperty : Property
     {
         public StringProperty()
@@ -128,6 +131,66 @@ namespace numl.Model
             }
             else
                 Exclude = new string[] { };
+        }
+
+        // Serialization
+        public override void WriteXml(XmlWriter writer)
+        {
+            // write inital bits
+            base.WriteXml(writer);
+            writer.WriteAttributeString("enum", AsEnum.ToString());
+            writer.WriteAttributeString("split", SplitType.ToString());
+            // write dictionaries
+            writer.WriteStartElement("d");
+            writer.WriteAttributeString("length", Dictionary.Length.ToString());
+            for(int i = 0; i < Dictionary.Length; i++)
+            {
+                writer.WriteStartElement("i");
+                writer.WriteValue(Dictionary[i]);
+                writer.WriteEndElement();
+            }
+            writer.WriteEndElement();
+
+            writer.WriteStartElement("e");
+            writer.WriteAttributeString("length", Exclude.Length.ToString());
+            for (int i = 0; i < Exclude.Length; i++)
+            {
+                writer.WriteStartElement("i");
+                writer.WriteValue(Exclude[i]);
+                writer.WriteEndElement();
+            }
+            writer.WriteEndElement();
+        }
+
+        public override void ReadXml(XmlReader reader)
+        {
+            // read initial bits
+            reader.MoveToContent();
+
+            Name = reader.GetAttribute("name");
+            string type = reader.GetAttribute("type");
+            Type = R.FindType(type);
+            Start = int.Parse(reader.GetAttribute("start"));
+
+            AsEnum = bool.Parse(reader.GetAttribute("enum"));
+            SplitType = (StringSplitType)Enum.Parse(typeof(StringSplitType), reader.GetAttribute("split"));
+            reader.ReadStartElement();
+            // read dictionaries
+            int dlength = int.Parse(reader.GetAttribute("length"));
+            reader.ReadStartElement("d");
+            Dictionary = new string[dlength];
+            for (int i = 0; i < Dictionary.Length; i++)
+                Dictionary[i] = reader.ReadElementString("i");
+            reader.ReadEndElement();
+
+            int elength = int.Parse(reader.GetAttribute("length"));
+            reader.ReadStartElement("e");
+            Exclude = new string[elength];
+            for (int i = 0; i < Exclude.Length; i++)
+                Exclude[i] = reader.ReadElementString("i");
+            reader.ReadEndElement();
+
+            reader.ReadEndElement();
         }
     }
 }

@@ -28,10 +28,14 @@ using numl.Math;
 using System.Collections;
 using System.Drawing;
 using numl.Attributes;
+using System.Xml.Serialization;
+using System.Xml.Schema;
+using System.Xml;
 
 namespace numl.Model
 {
-    public class Description
+    [XmlRoot("description"), Serializable]
+    public class Description : IXmlSerializable
     {
         public Description()
         {
@@ -39,6 +43,7 @@ namespace numl.Model
         }
 
         public Property[] Features { get; set; }
+        public Property Label { get; set; }
         public int Dimensions { get; private set; }
 
         public virtual Property this[int i]
@@ -102,6 +107,37 @@ namespace numl.Model
         public virtual Vector ToVector(object o)
         {
             return new Vector(CreateFeatureArray(o));
+        }
+
+        public Tuple<Matrix, Vector> ToExamples(IEnumerable<object> collection)
+        {
+            // number of examples
+            int n = collection.Count();
+            Vector y = new Vector(n);
+
+            double[][] matrix = new double[n][];
+
+            int i = -1;
+            foreach (object o in collection)
+            {
+                matrix[++i] = CreateFeatureArray(o);
+                y[i] = Label.Convert(R.Get(o, Label.Name));
+            }
+
+            return new Tuple<Matrix, Vector>(new Matrix(matrix), y);
+        }
+
+        public Tuple<Matrix, Vector> ToExamples(IEnumerable collection)
+        {
+            List<double[]> matrix = new List<double[]>();
+            List<double> y = new List<double>();
+            foreach (object o in collection)
+            {
+                matrix.Add(CreateFeatureArray(o));
+                y.Add(Label.ToArray(o)[0]);
+            }
+
+            return new Tuple<Matrix, Vector>(new Matrix(matrix.ToArray()), new Vector(y.ToArray()));
         }
 
         internal double[] CreateFeatureArray(object o)
@@ -188,11 +224,82 @@ namespace numl.Model
                 }
             }
 
-            Description description = label == null ?
-                new Description { Features = items.OrderBy(c => c.Name).ToArray() } :
-                new LabeledDescription { Features = items.OrderBy(c => c.Name).ToArray(), Label = label };
+            Description description = new Description 
+            { 
+                Features = items.OrderBy(c => c.Name).ToArray(), 
+                Label = label 
+            };
 
             return description;
+        }
+
+        // serialization
+        public XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+            if (Dimensions <= 0)
+                Dimensions = Features.Sum(f => f.Length);
+
+            writer.WriteAttributeString("dim", Dimensions.ToString());
+            writer.WriteStartElement("features");
+            writer.WriteAttributeString("length", Features.Length.ToString());
+            for (int i = 0; i < Length; i++)
+            {
+                XmlSerializer ser = new XmlSerializer(this[i].GetType());
+                ser.Serialize(writer, this[i]);
+            }
+   
+            writer.WriteEndElement();
+
+            writer.WriteStartElement("label");
+            if (Label != null)
+            {
+                XmlSerializer ser = new XmlSerializer(Label.GetType());
+                ser.Serialize(writer, Label);
+            }
+            writer.WriteEndElement();
+        }
+
+        public void ReadXml(XmlReader reader)
+        {
+            reader.MoveToContent();
+            Dimensions = int.Parse(reader.GetAttribute("dim"));
+
+            reader.ReadStartElement();
+            int length = int.Parse(reader.GetAttribute("length"));
+            Features = new Property[length];
+            // begin reading features
+            reader.ReadStartElement();
+            for (int i = 0; i < length; i++)
+            {
+                if (reader.Name == "p")
+                    Features[i] = new Property();
+                else if (reader.Name == "sp")
+                    Features[i] = new StringProperty();
+
+                Features[i].ReadXml(reader);
+            }
+            reader.ReadEndElement();
+
+            if (!reader.IsEmptyElement)
+            {
+                reader.ReadStartElement();
+                if (reader.Name == "p")
+                    Label = new Property();
+                else if (reader.Name == "sp")
+                    Label = new StringProperty();
+
+                Label.ReadXml(reader);
+                reader.ReadEndElement(); // label
+            }
+            else
+                reader.ReadStartElement();
+
+            reader.ReadEndElement(); // description
         }
     }
 }

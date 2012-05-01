@@ -30,8 +30,8 @@ namespace numl.Supervised
 {
     public interface IGenerator
     {
-        LabeledDescription Description { get; set; }
-        IModel Generate(LabeledDescription description, IEnumerable<object> examples);
+        Description Description { get; set; }
+        IModel Generate(Description description, IEnumerable<object> examples);
         IModel Generate(Matrix x, Vector y);
     }
 }

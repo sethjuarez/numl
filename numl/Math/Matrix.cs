@@ -751,6 +751,5 @@ namespace numl.Math
                 writer.WriteEndElement();
             }
         }
-
     }
 }

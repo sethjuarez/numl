@@ -140,8 +140,8 @@ namespace numl.Unsupervised
 
                 // centers differences
                 mu_difference = mu_k.GetRows()
-                            .Zip(mu_k_new.GetRows(), (v1, v2) => new { V1 = v1, V2 = v2 })
-                            .Sum(a => Vector.NormDiff(a.V1, a.V2));
+                                .Zip(mu_k_new.GetRows(), (v1, v2) => new { V1 = v1, V2 = v2 })
+                                .Sum(a => Vector.NormDiff(a.V1, a.V2));
 
                 Console.WriteLine("Centers:\nO: {0}\nN: {1}\nDifference: {2}\n", mu_k, mu_k_new, mu_difference);
                 mu_k = mu_k_new;

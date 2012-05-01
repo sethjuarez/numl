@@ -199,5 +199,28 @@ namespace numl
                     throw new InvalidCastException(string.Format("Cannot convert {0} to {1}", val, t.Name));
             }
         }
+
+        public static Type FindType(string s)
+        {
+            var type = Type.GetType(s);
+
+            if (type != null) return type;
+
+            else // need to look elsewhere
+            {
+                // someones notational laziness causes me to look
+                // everywhere... sorry... I know it's slow...
+                var q = (from p in AppDomain.CurrentDomain.GetAssemblies()
+                         from t in p.GetTypes()
+                         where t.FullName == s || t.Name == s
+                         select t).ToArray();
+
+                if (q.Length == 1)
+                    return q[0];
+                else
+                    throw new TypeLoadException(string.Format("Cannot find type {0}", s));
+            }
+
+        }
     }
 }

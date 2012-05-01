@@ -11,11 +11,6 @@ namespace numl.Tests
     [TestFixture]
     public class AttributeTests
     {
-        [Test]
-        public void Test_Fake1_Attributes()
-        {
-            var description = Description.Create<Fake1>();
-            Assert.IsTrue(description is LabeledDescription);
-        }
+
     }
 }

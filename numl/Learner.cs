@@ -38,7 +38,7 @@ namespace numl
         /// </summary>
         /// <param name="description"></param>
         /// <param name="examples"></param>
-        public void Learn(LabeledDescription description, IEnumerable<object> examples)
+        public void Learn(Description description, IEnumerable<object> examples)
         {
             var total = examples.Count();
             

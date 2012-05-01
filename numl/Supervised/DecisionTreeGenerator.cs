@@ -42,7 +42,7 @@ namespace numl.Supervised
         public DecisionTreeGenerator(
             int depth = 5,
             int width = 2,
-            LabeledDescription description = null,
+            Description description = null,
             ImpurityType type = ImpurityType.Entropy,
             double hint = double.Epsilon)
         {

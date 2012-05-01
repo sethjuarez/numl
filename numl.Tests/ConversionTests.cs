@@ -265,7 +265,7 @@ namespace numl.Tests
         [Test]
         public void Test_Matrix_Labeled_Conversion_Simple_Numbers()
         {
-            LabeledDescription d = new LabeledDescription
+            Description d = new Description
             {
                 Features = new Property[]
                 {

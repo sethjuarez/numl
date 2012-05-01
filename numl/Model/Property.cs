@@ -21,14 +21,17 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.ComponentModel;
-using System.Text;
+using System.Collections.Generic;
+using System.Xml.Serialization;
+using System.Xml.Schema;
+using System.Xml;
+using System.Reflection;
 
 namespace numl.Model
 {
-    public class Property
+    [XmlRoot("p"), Serializable]
+    public class Property : IXmlSerializable
     {
         public Property()
         {
@@ -79,5 +82,28 @@ namespace numl.Model
         /// (will not get serialized)
         /// </summary>
         public object Tag { get; set; }
+
+        // xml serialization
+        public XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        public virtual void WriteXml(XmlWriter writer)
+        {
+            writer.WriteAttributeString("name", Name);
+            writer.WriteAttributeString("type", Type.AssemblyQualifiedName);
+            writer.WriteAttributeString("start", Start.ToString());
+        }
+
+        public virtual void ReadXml(XmlReader reader)
+        {
+            reader.MoveToContent();
+            Name = reader.GetAttribute("name");
+            string type = reader.GetAttribute("type");
+            Type = R.FindType(type);
+            Start = int.Parse(reader.GetAttribute("start"));
+            reader.ReadStartElement();
+        }
     }
 }

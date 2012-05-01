@@ -25,6 +25,7 @@ using numl.Math;
 using System.Linq;
 using System.Collections.Generic;
 using numl.Model;
+using System.IO;
 
 namespace numl.Supervised
 {
@@ -33,6 +34,12 @@ namespace numl.Supervised
         double Predict(Vector y);
         T Predict<T>(T o);
         object Predict(object o);
-        LabeledDescription Description { get; set; }
+        Description Description { get; set; }
+
+        // Model persistance
+        void Save(string file);
+        void Save(Stream stream);
+        IModel Load(string file);
+        IModel Load(Stream stream);
     }
 }

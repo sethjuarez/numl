@@ -28,19 +28,19 @@ namespace numl.Supervised
     [XmlRoot("n")]
     public class Node
     {
-        [XmlAttribute("Leaf")]
+        [XmlAttribute("leaf")]
         public bool IsLeaf { get; set; }
-        [XmlAttribute("Label")]
+        [XmlAttribute("label")]
         public double Label { get; set; }
-        [XmlArray("Values")]
+        [XmlArray("values"), XmlArrayItem("d")]
         public double[] Values { get; set; }
-        [XmlAttribute("Segmented")]
+        [XmlAttribute("segmented")]
         public bool Segmented { get; set; }
-        [XmlArray("Children")]
+        [XmlArray("children"), XmlArrayItem("n")]
         public Node[] Children { get; set; }
-        [XmlAttribute("Feature")]
+        [XmlAttribute("feature")]
         public int Feature { get; set; }
-        [XmlAttribute("Gain")]
+        [XmlAttribute("gain")]
         public double Gain { get; set; }
     }
 }

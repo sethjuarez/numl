@@ -240,9 +240,9 @@ namespace numl.Model
             foreach (var p in desc.Features.Where(p => p is StringProperty))
                 (p as StringProperty).BuildDictionary(examples);
 
-            // if it is a label description, build dictionaries for this as well
-            if (desc is LabeledDescription && ((LabeledDescription)desc).Label is StringProperty)
-                (((LabeledDescription)desc).Label as StringProperty).BuildDictionary(examples);
+            // build dictionaries for labels as well (if exists)
+            if (desc.Label != null && desc.Label is StringProperty)
+                ((StringProperty)desc.Label).BuildDictionary(examples);
 
             return desc;
         }
@@ -259,9 +259,9 @@ namespace numl.Model
             foreach (var p in desc.Features.Where(p => p is StringProperty))
                 (p as StringProperty).BuildDictionary(examples);
 
-            // if it is a label description, build dictionaries for this as well
-            if (desc is LabeledDescription && ((LabeledDescription)desc).Label is StringProperty)
-                (((LabeledDescription)desc).Label as StringProperty).BuildDictionary(examples);
+            // build dictionaries for labels as well (if exists)
+            if (desc.Label != null && desc.Label is StringProperty)
+                ((StringProperty)desc.Label).BuildDictionary(examples);
 
             return desc;
         }
