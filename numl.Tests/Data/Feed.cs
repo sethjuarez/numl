@@ -20,9 +20,8 @@
  THE SOFTWARE.
 */
 
+using numl.Model;
 using System;
-using numl.Math;
-using numl.Attributes;
 
 namespace numl.Data
 {
@@ -54,9 +53,9 @@ namespace numl.Data
 			};
 		}
 
-		public static Matrix GetDataMatrix()
+		public static double[,] GetDataMatrix()
 		{
-			return new[,] {																																												
+			return new double[,] {																																												
 				{   9,	1,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,  0 },
 				{   8,	1,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	1,	0,	0,	0,	1,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,  1 },
 				{   7,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	1,  2 },

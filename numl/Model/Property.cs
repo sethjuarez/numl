@@ -21,89 +21,35 @@
 */
 
 using System;
+using System.IO;
+using numl.Utils;
 using System.Linq;
-using System.Collections.Generic;
-using System.Xml.Serialization;
-using System.Xml.Schema;
-using System.Xml;
 using System.Reflection;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace numl.Model
 {
-    [XmlRoot("p"), Serializable]
-    public class Property : IXmlSerializable
+    public class Property
     {
         public Property()
         {
             Start = -1;
         }
-        /// <summary>
-        /// Property name that maps to object
-        /// </summary>
+
         public string Name { get; set; }
-
-        /// <summary>
-        /// Property Type
-        /// </summary>
         public Type Type { get; set; }
-
-        /// <summary>
-        /// Numeric value counts produced by property
-        /// </summary>
         public virtual int Length { get { return 1; } }
-
-        /// <summary>
-        /// Offset into feature vector
-        /// </summary>
         public int Start { get; set; }
 
-        public virtual double[] ToArray(object o)
+        public virtual IEnumerable<double> Convert(object o)
         {
-            return new[] { Convert(o) };
-        }
-
-        public virtual double Convert(object o)
-        {
-            return R.Convert(o);
-        }
-
-        public virtual object Convert(double val)
-        {
-            return R.Convert(val, Type);
+            yield return FastReflection.Convert(o);
         }
 
         public override string ToString()
         {
-            return string.Format("{0} ({1})", Name, Type.Name);
-        }
-
-        /// <summary>
-        /// General purpose property storage
-        /// (will not get serialized)
-        /// </summary>
-        public object Tag { get; set; }
-
-        // xml serialization
-        public XmlSchema GetSchema()
-        {
-            return null;
-        }
-
-        public virtual void WriteXml(XmlWriter writer)
-        {
-            writer.WriteAttributeString("name", Name);
-            writer.WriteAttributeString("type", Type.AssemblyQualifiedName);
-            writer.WriteAttributeString("start", Start.ToString());
-        }
-
-        public virtual void ReadXml(XmlReader reader)
-        {
-            reader.MoveToContent();
-            Name = reader.GetAttribute("name");
-            string type = reader.GetAttribute("type");
-            Type = R.FindType(type);
-            Start = int.Parse(reader.GetAttribute("start"));
-            reader.ReadStartElement();
+            return string.Format("[{0}, {1}, {2}]", Name, Start, Length);
         }
     }
 }

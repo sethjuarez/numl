@@ -21,20 +21,19 @@
 */
 
 using System;
-using numl.Math;
+using System.IO;
+using numl.Model;
 using System.Linq;
 using System.Collections.Generic;
-using numl.Model;
-using System.IO;
 
 namespace numl.Supervised
 {
     public interface IModel
     {
-        double Predict(Vector y);
+        //double Predict(Vector y);
         T Predict<T>(T o);
         object Predict(object o);
-        Description Description { get; set; }
+        Descriptor Descriptor { get; set; }
 
         // Model persistance
         void Save(string file);

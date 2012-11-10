@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "numl", "numl\numl.csproj", "{11022B54-2310-42AA-B80F-660733243406}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "numl.Tests", "numl.Tests\numl.Tests.csproj", "{A30D8EDE-B107-42DE-AF56-4A54209BC572}"

@@ -21,7 +21,6 @@
 */
 
 using System;
-using numl.Math;
 using numl.Model;
 using System.Linq;
 using System.Collections.Generic;
@@ -30,8 +29,9 @@ namespace numl.Supervised
 {
     public interface IGenerator
     {
-        Description Description { get; set; }
-        IModel Generate(Description description, IEnumerable<object> examples);
-        IModel Generate(Matrix x, Vector y);
+        Descriptor Descriptor { get; set; }
+        IModel Generate(Descriptor descriptor, IEnumerable<object> examples);
+        IModel Generate<T>(IEnumerable<T> examples) where T : class;
+        //IModel Generate(Matrix x, Vector y);
     }
 }

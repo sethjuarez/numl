@@ -1,27 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using numl.Math;
-using numl.Model;
 using System.IO;
+using numl.Model;
+using System.Linq;
 using System.Xml.Serialization;
-using System.Runtime.Serialization;
+using System.Collections.Generic;
 
 namespace numl.Supervised
 {
     public abstract class Model : IModel
     {
-        public Description Description { get; set; }
-        public abstract double Predict(Vector y);
+        public Descriptor Descriptor { get; set; }
+        //public abstract double Predict(Vector y);
 
         public object Predict(object o)
         {
-            var label = Description.Label;
-            var pred = Predict(Description.ToVector(o));
-            var val = R.Convert(pred, label.Type);
-            R.Set(o, label.Name, val);
-            return o;
+            throw new NotImplementedException();
         }
 
         public T Predict<T>(T o)

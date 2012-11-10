@@ -21,12 +21,12 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System.IO;
-using System.Xml.Serialization;
-using System.Xml;
+using numl.Utils;
+using System.Linq;
+using System.Reflection;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace numl.Model
 {
@@ -42,10 +42,10 @@ namespace numl.Model
         Word
     }
 
-    [XmlRoot("sp"), Serializable]
     public class StringProperty : Property
     {
         public StringProperty()
+            : base()
         {
             // set to default conventions
             SplitType = StringSplitType.Word;
@@ -66,41 +66,8 @@ namespace numl.Model
         {
             get
             {
-                if (AsEnum)
-                    return 1;
-                else
-                    return Dictionary.Length;
+                return AsEnum ? 1 : Dictionary.Length;
             }
-        }
-
-        public override double[] ToArray(object o)
-        {
-            if (Dictionary == null || Dictionary.Length == 0)
-                throw new InvalidOperationException(string.Format("{0} dictionaries do not exist.", Name));
-
-            if (AsEnum)
-                return new[] { Convert(o) };
-            else
-                return StringHelpers.GetWordCount(o.ToString(), this);
-        }
-
-        public override double Convert(object o)
-        {
-            if (Dictionary == null || Dictionary.Length == 0)
-                throw new InvalidOperationException(string.Format("{0} dictionaries do not exist.", Name));
-
-            if (AsEnum)
-                return (double)StringHelpers.GetWordPosition(o.ToString(), this);
-            else
-                throw new InvalidCastException(string.Format("Cannot compress {0} to a single double", Name));
-        }
-
-        public override object Convert(double val)
-        {
-            if (AsEnum)
-                return Dictionary[(int)val];
-            else
-                throw new InvalidCastException(string.Format("Cannot exand {0} to a string", val));
         }
 
         public void ImportExclusions(string file)
@@ -133,64 +100,26 @@ namespace numl.Model
                 Exclude = new string[] { };
         }
 
-        // Serialization
-        public override void WriteXml(XmlWriter writer)
+        public override IEnumerable<double> Convert(object o)
         {
-            // write inital bits
-            base.WriteXml(writer);
-            writer.WriteAttributeString("enum", AsEnum.ToString());
-            writer.WriteAttributeString("split", SplitType.ToString());
-            // write dictionaries
-            writer.WriteStartElement("d");
-            writer.WriteAttributeString("length", Dictionary.Length.ToString());
-            for(int i = 0; i < Dictionary.Length; i++)
-            {
-                writer.WriteStartElement("i");
-                writer.WriteValue(Dictionary[i]);
-                writer.WriteEndElement();
-            }
-            writer.WriteEndElement();
+            // check for valid dictionary
+            if (Dictionary == null || Dictionary.Length == 0)
+                throw new InvalidOperationException(string.Format("{0} dictionaries do not exist.", Name));
 
-            writer.WriteStartElement("e");
-            writer.WriteAttributeString("length", Exclude.Length.ToString());
-            for (int i = 0; i < Exclude.Length; i++)
-            {
-                writer.WriteStartElement("i");
-                writer.WriteValue(Exclude[i]);
-                writer.WriteEndElement();
-            }
-            writer.WriteEndElement();
-        }
+            // sanitize string
+            string s = "";
+            if (o == null || string.IsNullOrEmpty(o.ToString()) || string.IsNullOrWhiteSpace(o.ToString()))
+                s = StringHelpers.EMPTY_STRING;
+            else
+                s = o.ToString();
 
-        public override void ReadXml(XmlReader reader)
-        {
-            // read initial bits
-            reader.MoveToContent();
-
-            Name = reader.GetAttribute("name");
-            string type = reader.GetAttribute("type");
-            Type = R.FindType(type);
-            Start = int.Parse(reader.GetAttribute("start"));
-
-            AsEnum = bool.Parse(reader.GetAttribute("enum"));
-            SplitType = (StringSplitType)Enum.Parse(typeof(StringSplitType), reader.GetAttribute("split"));
-            reader.ReadStartElement();
-            // read dictionaries
-            int dlength = int.Parse(reader.GetAttribute("length"));
-            reader.ReadStartElement("d");
-            Dictionary = new string[dlength];
-            for (int i = 0; i < Dictionary.Length; i++)
-                Dictionary[i] = reader.ReadElementString("i");
-            reader.ReadEndElement();
-
-            int elength = int.Parse(reader.GetAttribute("length"));
-            reader.ReadStartElement("e");
-            Exclude = new string[elength];
-            for (int i = 0; i < Exclude.Length; i++)
-                Exclude[i] = reader.ReadElementString("i");
-            reader.ReadEndElement();
-
-            reader.ReadEndElement();
+            // returns single number
+            if (AsEnum)
+                yield return (double)StringHelpers.GetWordPosition(s, Dictionary);
+            // returns list
+            else
+                foreach (double val in StringHelpers.GetWordCount(s, this))
+                    yield return val;
         }
     }
 }

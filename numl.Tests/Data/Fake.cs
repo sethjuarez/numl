@@ -1,19 +1,11 @@
-﻿using System;
+﻿using numl.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using numl.Attributes;
 
 namespace numl.Tests.Data
 {
-    public enum FakeEnum
-    {
-        One,
-        Two,
-        Three,
-        Four
-    }
-
     public class Fake1
     {
         [Feature]

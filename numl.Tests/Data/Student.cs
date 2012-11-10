@@ -21,7 +21,8 @@
 */
 
 using System;
-using numl.Attributes;
+using numl.Utils;
+using numl.Model;
 
 namespace numl.Data
 {
@@ -36,6 +37,7 @@ namespace numl.Data
 
 	public class Student
 	{
+        [StringFeature(SplitType=StringSplitType.Character)]
 		public string Name { get; set; }
         [Feature]
 		public Grade Grade { get; set; }
