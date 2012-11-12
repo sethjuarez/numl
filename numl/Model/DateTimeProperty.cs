@@ -134,8 +134,7 @@ namespace numl.Model
             if (o.GetType() == typeof(DateTime))
             {
                 // tedious I know...
-                // that's why I am writing
-                // this library...
+                // be thankful I wrote it for you...
                 var d = (DateTime)o;
                 if (Features.HasFlag(DateTimeFeature.Year))
                     yield return d.Year;

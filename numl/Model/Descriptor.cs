@@ -21,12 +21,10 @@
 */
 
 using System;
-using System.IO;
 using numl.Utils;
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace numl.Model
 {
@@ -103,9 +101,6 @@ namespace numl.Model
                 {
                     var attrib = (NumlAttribute)item[0];
                     var type = property.PropertyType;
-
-                    if (!FastReflection.CanUseType(type))
-                        throw new InvalidCastException(string.Format("Cannot use {0} as a feature or label", type.Name));
 
                     // generate appropriate property from attribute
                     Property p = attrib.GenerateProperty(property);
