@@ -25,6 +25,7 @@ using numl.Model;
 using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Collections;
 
 namespace numl.Model
 {
@@ -39,6 +40,9 @@ namespace numl.Model
                 p = new StringProperty();
             else if (type == typeof(DateTime))
                 p = new DateTimeProperty();
+            else if (type.GetInterfaces().Contains(typeof(IEnumerable)))
+                throw new InvalidOperationException(
+                    string.Format("Property {0} needs to be labeled as an EnumerableFeature", property.Name));
             else
                 p = new Property();
 
@@ -93,6 +97,9 @@ namespace numl.Model
 
         public override Property GenerateProperty(PropertyInfo property)
         {
+            if (property.PropertyType != typeof(string))
+                throw new InvalidOperationException("Must use a string property.");
+
             var sp = new StringProperty
             {
                 Name = property.Name,
@@ -113,12 +120,44 @@ namespace numl.Model
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class DateFeatureAttribute : FeatureAttribute
     {
-        // TODO: ADD RELEVANT
+        DateTimeProperty dp;
+        public DateFeatureAttribute(DateTimeFeature features)
+        {
+            dp = new DateTimeProperty(features);
+        }
+
+        public DateFeatureAttribute(DatePortion portion)
+        {
+            dp = new DateTimeProperty(portion);
+        }
+
+        public override Property GenerateProperty(PropertyInfo property)
+        {
+            if (property.PropertyType != typeof(DateTime))
+                throw new InvalidOperationException("Must use a datetime property.");
+
+            dp.Name = property.Name;
+            return dp;
+        }
     }
 
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class ArrayAttribute : FeatureAttribute
+    public class EnuerableFeatureAttribute : FeatureAttribute
     {
-        // TODO: ADD RELEVANT
+        private readonly int _length;
+        public EnuerableFeatureAttribute(int length)
+        {
+            _length = length;            
+        }
+
+        public override Property GenerateProperty(PropertyInfo property)
+        {
+            if (!property.PropertyType.GetInterfaces().Contains(typeof(IEnumerable)))
+                throw new InvalidOperationException("Invalid Enumerable type.");
+
+            var ep = new EnumerableProperty(_length);
+            ep.Name = property.Name;
+            return ep;
+        }
     }
 }

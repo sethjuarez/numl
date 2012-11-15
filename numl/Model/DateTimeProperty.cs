@@ -119,8 +119,7 @@ namespace numl.Model
                            DateTimeFeature.Day;
 
             if (portion.HasFlag(DatePortion.DateExtended))
-                Features |= DateTimeFeature.Year | DateTimeFeature.Month |
-                            DateTimeFeature.Day;
+                Features |= DateTimeFeature.DayOfYear | DateTimeFeature.DayOfWeek;
 
             if (portion.HasFlag(DatePortion.Time))
                 Features |= DateTimeFeature.Hour | DateTimeFeature.Minute;

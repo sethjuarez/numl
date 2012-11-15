@@ -170,7 +170,7 @@ namespace numl.Utils
             setter.Invoke(o, value);
         }
 
-        public static bool CanUseType(Type t)
+        public static bool CanUseSimpleType(Type t)
         {
             if (t == typeof(string))
                 return true;
@@ -178,8 +178,6 @@ namespace numl.Utils
                 return true;
             else if (t == typeof(char))
                 return true;
-            //else if (t == typeof(DateTime))
-            //    return true;
             else if (t.BaseType == typeof(Enum))
                 return true;
             else

@@ -54,7 +54,6 @@ namespace numl.Model
             if (Features.Length == 0)
                 throw new InvalidOperationException("Cannot conver item with an empty Feature set.");
 
-            int j = -1;
             for (int i = 0; i < Features.Length; i++)
             {
                 // current feature

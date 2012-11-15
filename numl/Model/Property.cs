@@ -44,7 +44,10 @@ namespace numl.Model
 
         public virtual IEnumerable<double> Convert(object o)
         {
-            yield return FastReflection.Convert(o);
+            if (FastReflection.CanUseSimpleType(o.GetType()))
+                yield return FastReflection.Convert(o);
+            else
+                throw new InvalidOperationException(string.Format("Cannot convert {0} to a double", o.GetType()));
         }
 
         public override string ToString()
