@@ -21,13 +21,8 @@
 */
 
 using System;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using MathNet.Numerics.LinearAlgebra.Double;
-using System.Collections;
 
 namespace numl.Model
 {

@@ -21,11 +21,10 @@
 */
 
 using System;
-using numl.Model;
 using System.Linq;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace numl.Model
 {
@@ -134,7 +133,7 @@ namespace numl.Model
         public override Property GenerateProperty(PropertyInfo property)
         {
             if (property.PropertyType != typeof(DateTime))
-                throw new InvalidOperationException("Must use a datetime property.");
+                throw new InvalidOperationException("Invalid datetime property.");
 
             dp.Name = property.Name;
             return dp;
@@ -154,6 +153,9 @@ namespace numl.Model
         {
             if (!property.PropertyType.GetInterfaces().Contains(typeof(IEnumerable)))
                 throw new InvalidOperationException("Invalid Enumerable type.");
+
+            if (_length <= 0)
+                throw new InvalidOperationException("Cannot have an enumerable feature of 0 or less.");
 
             var ep = new EnumerableProperty(_length);
             ep.Name = property.Name;

@@ -20,44 +20,81 @@
  THE SOFTWARE.
 */
 
+using System;
 using numl.Data;
 using numl.Model;
-using numl.Utils;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace numl.Tests.DataTests
 {
     [TestFixture]
     public class DescriptorTests
     {
-        [Test]
-        public void Test_Student_Descriptor()
+        [TestCase(-1, "Nice", typeof(bool), typeof(Property))]
+        [TestCase(0, "Name", typeof(string), typeof(StringProperty))]
+        [TestCase(1, "Grade", typeof(Grade), typeof(Property))]
+        [TestCase(2, "GPA", typeof(double), typeof(Property))]
+        [TestCase(3, "Age", typeof(int), typeof(Property))]
+        [TestCase(4, "Friends", typeof(int), typeof(Property))]
+        public void Test_Student_Descriptor(int index, string name, Type type, Type propertyType)
         {
             var d = Descriptor.Create<Student>();
-            Assert.AreEqual(5, d.Features.Length);
-            
-            Assert.AreEqual("Name", d.Features[0].Name);
-            Assert.AreEqual(typeof(string), d.Features[0].Type);
-            Assert.AreEqual(typeof(StringProperty), d.Features[0].GetType());
+            var property = index < 0 ? d.Label : d.Features[index];
+            Assert.AreEqual(name, property.Name);
+            Assert.AreEqual(type, property.Type);
+            Assert.AreEqual(propertyType, property.GetType());
+        }
 
-            Assert.AreEqual("Grade", d.Features[1].Name);
-            Assert.AreEqual(typeof(Grade), d.Features[1].Type);
+        [TestCase(0, "Date1", DateTimeFeature.Day)]
+        [TestCase(1, "Date2", DateTimeFeature.Day | DateTimeFeature.Year)]
+        [TestCase(2, "Date3", DateTimeFeature.Day | DateTimeFeature.DayOfYear | DateTimeFeature.Millisecond)]
+        [TestCase(3, "Date4", DateTimeFeature.Month | DateTimeFeature.Year | DateTimeFeature.Second | DateTimeFeature.Hour)]
+        public void Test_Good_Date_Descriptor_With_Features(int index, string name, DateTimeFeature feature)
+        {
+            var desc = Descriptor.Create<FakeDate>();
+            Assert.AreEqual(name, desc.Features[index].Name);
+            Assert.AreEqual(new DateTimeProperty(feature).Features, ((DateTimeProperty)desc.Features[index]).Features);
+        }
 
-            Assert.AreEqual("GPA", d.Features[2].Name);
-            Assert.AreEqual(typeof(double), d.Features[2].Type);
+        [TestCase(4, "Date5", DatePortion.Date)]
+        [TestCase(5, "Date6", DatePortion.Date | DatePortion.TimeExtended)]
+        [TestCase(6, "Date7", DatePortion.Time)]
+        [TestCase(7, "Date8", DatePortion.Date | DatePortion.DateExtended)]
+        public void Test_Good_Date_Descriptor_With_Portions(int index, string name, DatePortion portion)
+        {
+            var desc = Descriptor.Create<FakeDate>();
+            Assert.AreEqual(name, desc.Features[index].Name);
+            Assert.AreEqual(new DateTimeProperty(portion).Features, ((DateTimeProperty)desc.Features[index]).Features);
+        }
 
-            Assert.AreEqual("Age", d.Features[3].Name);
-            Assert.AreEqual(typeof(int), d.Features[3].Type);
+        [Test, ExpectedException(typeof(InvalidOperationException))]
+        public void Test_Bad_Date_Descriptor()
+        {
+            Descriptor.Create<FakeDateWithError>();
+        }
 
-            Assert.AreEqual("Friends", d.Features[4].Name);
-            Assert.AreEqual(typeof(int), d.Features[4].Type);
+        [TestCase(0, "Numbers1", 20)]
+        [TestCase(1, "Numbers2", 5)]
+        [TestCase(2, "Numbers3", 46)]
+        public void Test_Good_Enumrable_Descriptor(int index, string name, int length)
+        {
+            var desc = Descriptor.Create<FakeEnumerable>();
+            Assert.AreEqual(name, desc.Features[index].Name);
+            Assert.AreEqual(length, ((EnumerableProperty)desc.Features[index]).Length);
+        }
 
-            Assert.AreEqual("Nice", d.Label.Name);
-            Assert.AreEqual(typeof(bool), d.Label.Type);
+        [Test, ExpectedException(typeof(InvalidOperationException))]
+        public void Test_Bad_Enumerable_Descriptor()
+        {
+            Descriptor.Create<FakEnumerableWithError1>();
+        }
+
+        [Test, ExpectedException(typeof(InvalidOperationException))]
+        public void Test_Bad_Enumerable_0_Descriptor()
+        {
+            Descriptor.Create<FakEnumerableWithError2>();
         }
     }
 }

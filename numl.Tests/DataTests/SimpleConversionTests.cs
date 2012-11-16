@@ -23,13 +23,12 @@
 using System;
 using numl.Data;
 using numl.Utils;
+using numl.Model;
 using System.Data;
 using System.Linq;
 using numl.Tests.Data;
 using NUnit.Framework;
 using System.Collections.Generic;
-using MathNet.Numerics.LinearAlgebra.Double;
-using numl.Model;
 
 namespace numl.Tests.DataTests
 {

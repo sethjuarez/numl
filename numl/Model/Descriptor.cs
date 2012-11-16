@@ -99,7 +99,6 @@ namespace numl.Model
                 if (item.Length == 1)
                 {
                     var attrib = (NumlAttribute)item[0];
-                    var type = property.PropertyType;
 
                     // generate appropriate property from attribute
                     Property p = attrib.GenerateProperty(property);
@@ -125,6 +124,5 @@ namespace numl.Model
                 Label = label
             };
         }
-
     }
 }

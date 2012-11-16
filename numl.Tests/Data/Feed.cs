@@ -20,8 +20,8 @@
  THE SOFTWARE.
 */
 
-using numl.Model;
 using System;
+using numl.Model;
 
 namespace numl.Data
 {
