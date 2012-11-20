@@ -24,6 +24,10 @@ using System;
 using numl.Model;
 using System.Linq;
 using System.Collections.Generic;
+using MathNet.Numerics.LinearAlgebra.Double;
+using numl.Utils;
+using System.Net;
+
 
 namespace numl.Supervised
 {
@@ -33,12 +37,16 @@ namespace numl.Supervised
 
         public IModel Generate(Descriptor description, IEnumerable<object> examples)
         {
-            //Description = description;
-            //var data = Description.ToExamples(examples);
-            //var model = Generate(data.Item1, data.Item2);
-            //model.Description = Description;
-            //return model;
-            throw new NotImplementedException();
+            Descriptor = description;
+            if (Descriptor.Features == null || Descriptor.Features.Length == 0)
+                throw new InvalidOperationException("Invalid descriptor: Empty feature set!");
+            if (Descriptor.Label == null)
+                throw new InvalidOperationException("Invalid descriptor: Empty label!");
+
+            var doubles = Descriptor.Convert(examples);
+            var tuple = doubles.ToExamples();
+
+            return Generate(tuple.Item1, tuple.Item2);
         }
 
         public IModel Generate<T>(IEnumerable<T> examples)
@@ -48,6 +56,6 @@ namespace numl.Supervised
             return Generate(descriptor, examples);
         }
 
-        //public abstract IModel Generate(Matrix x, Vector y);
+        public abstract IModel Generate(Matrix x, Vector y);
     }
 }

@@ -25,12 +25,13 @@ using System.IO;
 using numl.Model;
 using System.Linq;
 using System.Collections.Generic;
+using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace numl.Supervised
 {
     public interface IModel
     {
-        //double Predict(Vector y);
+        double Predict(Vector y);
         T Predict<T>(T o);
         object Predict(object o);
         Descriptor Descriptor { get; set; }

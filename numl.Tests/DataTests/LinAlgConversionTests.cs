@@ -21,11 +21,11 @@
 */
 
 using System;
-using numl.Math;
 using System.Linq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra.Double;
+using numl.Utils;
 
 namespace numl.Tests.DataTests
 {
@@ -39,7 +39,7 @@ namespace numl.Tests.DataTests
             Vector v = MathConversion.ToVector(x);
 
             Assert.IsInstanceOf(typeof(DenseVector), v);
-            Vector truth = 
+            Vector truth =
                 new DenseVector(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
 
             Assert.AreEqual(truth, x);
@@ -128,7 +128,7 @@ namespace numl.Tests.DataTests
                 { 
                     new double[] { 1, 2, 3, 4, 5, 6, 7 },
                     new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
-                    new double[] { 1, 2, 3, 4, 5, 6,  },
+                    new double[] { 1, 2, 3, 4, 5, 6 },
                     new double[] { 1, 2, 3, 4, 5, 6, 7, 8},
                     new double[] { 1 },
                 };
@@ -149,6 +149,74 @@ namespace numl.Tests.DataTests
                 );
 
             Assert.AreEqual(truth, v);
+        }
+
+        [Test]
+        public void Test_Example_Conversion()
+        {
+            IEnumerable<IEnumerable<double>> x =
+                new double[][] 
+                { 
+                    new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, -1 },
+                    new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 1 },
+                    new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, -1 },
+                    new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 1 },
+                    new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 1 },
+                };
+
+            var tuple = MathConversion.ToExamples(x);
+
+            Matrix m =
+                new DenseMatrix(
+                    new double[,] { 
+                        { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
+                        { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
+                        { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
+                        { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
+                        { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
+                    }
+                );
+
+            Vector v =
+                new DenseVector(new double[] { -1, 1, -1, 1, 1 });
+
+            Assert.AreEqual(m, tuple.Item1);
+            Assert.AreEqual(v, tuple.Item2);
+        }
+
+        [Test]
+        public void Test_Jagged_Example_Conversion()
+        {
+            IEnumerable<IEnumerable<double>> x =
+                new double[][] 
+                { 
+                    new double[] { 1, 2, 3, 4, 5, 6, 7 },
+                    new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+                    new double[] { 1, 2, 3, 4, 5, 6 },
+                    new double[] { 1, 2, 3, 4, 5, 6, 7, 8 },
+                    new double[] { 1 },
+                };
+
+            var tuple = MathConversion.ToExamples(x);
+
+
+            Matrix m =
+                new DenseMatrix(
+                    new double[,] { 
+                        { 1, 2, 3, 4, 5, 6, 7, 0, 0 },
+                        { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
+                        { 1, 2, 3, 4, 5, 6, 0, 0, 0 },
+                        { 1, 2, 3, 4, 5, 6, 7, 8, 0 },
+                        { 1, 0, 0, 0, 0, 0, 0, 0, 0 },
+                    }
+                );
+
+            Vector v =
+                new DenseVector(new double[] { 0, 10, 0, 0, 0 });
+
+
+            Assert.AreEqual(m, tuple.Item1);
+            Assert.AreEqual(v, tuple.Item2);
         }
     }
 }

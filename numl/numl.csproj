@@ -51,6 +51,7 @@
     <Compile Include="Model\DateTimeProperty.cs" />
     <Compile Include="Model\Property.cs" />
     <Compile Include="Model\StringProperty.cs" />
+    <Compile Include="Supervised\Perceptron\Perceptron.cs" />
     <Compile Include="Utils\MathConversion.cs" />
     <Compile Include="Model\Descriptor.cs" />
     <Compile Include="Utils\FastReflection.cs" />
@@ -66,7 +67,6 @@
   <ItemGroup>
     <Folder Include="Math\" />
     <Folder Include="Supervised\KNN\" />
-    <Folder Include="Supervised\Perceptron\" />
     <Folder Include="Supervised\Regression\" />
     <Folder Include="Unsupervised\" />
   </ItemGroup>

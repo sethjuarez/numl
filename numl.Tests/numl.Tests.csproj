@@ -55,6 +55,7 @@
     <Compile Include="Data\Generic.cs" />
     <Compile Include="Data\House.cs" />
     <Compile Include="Data\Student.cs" />
+    <Compile Include="PerceptronTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

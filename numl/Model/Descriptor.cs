@@ -70,6 +70,12 @@ namespace numl.Model
                 foreach (double val in feature.Convert(o))
                     yield return val;
             }
+
+            // convert label (if available)
+            if (Label != null)
+                foreach (double val in Label.Convert(FastReflection.Get(item, Label.Name)))
+                    yield return val;
+
         }
 
         public IEnumerable<IEnumerable<double>> Convert(IEnumerable<object> items)

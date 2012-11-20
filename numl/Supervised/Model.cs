@@ -1,19 +1,24 @@
 ﻿using System;
 using System.IO;
+using numl.Utils;
 using numl.Model;
 using System.Linq;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace numl.Supervised
 {
     public abstract class Model : IModel
     {
         public Descriptor Descriptor { get; set; }
-        //public abstract double Predict(Vector y);
+
+        public abstract double Predict(Vector y);
 
         public object Predict(object o)
         {
+            var vector = Descriptor.Convert(o).ToVector();
+
             throw new NotImplementedException();
         }
 

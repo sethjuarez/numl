@@ -25,7 +25,7 @@ using System.Linq;
 using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra.Double;
 
-namespace numl.Math
+namespace numl.Utils
 {
     public static class MathConversion
     {
@@ -44,21 +44,18 @@ namespace numl.Math
                 return new DenseVector(v);
         }
 
-        public static Matrix ToMatrix(this IEnumerable<IEnumerable<double>> matrix)
+        private static Matrix Build(double[][] x, bool clip = false)
         {
-            // materialize
-            double[][] x = (from v in matrix select v.ToArray()).ToArray();
-
             // rows
             int n = x.Length;
-            if (n == 0) 
+            if (n == 0)
                 throw new InvalidOperationException("Empty matrix (n)");
 
             // cols (being nice here...)
             var cols = x.Select(v => v.Length);
             int d = cols.Max();
 
-            if (d == 0) 
+            if (d == 0)
                 throw new InvalidOperationException("Empty matrix (d)");
 
             // total zeros in matrix
@@ -75,19 +72,60 @@ namespace numl.Math
 
             Matrix m;
             if (percent > .5m)
-                m = new SparseMatrix(n, d);
+                m = new SparseMatrix(n, clip ? d - 1 : d);
             else
-                m = new DenseMatrix(n, d);
+                m = new DenseMatrix(n, clip ? d - 1 : d);
+
+            return m;
+        }
+
+        public static Matrix ToMatrix(this IEnumerable<IEnumerable<double>> matrix)
+        {
+            // materialize
+            double[][] x = (from v in matrix select v.ToArray()).ToArray();
+
+            // determine matrix
+            // size and type
+            var m = Build(x);
 
             // fill 'er up!
-            for (int i = 0; i < n; i++)
-                for (int j = 0; j < d; j++)
-                    if(j >= x[i].Length)  // over bound limits
-                        m[i, j] = 0;      // pad overlow to 0
+            for (int i = 0; i < m.RowCount; i++)
+                for (int j = 0; j < m.ColumnCount; j++)
+                    if (j >= x[i].Length)  // over bound limits
+                        m[i, j] = 0;       // pad overlow to 0
                     else
                         m[i, j] = x[i][j];
 
-            return m;            
+            return m;
+        }
+
+        public static Tuple<Matrix, Vector> ToExamples(this IEnumerable<IEnumerable<double>> matrix)
+        {
+            // materialize
+            double[][] x = (from v in matrix select v.ToArray()).ToArray();
+
+            // determine matrix
+            // size and type
+            var m = Build(x, true); // clip last col
+
+            // fill 'er up!
+            for (int i = 0; i < m.RowCount; i++)
+                for (int j = 0; j < m.ColumnCount; j++)
+                    if (j >= x[i].Length)  // over bound limits
+                        m[i, j] = 0;       // pad overlow to 0
+                    else
+                        m[i, j] = x[i][j];
+
+            // fill up vector
+            DenseVector y = new DenseVector(m.RowCount);
+            for (int i = 0; i < m.RowCount; i++)
+                if (m.ColumnCount >= x[i].Length)
+                    y[i] = 0;              // pad overflow to 0
+                else
+                    y[i] = x[i][m.ColumnCount];
+
+            return new Tuple<Matrix, Vector>(m, y);
+
         }
     }
 }
