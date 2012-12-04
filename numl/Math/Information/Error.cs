@@ -36,13 +36,13 @@ namespace numl.Math.Information
 
             double length = x.Count();
 
-            var e = (from i in x.Distinct()
+            var e = from i in x.Distinct()
                      let q = (from j in x
                               where j == i
                               select j).Count()
-                     select q / length).Max();
+                     select q / length;
 
-            return e;
+            return 1 - e.Max();
         }
     }
 }

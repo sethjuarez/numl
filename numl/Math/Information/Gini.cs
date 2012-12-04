@@ -40,10 +40,9 @@ namespace numl.Math.Information
                       let q = (from j in x
                                where j == i
                                select j).Count()
-                      select q / length).ToArray();
+                      select q / length);
 
-            var g = 1 - (from j in px
-                         select j * j).Sum();
+            var g = 1 - px.Select(d => d * d).Sum();
 
             return g;
         }

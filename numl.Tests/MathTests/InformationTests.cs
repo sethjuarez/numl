@@ -11,7 +11,12 @@ namespace numl.Tests.MathTests
     [TestFixture]
     public class InformationTests
     {
-        [TestCase(new[] { 6d, 3, 3, 2, 1 }, typeof(Entropy), 2.1055872616983)]
+        [TestCase(new[] { 3d, 3, 2, 1, 1, 0, 3, 3, 3, 4 }, typeof(Entropy), 1.96096)]
+        [TestCase(new[] { 2d, 3, 3, 2, 4, 7, 6, 3, 2, 7 }, typeof(Entropy), 2.17095)]
+        [TestCase(new[] { 3d, 3, 2, 1, 1, 0, 3, 3, 3, 4 }, typeof(Gini), 0.68)]
+        [TestCase(new[] { 2d, 3, 3, 2, 4, 7, 6, 3, 2, 7 }, typeof(Gini), 0.76)]
+        [TestCase(new[] { 3d, 3, 2, 1, 1, 0, 3, 3, 3, 4 }, typeof(Error), 0.5)]
+        [TestCase(new[] { 2d, 3, 3, 2, 4, 7, 6, 3, 2, 7 }, typeof(Error), 0.7)]
         public void Impurity_Calculation(double[] x, Type t, double truth)
         {
             Assert.AreEqual(typeof(Impurity), t.BaseType);
