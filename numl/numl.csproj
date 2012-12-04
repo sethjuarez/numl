@@ -31,7 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MathNet.Numerics">
+    <Reference Include="MathNet.Numerics, Version=2011.4.17.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -47,11 +48,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Math\Helpers.cs" />
+    <Compile Include="Math\Information\Entropy.cs" />
+    <Compile Include="Math\Information\Error.cs" />
+    <Compile Include="Math\Information\Gini.cs" />
+    <Compile Include="Math\Information\Impurity.cs" />
+    <Compile Include="Math\Metrics\CosineDistance.cs" />
+    <Compile Include="Math\Metrics\CosineSimilarity.cs" />
+    <Compile Include="Math\Metrics\EuclidianDistance.cs" />
+    <Compile Include="Math\Metrics\EuclidianSimilarity.cs" />
+    <Compile Include="Math\Metrics\HammingDistance.cs" />
+    <Compile Include="Math\Metrics\IDistance.cs" />
+    <Compile Include="Math\Metrics\ISimilarity.cs" />
+    <Compile Include="Math\Metrics\ManhattanDistance.cs" />
+    <Compile Include="Math\Metrics\PearsonCorrelation.cs" />
+    <Compile Include="Math\Metrics\TanimotoCoefficient.cs" />
+    <Compile Include="Math\Range.cs" />
     <Compile Include="Model\EnumerableProperty.cs" />
     <Compile Include="Model\DateTimeProperty.cs" />
     <Compile Include="Model\Property.cs" />
     <Compile Include="Model\StringProperty.cs" />
-    <Compile Include="Supervised\Perceptron\Perceptron.cs" />
+    <Compile Include="Supervised\Perceptron.cs" />
     <Compile Include="Utils\MathConversion.cs" />
     <Compile Include="Model\Descriptor.cs" />
     <Compile Include="Utils\FastReflection.cs" />
@@ -62,12 +79,9 @@
     <Compile Include="Supervised\IGenerator.cs" />
     <Compile Include="Supervised\IModel.cs" />
     <Compile Include="Supervised\Model.cs" />
-    <Compile Include="Supervised\DecisionTree\Node.cs" />
+    <Compile Include="Supervised\Node.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Math\" />
-    <Folder Include="Supervised\KNN\" />
-    <Folder Include="Supervised\Regression\" />
     <Folder Include="Unsupervised\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
