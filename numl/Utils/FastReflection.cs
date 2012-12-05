@@ -172,16 +172,11 @@ namespace numl.Utils
 
         public static bool CanUseSimpleType(Type t)
         {
-            if (t == typeof(string))
-                return true;
-            else if (t == typeof(bool))
-                return true;
-            else if (t == typeof(char))
-                return true;
-            else if (t.BaseType == typeof(Enum))
-                return true;
-            else
-                return TypeDescriptor.GetConverter(t).CanConvertTo(typeof(double));
+            return t == typeof(string) ||
+                   t == typeof(bool) ||
+                   t == typeof(char) ||
+                   t.BaseType == typeof(Enum) ||
+                   TypeDescriptor.GetConverter(t).CanConvertTo(typeof(double));
         }
 
         /// <summary>

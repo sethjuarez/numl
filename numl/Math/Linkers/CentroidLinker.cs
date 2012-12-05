@@ -21,41 +21,43 @@
 */
 
 using System;
-using numl.Model;
+using numl.Math;
 using System.Linq;
+using numl.Math.Metrics;
 using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra.Double;
-using numl.Math;
-using System.Net;
 
-
-namespace numl.Supervised
+namespace numl.Math.Linkers
 {
-    public abstract class Generator : IGenerator
+    public class CentroidLinker : ILinker
     {
-        public Descriptor Descriptor { get; set; }
-
-        public IModel Generate(Descriptor description, IEnumerable<object> examples)
+        private readonly IDistance _metric;
+        public CentroidLinker(IDistance metric)
         {
-            Descriptor = description;
-            if (Descriptor.Features == null || Descriptor.Features.Length == 0)
-                throw new InvalidOperationException("Invalid descriptor: Empty feature set!");
-            if (Descriptor.Label == null)
-                throw new InvalidOperationException("Invalid descriptor: Empty label!");
-
-            var doubles = Descriptor.Convert(examples);
-            var tuple = doubles.ToExamples();
-
-            return Generate(tuple.Item1, tuple.Item2);
+            _metric = metric;
         }
 
-        public IModel Generate<T>(IEnumerable<T> examples)
-             where T : class
+        public double Distance(IEnumerable<Vector> x, IEnumerable<Vector> y)
         {
-            var descriptor = Descriptor.Create<T>();
-            return Generate(descriptor, examples);
+            return _metric.Compute(Mean(x), Mean(y));
         }
 
-        public abstract IModel Generate(Matrix x, Vector y);
+        public Vector Sum(IEnumerable<Vector> source)
+        {
+
+            Vector vector = null;
+            foreach (Vector v in source)
+                if (vector == null)
+                    vector = new DenseVector(v);
+                else
+                    vector.Add(v);
+
+            return vector;
+        }
+
+        public Vector Mean(IEnumerable<Vector> source)
+        {
+            return (Vector)Sum(source).Divide(source.Count());
+        }
     }
 }

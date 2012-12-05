@@ -26,6 +26,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra.Double;
 using numl.Utils;
+using numl.Math;
 
 namespace numl.Tests.DataTests
 {

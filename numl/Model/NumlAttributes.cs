@@ -141,10 +141,10 @@ namespace numl.Model
     }
 
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class EnuerableFeatureAttribute : FeatureAttribute
+    public class EnumerableFeatureAttribute : FeatureAttribute
     {
         private readonly int _length;
-        public EnuerableFeatureAttribute(int length)
+        public EnumerableFeatureAttribute(int length)
         {
             _length = length;            
         }

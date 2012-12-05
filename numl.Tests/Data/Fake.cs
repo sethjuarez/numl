@@ -61,25 +61,25 @@ namespace numl.Data
 
     public class FakeEnumerable
     {
-        [EnuerableFeature(20)]
+        [EnumerableFeature(20)]
         public IEnumerable<int> Numbers1 { get; set; }
 
-        [EnuerableFeature(5)]
+        [EnumerableFeature(5)]
         public double[] Numbers2 { get; set; }
 
-        [EnuerableFeature(46)]
+        [EnumerableFeature(46)]
         public List<char> Numbers3 { get; set; }
     }
 
     public class FakEnumerableWithError1
     {
-        [EnuerableFeature(12)]
+        [EnumerableFeature(12)]
         public int NotAnEnumerable { get; set; }
     }
 
     public class FakEnumerableWithError2
     {
-        [EnuerableFeature(0)]
+        [EnumerableFeature(0)]
         public List<char> Numbers3 { get; set; }
     }
 }

@@ -52,7 +52,7 @@ namespace numl.Model
         public IEnumerable<double> Convert(object item)
         {
             if (Features.Length == 0)
-                throw new InvalidOperationException("Cannot conver item with an empty Feature set.");
+                throw new InvalidOperationException("Cannot convert item with an empty Feature set.");
 
             for (int i = 0; i < Features.Length; i++)
             {

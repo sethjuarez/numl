@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Generic;
 
-namespace numl.Utils
+namespace numl.Math
 {
     public static class MathConversion
     {

@@ -20,6 +20,7 @@
  THE SOFTWARE. 
 */
 
+using MathNet.Numerics.LinearAlgebra.Double;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -21,41 +21,37 @@
 */
 
 using System;
-using numl.Model;
 using System.Linq;
+using numl.Math;
 using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra.Double;
-using numl.Math;
-using System.Net;
 
-
-namespace numl.Supervised
+namespace numl.Unsupervised
 {
-    public abstract class Generator : IGenerator
+    public class Cluster
     {
-        public Descriptor Descriptor { get; set; }
+        internal int Id { get; set; }
+        internal IEnumerable<Vector> Points { get; set; }
+        public IEnumerable<object> Members { get; set; }
+        public Cluster[] Children { get; set; }
 
-        public IModel Generate(Descriptor description, IEnumerable<object> examples)
+        public Cluster()
         {
-            Descriptor = description;
-            if (Descriptor.Features == null || Descriptor.Features.Length == 0)
-                throw new InvalidOperationException("Invalid descriptor: Empty feature set!");
-            if (Descriptor.Label == null)
-                throw new InvalidOperationException("Invalid descriptor: Empty label!");
-
-            var doubles = Descriptor.Convert(examples);
-            var tuple = doubles.ToExamples();
-
-            return Generate(tuple.Item1, tuple.Item2);
         }
 
-        public IModel Generate<T>(IEnumerable<T> examples)
-             where T : class
+        public Cluster(int id, Cluster left, Cluster right )
         {
-            var descriptor = Descriptor.Create<T>();
-            return Generate(descriptor, examples);
+            Id = id;
+            Children = new Cluster[] { left, right };
+            Points = left.Points.Concat(right.Points);
+            // maybe only need item at leaves
+            Members = left.Members.Concat(right.Members).ToArray();
         }
 
-        public abstract IModel Generate(Matrix x, Vector y);
+        public Cluster(int id, IEnumerable<Cluster> children)
+        {
+            Id = id;
+            Children = children.ToArray();
+        }
     }
 }

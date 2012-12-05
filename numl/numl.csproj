@@ -53,6 +53,11 @@
     <Compile Include="Math\Information\Error.cs" />
     <Compile Include="Math\Information\Gini.cs" />
     <Compile Include="Math\Information\Impurity.cs" />
+    <Compile Include="Math\Linkers\AverageLinker.cs" />
+    <Compile Include="Math\Linkers\CentroidLinker.cs" />
+    <Compile Include="Math\Linkers\CompleteLinker.cs" />
+    <Compile Include="Math\Linkers\ILinker.cs" />
+    <Compile Include="Math\Linkers\SingleLinker.cs" />
     <Compile Include="Math\Metrics\CosineDistance.cs" />
     <Compile Include="Math\Metrics\CosineSimilarity.cs" />
     <Compile Include="Math\Metrics\EuclidianDistance.cs" />
@@ -69,8 +74,11 @@
     <Compile Include="Model\Property.cs" />
     <Compile Include="Model\StringProperty.cs" />
     <Compile Include="Supervised\Perceptron.cs" />
-    <Compile Include="Utils\MathConversion.cs" />
+    <Compile Include="Unsupervised\Cluster.cs" />
+    <Compile Include="Unsupervised\HClusterModel.cs" />
+    <Compile Include="Math\MathConversion.cs" />
     <Compile Include="Model\Descriptor.cs" />
+    <Compile Include="Unsupervised\KMeans.cs" />
     <Compile Include="Utils\FastReflection.cs" />
     <Compile Include="Model\NumlAttributes.cs" />
     <Compile Include="Model\StringHelpers.cs" />
@@ -81,9 +89,7 @@
     <Compile Include="Supervised\Model.cs" />
     <Compile Include="Supervised\Node.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Unsupervised\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
