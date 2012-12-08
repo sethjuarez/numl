@@ -49,6 +49,19 @@ namespace numl.Model
             }
         }
 
+        public Property At(int i)
+        {
+            if (i < 0 || i > VectorLength)
+                throw new IndexOutOfRangeException(string.Format("{0} falls outside of the appropriate range", i));
+
+            var q = (from p in Features
+                    where i >= p.Start && i < p.Start + p.Length
+                    select p);
+
+            return q.First();
+        }
+
+
         public IEnumerable<double> Convert(object item)
         {
             if (Features.Length == 0)

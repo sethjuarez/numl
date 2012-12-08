@@ -86,14 +86,14 @@ namespace numl.Unsupervised
                 for (int j = 0; j < X.RowCount; j++)
                 {
                     for (int z = 0; z < X.ColumnCount; z++)
-                        new_means.Storage[j, z] += X.At(j, z);
+                        new_means[j, z] += X.At(j, z);
                     sum[assignments[j]]++;
                 }
 
                 // Part 2: Divide by counts
                 for (int j = 0; j < new_means.RowCount; j++)
                     for(int z= 0; z < new_means.ColumnCount; z++)
-                        new_means.Storage[j, z] /= sum.At(j);
+                        new_means[j, z] /= sum.At(j);
 
 
                 // Part 3: Check for convergence
@@ -146,7 +146,7 @@ namespace numl.Unsupervised
 
             for (int i = 0; i < k; i++)
                 for (int j = 0; j < X.ColumnCount; j++)
-                    m.Storage[i, j] = X.At(i * multiple, j);
+                    m[i, j] = X.At(i * multiple, j);
 
             return m;
 
@@ -181,7 +181,7 @@ namespace numl.Unsupervised
                 while (true);
 
                 for (int j = 0; j < X.ColumnCount; j++)
-                    m.Storage[i, j] = X.At(index, j);
+                    m[i, j] = X.At(index, j);
             }
 
             return m;

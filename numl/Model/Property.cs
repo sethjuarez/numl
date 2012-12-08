@@ -59,6 +59,7 @@ namespace numl.Model
         public Type Type { get; set; }
         public virtual int Length { get { return 1; } }
         public int Start { get; set; }
+        public bool Discrete { get; set; }
 
         public virtual IEnumerable<double> Convert(object o)
         {

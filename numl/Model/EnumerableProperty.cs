@@ -59,6 +59,16 @@ namespace numl.Model
                         throw new InvalidCastException(
                            string.Format("Cannot properly cast {0} to a number", item.GetType()));
 
+                    // check if contained item is discrete
+                    if (i == 0)
+                    {
+                        var type = item.GetType();
+                        Discrete = type.BaseType == typeof(Enum) ||
+                                   type == typeof(bool) ||
+                                   type == typeof(string) ||
+                                   type == typeof(char);
+                    }
+
                     yield return FastReflection.Convert(item);
 
                     // should pull no more than specified length
@@ -66,6 +76,7 @@ namespace numl.Model
                         break;
                 }
 
+                // pad excess with 0's
                 for (int j = i + 1; i < Length; i++)
                     yield return 0;
             }

@@ -73,6 +73,7 @@
     <Compile Include="Model\DateTimeProperty.cs" />
     <Compile Include="Model\Property.cs" />
     <Compile Include="Model\StringProperty.cs" />
+    <Compile Include="Supervised\DecisionTree.cs" />
     <Compile Include="Supervised\Perceptron.cs" />
     <Compile Include="Unsupervised\Cluster.cs" />
     <Compile Include="Unsupervised\HClusterModel.cs" />

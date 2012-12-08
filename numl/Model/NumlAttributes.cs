@@ -45,6 +45,13 @@ namespace numl.Model
             else
                 p = new Property();
 
+
+            p.Discrete = type.BaseType == typeof(Enum) ||
+                         type == typeof(bool) ||
+                         type == typeof(string) ||
+                         type == typeof(char) ||
+                         type == typeof(DateTime);
+
             p.Type = type;
             p.Name = property.Name;
 
@@ -104,7 +111,8 @@ namespace numl.Model
                 Name = property.Name,
                 SplitType = SplitType,
                 Separator = Separator,
-                AsEnum = AsEnum
+                AsEnum = AsEnum,
+                Discrete = true
             };
 
             sp.ImportExclusions(ExclusionFile);
@@ -135,6 +143,7 @@ namespace numl.Model
             if (property.PropertyType != typeof(DateTime))
                 throw new InvalidOperationException("Invalid datetime property.");
 
+            dp.Discrete = true;
             dp.Name = property.Name;
             return dp;
         }
@@ -146,7 +155,7 @@ namespace numl.Model
         private readonly int _length;
         public EnumerableFeatureAttribute(int length)
         {
-            _length = length;            
+            _length = length;
         }
 
         public override Property GenerateProperty(PropertyInfo property)
@@ -158,6 +167,9 @@ namespace numl.Model
                 throw new InvalidOperationException("Cannot have an enumerable feature of 0 or less.");
 
             var ep = new EnumerableProperty(_length);
+            // unless proven otherwise
+            // at expansion time
+            ep.Discrete = false;
             ep.Name = property.Name;
             return ep;
         }

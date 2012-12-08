@@ -20,6 +20,7 @@
  THE SOFTWARE.
 */
 
+using numl.Math;
 using System;
 using System.Xml.Serialization;
 
@@ -32,14 +33,14 @@ namespace numl.Supervised
         public bool IsLeaf { get; set; }
         [XmlAttribute("label")]
         public double Label { get; set; }
-        [XmlArray("values"), XmlArrayItem("d")]
-        public double[] Values { get; set; }
+        [XmlArray("ranges"), XmlArrayItem("d")]
+        public Range[] Segments { get; set; }
         [XmlAttribute("segmented")]
         public bool Segmented { get; set; }
         [XmlArray("children"), XmlArrayItem("n")]
         public Node[] Children { get; set; }
         [XmlAttribute("feature")]
-        public int Feature { get; set; }
+        public int Column { get; set; }
         [XmlAttribute("gain")]
         public double Gain { get; set; }
     }

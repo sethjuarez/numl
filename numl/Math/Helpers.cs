@@ -65,9 +65,51 @@ namespace numl.Math
                         yield return enumx.Current;
                         if (!enumi.MoveNext())
                             break;
-                    }                    
+                    }
                 } while (enumx.MoveNext());
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="indices"></param>
+        /// <returns></returns>
+        public static Matrix Slice(this Matrix x, IEnumerable<int> indices)
+        {
+            var q = indices.Distinct()
+                           .OrderBy(k => k);
+            var count = q.Count();
+            if (count == 0)
+                throw new InvalidOperationException("Cannot slice a a matrix with no valid indices");
+
+            Matrix m = (Matrix)x.CreateMatrix(count, x.ColumnCount);
+            int i = -1;
+            foreach (int j in q)
+                m.SetRow(++i, x.Row(j));
+            return m;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="indices"></param>
+        /// <returns></returns>
+        public static Vector Slice(this Vector x, IEnumerable<int> indices)
+        {
+            var q = indices.Distinct()
+                           .OrderBy(k => k);
+            var count = q.Count();
+            if (count == 0)
+                throw new InvalidOperationException("Cannot slice a a matrix with no valid indices");
+
+            Vector v = (Vector)x.CreateVector(count);
+            int i = -1;
+            foreach (int j in q)
+                v[++i] = x[j];
+            return v;
         }
 
         /// <summary>
@@ -85,6 +127,19 @@ namespace numl.Math
                 if (where(d))
                     yield return i;
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="f"></param>
+        /// <returns></returns>
+        public static IEnumerable<int> Indices(this Matrix x, Func<Vector, bool> f)
+        {
+            foreach (var v in x.RowEnumerator())
+                if (f((Vector)v.Item2))
+                    yield return v.Item1;
         }
 
         /// <summary>
@@ -123,5 +178,6 @@ namespace numl.Math
 
             return ranges;
         }
+
     }
 }

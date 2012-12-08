@@ -26,6 +26,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using numl.Math;
 using numl.Math.Information;
+using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace numl.Tests.Math
 {
@@ -78,6 +79,44 @@ namespace numl.Tests.Math
         {
             var slice = Helpers.Slice(source, indices).ToArray();
             Assert.AreEqual(truth, slice);
+        }
+
+        [TestCase(new[] { 1.2d, 2.2, 2.1, 5.2, 0.2, 6.7, 8.8 }, new[] { 2, 3, 4 }, new[] { 2.1d, 5.2, 0.2, })]
+        [TestCase(new[] { 1.2d, 2.2, 2.1, 5.2, 0.2, 6.7, 8.8 }, new[] { 4, 2, 4, 2 }, new[] { 2.1d, 0.2 })]
+        [TestCase(new[] { 1.2d, 2.2, 2.1, 5.2, 0.2, 6.7, 8.8 }, new[] { 0, 6, 4, 3, 2, 5, 1 }, new[] { 1.2d, 2.2, 2.1, 5.2, 0.2, 6.7, 8.8 })]
+        public void Test_Vector_Slicing_With_Indices(IEnumerable<double> source, IEnumerable<int> indices, IEnumerable<double> truth)
+        {
+            var x = new DenseVector(source.ToArray());
+            var t = new DenseVector(truth.ToArray());
+            var slice = Helpers.Slice(x, indices);
+            Assert.AreEqual(t, slice);
+        }
+
+        [Test]
+        public void Test_Matrix_Slicing_With_Indices()
+        {
+            var x = new DenseMatrix(new[,]{
+                { 0d, 10 },
+                { 1d, 20 },
+                { 2d, 30 },
+                { 3d, 40 },
+                { 4d, 50 },
+                { 5d, 60 },
+                { 6d, 70 },
+            });
+
+            var indices = new[] { 6, 4, 2, 4, 1 };
+
+            var truth = new DenseMatrix(new[,]{
+                { 1d, 20 },
+                { 2d, 30 },
+                { 4d, 50 },
+                { 6d, 70 },
+            });
+
+            var actual = Helpers.Slice(x, indices);
+
+            Assert.AreEqual(truth, actual);
         }
 
 

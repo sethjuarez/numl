@@ -54,6 +54,7 @@ namespace numl.Model
             Exclude = new string[] { };
             AsEnum = false;
             Type = typeof(string);
+            Discrete = true;
         }
 
         public string Separator { get; set; }

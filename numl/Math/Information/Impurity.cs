@@ -37,7 +37,9 @@ namespace numl.Math.Information
         /// conditional impurity value
         /// is calculated.
         /// </summary>
-        public Range[] Splits { get; set; }
+        public Range[] Segments { get; set; }
+
+        public bool Segmented { get; set; }
 
         /// <summary>
         /// Calculates impurity measure of <c>x</c>.
@@ -88,10 +90,13 @@ namespace numl.Math.Information
                    result = 0,          // aggregated sum
                    count = x.Count();   // total items in list
 
+            Segments = ranges.OrderBy(r => r.Min).ToArray();
+            Segmented = true;
+
             // for each range calculate
             // conditional impurity and
             // aggregate results
-            foreach (Range range in ranges)
+            foreach (Range range in Segments)
             {
                 // get slice
                 var s = x.Indices(d => d >= range.Min && d < range.Max);
@@ -125,8 +130,12 @@ namespace numl.Math.Information
                    result = 0,          // aggregated sum
                    count = x.Count();   // total items in list
 
-            var values = x.Distinct();  // distinct values to split on
+            var values = x.Distinct().OrderBy(z => z);  // distinct values to split on
 
+            Segments = values.Select(z => Range.Make(z, z)).ToArray();
+            Segmented = false;
+
+            
             // for each distinct value 
             // calculate conditional impurity
             // and aggregate results
