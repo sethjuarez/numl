@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text;
 using System.Linq.Expressions;
 using System.ComponentModel;
+using System.Collections;
 
 namespace numl.Utils
 {
@@ -159,8 +160,41 @@ namespace numl.Utils
         public static object Get(object o, string name)
         {
             var type = o.GetType();
-            var accessor = GetAccessor(type, name);
+            Func<object, object> accessor = GetAccessor(type, name);
             return accessor.Invoke(o);
+        }
+
+        public static IEnumerable<T> Get<T>(IEnumerable items, string name)
+        {
+            Type type = null;
+            Func<object, object> accessor = null;
+            foreach (var o in items)
+            {
+                if (type == null)
+                {
+                    type = o.GetType();
+                    accessor = GetAccessor(type, name);
+                }
+
+                yield return (T)accessor.Invoke(o);
+            }
+        }
+
+        public static IEnumerable Get(IEnumerable items, string name, Type cast)
+        {
+            Type type = null;
+            Func<object, object> accessor = null;
+            TypeConverter converter = new TypeConverter();
+            foreach (var o in items)
+            {
+                if (type == null)
+                {
+                    type = o.GetType();
+                    accessor = GetAccessor(type, name);
+                }
+
+                yield return converter.ConvertTo(accessor.Invoke(o), cast);
+            }
         }
 
         public static void Set(object o, string name, object value)

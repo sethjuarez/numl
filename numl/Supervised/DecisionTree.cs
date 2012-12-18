@@ -66,7 +66,7 @@ namespace numl.Supervised
         {
             // reached depth limit or all labels are the same
             if (depth < 0 || y.Distinct().Count() == 1)
-                return new Node { IsLeaf = true, Label = GetMode(y) };
+                return new Node { IsLeaf = true, Label = y.Mode() };
 
             var tuple = GetBestSplit(x, y, depth, used);
 
@@ -78,7 +78,7 @@ namespace numl.Supervised
             // a weird node of some sort...
             // but just in case...
             if (col == -1)
-                return new Node { IsLeaf = true, Label = GetMode(y) };
+                return new Node { IsLeaf = true, Label = y.Mode() };
 
             used.Add(col);
             Node n = new Node()
@@ -145,31 +145,6 @@ namespace numl.Supervised
             }
 
             return new Tuple<int, double, Impurity>(bestFeature, bestGain, bestMeasure);
-        }
-
-        private double GetMode(Vector y)
-        {
-            // create mode grouping
-            var modes = y
-                        .GroupBy(v => v)
-                        .Select(c => new { Value = c.Key, Count = c.Count() });
-
-            // find max count item
-            var max = modes.Max(g => g.Count);
-
-            // get value of highest mode (might be more than one)
-            var list = modes
-                        .Where(x => x.Count == max && max > 1)
-                        .Select(x => x.Value)
-                        .ToArray();
-
-            // one mode? great
-            if (list.Length == 1)
-                return list[0];
-            // more? pick one randomly
-            else
-                return list[_random.Next(list.Length)];
-
         }
     }
 

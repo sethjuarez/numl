@@ -18,9 +18,14 @@ namespace numl.Supervised
 
         public object Predict(object o)
         {
-            var vector = Descriptor.Convert(o).ToVector();
+            if (Descriptor.Label == null)
+                throw new InvalidOperationException("Empty label precludes prediction!");
 
-            throw new NotImplementedException();
+            var y = Descriptor.Convert(o).ToVector();
+            var numerical = Predict(y);
+            var result = FastReflection.Convert(numerical, Descriptor.Label.Type);
+            FastReflection.Set(o, Descriptor.Label.Name, result);
+            return o;
         }
 
         public T Predict<T>(T o)

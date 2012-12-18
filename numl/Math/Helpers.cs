@@ -179,5 +179,37 @@ namespace numl.Math
             return ranges;
         }
 
+        public static double Mode(this Vector y)
+        {
+            // only one thing?
+            if (y.Count == 1)
+                return y[0];
+            else // find mode
+            {
+                // create mode grouping
+                var modes = y
+                            .GroupBy(v => v)
+                            .Select(c => new { Value = c.Key, Count = c.Count() });
+
+                // find max count item
+                var max = modes.Max(g => g.Count);
+
+                // get value of highest mode (might be more than one)
+                var list = modes
+                            .Where(x => x.Count == max && max > 1)
+                            .Select(x => x.Value)
+                            .ToArray();
+
+                // one mode? great
+                if (list.Length == 1)
+                    return list[0];
+                // more? pick one randomly
+                else
+                {
+                    Random m = new Random(DateTime.Now.Millisecond);
+                    return list[m.Next(list.Length)];
+                }
+            }
+        }
     }
 }

@@ -234,15 +234,11 @@ namespace numl.Model
             Dictionary<string, double> d = new Dictionary<string, double>();
 
             foreach (string s in examples)
-            {
                 foreach (string key in GetWords(s, separator, exclusion))
-                {
                     if (d.ContainsKey(key))
                         d[key] += 1;
                     else
                         d.Add(key, 1);
-                }
-            }
 
             return d;
         }
