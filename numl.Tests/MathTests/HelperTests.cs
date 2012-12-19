@@ -26,7 +26,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using numl.Math;
 using numl.Math.Information;
-using MathNet.Numerics.LinearAlgebra.Double;
+using numl.Math.LinearAlgebra;
 
 namespace numl.Tests.Math
 {
@@ -38,7 +38,7 @@ namespace numl.Tests.Math
         [TestCase(new[] { 1.2d, 2.2, 2.1, 5.2, 0.2, 6.7, 8.8 }, 0.1, new double[] { })]
         public void Test_Enumerable_Slicing_With_Where_LessThanEqual(IEnumerable<double> source, double pivot, IEnumerable<double> truth)
         {
-            var slice = Helpers.Slice(source, d => d <= pivot);
+            var slice = new Vector(source).Slice(d => d <= pivot);
             Assert.AreEqual(truth, slice);
         }
 
@@ -47,7 +47,7 @@ namespace numl.Tests.Math
         [TestCase(new[] { 1.2d, 2.2, 2.1, 5.2, 0.2, 6.7, 8.8 }, 0.1, new[] { 1.2d, 2.2, 2.1, 5.2, 0.2, 6.7, 8.8 })]
         public void Test_Enumerable_Slicing_With_Where_GreaterThan(IEnumerable<double> source, double pivot, IEnumerable<double> truth)
         {
-            var slice = Helpers.Slice(source, d => d > pivot);
+            var slice = new Vector(source).Slice(d => d > pivot);
             Assert.AreEqual(truth, slice);
         }
 
@@ -56,7 +56,7 @@ namespace numl.Tests.Math
         [TestCase(new[] { 1.2d, 2.2, 2.1, 5.2, 0.2, 6.7, 8.8 }, 0.1, new int[] { })]
         public void Test_Enumerable_Indices_With_Where_LessThanEqual(IEnumerable<double> source, double pivot, IEnumerable<int> truth)
         {
-            var slice = Helpers.Indices(source, d => d <= pivot);
+            var slice = new Vector(source).Indices(d => d <= pivot);
             Assert.AreEqual(truth, slice);
         }
 
@@ -65,7 +65,7 @@ namespace numl.Tests.Math
         [TestCase(new[] { 1.2d, 2.2, 2.1, 5.2, 0.2, 6.7, 8.8 }, 0.1, new[] { 0, 1, 2, 3, 4, 5, 6 })]
         public void Test_Enumerable_Indices_With_Where_GreaterThan(IEnumerable<double> source, double pivot, IEnumerable<int> truth)
         {
-            var slice = Helpers.Indices(source, d => d > pivot);
+            var slice = new Vector(source).Indices(d => d > pivot);
             Assert.AreEqual(truth, slice);
         }
 
@@ -77,7 +77,7 @@ namespace numl.Tests.Math
         [TestCase(new[] { 1.2d, 2.2, 2.1, 5.2, 0.2, 6.7, 8.8 }, new int[] { }, new double[] { })]
         public void Test_Enumerable_Slicing_With_Indices(IEnumerable<double> source, IEnumerable<int> indices, IEnumerable<double> truth)
         {
-            var slice = Helpers.Slice(source, indices).ToArray();
+            var slice = new Vector(source).Slice(indices).ToArray();
             Assert.AreEqual(truth, slice);
         }
 
@@ -86,16 +86,16 @@ namespace numl.Tests.Math
         [TestCase(new[] { 1.2d, 2.2, 2.1, 5.2, 0.2, 6.7, 8.8 }, new[] { 0, 6, 4, 3, 2, 5, 1 }, new[] { 1.2d, 2.2, 2.1, 5.2, 0.2, 6.7, 8.8 })]
         public void Test_Vector_Slicing_With_Indices(IEnumerable<double> source, IEnumerable<int> indices, IEnumerable<double> truth)
         {
-            var x = new DenseVector(source.ToArray());
-            var t = new DenseVector(truth.ToArray());
-            var slice = Helpers.Slice(x, indices);
+            var x = new Vector(source);
+            var t = new Vector(truth);
+            var slice = x.Slice(indices);
             Assert.AreEqual(t, slice);
         }
 
         [Test]
         public void Test_Matrix_Slicing_With_Indices()
         {
-            var x = new DenseMatrix(new[,]{
+            Matrix x = new[,]{
                 { 0d, 10 },
                 { 1d, 20 },
                 { 2d, 30 },
@@ -103,18 +103,18 @@ namespace numl.Tests.Math
                 { 4d, 50 },
                 { 5d, 60 },
                 { 6d, 70 },
-            });
+            };
 
             var indices = new[] { 6, 4, 2, 4, 1 };
 
-            var truth = new DenseMatrix(new[,]{
+            Matrix truth = new[,]{
                 { 1d, 20 },
                 { 2d, 30 },
                 { 4d, 50 },
                 { 6d, 70 },
-            });
+            };
 
-            var actual = Helpers.Slice(x, indices);
+            var actual = x.Slice(indices);
 
             Assert.AreEqual(truth, actual);
         }
@@ -123,17 +123,17 @@ namespace numl.Tests.Math
         [Test]
         public void Test_Enumerable_Segmentation_1()
         {
-            var x = new[] { 1d, 2, 3, 4, 5, 6, 7, 8, 9 };
+            Vector x = new[] { 1d, 2, 3, 4, 5, 6, 7, 8, 9 };
             Assert.Throws(typeof(InvalidOperationException),
-                () => Helpers.Segment(x, 1)
+                () => x.Segment(1)
             );
         }
 
         [Test]
         public void Test_Enumerable_Segmentation_2()
         {
-            var x = new[] { 1d, 2, 3, 4, 5, 6, 7, 8, 9 };
-            var ranges = Helpers.Segment(x, 2);
+            Vector x = new[] { 1d, 2, 3, 4, 5, 6, 7, 8, 9 };
+            var ranges = x.Segment(2);
             var truth = new Range[] 
             {
                 Range.Make(1, 5),
@@ -151,8 +151,8 @@ namespace numl.Tests.Math
         [Test]
         public void Test_Enumerable_Segmentation_3()
         {
-            var x = new[] { 1d, 2, 3, 4, 5, 6, 7, 8, 9 };
-            var ranges = Helpers.Segment(x, 3);
+            Vector x = new[] { 1d, 2, 3, 4, 5, 6, 7, 8, 9 };
+            var ranges = x.Segment(3);
             var segmentsize = 8d / 3d;
             var truth = new Range[] 
             {
@@ -172,8 +172,8 @@ namespace numl.Tests.Math
         [Test]
         public void Test_Enumerable_Segmentation_4()
         {
-            var x = new[] { 1d, 2, 3, 4, 5, 6, 7, 8, 9 };
-            var ranges = Helpers.Segment(x, 4);
+            Vector x = new[] { 1d, 2, 3, 4, 5, 6, 7, 8, 9 };
+            var ranges = x.Segment(4);
             var segmentsize = 8d / 4d;
             var truth = new Range[] 
             {

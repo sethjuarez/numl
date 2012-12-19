@@ -6,7 +6,7 @@ using System.Linq;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using numl.Math;
-using MathNet.Numerics.LinearAlgebra.Double;
+using numl.Math.LinearAlgebra;
 
 namespace numl.Supervised
 {

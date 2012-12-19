@@ -27,7 +27,7 @@ using numl.Model;
 using numl.Math;
 using numl;
 using numl.Math.Linkers;
-using MathNet.Numerics.LinearAlgebra.Double;
+using numl.Math.LinearAlgebra;
 
 namespace numl.Unsupervised
 {
@@ -60,7 +60,7 @@ namespace numl.Unsupervised
             var distances = new Dictionary<Tuple<int, int>, double>();
 
             // Create a new cluster for each data point
-            for (int i = 0; i < X.RowCount; i++)
+            for (int i = 0; i < X.Rows; i++)
                 clusters.Add(new Cluster
                 {
                     Id = i,
@@ -72,7 +72,7 @@ namespace numl.Unsupervised
             var key = new Tuple<int, int>(0, 0);
             var distance = 0.0;
 
-            var clusterId = X.RowCount;
+            var clusterId = X.Rows;
 
             while (clusters.Count > 1)
             {

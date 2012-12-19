@@ -24,9 +24,9 @@ using System;
 using numl.Model;
 using System.Linq;
 using System.Collections.Generic;
-using MathNet.Numerics.LinearAlgebra.Double;
 using numl.Math;
 using System.Net;
+using numl.Math.LinearAlgebra;
 
 
 namespace numl.Supervised

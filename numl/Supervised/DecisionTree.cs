@@ -5,7 +5,7 @@ using System.Linq;
 using numl.Math.Information;
 using System.Xml.Serialization;
 using System.Collections.Generic;
-using MathNet.Numerics.LinearAlgebra.Double;
+using numl.Math.LinearAlgebra;
 
 namespace numl.Supervised
 {
@@ -51,7 +51,7 @@ namespace numl.Supervised
             if (Descriptor == null)
                 throw new InvalidOperationException("Cannot build decision tree without type knowledge!");
 
-            var n = BuildTree(x, y, Depth, new List<int>(x.ColumnCount));
+            var n = BuildTree(x, y, Depth, new List<int>(x.Cols));
 
             return new DecisionTreeModel
             {
@@ -118,12 +118,12 @@ namespace numl.Supervised
             int bestFeature = -1;
 
             Impurity bestMeasure = null;
-            for (int i = 0; i < x.ColumnCount; i++)
+            for (int i = 0; i < x.Cols; i++)
             {
                 double gain = 0;
                 Impurity measure = (Impurity)Activator.CreateInstance(ImpurityType);
                 // get appropriate column vector
-                var feature = x.Column(i);
+                var feature = x.Col(i);
                 // get appropriate feature at index i
                 // (important on because of multivalued
                 // cols)

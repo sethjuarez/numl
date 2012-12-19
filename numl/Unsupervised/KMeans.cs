@@ -27,7 +27,8 @@ using numl.Math.Metrics;
 using numl.Math;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using MathNet.Numerics.LinearAlgebra.Double;
+using numl.Math.LinearAlgebra;
+using numl.Math.Probability;
 
 namespace numl.Unsupervised
 {
@@ -41,30 +42,55 @@ namespace numl.Unsupervised
             
         }
 
-        public KMeans(Descriptor descriptor)
+        public Cluster Generate(Descriptor descriptor, IEnumerable<object> examples, int k, IDistance metric = null)
         {
+            var data = examples.ToArray();
             Descriptor = descriptor;
+            Matrix X = Descriptor.Convert(examples).ToMatrix();
+
+            var assignments = Generate(X, k, metric);
+
+            return GenerateClustering(X, assignments, data);
+
         }
 
-        public int[] Generate(Matrix X, int k, IDistance metric = null)
+
+        private Cluster GenerateClustering(Matrix x, int[] assignments, object[] data = null)
+        {
+            var clusters = new List<Cluster>();
+
+            // Create a new cluster for each data point
+            for (int i = 0; i < x.Rows; i++)
+                clusters.Add(new Cluster
+                {
+                    Id = i,
+                    Points = new Vector[] { x[i] },
+                    Members = data != null ? new object[] { data[i] } : new object[] { x[i] }
+                });
+
+            // TODO: FINISH HERE!
+            throw new NotImplementedException();
+        }
+
+        public int[] Generate(Matrix X, int k, IDistance metric, object[] data = null)
         {
             if (metric == null)
                 metric = new EuclidianDistance();
 
             var means = InitializeRandom(X, k);
             var diff = double.MaxValue;
-            int[] assignments = new int[X.RowCount];
+            int[] assignments = new int[X.Rows];
 
             for (int i = 0; i < 100; i++)
             {
                 // Assignment step
-                Parallel.For(0, X.RowCount, j =>
+                Parallel.For(0, X.Rows, j =>
                 {
                     var min_index = -1;
                     var min = double.MaxValue;
                     // current example
                     var x = (Vector)X.Row(j);
-                    for (int m = 0; m < means.RowCount; m++)
+                    for (int m = 0; m < means.Rows; m++)
                     {
                         var d = (Vector)means.Row(m);
                         var distance = metric.Compute(x, d);
@@ -79,28 +105,28 @@ namespace numl.Unsupervised
 
                 // Update Step
                 // new means has k rows and X.Cols columns
-                Matrix new_means = new DenseMatrix(k, X.ColumnCount, 0);
-                Vector sum = new DenseVector(k, 0);
+                Matrix new_means = Matrix.Zeros(k, X.Cols);
+                Vector sum = Vector.Zeros(k);
 
                 // Part 1: Sum up assignments
-                for (int j = 0; j < X.RowCount; j++)
+                for (int j = 0; j < X.Rows; j++)
                 {
-                    for (int z = 0; z < X.ColumnCount; z++)
-                        new_means[j, z] += X.At(j, z);
+                    for (int z = 0; z < X.Cols; z++)
+                        new_means[j, z] += X[j, z];
                     sum[assignments[j]]++;
                 }
 
                 // Part 2: Divide by counts
-                for (int j = 0; j < new_means.RowCount; j++)
-                    for(int z= 0; z < new_means.ColumnCount; z++)
-                        new_means[j, z] /= sum.At(j);
+                for (int j = 0; j < new_means.Rows; j++)
+                    for(int z= 0; z < new_means.Cols; z++)
+                        new_means[j, z] /= sum[j];
 
 
                 // Part 3: Check for convergence
                 // find sum of normdiff's of means
-                means.RowEnumerator()
-                    .Zip(new_means.RowEnumerator(), (e1, e2) => new { V1 = e1.Item2, V2 = e2.Item2 })
-                    .Sum(a => (a.V1 - a.V2).Norm(2));
+                diff = means.GetRows()
+                    .Zip(new_means.GetRows(), (e1, e2) => new { V1 = e1, V2 = e2 })
+                    .Sum(a => (a.V1 - a.V2).Norm());
 
 
                 // small diff? return
@@ -140,13 +166,13 @@ namespace numl.Unsupervised
 
         private Matrix InitializeUniform(Matrix X, int k)
         {
-            int multiple = (int)System.Math.Floor((double)X.RowCount / (double)k);
+            int multiple = (int)System.Math.Floor((double)X.Rows / (double)k);
 
-            var m = new DenseMatrix(k, X.ColumnCount, 0);
+            var m = Matrix.Zeros(k, X.Cols);
 
             for (int i = 0; i < k; i++)
-                for (int j = 0; j < X.ColumnCount; j++)
-                    m[i, j] = X.At(i * multiple, j);
+                for (int j = 0; j < X.Cols; j++)
+                    m[i, j] = X[i * multiple, j];
 
             return m;
 
@@ -156,10 +182,8 @@ namespace numl.Unsupervised
         {
             // initialize mean variables
             // to random existing points
-            var m = new DenseMatrix(k, X.ColumnCount, 0);
-            Random r = new Random(DateTime.Now.Millisecond);
-            r.Next(k);
-
+            var m = Matrix.Zeros(k, X.Cols);
+            
             var seeds = new List<int>(k);
             for (int i = 0; i < k; i++)
             {
@@ -169,7 +193,7 @@ namespace numl.Unsupervised
                     // pick random row that has not yet 
                     // been used (need to fix this...)
 
-                    index = r.Next(k);
+                    index = MLRandom.GetUniform(k);
 
                     if (!seeds.Contains(index))
                     {
@@ -180,8 +204,8 @@ namespace numl.Unsupervised
                 }
                 while (true);
 
-                for (int j = 0; j < X.ColumnCount; j++)
-                    m[i, j] = X.At(index, j);
+                for (int j = 0; j < X.Cols; j++)
+                    m[i, j] = X[index, j];
             }
 
             return m;

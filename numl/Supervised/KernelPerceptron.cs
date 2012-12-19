@@ -1,4 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra.Double;
+﻿using numl.Math.LinearAlgebra;
 using numl.Math.Kernels;
 using numl.Math;
 using System;
@@ -19,25 +19,23 @@ namespace numl.Supervised
 
         public override IModel Generate(Matrix x, Vector y)
         {
-            int N = y.Count;
-            Vector a = new DenseVector(N, 0);
+            int N = y.Length;
+            Vector a = Vector.Zeros(N);
 
             // compute kernel
             Matrix K = Kernel.Compute(x);
 
             int n = 1;
 
-            // hopefully enough to 
-            // converge right? ;)
-            // need to be smarter about
-            // storing SPD kernels...
+            // hopefully enough to converge right? ;)
+            // need to be smarter about storing SPD kernels...
             bool found_error = true;
             while (n < 500 && found_error)
             {
                 found_error = false;
                 for (int i = 0; i < N; i++)
                 {
-                    found_error = y[i] * a.DotProduct(K.Row(i)) <= 0;
+                    found_error = y[i] * a.Dot(K[i]) <= 0;
                     if (found_error) a[i] += y[i];
                 }
 
@@ -71,7 +69,7 @@ namespace numl.Supervised
         {
             var K = Kernel.Project(X, y);
             double v = 0;
-            for (int i = 0; i < A.Count; i++)
+            for (int i = 0; i < A.Length; i++)
                 v += A[i] * Y[i] * K[i];
 
             return v;

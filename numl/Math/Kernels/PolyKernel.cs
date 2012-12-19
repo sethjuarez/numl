@@ -1,7 +1,8 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using MathNet.Numerics.LinearAlgebra.Double;
+using numl.Math.LinearAlgebra;
+
 
 namespace numl.Math.Kernels
 {
@@ -18,19 +19,19 @@ namespace numl.Math.Kernels
         {
             // by definition a kernel matrix is symmetric;
             // therefore we can cut calculations in half
-            var K = new DenseMatrix(m.RowCount, m.RowCount);
-            for (int i = 0; i < m.RowCount; i++)
-                for (int j = i; j < m.RowCount; j++)
-                    K[i, j] = K[j, i] = System.Math.Pow((1 + m.Row(i).DotProduct(m.Row(j))), Dimension);
+            var K = Matrix.Zeros(m.Rows);
+            for (int i = 0; i < m.Rows; i++)
+                for (int j = i; j < m.Rows; j++)
+                    K[i, j] = K[j, i] = System.Math.Pow((1 + m[i].Dot(m[j])), Dimension);
 
             return K;
         }
 
         public Vector Project(Matrix m, Vector x)
         {
-            var K = new DenseVector(m.RowCount);
-            for (int i = 0; i < K.Count; i++)
-                K[i] = System.Math.Pow(1 + m.Row(i).DotProduct(x), Dimension);
+            var K = Vector.Zeros(m.Rows);
+            for (int i = 0; i < K.Length; i++)
+                K[i] = System.Math.Pow(1 + m[i].Dot(x), Dimension);
 
             return K;
         }

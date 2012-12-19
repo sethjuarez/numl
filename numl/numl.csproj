@@ -31,10 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MathNet.Numerics, Version=2011.4.17.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\MathNet.Numerics.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -48,7 +44,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Math\Helpers.cs" />
     <Compile Include="Math\Information\Entropy.cs" />
     <Compile Include="Math\Information\Error.cs" />
     <Compile Include="Math\Information\Gini.cs" />
@@ -56,6 +51,13 @@
     <Compile Include="Math\Kernels\IKernel.cs" />
     <Compile Include="Math\Kernels\PolyKernel.cs" />
     <Compile Include="Math\Kernels\RBFKernel.cs" />
+    <Compile Include="Math\LinearAlgebra\Matrix.cs" />
+    <Compile Include="Math\LinearAlgebra\MatrixExtensions.cs" />
+    <Compile Include="Math\LinearAlgebra\MatrixOps.cs" />
+    <Compile Include="Math\LinearAlgebra\SingularMatrixException.cs" />
+    <Compile Include="Math\LinearAlgebra\Vector.cs" />
+    <Compile Include="Math\LinearAlgebra\VectorExtensions.cs" />
+    <Compile Include="Math\LinearAlgebra\VectorType.cs" />
     <Compile Include="Math\Linkers\AverageLinker.cs" />
     <Compile Include="Math\Linkers\CentroidLinker.cs" />
     <Compile Include="Math\Linkers\CompleteLinker.cs" />
@@ -71,6 +73,7 @@
     <Compile Include="Math\Metrics\ManhattanDistance.cs" />
     <Compile Include="Math\Metrics\PearsonCorrelation.cs" />
     <Compile Include="Math\Metrics\TanimotoCoefficient.cs" />
+    <Compile Include="Math\Probability\MLRandom.cs" />
     <Compile Include="Math\Range.cs" />
     <Compile Include="Model\EnumerableProperty.cs" />
     <Compile Include="Model\DateTimeProperty.cs" />
@@ -78,10 +81,11 @@
     <Compile Include="Model\StringProperty.cs" />
     <Compile Include="Supervised\DecisionTree.cs" />
     <Compile Include="Supervised\KNN.cs" />
+    <Compile Include="Supervised\LinearRegression.cs" />
     <Compile Include="Supervised\Perceptron.cs" />
     <Compile Include="Unsupervised\Cluster.cs" />
     <Compile Include="Unsupervised\HClusterModel.cs" />
-    <Compile Include="Math\MathConversion.cs" />
+    <Compile Include="Math\LinearAlgebra\MatrixConversions.cs" />
     <Compile Include="Model\Descriptor.cs" />
     <Compile Include="Unsupervised\KMeans.cs" />
     <Compile Include="Utils\FastReflection.cs" />

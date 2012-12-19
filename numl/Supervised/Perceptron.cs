@@ -23,7 +23,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using MathNet.Numerics.LinearAlgebra.Double;
+using numl.Math.LinearAlgebra;
 
 namespace numl.Supervised
 {
@@ -43,8 +43,8 @@ namespace numl.Supervised
 
         public override IModel Generate(Matrix X, Vector Y)
         {
-            Vector w = new DenseVector(X.ColumnCount);
-            Vector a = (Vector)w.Clone();
+            Vector w = Vector.Zeros(X.Cols);
+            Vector a = Vector.Zeros(X.Cols);
 
             double wb = 0;
             double ab = 0;
@@ -53,10 +53,10 @@ namespace numl.Supervised
 
             if (Normalize)
             {
-                for (int i = 0; i < X.RowCount; i++)
+                for (int i = 0; i < X.Rows; i++)
                 {
                     var norm = X.Row(i).Norm(2);
-                    for (int j = 0; j < X.ColumnCount; j++)
+                    for (int j = 0; j < X.Cols; j++)
                         X[i, j] = X[i, j] / norm;
                 }
             }
@@ -64,17 +64,17 @@ namespace numl.Supervised
             // repeat 10 times for *convergence*
             for (int i = 0; i < 10; i++)
             {
-                for (int j = 0; j < X.RowCount; j++)
+                for (int j = 0; j < X.Rows; j++)
                 {
-                    var x = (Vector)X.Row(j);
+                    var x = X[j];
                     var y = Y[j];
 
                     // perceptron update
-                    if (y * (w.DotProduct(x) + wb) <= 0)
+                    if (y * (w.Dot(x) + wb) <= 0)
                     {
-                        w = (Vector)w.Add(y * x);
+                        w = w + y * x;
                         wb += y;
-                        a = (Vector)(a.Add(y * x)).Add(n);
+                        a = (a + y * x) + n;
                         ab += y * n;
                     }
 
@@ -84,7 +84,7 @@ namespace numl.Supervised
 
             return new PerceptronModel
             {
-                W = (Vector)w.Subtract(a.Divide(n)),
+                W = w - (a / n),
                 B = wb - (ab / n),
                 Normalized = Normalize
             };
@@ -100,9 +100,9 @@ namespace numl.Supervised
         public override double Predict(Vector y)
         {
             if (Normalized)
-                y = (Vector)(y / y.Norm(2));
+                y = y / y.Norm();
 
-            return W.DotProduct(y) + B;
+            return W.Dot(y) + B;
         }
     }
 }

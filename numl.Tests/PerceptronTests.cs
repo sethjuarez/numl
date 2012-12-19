@@ -1,4 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra.Double;
+﻿using numl.Math.LinearAlgebra;
 using numl.Supervised;
 using NUnit.Framework;
 using System;
@@ -16,22 +16,23 @@ namespace numl.Tests
         public void Test_Perceptron_Simple()
         {
             PerceptronGenerator generator = new PerceptronGenerator();
-            DenseMatrix x = new DenseMatrix(new double[,] {
+            Matrix x =  new[,]
+            {
                 { 1, 0, 0 },
                 { 1, 0, 1 },
                 { 1, 1, 0 },
                 { 1, 1, 1 }
-            });
+            };
 
-            var test = x.Clone();
+            var test = x.Copy();
 
-            DenseVector y = new DenseVector(new double[] { 1, 1, -1, -1 });
+            Vector y = new [] { 1, 1, -1, -1 };
 
             var model = generator.Generate(x, y);
 
-            DenseVector z = new DenseVector(4);
+            Vector z = Vector.Zeros(4);
 
-            for (int i = 0; i < test.RowCount; i++)
+            for (int i = 0; i < test.Rows; i++)
                 z[i] = model.Predict((Vector)test.Row(i)) <= 0 ? -1 : 1;
 
             Assert.AreEqual(y, z);
@@ -41,7 +42,7 @@ namespace numl.Tests
         public void Test_Perceptron_Simple_2()
         {
             PerceptronGenerator generator = new PerceptronGenerator();
-            DenseMatrix x = new DenseMatrix(new double[,] {
+            Matrix x = new[,]{
                 { 1, 4 }, // yes
                 { -1, 3 }, // no
                 { -1, 2 }, // no
@@ -53,17 +54,17 @@ namespace numl.Tests
                 { 3, 3 }, // yes
                 { 4, 2 }, // yes
                 { 4, 1 }, // yes
-            });
+            };
 
-            var test = x.Clone();
+            var test = x.Copy();
 
-            DenseVector y = new DenseVector(new double[] { 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1 });
+            Vector y = new[] { 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1 };
 
             var model = generator.Generate(x, y);
 
-            DenseVector z = new DenseVector(11);
+            Vector z = Vector.Zeros(11);
 
-            for (int i = 0; i < test.RowCount; i++)
+            for (int i = 0; i < test.Rows; i++)
                 z[i] = model.Predict((Vector)test.Row(i)) <= 0 ? -1 : 1;
 
             Assert.AreEqual(y, z);

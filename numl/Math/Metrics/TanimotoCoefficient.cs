@@ -22,7 +22,7 @@
 
 using System;
 using numl.Math;
-using MathNet.Numerics.LinearAlgebra.Double;
+using numl.Math.LinearAlgebra;
 
 namespace numl.Math.Metrics
 {
@@ -30,8 +30,8 @@ namespace numl.Math.Metrics
     {
         public double Compute(Vector x, Vector y)
         {
-            double dot = x.DotProduct(y);
-            return dot / (System.Math.Pow(x.Norm(2), 2) + System.Math.Pow(y.Norm(2), 2) - dot);
+            double dot = x.Dot(y);
+            return dot / (System.Math.Pow(x.Norm(), 2) + System.Math.Pow(y.Norm(), 2) - dot);
         }
     }
 }

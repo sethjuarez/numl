@@ -1,4 +1,5 @@
-﻿using MathNet.Numerics.LinearAlgebra.Double;
+﻿
+using numl.Math.LinearAlgebra;
 using numl.Math.Metrics;
 using NUnit.Framework;
 using System;
@@ -20,7 +21,7 @@ namespace numl.Tests.MathTests
             Assert.IsTrue(t.GetInterfaces().Contains(typeof(IDistance)));
 
             var distance = (IDistance)Activator.CreateInstance(t);
-            var result = distance.Compute(new DenseVector(x), new DenseVector(y));
+            var result = distance.Compute(new Vector(x), new Vector(y));
 
             truth = System.Math.Round(truth, 4);
             result = System.Math.Round(result, 4);

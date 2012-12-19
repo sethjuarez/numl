@@ -25,7 +25,7 @@ using numl.Math;
 using System.Linq;
 using numl.Math.Metrics;
 using System.Collections.Generic;
-using MathNet.Numerics.LinearAlgebra.Double;
+using numl.Math.LinearAlgebra;
 
 namespace numl.Math.Linkers
 {
@@ -39,25 +39,7 @@ namespace numl.Math.Linkers
 
         public double Distance(IEnumerable<Vector> x, IEnumerable<Vector> y)
         {
-            return _metric.Compute(Mean(x), Mean(y));
-        }
-
-        public Vector Sum(IEnumerable<Vector> source)
-        {
-
-            Vector vector = null;
-            foreach (Vector v in source)
-                if (vector == null)
-                    vector = new DenseVector(v);
-                else
-                    vector.Add(v);
-
-            return vector;
-        }
-
-        public Vector Mean(IEnumerable<Vector> source)
-        {
-            return (Vector)Sum(source).Divide(source.Count());
+            return _metric.Compute(x.Mean(), y.Mean());
         }
     }
 }

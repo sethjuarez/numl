@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using numl.Math;
+using numl.Math.LinearAlgebra;
 
 namespace numl.Math.Information
 {
@@ -46,7 +47,7 @@ namespace numl.Math.Information
         /// </summary>
         /// <param name="x">The list in question</param>
         /// <returns>Impurity measure</returns>
-        public abstract double Calculate(IEnumerable<double> x);
+        public abstract double Calculate(Vector x);
 
         /// <summary>
         /// Calculates segmented conditional impurity of <c>y | x</c>
@@ -60,7 +61,7 @@ namespace numl.Math.Information
         /// <param name="x">Conditioned impurity</param>
         /// <param name="segments">Number of segments over x to condition upon</param>
         /// <returns>Segmented conditional impurity measure</returns>
-        public double SegmentedConditional(IEnumerable<double> y, IEnumerable<double> x, int segments)
+        public double SegmentedConditional(Vector y, Vector x, int segments)
         {
             if (x == null && y == null)
                 throw new InvalidOperationException("x and y do not exist!");
@@ -80,7 +81,7 @@ namespace numl.Math.Information
         /// <param name="x">Conditioned impurity</param>
         /// <param name="segments">Number of segments over x to condition upon</param>
         /// <returns>Segmented conditional impurity measure</returns>
-        public double SegmentedConditional(IEnumerable<double> y, IEnumerable<double> x, IEnumerable<Range> ranges)
+        public double SegmentedConditional(Vector y, Vector x, IEnumerable<Range> ranges)
         {
             if (x == null && y == null)
                 throw new InvalidOperationException("x and y do not exist!");
@@ -120,7 +121,7 @@ namespace numl.Math.Information
         /// <param name="x">Conditioned impurity</param>
         /// <param name="width">Split of values over x to condition upon</param>
         /// <returns>Conditional impurity measure</returns>
-        public double Conditional(IEnumerable<double> y, IEnumerable<double> x)
+        public double Conditional(Vector y, Vector x)
         {
             if (x == null && y == null)
                 throw new InvalidOperationException("x and y do not exist!");
@@ -161,17 +162,17 @@ namespace numl.Math.Information
         /// <param name="x">Conditioned impurity</param>
         /// <param name="width">Split of values over x to condition upon</param>
         /// <returns>Information gain using appropriate measure</returns>
-        public double Gain(IEnumerable<double> y, IEnumerable<double> x)
+        public double Gain(Vector y, Vector x)
         {
             return Calculate(y) - Conditional(y, x);
         }
 
-        public double SegmentedGain(IEnumerable<double> y, IEnumerable<double> x, int segments)
+        public double SegmentedGain(Vector y, Vector x, int segments)
         {
             return Calculate(y) - SegmentedConditional(y, x, segments);
         }
 
-        public double SegmentedGain(IEnumerable<double> y, IEnumerable<double> x, IEnumerable<Range> ranges)
+        public double SegmentedGain(Vector y, Vector x, IEnumerable<Range> ranges)
         {
             return Calculate(y) - SegmentedConditional(y, x, ranges);
         }
@@ -183,21 +184,21 @@ namespace numl.Math.Information
         /// <param name="x">Conditioned impurity</param>
         /// <param name="width">Split of values over x to condition upon</param>
         /// <returns>Relative information gain using appropriate measure</returns>
-        public double RelativeGain(IEnumerable<double> y, IEnumerable<double> x)
+        public double RelativeGain(Vector y, Vector x)
         {
             var h_yx = Conditional(y, x);
             var h_y = Calculate(y);
             return (h_y - h_yx) / h_y;
         }
 
-        public double SegmentedRelativeGain(IEnumerable<double> y, IEnumerable<double> x, int segments)
+        public double SegmentedRelativeGain(Vector y, Vector x, int segments)
         {
             var h_yx = SegmentedConditional(y, x, segments);
             var h_y = Calculate(y);
             return (h_y - h_yx) / h_y;
         }
 
-        public double SegmentedRelativeGain(IEnumerable<double> y, IEnumerable<double> x, IEnumerable<Range> ranges)
+        public double SegmentedRelativeGain(Vector y, Vector x, IEnumerable<Range> ranges)
         {
             var h_yx = SegmentedConditional(y, x, ranges);
             var h_y = Calculate(y);

@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using numl.Math;
-using MathNet.Numerics.LinearAlgebra.Double;
+using numl.Math.LinearAlgebra;
 
 namespace numl.Math.Metrics
 {

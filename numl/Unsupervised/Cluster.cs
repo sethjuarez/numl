@@ -24,7 +24,7 @@ using System;
 using System.Linq;
 using numl.Math;
 using System.Collections.Generic;
-using MathNet.Numerics.LinearAlgebra.Double;
+using numl.Math.LinearAlgebra;
 
 namespace numl.Unsupervised
 {

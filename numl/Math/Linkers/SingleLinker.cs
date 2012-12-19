@@ -25,7 +25,7 @@ using numl.Math;
 using System.Linq;
 using numl.Math.Metrics;
 using System.Collections.Generic;
-using MathNet.Numerics.LinearAlgebra.Double;
+using numl.Math.LinearAlgebra;
 
 namespace numl.Math.Linkers
 {

@@ -22,7 +22,7 @@
 
 using System;
 using numl.Math;
-using MathNet.Numerics.LinearAlgebra.Double;
+using numl.Math.LinearAlgebra;
 
 namespace numl.Math.Metrics
 {

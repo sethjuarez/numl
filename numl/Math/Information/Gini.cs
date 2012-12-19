@@ -20,6 +20,7 @@
  THE SOFTWARE. 
 */
 
+using numl.Math.LinearAlgebra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace numl.Math.Information
 {
     public class Gini : Impurity
     {
-        public override double Calculate(IEnumerable<double> x)
+        public override double Calculate(Vector x)
         {
             if (x == null)
                 throw new InvalidOperationException("x does not exist!");

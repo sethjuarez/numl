@@ -22,7 +22,8 @@
 
 using System;
 using numl.Math;
-using MathNet.Numerics.LinearAlgebra.Double;
+
+using numl.Math.LinearAlgebra;
 
 namespace numl.Math.Metrics
 {
@@ -30,16 +31,16 @@ namespace numl.Math.Metrics
     {
         public double Compute(Vector x, Vector y)
         {
-            if (x.Count != y.Count)
+            if (x.Length != y.Length)
                 throw new InvalidOperationException("Cannot compute similarity between two unequally sized Vectors!");
 
             var xSum = x.Sum();
             var ySum = y.Sum();
+            
+            var xElem = (x^2).Sum() - ((xSum * xSum) / x.Length);
+            var yElem = (y^2).Sum() - ((ySum * ySum) / y.Length);
 
-            var xElem = x.PointwiseMultiply(x).Sum() - ((xSum * xSum) / x.Count);
-            var yElem = y.PointwiseMultiply(y).Sum() - ((ySum * ySum) / y.Count);
-
-            return (x.DotProduct(y) - ((xSum * ySum) / x.Count)) / System.Math.Sqrt(xElem * yElem);
+            return (x.Dot(y) - ((xSum * ySum) / x.Length)) / System.Math.Sqrt(xElem * yElem);
         }
     }
 }
