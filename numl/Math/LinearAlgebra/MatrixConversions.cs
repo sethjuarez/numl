@@ -23,28 +23,11 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using MathNet.Numerics.LinearAlgebra.Double;
-using MathNet.Numerics.LinearAlgebra.Generic;
 
-namespace numl.Math
+namespace numl.Math.LinearAlgebra
 {
-    public static class MathConversion
+    public static class MatrixConversions
     {
-        public static Vector ToVector(this IEnumerable<double> vector)
-        {
-            var v = vector.ToArray();
-
-            // check sparsity
-            var percent = (decimal)v.Count(d => d == 0) /
-                          (decimal)v.Count();
-
-            // more than half zero's? (maybe have this as a setting?)
-            if (percent > .5m)
-                return new SparseVector(v);
-            else
-                return new DenseVector(v);
-        }
-
         private static Matrix Build(double[][] x, bool clip = false)
         {
             // rows
@@ -71,11 +54,7 @@ namespace numl.Math
             // check sparsity
             var percent = (decimal)(zeros + pad) / (decimal)(n * d);
 
-            Matrix m;
-            if (percent > .5m)
-                m = new SparseMatrix(n, clip ? d - 1 : d);
-            else
-                m = new DenseMatrix(n, clip ? d - 1 : d);
+            Matrix m = Matrix.Zeros(n, clip ? d - 1 : d);
 
             return m;
         }
@@ -90,8 +69,8 @@ namespace numl.Math
             var m = Build(x);
 
             // fill 'er up!
-            for (int i = 0; i < m.RowCount; i++)
-                for (int j = 0; j < m.ColumnCount; j++)
+            for (int i = 0; i < m.Rows; i++)
+                for (int j = 0; j < m.Cols; j++)
                     if (j >= x[i].Length)  // over bound limits
                         m[i, j] = 0;       // pad overlow to 0
                     else
@@ -110,20 +89,20 @@ namespace numl.Math
             var m = Build(x, true); // clip last col
 
             // fill 'er up!
-            for (int i = 0; i < m.RowCount; i++)
-                for (int j = 0; j < m.ColumnCount; j++)
+            for (int i = 0; i < m.Rows; i++)
+                for (int j = 0; j < m.Cols; j++)
                     if (j >= x[i].Length)  // over bound limits
                         m[i, j] = 0;       // pad overlow to 0
                     else
                         m[i, j] = x[i][j];
 
             // fill up vector
-            DenseVector y = new DenseVector(m.RowCount);
-            for (int i = 0; i < m.RowCount; i++)
-                if (m.ColumnCount >= x[i].Length)
+            Vector y = Vector.Zeros(m.Rows);
+            for (int i = 0; i < m.Rows; i++)
+                if (m.Cols >= x[i].Length)
                     y[i] = 0;              // pad overflow to 0
                 else
-                    y[i] = x[i][m.ColumnCount];
+                    y[i] = x[i][m.Cols];
 
             return new Tuple<Matrix, Vector>(m, y);
 
