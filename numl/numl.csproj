@@ -55,9 +55,12 @@
     <Compile Include="Math\LinearAlgebra\Matrix.cs" />
     <Compile Include="Math\LinearAlgebra\MatrixExtensions.cs" />
     <Compile Include="Math\LinearAlgebra\MatrixOps.cs" />
+    <Compile Include="Math\LinearAlgebra\MatrixStatics.cs" />
     <Compile Include="Math\LinearAlgebra\SingularMatrixException.cs" />
     <Compile Include="Math\LinearAlgebra\Vector.cs" />
     <Compile Include="Math\LinearAlgebra\VectorExtensions.cs" />
+    <Compile Include="Math\LinearAlgebra\VectorOps.cs" />
+    <Compile Include="Math\LinearAlgebra\VectorStatics.cs" />
     <Compile Include="Math\LinearAlgebra\VectorType.cs" />
     <Compile Include="Math\Linkers\AverageLinker.cs" />
     <Compile Include="Math\Linkers\CentroidLinker.cs" />
@@ -86,9 +89,10 @@
     <Compile Include="Supervised\Perceptron.cs" />
     <Compile Include="Unsupervised\Cluster.cs" />
     <Compile Include="Unsupervised\HClusterModel.cs" />
-    <Compile Include="Math\LinearAlgebra\MatrixConversions.cs" />
+    <Compile Include="Math\LinearAlgebra\Conversions.cs" />
     <Compile Include="Model\Descriptor.cs" />
     <Compile Include="Unsupervised\KMeans.cs" />
+    <Compile Include="Unsupervised\PCA.cs" />
     <Compile Include="Utils\FastReflection.cs" />
     <Compile Include="Model\NumlAttributes.cs" />
     <Compile Include="Model\StringHelpers.cs" />

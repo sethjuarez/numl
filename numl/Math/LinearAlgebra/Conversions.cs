@@ -26,7 +26,7 @@ using System.Collections.Generic;
 
 namespace numl.Math.LinearAlgebra
 {
-    public static class MatrixConversions
+    public static class Conversions
     {
         private static Matrix Build(double[][] x, bool clip = false)
         {

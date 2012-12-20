@@ -1,10 +1,8 @@
-﻿using numl.Math.Information;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using NUnit.Framework;
+using numl.Math.Information;
+using System.Collections.Generic;
 
 namespace numl.Tests.MathTests
 {

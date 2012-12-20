@@ -58,6 +58,9 @@
     <Compile Include="MathTests\HelperTests.cs" />
     <Compile Include="MathTests\InformationTests.cs" />
     <Compile Include="MathTests\LinkerTests.cs" />
+    <Compile Include="MathTests\MatrixTests.cs" />
+    <Compile Include="MathTests\VectorTests.cs" />
+    <Compile Include="PCATests.cs" />
     <Compile Include="PerceptronTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

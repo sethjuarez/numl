@@ -29,6 +29,11 @@ namespace numl.Math.LinearAlgebra
 {
     public static class VectorExtensions
     {
+        public static double Sum(this Vector v)
+        {
+            return Vector.Sum(v);
+        }
+
         public static Matrix Outer(this Vector x, Vector y)
         {
             return Vector.Outer(x, y);

@@ -31,44 +31,74 @@ namespace numl.Math.LinearAlgebra
     {
         public static Matrix Stack(this Matrix m, Matrix t)
         {
-            if (m.Cols != t.Cols)
-                throw new InvalidOperationException("Invalid dimension for stack operation!");
-
-            Matrix p = new Matrix(m.Rows + t.Rows, t.Cols);
-            for (int i = 0; i < p.Rows; i++)
-            {
-                for (int j = 0; j < p.Cols; j++)
-                {
-                    if (i < m.Rows)
-                        p[i, j] = m[i, j];
-                    else
-                        p[i, j] = t[i - m.Rows, j];
-                }
-            }
-
-            return p;
+            return Matrix.Stack(m, t);
         }
 
         public static Matrix VStack(this Matrix m, Matrix t)
         {
-            if (m.Rows != t.Rows)
-                throw new InvalidOperationException("Invalid dimension for stack operation!");
-
-            Matrix p = new Matrix(m.Rows, m.Cols + t.Cols);
-            for (int i = 0; i < p.Rows; i++)
-            {
-                for (int j = 0; j < p.Cols; j++)
-                {
-                    if (j < m.Cols)
-                        p[i, j] = m[i, j];
-                    else
-                        p[i, j] = t[i, j - m.Cols];
-                }
-            }
-
-            return p;
+            return Matrix.VStack(m, t);
         }
 
+        public static Vector Mean(this Matrix source, VectorType t)
+        {
+            return Matrix.Mean(source, t);
+        }
+
+        public static double Max(this Matrix source)
+        {
+            return Matrix.Max(source);
+        }
+
+        public static double Min(this Matrix source)
+        {
+            return Matrix.Min(source);
+        }
+
+        public static Matrix Covariance(this Matrix source, VectorType t = VectorType.Column)
+        {
+            return Matrix.Covariance(source, t);
+        }
+
+        public static Vector CovarianceDiag(this Matrix source, VectorType t = VectorType.Column)
+        {
+            return Matrix.CovarianceDiag(source, t);
+        }
+
+        public static Matrix Correlation(this Matrix source, VectorType t = VectorType.Column)
+        {
+            return Matrix.Correlation(source, t);
+        }
+
+        public static IEnumerable<Vector> Reverse(this Matrix source, VectorType t = VectorType.Row)
+        {
+            return Matrix.Reverse(source, t);
+        }
+
+        public static IEnumerable<int> Indices(this Matrix source, Func<Vector, bool> f)
+        {
+            return Matrix.Indices(source, f);
+        }
+
+        public static IEnumerable<int> Indices(this Matrix source, Func<Vector, bool> f, VectorType t)
+        {
+            return Matrix.Indices(source, f, t);
+        }
+
+        public static Matrix Slice(this Matrix m, IEnumerable<int> indices)
+        {
+            return Matrix.Slice(m, indices);
+        }
+
+        public static Matrix Slice(this Matrix m, IEnumerable<int> indices, VectorType t)
+        {
+            return Matrix.Slice(m, indices, t);
+        }
+
+        public static Matrix Extract(this Matrix m, int x, int y, int width, int height, bool safe = true)
+        {
+            return Matrix.Extract(m, x, y, width, height, safe);
+        }
+        
         public static Matrix Cholesky(this Matrix m)
         {
             return Matrix.Cholesky(m);
@@ -86,7 +116,7 @@ namespace numl.Math.LinearAlgebra
 
         public static Tuple<Vector, Matrix> Eigs(this Matrix m)
         {
-            return Matrix.Eigs(m);
+            return Matrix.Evd(m);
         }
 
         public static Tuple<Matrix, Vector, Matrix> SVD(this Matrix m)
@@ -94,117 +124,42 @@ namespace numl.Math.LinearAlgebra
             return Matrix.SVD(m);
         }
 
-        public static Vector Mean(this Matrix source, VectorType t)
+        /// <summary>
+        /// Computes the trace of a matrix
+        /// </summary>
+        /// <returns>trace</returns>
+        public static double Trace(this Matrix m)
         {
-            int count = t == VectorType.Row ? source.Cols : source.Rows;
-            VectorType type = t == VectorType.Row ? VectorType.Column : VectorType.Row;
-            Vector v = new Vector(count);
-            for (int i = 0; i < count; i++)
-                v[i] = source[i, type].Mean();
-            return v;
+            return Matrix.Trace(m);
         }
 
-        public static double Max(this Matrix source)
+        public static double Sum(this Matrix m)
         {
-            double max = double.MinValue;
-            for (int i = 0; i < source.Rows; i++)
-                for (int j = 0; j < source.Cols; j++)
-                    if (source[i, j] > max)
-                        max = source[i, j];
-
-            return max;
+            return Matrix.Sum(m);
         }
 
-        public static double Min(this Matrix source)
-        {
-            double min = double.MaxValue;
-            for (int i = 0; i < source.Rows; i++)
-                for (int j = 0; j < source.Cols; j++)
-                    if (source[i, j] < min)
-                        min = source[i, j];
 
-            return min;
+        /// <summary>
+        /// Computes the sum of either the rows 
+        /// or columns of a matrix and returns
+        /// a vector
+        /// </summary>
+        /// <param name="t">Row or Column sum</param>
+        /// <returns>Vector Sum</returns>
+        public static Vector Sum(this Matrix m, VectorType t)
+        {
+            return Matrix.Sum(m, t);
         }
 
-        public static Matrix Covariance(this Matrix source, VectorType t = VectorType.Column)
+        public static double Sum(Matrix m, int i, VectorType t)
         {
-            int length = t == VectorType.Row ? source.Rows : source.Cols;
-            Matrix m = new Matrix(length);
-            for (int i = 0; i < length; i++)
-                for (int j = i; j < length; j++) // symmetric matrix
-                    m[i, j] = m[j, i] = source[i, t].Covariance(source[j, t]);
-            return m;
+            return Matrix.Sum(m, i, t);
         }
 
-        public static Vector CovarianceDiag(this Matrix source, VectorType t = VectorType.Column)
+        public static Vector Diag(this Matrix m)
         {
-            int length = t == VectorType.Row ? source.Rows : source.Cols;
-            Vector vector = new Vector(length);
-            for (int i = 0; i < length; i++)
-                vector[i] = source[i, t].Variance();
-            return vector;
+            return Matrix.Diag(m);
         }
 
-        public static Matrix Correlation(this Matrix source, VectorType t = VectorType.Column)
-        {
-            int length = t == VectorType.Row ? source.Rows : source.Cols;
-            Matrix m = new Matrix(length);
-            for (int i = 0; i < length; i++)
-                for (int j = i; j < length; j++) // symmetric matrix
-                    m[i, j] = m[j, i] = source[i, t].Correlation(source[j, t]);
-            return m;
-        }
-
-        public static IEnumerable<Vector> Reverse(this Matrix source, VectorType t = VectorType.Row)
-        {
-            int length = t == VectorType.Row ? source.Rows : source.Cols;
-            for (int i = length - 1; i > -1; i--)
-                yield return source[i, t];
-        }
-
-        public static IEnumerable<int> Indices(this Matrix source, Func<Vector, bool> f)
-        {
-            return MatrixExtensions.Indices(source, f, VectorType.Row);
-        }
-
-        public static IEnumerable<int> Indices(this Matrix source, Func<Vector, bool> f, VectorType t)
-        {
-            int max = t == VectorType.Row ? source.Rows : source.Cols;
-            for (int i = 0; i < max; i++)
-                if (f(source[i, t]))
-                    yield return i;
-        }
-
-        public static Matrix Slice(this Matrix m, IEnumerable<int> indices)
-        {
-            return MatrixExtensions.Slice(m,indices, VectorType.Row);
-        }
-
-        public static Matrix Slice(this Matrix m, IEnumerable<int> indices, VectorType t)
-        {
-            var q = indices.Distinct();
-
-            int rows = t == VectorType.Row ? q.Where(j => j < m.Rows).Count() : m.Rows;
-            int cols = t == VectorType.Column ? q.Where(j => j < m.Cols).Count() : m.Cols;
-
-            Matrix n = new Matrix(rows, cols);
-
-            int i = -1;
-            foreach (var j in q.OrderBy(k => k))
-                n[++i, t] = m[j, t];
-
-            return n;
-        }
-
-        public static Matrix Extract(this Matrix m, int x, int y, int width, int height, bool safe = true)
-        {
-            Matrix m2 = Matrix.Zeros(height, width);
-            for (int i = y; i < y + height; i++)
-                for (int j = x; j < x + width; j++)
-                    if (safe && i < m.Rows && j < m.Cols)
-                        m2[i - y, j - x] = m[i, j];
-
-            return m2;
-        }
     }
 }

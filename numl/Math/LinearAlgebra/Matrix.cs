@@ -40,6 +40,8 @@ namespace numl.Math.LinearAlgebra
         public int Rows { get; private set; }
         public int Cols { get; private set; }
 
+        //--------------- ctor
+
         /// <summary>
         /// Used only internally
         /// </summary>
@@ -109,6 +111,7 @@ namespace numl.Math.LinearAlgebra
             _matrix = m;
         }
 
+        //--------------- access
         /// <summary>
         /// Accessor
         /// </summary>
@@ -131,26 +134,6 @@ namespace numl.Math.LinearAlgebra
 
                 _matrix[i][j] = value;
             }
-        }
-
-        public Vector GetVector(int index, int from, int to, VectorType type)
-        {
-            double[] v = (double[])Array.CreateInstance(typeof(double), to - from + 1);
-            for (int i = from, j = 0; i < to + 1; i++, j++)
-                v[j] = this[index, type][i];
-            return new Vector(v);
-        }
-
-        public IEnumerable<Vector> GetRows()
-        {
-            for (int i = 0; i < Rows; i++)
-                yield return this[i, VectorType.Row];
-        }
-
-        public IEnumerable<Vector> GetCols()
-        {
-            for (int i = 0; i < Cols; i++)
-                yield return this[i, VectorType.Column];
         }
 
         /// <summary>
@@ -289,6 +272,42 @@ namespace numl.Math.LinearAlgebra
             }
         }
 
+        public Vector GetVector(int index, int from, int to, VectorType type)
+        {
+            double[] v = (double[])Array.CreateInstance(typeof(double), to - from + 1);
+            for (int i = from, j = 0; i < to + 1; i++, j++)
+                v[j] = this[index, type][i];
+            return new Vector(v);
+        }
+
+        public IEnumerable<Vector> GetRows()
+        {
+            for (int i = 0; i < Rows; i++)
+                yield return this[i, VectorType.Row];
+        }
+
+        public IEnumerable<Vector> GetCols()
+        {
+            for (int i = 0; i < Cols; i++)
+                yield return this[i, VectorType.Column];
+        }
+
+        public Vector ToVector()
+        {
+            if (Rows == 1)
+            {
+                return this[0, VectorType.Row].Copy();
+            }
+
+            if (Cols == 1)
+            {
+                return this[0, VectorType.Column].Copy();
+            }
+
+            throw new InvalidOperationException("Matrix conversion failed: More then one row or one column!");
+        }
+
+
         /// <summary>
         /// Returns read-only transpose (uses matrix reference
         /// to save space)
@@ -336,97 +355,6 @@ namespace numl.Math.LinearAlgebra
 
         }
 
-        /// <summary>
-        /// Computes the trace of a matrix
-        /// </summary>
-        /// <returns>trace</returns>
-        public double Trace()
-        {
-            double t = 0;
-            for (int i = 0; i < Rows && i < Cols; i++)
-                t += this[i, i];
-            return t;
-        }
-
-        /// <summary>
-        /// Computes the sum of every element of the matrix
-        /// </summary>
-        /// <returns>sum</returns>
-        public double Sum()
-        {
-            double sum = 0;
-            for (int i = 0; i < Rows; i++)
-                for (int j = 0; j < Cols; j++)
-                    sum += this[i, j];
-            return sum;
-        }
-
-        public double Sum(Func<double, bool> sumIf)
-        {
-            double sum = 0;
-            for (int i = 0; i < Rows; i++)
-                for (int j = 0; j < Cols; j++)
-                    if (sumIf(this[i, j]))
-                        sum += this[i, j];
-            return sum;
-        }
-
-        public double Sum(Func<double, bool> sumIf, double val)
-        {
-            double sum = 0;
-            for (int i = 0; i < Rows; i++)
-                for (int j = 0; j < Cols; j++)
-                    if (sumIf(this[i, j]))
-                        sum += val;
-            return sum;
-        }
-
-        /// <summary>
-        /// Computes the sum of either the rows 
-        /// or columns of a matrix and returns
-        /// a vector
-        /// </summary>
-        /// <param name="t">Row or Column sum</param>
-        /// <returns>Vector Sum</returns>
-        public Vector Sum(VectorType t)
-        {
-            if (t == VectorType.Row)
-            {
-                Vector result = new Vector(Cols);
-                for (int i = 0; i < Cols; i++)
-                    for (int j = 0; j < Rows; j++)
-                        result[i] += this[j, i];
-                return result;
-            }
-            else
-            {
-                Vector result = new Vector(Rows);
-                for (int i = 0; i < Rows; i++)
-                    for (int j = 0; j < Cols; j++)
-                        result[i] += this[i, j];
-                return result;
-            }
-        }
-
-        public double Sum(int i, VectorType t)
-        {
-            return this[i, t].Sum();
-        }
-
-        public Vector ToVector()
-        {
-            if (Rows == 1)
-            {
-                return this[0, VectorType.Row].Copy();
-            }
-
-            if (Cols == 1)
-            {
-                return this[0, VectorType.Column].Copy();
-            }
-
-            throw new InvalidOperationException("Matrix conversion failed: More then one row or one column!");
-        }
 
         public override int GetHashCode()
         {
@@ -490,17 +418,7 @@ namespace numl.Math.LinearAlgebra
             return matrix.ToString();
         }
 
-        //--------------------------- Static
-        public static double Sum(Matrix m)
-        {
-            return m.Sum();
-        }
-
-        public static Vector Sum(Matrix m, VectorType t)
-        {
-            return m.Sum(t);
-        }
-
+        //--------------- creation
         /// <summary>
         /// Initial Zero Matrix (n by n)
         /// </summary>
@@ -509,6 +427,34 @@ namespace numl.Math.LinearAlgebra
         public static Matrix Zeros(int n)
         {
             return new Matrix(n, n);
+        }
+
+        /// <summary>
+        /// n x d identity matrix
+        /// </summary>
+        /// <param name="n">rows</param>
+        /// <param name="d">cols</param>
+        /// <returns>Matrix</returns>
+        public static Matrix Identity(int n, int d)
+        {
+            var m = new double[n][];
+            for (int i = 0; i < n; i++)
+            {
+                m[i] = new double[d];
+                for (int j = 0; j < d; j++)
+                    if (i == j)
+                        m[i][j] = 1;
+                    else
+                        m[i][j] = 0;
+            }
+
+            return new Matrix
+            {
+                _matrix = m,
+                Rows = n,
+                Cols = d,
+                _asTransposeRef = false
+            };
         }
 
         /// <summary>
@@ -584,68 +530,44 @@ namespace numl.Math.LinearAlgebra
             return Identity(n, n);
         }
 
-        /// <summary>
-        /// Stack a set of vectors into a matrix
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="vectors"></param>
-        /// <returns></returns>
-        internal static Matrix Stack(VectorType type, params Vector[] vectors)
+        //--------------- aggregation/structural
+
+
+        public void SwapRow(int from, int to)
         {
-            if (vectors.Length == 0)
-                throw new InvalidOperationException("Cannot construct Matrix from empty vector set!");
+            Swap(from, to, VectorType.Row);
+        }
 
-            if (!vectors.All(v => v.Length == vectors[0].Length))
-                throw new InvalidOperationException("Vectors must all be of the same length!");
+        public void SwapCol(int from, int to)
+        {
+            Swap(from, to, VectorType.Column);
+        }
 
-            int n = type == VectorType.Row ? vectors.Length : vectors[0].Length;
-            int d = type == VectorType.Row ? vectors[0].Length : vectors.Length;
+        public void Swap(int from, int to, VectorType t)
+        {
+            var temp = this[from, t].Copy();
+            this[from, t] = this[to, t];
+            this[to, t] = temp;
+        }
 
-            Matrix m = Matrix.Zeros(n, d);
-            for (int i = 0; i < vectors.Length; i++)
-                m[i, type] = vectors[i];
+        public Matrix Remove(int index, VectorType t)
+        {
+            int max = t == VectorType.Row ? Rows : Cols;
+            int row = t == VectorType.Row ? Rows - 1 : Rows;
+            int col = t == VectorType.Column ? Cols - 1 : Cols;
+
+            Matrix m = new Matrix(row, col);
+            int j = -1;
+            for (int i = 0; i < max; i++)
+            {
+                if (i == index) continue;
+                m[++j, t] = this[i, t];
+            }
 
             return m;
         }
 
-        public static Matrix Stack(params Vector[] vectors)
-        {
-            return Matrix.Stack(VectorType.Row, vectors);
-        }
-
-        public static Matrix VStack(params Vector[] vectors)
-        {
-            return Matrix.Stack(VectorType.Column, vectors);
-        }
-
-        /// <summary>
-        /// n x d identity matrix
-        /// </summary>
-        /// <param name="n">rows</param>
-        /// <param name="d">cols</param>
-        /// <returns>Matrix</returns>
-        public static Matrix Identity(int n, int d)
-        {
-            var m = new double[n][];
-            for (int i = 0; i < n; i++)
-            {
-                m[i] = new double[d];
-                for (int j = 0; j < d; j++)
-                    if (i == j)
-                        m[i][j] = 1;
-                    else
-                        m[i][j] = 0;
-            }
-
-            return new Matrix
-            {
-                _matrix = m,
-                Rows = n,
-                Cols = d,
-                _asTransposeRef = false
-            };
-        }
-
+        //-------------- destructive ops
         /// <summary>
         /// In place normalization.
         /// WARNING: WILL UPDATE MATRIX!
@@ -670,6 +592,7 @@ namespace numl.Math.LinearAlgebra
                 this[i, t] -= this[i, t].Mean();
             return this;
         }
+
 
         //---------------- Xml Serialization
         public XmlSchema GetSchema()

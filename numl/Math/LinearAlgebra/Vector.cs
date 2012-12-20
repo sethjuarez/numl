@@ -33,13 +33,14 @@ using System.Linq;
 namespace numl.Math.LinearAlgebra
 {
     [XmlRoot("v"), Serializable]
-    public class Vector : IXmlSerializable, IEnumerable<double>
+    public partial class Vector : IXmlSerializable, IEnumerable<double>
     {
         private double[] _vector;
         private bool _asMatrixRef;
         private readonly bool _asCol;
         private double[][] _matrix = null;
         private int _staticIdx = -1;
+        private Matrix _transpose;
 
         /// <summary>
         /// this is when the values are actually referencing
@@ -147,12 +148,15 @@ namespace numl.Math.LinearAlgebra
             }
         }
 
-        public double Sum()
+        public Matrix T
         {
-            double sum = 0;
-            for (int i = 0; i < Length; i++)
-                sum += this[i];
-            return sum;
+            get
+            {
+                if (_transpose == null)
+                    _transpose = new Matrix(Length, 1);
+                _transpose[0, VectorType.Column] = this;
+                return _transpose;
+            }
         }
 
         public Vector Copy()
@@ -196,12 +200,6 @@ namespace numl.Math.LinearAlgebra
             }
         }
 
-        public void Zeros()
-        {
-            for (int i = 0; i < Length; i++)
-                this[i] = 0;
-        }
-
         public override bool Equals(object obj)
         {
             if (obj is Vector)
@@ -241,33 +239,7 @@ namespace numl.Math.LinearAlgebra
             return idx;
         }
 
-        public double Sum(Func<int, double, bool> f)
-        {
-            double total = 0;
-            for (int i = 0; i < Length; i++)
-                if (f(i, this[i]))
-                    total += this[i];
-            return total;
-        }
-
-        public double Sum(Func<int, bool> f)
-        {
-            double total = 0;
-            for (int i = 0; i < Length; i++)
-                if (f(i))
-                    total += this[i];
-            return total;
-        }
-
-        public double Sum(Func<double, bool> f)
-        {
-            double total = 0;
-            for (int i = 0; i < Length; i++)
-                if (f(this[i]))
-                    total += this[i];
-            return total;
-        }
-        
+       
         //----------------- Xml Serialization
         public XmlSchema GetSchema()
         {
@@ -307,335 +279,6 @@ namespace numl.Math.LinearAlgebra
                 writer.WriteValue(_vector[i]);
                 writer.WriteEndElement();
             }
-        }
-
-        //----------------- Static
-        public static Matrix Outer(Vector x, Vector y)
-        {
-            if (x.Length != y.Length)
-                throw new InvalidOperationException("Dimensions do not match!");
-
-            int n = x.Length;
-            Matrix m = new Matrix(n);
-            for (int i = 0; i < n; i++)
-                for (int j = 0; j < n; j++)
-                    m[i, j] = x[i] * y[j];
-
-            return m;
-        }
-
-        public static Vector Exp(Vector v)
-        {
-            return Calc(v, d => System.Math.Exp(d));
-        }
-
-        public static Vector Log(Vector v)
-        {
-            return Calc(v, d => System.Math.Log(d));
-        }
-
-        public static Vector Calc(Vector v, Func<double, double> f)
-        {
-            var result = v.Copy();
-            for (int i = 0; i < v.Length; i++)
-                result[i] = f(result[i]);
-            return result;
-        }
-
-        public static double Sum(Vector v)
-        {
-            return v.Sum();
-        }
-
-        public static Vector Ones(int n)
-        {
-            double[] x = new double[n];
-            for (int i = 0; i < n; i++)
-                x[i] = 1;
-
-            return new Vector(x);
-        }
-
-        public static Vector Zeros(int n)
-        {
-            return new Vector(n);
-        }
-
-        public static Vector Rand(int n)
-        {
-            double[] x = new double[n];
-            for (int i = 0; i < n; i++)
-                x[i] = MLRandom.GetUniform();
-
-            return new Vector(x);
-        }
-
-        public static Vector NormRand(int n, double mean = 0, double stdDev = 1, int precision = -1)
-        {
-            double[] x = new double[n];
-            for (int i = 0; i < n; i++)
-            {
-                if (precision > -1)
-                    x[i] = System.Math.Round(MLRandom.GetNormal(mean, stdDev), precision);
-                else
-                    x[i] = MLRandom.GetNormal(mean, stdDev);
-            }
-
-            return new Vector(x);
-        }
-
-        public static double Dot(Vector one, Vector two)
-        {
-            if (one.Length != two.Length)
-                throw new InvalidOperationException("Dimensions do not match!");
-
-            double total = 0;
-            for (int i = 0; i < one.Length; i++)
-                total += one[i] * two[i];
-            return total;
-        }
-
-        public static double Norm(Vector x)
-        {
-            return Vector.Norm(x, 2);
-        }
-
-        public static double Norm(Vector x, double p)
-        {
-            if (p < 1) throw new InvalidOperationException("p must be greater than 0");
-            double value = 0;
-            if (p == 1)
-            {
-                for (int i = 0; i < x.Length; i++)
-                    value += System.Math.Abs(x[i]);
-
-                return value;
-            }
-            else if (p == int.MaxValue)
-            {
-                for (int i = 0; i < x.Length; i++)
-                    if (System.Math.Abs(x[i]) > value)
-                        value = System.Math.Abs(x[i]);
-                return value;
-            }
-            else
-            {
-                for (int i = 0; i < x.Length; i++)
-                    value += System.Math.Pow(System.Math.Abs(x[i]), p);
-
-                return System.Math.Pow(value, 1 / p);
-            }
-        }
-
-        public static double CosineSimilarity(Vector A, Vector B)
-        {
-            return Vector.Dot(A, B) / (A.Norm() * B.Norm());
-        }
-
-        public static Matrix Diag(Vector v)
-        {
-            Matrix m = Matrix.Zeros(v.Length);
-            for (int i = 0; i < v.Length; i++)
-                m[i, i] = v[i];
-            return m;
-        }
-
-        public static Matrix Diag(Vector v, int n, int d)
-        {
-            Matrix m = Matrix.Zeros(n, d);
-            int min = System.Math.Min(n, d);
-            for (int i = 0; i < min; i++)
-                m[i, i] = v[i];
-            return m;
-        }
-
-        public static Vector Round(Vector v, int decimals = 0)
-        {
-            for (int i = 0; i < v.Length; i++)
-                v[i] = System.Math.Round(v[i], decimals);
-            return v;
-        }
-
-        public static Vector Combine(params Vector[] v)
-        {
-            if (v.Length == 0)
-                throw new InvalidOperationException("Need to specify vectors to combine!");
-
-            if (v.Length == 1)
-                return v[0];
-
-            int size = 0;
-            for (int i = 0; i < v.Length; i++)
-                size += v[i].Length;
-
-            Vector r = new Vector(size);
-            int z = -1;
-            for (int i = 0; i < v.Length; i++)
-                for (int j = 0; j < v[i].Length; j++)
-                    r[++z] = v[i][j];
-
-            return r;
-        }
-
-        //--------------- Operations
-        public static implicit operator double[](Vector v)
-        {
-            return v.ToArray();
-        }
-
-        public static implicit operator Vector(double[] array)
-        {
-            return new Vector(array);
-        }
-
-        public static implicit operator Vector(int[] array)
-        {
-            Vector vector = new Vector
-            {
-                _asMatrixRef = false,
-                _vector = new double[array.Length]
-            };
-
-            for (int i = 0; i < array.Length; i++)
-                vector._vector[i] = array[i];
-
-            return vector;
-        }
-
-        public static implicit operator Vector(float[] array)
-        {
-            Vector vector = new Vector
-            {
-                _asMatrixRef = false,
-                _vector = new double[array.Length]
-            };
-
-            for (int i = 0; i < array.Length; i++)
-                vector._vector[i] = array[i];
-
-            return vector;
-        }
-
-        public static bool operator ==(Vector one, Vector two)
-        {
-            return (object.ReferenceEquals(one, null) && object.ReferenceEquals(two, null) || one.Equals(two));
-        }
-
-        public static bool operator !=(Vector one, Vector two)
-        {
-            return !one.Equals(two);
-        }
-
-        public static Vector operator -(Vector one, Vector two)
-        {
-            if (one.Length != two.Length)
-                throw new InvalidOperationException("Dimensions do not match!");
-
-            Vector result = one.Copy();
-            for (int i = 0; i < result.Length; i++)
-                result[i] -= two[i];
-
-            return result;
-        }
-
-        public static Vector operator -(Vector v, double s)
-        {
-            for (int i = 0; i < v.Length; i++)
-                v[i] -= s;
-
-            return v;
-        }
-
-        public static Vector operator -(double s, Vector v)
-        {
-            return v - s;
-        }
-
-        public static Vector operator +(Vector one, Vector two)
-        {
-            if (one.Length != two.Length)
-                throw new InvalidOperationException("Dimensions do not match!");
-
-            Vector result = one.Copy();
-            for (int i = 0; i < result.Length; i++)
-                result[i] += two[i];
-
-            return result;
-        }
-
-        public static Vector operator +(Vector v, double s)
-        {
-            for (int i = 0; i < v.Length; i++)
-                v[i] += s;
-
-            return v;
-        }
-
-        public static Vector operator +(double s, Vector v)
-        {
-            return v + s;
-        }
-
-        public static Vector operator -(Vector one)
-        {
-            Vector result = one.Copy();
-            for (int i = 0; i < result.Length; i++)
-                result[i] *= -1;
-
-            return result;
-        }
-
-        public static Vector operator *(Vector one, Vector two)
-        {
-            if (one.Length != two.Length)
-                throw new InvalidOperationException("Dimensions do not match!");
-            var result = one.Copy();
-            for (int i = 0; i < one.Length; i++)
-                result[i] *= two[i];
-            return result;
-        }
-
-        public static Vector operator *(Vector one, double two)
-        {
-            Vector result = one.Copy();
-            for (int i = 0; i < one.Length; i++)
-                result[i] *= two;
-            return result;
-        }
-
-        public static Vector operator *(Vector one, int two)
-        {
-            Vector result = one.Copy();
-            for (int i = 0; i < one.Length; i++)
-                result[i] *= two;
-            return result;
-        }
-
-        public static Vector operator *(double one, Vector two)
-        {
-            return two * one;
-        }
-
-        public static Vector operator /(Vector one, double two)
-        {
-            Vector result = one.Copy();
-            for (int i = 0; i < one.Length; i++)
-                result[i] /= two;
-            return result;
-        }
-
-        public static Vector operator /(Vector one, int two)
-        {
-            Vector result = one.Copy();
-            for (int i = 0; i < one.Length; i++)
-                result[i] /= two;
-
-            return result;
-        }
-
-        public static Vector operator ^(Vector one, double power)
-        {
-            return one.Each(d => System.Math.Pow(d, power));
         }
 
         public static readonly Vector Empty = new[] { 0 };
