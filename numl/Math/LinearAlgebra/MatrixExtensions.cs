@@ -206,52 +206,5 @@ namespace numl.Math.LinearAlgebra
 
             return m2;
         }
-
-        public static Matrix PolyKernel(this Matrix m, double d)
-        {
-            var K = new Matrix(m.Rows, m.Rows);
-            for (int i = 0; i < m.Rows; i++)
-                for (int j = 0; j < m.Rows; j++)
-                    K[i, j] = System.Math.Pow((1 + m[i, VectorType.Row].Dot(m[j, VectorType.Row])), d);
-
-            return K;
-        }
-
-        public static Vector PolyKernel(this Matrix m, Vector x, double d)
-        {
-            var K = Vector.Zeros(m.Rows);
-            for (int i = 0; i < K.Length; i++)
-                K[i] = System.Math.Pow((1 + m[i, VectorType.Row].Dot(x)), d);
-
-            return K;
-        }
-
-        public static Matrix RBFKernel(this Matrix m, double sigma)
-        {
-            var K = new Matrix(m.Rows, m.Rows);
-            for (int i = 0; i < m.Rows; i++)
-                for (int j = 0; j < m.Rows; j++)
-                {
-                    var xy = -1 * (m[i, VectorType.Row] - m[j, VectorType.Row])
-                                    .Dot(m[i, VectorType.Row] - m[j, VectorType.Row]);
-
-                    K[i, j] = System.Math.Exp(xy / (2 * System.Math.Pow(sigma, 2)));
-                }
-
-            return K;
-        }
-
-        public static Vector RBFKernel(this Matrix m, Vector x, double sigma)
-        {
-            var K = Vector.Zeros(m.Rows);
-            for (int i = 0; i < K.Length; i++)
-            {
-                var xy = -1 * (m[i, VectorType.Row] - x)
-                                    .Dot(m[i, VectorType.Row] - x);
-
-                K[i] = System.Math.Exp(xy / (2 * System.Math.Pow(sigma, 2)));
-            }
-            return K;
-        }
     }
 }

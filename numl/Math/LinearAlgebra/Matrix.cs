@@ -482,7 +482,7 @@ namespace numl.Math.LinearAlgebra
                 }
 
                 if (i < Rows - 1)
-                    matrix.Append("],");
+                    matrix.Append("],\n");
                 else
                     matrix.Append("]]");
             }

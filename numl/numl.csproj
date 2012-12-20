@@ -51,6 +51,7 @@
     <Compile Include="Math\Kernels\IKernel.cs" />
     <Compile Include="Math\Kernels\PolyKernel.cs" />
     <Compile Include="Math\Kernels\RBFKernel.cs" />
+    <Compile Include="Math\LinearAlgebra\Evd.cs" />
     <Compile Include="Math\LinearAlgebra\Matrix.cs" />
     <Compile Include="Math\LinearAlgebra\MatrixExtensions.cs" />
     <Compile Include="Math\LinearAlgebra\MatrixOps.cs" />

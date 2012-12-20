@@ -3,9 +3,9 @@ using numl.Math;
 using numl.Model;
 using System.Linq;
 using numl.Math.Information;
+using numl.Math.LinearAlgebra;
 using System.Xml.Serialization;
 using System.Collections.Generic;
-using numl.Math.LinearAlgebra;
 
 namespace numl.Supervised
 {

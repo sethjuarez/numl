@@ -54,6 +54,7 @@
     <Compile Include="Data\Student.cs" />
     <Compile Include="DecisionTreeTests.cs" />
     <Compile Include="MathTests\DistanceTests.cs" />
+    <Compile Include="MathTests\EvdTests.cs" />
     <Compile Include="MathTests\HelperTests.cs" />
     <Compile Include="MathTests\InformationTests.cs" />
     <Compile Include="MathTests\LinkerTests.cs" />
