@@ -10,3 +10,6 @@ glob:*.orig
 glob:TestResults/*
 glob:*.dat
 
+syntax: glob
+numl.repl/*
+packages/*
