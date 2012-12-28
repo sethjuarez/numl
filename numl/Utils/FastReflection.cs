@@ -210,6 +210,7 @@ namespace numl.Utils
                    t == typeof(bool) ||
                    t == typeof(char) ||
                    t.BaseType == typeof(Enum) ||
+                   t == typeof(TimeSpan) || 
                    TypeDescriptor.GetConverter(t).CanConvertTo(typeof(double));
         }
 
@@ -256,6 +257,8 @@ namespace numl.Utils
                 return val >= 0;
             else if (t.BaseType == typeof(Enum))
                 return Enum.ToObject(t, System.Convert.ChangeType(val, System.Enum.GetUnderlyingType(t)));
+            else if (t == typeof(TimeSpan)) // get total seconds
+                return new TimeSpan(0, 0, (int)val);
             else
             {
                 TypeConverter converter = TypeDescriptor.GetConverter(typeof(double));

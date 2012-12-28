@@ -44,6 +44,17 @@ namespace numl.Model
             }
         }
 
+        public override IEnumerable<string> GetColumns()
+        {
+            for (int i = 0; i < _length; i++)
+                yield return i.ToString();
+        }
+
+        public override object Convert(double val)
+        {
+            return val;
+        }
+
         public override IEnumerable<double> Convert(object o)
         {
             // is it some sort of enumeration?

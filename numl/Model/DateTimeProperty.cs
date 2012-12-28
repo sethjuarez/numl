@@ -105,6 +105,11 @@ namespace numl.Model
             }
         }
 
+        public override object Convert(double val)
+        {
+            return val;
+        }
+
         private void Initialize(DatePortion portion)
         {
             Type = typeof(DateTime);
@@ -121,6 +126,28 @@ namespace numl.Model
 
             if (portion.HasFlag(DatePortion.TimeExtended))
                 Features |= DateTimeFeature.Second | DateTimeFeature.Millisecond;
+        }
+
+        public override IEnumerable<string> GetColumns()
+        {
+            if (Features.HasFlag(DateTimeFeature.Year))
+                yield return "Year";
+            if (Features.HasFlag(DateTimeFeature.DayOfYear))
+                yield return "DayOfYear";
+            if (Features.HasFlag(DateTimeFeature.Month))
+                yield return "Month";
+            if (Features.HasFlag(DateTimeFeature.Day))
+                yield return "Day";
+            if (Features.HasFlag(DateTimeFeature.DayOfWeek))
+                yield return "DayOfWeek";
+            if (Features.HasFlag(DateTimeFeature.Hour))
+                yield return "Hour";
+            if (Features.HasFlag(DateTimeFeature.Minute))
+                yield return "Minute";
+            if (Features.HasFlag(DateTimeFeature.Second))
+                yield return "Second";
+            if (Features.HasFlag(DateTimeFeature.Millisecond))
+                yield return "Millisecond";
         }
 
         public override IEnumerable<double> Convert(object o)

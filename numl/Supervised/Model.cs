@@ -22,8 +22,8 @@ namespace numl.Supervised
                 throw new InvalidOperationException("Empty label precludes prediction!");
 
             var y = Descriptor.Convert(o).ToVector();
-            var numerical = Predict(y);
-            var result = FastReflection.Convert(numerical, Descriptor.Label.Type);
+            var val = Predict(y);
+            var result = Descriptor.Label.Convert(val);
             FastReflection.Set(o, Descriptor.Label.Name, result);
             return o;
         }

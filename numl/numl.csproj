@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Learner.cs" />
     <Compile Include="Math\Information\Entropy.cs" />
     <Compile Include="Math\Information\Error.cs" />
     <Compile Include="Math\Information\Gini.cs" />

@@ -71,6 +71,66 @@ namespace numl.Model
             }
         }
 
+        public override IEnumerable<string> GetColumns()
+        {
+            if (AsEnum)
+                yield return Name;
+            else
+                foreach (var s in Dictionary)
+                    yield return s;
+        }
+
+        public override void PreProcess(IEnumerable<object> examples)
+        {
+            var q = from s in examples
+                    select FastReflection.Get(s, Name).ToString();
+
+            if (AsEnum)
+                Dictionary = StringHelpers.BuildEnumDictionary(q).Select(kv => kv.Key).ToArray();
+            else
+            {
+                switch (SplitType)
+                {
+                    case StringSplitType.Character:
+                        Dictionary = StringHelpers.BuildCharDictionary(q, Exclude).Select(kv => kv.Key).ToArray();
+                        break;
+                    case StringSplitType.Word:
+                        Dictionary = StringHelpers.BuildWordDictionary(q, Separator, Exclude).Select(kv => kv.Key).ToArray();
+                        break;
+                }
+            }
+        }
+
+        public override object Convert(double val)
+        {
+            if (AsEnum)
+                return Dictionary[(int)val];
+            else
+                return val.ToString();
+        }
+
+        public override IEnumerable<double> Convert(object o)
+        {
+            // check for valid dictionary
+            if (Dictionary == null || Dictionary.Length == 0)
+                throw new InvalidOperationException(string.Format("{0} dictionaries do not exist.", Name));
+
+            // sanitize string
+            string s = "";
+            if (o == null || string.IsNullOrEmpty(o.ToString()) || string.IsNullOrWhiteSpace(o.ToString()))
+                s = StringHelpers.EMPTY_STRING;
+            else
+                s = o.ToString();
+
+            // returns single number
+            if (AsEnum)
+                yield return (double)StringHelpers.GetWordPosition(s, Dictionary);
+            // returns list
+            else
+                foreach (double val in StringHelpers.GetWordCount(s, this))
+                    yield return val;
+        }
+
         public void ImportExclusions(string file)
         {
             // add exclusions
@@ -99,28 +159,6 @@ namespace numl.Model
             }
             else
                 Exclude = new string[] { };
-        }
-
-        public override IEnumerable<double> Convert(object o)
-        {
-            // check for valid dictionary
-            if (Dictionary == null || Dictionary.Length == 0)
-                throw new InvalidOperationException(string.Format("{0} dictionaries do not exist.", Name));
-
-            // sanitize string
-            string s = "";
-            if (o == null || string.IsNullOrEmpty(o.ToString()) || string.IsNullOrWhiteSpace(o.ToString()))
-                s = StringHelpers.EMPTY_STRING;
-            else
-                s = o.ToString();
-
-            // returns single number
-            if (AsEnum)
-                yield return (double)StringHelpers.GetWordPosition(s, Dictionary);
-            // returns list
-            else
-                foreach (double val in StringHelpers.GetWordCount(s, this))
-                    yield return val;
         }
     }
 }

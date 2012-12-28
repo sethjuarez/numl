@@ -82,14 +82,9 @@ namespace numl.Math.LinearAlgebra
                         // no work
                         if (c == 1 && s == 0) continue;
 
-
                         J[p, p] = J[q, q] = c;
                         J[p, q] = s; J[q, p] = -s;
 
-#if DEBUG
-                        Console.WriteLine("Jacobi Rotation:");
-                        Console.WriteLine(J);
-#endif
                         // perform rotation
                         A = J.T * A * J;
                         // store accumulated results
@@ -98,15 +93,6 @@ namespace numl.Math.LinearAlgebra
                         // reset Jacobi
                         J[p, p] = J[q, q] = 1;
                         J[p, q] = J[q, p] = 0;
-#if DEBUG
-                        Console.WriteLine("eigenvalues: ");
-                        Console.WriteLine(A);
-                        Console.Write("\n");
-                        Console.WriteLine("eigenvectors: ");
-                        Console.WriteLine(V);
-                        Console.Write("---------------------------------\n\n");
-#endif
-
                     }
                 }
 

@@ -32,6 +32,12 @@ namespace numl.Model
     {
         public Property[] Features { get; set; }
         public Property Label { get; set; }
+        public IEnumerable<string> GetColumns()
+        {
+            foreach (var p in Features)
+                foreach (var s in p.GetColumns())
+                    yield return s;
+        }
 
         private int _vectorLength = -1;
         /// <summary>
@@ -60,7 +66,6 @@ namespace numl.Model
 
             return q.First();
         }
-
 
         public IEnumerable<double> Convert(object item)
         {
@@ -93,8 +98,21 @@ namespace numl.Model
 
         public IEnumerable<IEnumerable<double>> Convert(IEnumerable<object> items)
         {
+            // Pre processing items
+            foreach (Property feature in Features)
+                feature.PreProcess(items);
+            if (Label != null)
+                Label.PreProcess(items);
+            
+            // convert items
             foreach (object o in items)
                 yield return Convert(o);
+
+            // Post processing items
+            foreach (Property feature in Features)
+                feature.PostProcess(items);
+            if (Label != null)
+                Label.PostProcess(items);
         }
 
         public static Descriptor Create<T>()
