@@ -1,8 +1,7 @@
-﻿using numl.Math.Probability;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
+using numl.Math.Probability;
+using System.Collections.Generic;
 
 namespace numl.Math.LinearAlgebra
 {

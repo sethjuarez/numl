@@ -6,6 +6,7 @@ using numl.Math.Information;
 using numl.Math.LinearAlgebra;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using System.Text;
 
 namespace numl.Supervised
 {
@@ -61,58 +62,83 @@ namespace numl.Supervised
             };
         }
 
-
         private Node BuildTree(Matrix x, Vector y, int depth, List<int> used)
         {
-            // reached depth limit or all labels are the same
             if (depth < 0 || y.Distinct().Count() == 1)
-                return new Node { IsLeaf = true, Label = y.Mode() };
+                return BuildLeafNode(y.Mode());
 
-            var tuple = GetBestSplit(x, y, depth, used);
-
+            var tuple = GetBestSplit(x, y, used);
             var col = tuple.Item1;
             var gain = tuple.Item2;
             var measure = tuple.Item3;
+
+
 
             // uh oh, need to return something?
             // a weird node of some sort...
             // but just in case...
             if (col == -1)
-                return new Node { IsLeaf = true, Label = y.Mode() };
+                return BuildLeafNode(y.Mode());
+
+#if DEBUG
+            Console.WriteLine("Depth: {0}, Best Split: [{1}], Gain ({3})", depth, Descriptor.ColumnAt(col), col, gain);
+#endif
 
             used.Add(col);
-            Node n = new Node()
+
+            Node node = new Node
             {
-                Gain = gain,
-                Children = new Node[measure.Segments.Length],
-                Segmented = measure.Segmented,
-                IsLeaf = false,
                 Column = col,
-                Segments = measure.Segments
+                Gain = gain,
+                IsLeaf = false,
+                Name = Descriptor.ColumnAt(col),
+                Edges = new Edge[measure.Segments.Length]
             };
-            
-            // create children
-            for (int i = 0; i < n.Children.Length; i++)
+
+            // populate edges
+            for (int i = 0; i < node.Edges.Length; i++)
             {
+                // working set
+                var segment = measure.Segments[i];
+                node.Edges[i] = new Edge();
+                var edge = node.Edges[i];
+
+                edge.Parent = node;
+                edge.Discrete = measure.Discrete;
+                edge.Min = segment.Min;
+                edge.Max = segment.Max;
+
                 IEnumerable<int> slice;
 
-                // continuous - range check
-                if (measure.Segmented)
-                    slice = x.Indices(v => v[col] >= n.Segments[i].Min &&
-                                           v[col] < n.Segments[i].Max);
-                // discrete - value check
+                if (edge.Discrete)
+                {
+                    // get discrete label
+                    edge.Label = Descriptor.At(col).Convert(segment.Min).ToString();
+                    // do value check for matrix slicing
+                    slice = x.Indices(v => v[col] == segment.Min);
+                }
                 else
-                    slice = x.Indices(v => v[col] == n.Segments[i].Min);
+                {
+                    // get range label
+                    edge.Label = string.Format("{0} ≤ x < {1}", segment.Min, segment.Max);
+                    // do range check for matrix slicing
+                    slice = x.Indices(v => v[col] >= segment.Min && v[col] < segment.Max);
+                }
 
-                // recursion
-                n.Children[i] = BuildTree(x.Slice(slice), y.Slice(slice), depth - 1, used);
+#if DEBUG
+                Console.WriteLine("\tBuilding Child for {0}", edge.Label);
+#endif
+                edge.Child = BuildTree(x.Slice(slice), y.Slice(slice), depth - 1, used);
             }
 
-            return n;
+#if DEBUG
+            Console.WriteLine("------------------------------------------------------------");
+#endif
+
+            return node;
         }
 
-
-        private Tuple<int, double, Impurity> GetBestSplit(Matrix x, Vector y, int depth, List<int> used)
+        private Tuple<int, double, Impurity> GetBestSplit(Matrix x, Vector y, List<int> used)
         {
             double bestGain = -1;
             int bestFeature = -1;
@@ -120,6 +146,9 @@ namespace numl.Supervised
             Impurity bestMeasure = null;
             for (int i = 0; i < x.Cols; i++)
             {
+                // already used?
+                if (used.Contains(i)) continue;
+
                 double gain = 0;
                 Impurity measure = (Impurity)Activator.CreateInstance(ImpurityType);
                 // get appropriate column vector
@@ -130,13 +159,17 @@ namespace numl.Supervised
                 var property = Descriptor.At(i);
                 // if discrete, calculate full relative gain
                 if (property.Discrete)
-                    gain = measure.RelativeGain(y, feature);
+                    gain = measure.Gain(y, feature);
                 // otherwise segment based on width
                 else
-                    gain = measure.SegmentedRelativeGain(y, feature, Width);
+                    gain = measure.SegmentedGain(y, feature, Width);
+
+#if DEBUG
+                Console.WriteLine("\t\tGain for {0} = {1:0.0000}", Descriptor.ColumnAt(i), gain);
+#endif
 
                 // best one?
-                if (gain > bestGain && !used.Contains(i))
+                if (gain > bestGain)
                 {
                     bestGain = gain;
                     bestFeature = i;
@@ -145,6 +178,15 @@ namespace numl.Supervised
             }
 
             return new Tuple<int, double, Impurity>(bestFeature, bestGain, bestMeasure);
+        }
+
+        private Node BuildLeafNode(double val)
+        {
+#if DEBUG
+            Console.WriteLine("Building leaf node: {0}", Descriptor.Label.Convert(val));
+#endif
+            // build leaf node
+            return new Node { IsLeaf = true, Value = val, Edges = new Edge[] { }, Label = Descriptor.Label.Convert(val) };
         }
     }
 
@@ -170,30 +212,49 @@ namespace numl.Supervised
         private double WalkNode(Vector v, Node node)
         {
             if (node.IsLeaf)
-                return node.Label;
+                return node.Value;
 
             // Get the index of the feature for this node.
             var col = node.Column;
             if (col == -1)
                 throw new InvalidOperationException("Invalid Feature encountered during node walk!");
 
-            Range[] segments = node.Segments;
-
-            for (int i = 0; i < segments.Length; i++)
+            for (int i = 0; i < node.Edges.Length; i++)
             {
-                // continuous - range check
-                if (node.Segmented && v[col] >= segments[i].Min && v[col] < segments[i].Max)
-                    return WalkNode(v, node.Children[i]);
-                // discrete - value check
-                if (!node.Segmented && v[col] == segments[i].Min)
-                    return WalkNode(v, node.Children[i]);
+                Edge edge = node.Edges[i];
+                if (edge.Discrete && v[col] == edge.Min)
+                    return WalkNode(v, edge.Child);
+                if (!edge.Discrete && v[col] >= edge.Min && v[col] < edge.Min)
+                    return WalkNode(v, edge.Child);
             }
 
             if (Hint != double.Epsilon)
                 return Hint;
             else
                 throw new InvalidOperationException(String.Format("Unable to match split value {0} for feature {1}[2]", v[col], Descriptor.At(col), col));
+        }
 
+        public override string ToString()
+        {
+            return PrintNode(Tree, "\t");   
+        }
+
+        private string PrintNode(Node n, string pre)
+        {
+            if (n.IsLeaf)
+                return String.Format("{0} +({1}, {2:#.####})\n", pre, n.Label, n.Value);
+            else
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine(String.Format("{0}[{1}, {2:0.0000}]", pre, n.Name, n.Gain));
+                foreach (Edge edge in n.Edges)
+                {
+                    sb.AppendLine(String.Format("{0} |- {1}", pre, edge.Label));
+                    sb.Append(PrintNode(edge.Child, String.Format("{0} |\t", pre)));
+                }
+
+                return sb.ToString();
+            }
         }
     }
 }

@@ -66,7 +66,7 @@ namespace numl.Tests
             };
 
             for (int i = 0; i < 3; i++)
-                Assert.AreEqual(a[i], _test[i, VectorType.Column]);
+                Assert.AreEqual(a[i], _test[i, VectorType.Col]);
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace numl.Tests
             };
 
             for (int i = 0; i < 3; i++)
-                Assert.AreEqual(a[i], _test.T[i, VectorType.Column]);
+                Assert.AreEqual(a[i], _test.T[i, VectorType.Col]);
         }
 
         [Test]
@@ -505,7 +505,7 @@ namespace numl.Tests
             Vector v = new[] { 0.5, 0.5, 0.5 };
 
             Matrix s1 = (new Vector(new double[] { 6, 15, 24 }))
-                            .ToMatrix(VectorType.Column);
+                            .ToMatrix(VectorType.Col);
             Matrix s2 = (new Vector(new double[] { 12, 15, 18 }))
                             .ToMatrix(VectorType.Row);
 
@@ -525,7 +525,7 @@ namespace numl.Tests
             Vector col = new[] { 10, 20, 30 };
 
             Assert.AreEqual(row, one.Sum(VectorType.Row));
-            Assert.AreEqual(col, one.Sum(VectorType.Column));
+            Assert.AreEqual(col, one.Sum(VectorType.Col));
             Assert.AreEqual(60, one.Sum());
         }
 

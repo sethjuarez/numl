@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using numl.Supervised;
-using numl.Math;
 using numl.Model;
-using System.Threading.Tasks;
-using numl.Math.Probability;
-using System.Collections;
-using numl.Math.LinearAlgebra;
 using numl.Utils;
+using System.Linq;
+using numl.Supervised;
+using numl.Math.Probability;
+using System.Threading.Tasks;
+using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
 
 namespace numl
 {
@@ -86,7 +83,7 @@ namespace numl
                 {
                     var truth = FastReflection.Get(test[j], descriptor.Label.Name);
 
-                    var features = descriptor.Convert(test[j]).ToVector();
+                    var features = descriptor.Convert(test[j], false).ToVector();
                     var p = Models[i].Predict(features);
 
                     // set prediction

@@ -1,10 +1,8 @@
-﻿using numl.Math.LinearAlgebra;
-using numl.Math.Kernels;
-using numl.Math;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
+using numl.Math.Kernels;
+using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
 
 namespace numl.Supervised
 {

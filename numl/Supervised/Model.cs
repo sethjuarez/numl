@@ -3,10 +3,9 @@ using System.IO;
 using numl.Utils;
 using numl.Model;
 using System.Linq;
+using numl.Math.LinearAlgebra;
 using System.Xml.Serialization;
 using System.Collections.Generic;
-using numl.Math;
-using numl.Math.LinearAlgebra;
 
 namespace numl.Supervised
 {
@@ -21,7 +20,7 @@ namespace numl.Supervised
             if (Descriptor.Label == null)
                 throw new InvalidOperationException("Empty label precludes prediction!");
 
-            var y = Descriptor.Convert(o).ToVector();
+            var y = Descriptor.Convert(o, false).ToVector();
             var val = Predict(y);
             var result = Descriptor.Label.Convert(val);
             FastReflection.Set(o, Descriptor.Label.Name, result);

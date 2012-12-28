@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Collections.Generic;
 
 namespace numl.Math.LinearAlgebra
 {
@@ -114,10 +113,10 @@ namespace numl.Math.LinearAlgebra
 
             var copy = V.Copy();
             for (int i = 0; i < eigs.Length; i++)
-                copy[i, VectorType.Column] = V[eigs[i].Item1, VectorType.Column];
+                copy[i, VectorType.Col] = V[eigs[i].Item1, VectorType.Col];
 
             V = copy;
-            V.Normalize(VectorType.Column);
+            V.Normalize(VectorType.Col);
             Eigenvalues = eigs.Select(t => t.Item2).ToArray();
 
 #if DEBUG
@@ -146,9 +145,9 @@ namespace numl.Math.LinearAlgebra
 #endif
             var copy = Matrix.Zeros(x.Rows, x.Cols);
             for (int i = 0; i < eigs.Length; i++)
-                copy[i, VectorType.Column] = x[eigs[i].Item1, VectorType.Column];
+                copy[i, VectorType.Col] = x[eigs[i].Item1, VectorType.Col];
 
-            copy.Normalize(VectorType.Column);
+            copy.Normalize(VectorType.Col);
             Vector vec = eigs.Select(t => t.Item2).ToArray();
 
 #if DEBUG

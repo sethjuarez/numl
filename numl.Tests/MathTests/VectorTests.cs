@@ -104,7 +104,7 @@ namespace numl.Tests
                  {4, 5, 6},
                  {7, 8, 9}};
 
-            Vector v1 = one[1, VectorType.Column];
+            Vector v1 = one[1, VectorType.Col];
             Vector v2 = new[] { 2, 5, 8 };
             Assert.AreEqual(v2, v1);
         }
@@ -136,9 +136,9 @@ namespace numl.Tests
                  {7, 8, 9}};
 
             Vector toAssign = new[] { 1, 1, 1 };
-            one[1, VectorType.Column] = toAssign;
+            one[1, VectorType.Col] = toAssign;
 
-            Assert.AreEqual(toAssign, one[1, VectorType.Column]);
+            Assert.AreEqual(toAssign, one[1, VectorType.Col]);
         }
 
         [Test]

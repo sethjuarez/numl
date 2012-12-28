@@ -1,34 +1,12 @@
-﻿/*
- Copyright (c) 2012 Seth Juarez
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
-*/
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Globalization;
-using System.Xml.Serialization;
-using System.Xml.Schema;
+﻿using System;
 using System.Xml;
+using System.Text;
 using System.Linq;
+using System.Xml.Schema;
+using System.Globalization;
 using numl.Math.Probability;
+using System.Xml.Serialization;
+using System.Collections.Generic;
 
 namespace numl.Math.LinearAlgebra
 {
@@ -165,7 +143,7 @@ namespace numl.Math.LinearAlgebra
             {
                 // switch it up if using a transposed version
                 if (_asTransposeRef)
-                    t = t == VectorType.Row ? VectorType.Column : VectorType.Row;
+                    t = t == VectorType.Row ? VectorType.Col : VectorType.Row;
 
 
                 if (t == VectorType.Row)
@@ -221,7 +199,7 @@ namespace numl.Math.LinearAlgebra
 
         public Vector Col(int i)
         {
-            return this[i, VectorType.Column];
+            return this[i, VectorType.Col];
         }
 
         public double this[Func<double, bool> f]
@@ -289,7 +267,7 @@ namespace numl.Math.LinearAlgebra
         public IEnumerable<Vector> GetCols()
         {
             for (int i = 0; i < Cols; i++)
-                yield return this[i, VectorType.Column];
+                yield return this[i, VectorType.Col];
         }
 
         public Vector ToVector()
@@ -301,7 +279,7 @@ namespace numl.Math.LinearAlgebra
 
             if (Cols == 1)
             {
-                return this[0, VectorType.Column].Copy();
+                return this[0, VectorType.Col].Copy();
             }
 
             throw new InvalidOperationException("Matrix conversion failed: More then one row or one column!");
@@ -540,7 +518,7 @@ namespace numl.Math.LinearAlgebra
 
         public void SwapCol(int from, int to)
         {
-            Swap(from, to, VectorType.Column);
+            Swap(from, to, VectorType.Col);
         }
 
         public void Swap(int from, int to, VectorType t)
@@ -554,7 +532,7 @@ namespace numl.Math.LinearAlgebra
         {
             int max = t == VectorType.Row ? Rows : Cols;
             int row = t == VectorType.Row ? Rows - 1 : Rows;
-            int col = t == VectorType.Column ? Cols - 1 : Cols;
+            int col = t == VectorType.Col ? Cols - 1 : Cols;
 
             Matrix m = new Matrix(row, col);
             int j = -1;

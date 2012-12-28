@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using numl.Math;
 using numl.Model;
+using System.Linq;
 using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
 
 namespace numl.Unsupervised
 {
@@ -20,7 +18,7 @@ namespace numl.Unsupervised
             // (using a copy since centering is in place)
             X = matrix
                     .Copy()
-                    .Center(VectorType.Column);
+                    .Center(VectorType.Col);
 
             // compute eigen-decomposition
             // of covariance matrix
@@ -45,7 +43,7 @@ namespace numl.Unsupervised
             // get columns in reverse order
             // and stuff into matrix
             Matrix reduc = Eigenvectors
-                                .Reverse(VectorType.Column)
+                                .Reverse(VectorType.Col)
                                 .Take(maxdim)
                                 .ToMatrix();
 

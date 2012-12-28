@@ -14,7 +14,7 @@ namespace numl.Tests
     public class DecisionTreeTests
     {
         [Test]
-        public void Test_Full_DT_Generation_And_Prediction()
+        public void House_DT_and_Prediction()
         {
             var data = House.GetData();
 
@@ -32,6 +32,16 @@ namespace numl.Tests
 
             var prediction = model.Predict(h);
             Assert.IsTrue(prediction.Response);
+        }
+
+        [Test]
+        public void Tennis_DT_and_Prediction()
+        {
+            var data = Tennis.GetData();
+
+            var description = Descriptor.Create<Tennis>();
+            var generator = new DecisionTreeGenerator(50);
+            var model = generator.Generate(description, data);
         }
     }
 }

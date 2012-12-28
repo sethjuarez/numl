@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Collections.Generic;
 
 namespace numl.Math.LinearAlgebra
 {
@@ -214,13 +213,13 @@ namespace numl.Math.LinearAlgebra
             Matrix Q = A.Copy();
             for (int k = 0; k < n; k++)
             {
-                R[k, k] = Q[k, VectorType.Column].Norm();
-                Q[k, VectorType.Column] = Q[k, VectorType.Column] / R[k, k];
+                R[k, k] = Q[k, VectorType.Col].Norm();
+                Q[k, VectorType.Col] = Q[k, VectorType.Col] / R[k, k];
 
                 for (int j = k + 1; j < n; j++)
                 {
-                    R[k, j] = Vector.Dot(Q[k, VectorType.Column], A[j, VectorType.Column]);
-                    Q[j, VectorType.Column] = Q[j, VectorType.Column] - (R[k, j] * Q[k, VectorType.Column]);
+                    R[k, j] = Vector.Dot(Q[k, VectorType.Col], A[j, VectorType.Col]);
+                    Q[j, VectorType.Col] = Q[j, VectorType.Col] - (R[k, j] * Q[k, VectorType.Col]);
                 }
             }
 
@@ -281,7 +280,7 @@ namespace numl.Math.LinearAlgebra
 
             Vector toReturn = Vector.Zeros(x.Cols);
             for (int i = 0; i < toReturn.Length; i++)
-                toReturn[i] = Vector.Dot(x[i, VectorType.Column], v);
+                toReturn[i] = Vector.Dot(x[i, VectorType.Col], v);
             return toReturn;
         }
 
@@ -289,7 +288,7 @@ namespace numl.Math.LinearAlgebra
         public static Vector Mean(Matrix source, VectorType t)
         {
             int count = t == VectorType.Row ? source.Cols : source.Rows;
-            VectorType type = t == VectorType.Row ? VectorType.Column : VectorType.Row;
+            VectorType type = t == VectorType.Row ? VectorType.Col : VectorType.Row;
             Vector v = new Vector(count);
             for (int i = 0; i < count; i++)
                 v[i] = source[i, type].Mean();
@@ -318,7 +317,7 @@ namespace numl.Math.LinearAlgebra
             return min;
         }
 
-        public static Matrix Covariance(Matrix source, VectorType t = VectorType.Column)
+        public static Matrix Covariance(Matrix source, VectorType t = VectorType.Col)
         {
             int length = t == VectorType.Row ? source.Rows : source.Cols;
             Matrix m = new Matrix(length);
@@ -328,7 +327,7 @@ namespace numl.Math.LinearAlgebra
             return m;
         }
 
-        public static Vector CovarianceDiag(Matrix source, VectorType t = VectorType.Column)
+        public static Vector CovarianceDiag(Matrix source, VectorType t = VectorType.Col)
         {
             int length = t == VectorType.Row ? source.Rows : source.Cols;
             Vector vector = new Vector(length);
@@ -337,7 +336,7 @@ namespace numl.Math.LinearAlgebra
             return vector;
         }
 
-        public static Matrix Correlation(Matrix source, VectorType t = VectorType.Column)
+        public static Matrix Correlation(Matrix source, VectorType t = VectorType.Col)
         {
             int length = t == VectorType.Row ? source.Rows : source.Cols;
             Matrix m = new Matrix(length);
@@ -400,7 +399,7 @@ namespace numl.Math.LinearAlgebra
 
         public static Matrix VStack(params Vector[] vectors)
         {
-            return Matrix.Stack(VectorType.Column, vectors);
+            return Matrix.Stack(VectorType.Col, vectors);
         }
 
         public static Matrix Stack(Matrix m, Matrix t)
@@ -453,7 +452,7 @@ namespace numl.Math.LinearAlgebra
             var q = indices.Distinct();
 
             int rows = t == VectorType.Row ? q.Where(j => j < m.Rows).Count() : m.Rows;
-            int cols = t == VectorType.Column ? q.Where(j => j < m.Cols).Count() : m.Cols;
+            int cols = t == VectorType.Col ? q.Where(j => j < m.Cols).Count() : m.Cols;
 
             Matrix n = new Matrix(rows, cols);
 

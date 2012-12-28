@@ -1,26 +1,4 @@
-﻿/*
- Copyright (c) 2012 Seth Juarez
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
-*/
-
-using System;
+﻿using System;
 using System.Linq;
 
 namespace numl.Math.LinearAlgebra
@@ -176,7 +154,7 @@ namespace numl.Math.LinearAlgebra
         public static Matrix operator *(Matrix m, Vector v)
         {
             Vector ans = Matrix.Dot(m, v);
-            return ans.ToMatrix(VectorType.Column);
+            return ans.ToMatrix(VectorType.Col);
         }
 
         public static Matrix operator *(Vector v, Matrix m)
@@ -245,7 +223,7 @@ namespace numl.Math.LinearAlgebra
             Matrix matrix = new Matrix(mat.Rows, 2 * mat.Cols);
             // copy over colums
             for (int i = 0; i < mat.Cols; i++)
-                matrix[i, VectorType.Column] = mat[i, VectorType.Column];
+                matrix[i, VectorType.Col] = mat[i, VectorType.Col];
 
             // fill in identity
             for (int i = mat.Cols; i < 2 * mat.Cols; i++)
@@ -290,7 +268,7 @@ namespace numl.Math.LinearAlgebra
             // generate result
             Matrix result = new Matrix(mat.Rows);
             for (int i = mat.Cols; i < 2 * mat.Cols; i++)
-                result[i - mat.Cols, VectorType.Column] = matrix[i, VectorType.Column];
+                result[i - mat.Cols, VectorType.Col] = matrix[i, VectorType.Col];
 
             return result;
         }
