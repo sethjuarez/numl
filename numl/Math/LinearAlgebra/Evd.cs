@@ -86,6 +86,7 @@ namespace numl.Math.LinearAlgebra
 
                         // perform rotation
                         A = J.T * A * J;
+
                         // store accumulated results
                         V = V * J;
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using numl.Model;
 using numl.Utils;
 using System.Linq;
 using numl.Supervised;
@@ -10,107 +9,137 @@ using System.Collections.Generic;
 
 namespace numl
 {
-    public class Learner
+    public static class Learner
     {
-        public IGenerator[] Generators { get; private set; }
-        public IModel[] Models { get; private set; }
-        public Vector Accuracy { get; private set; }
-
-        public virtual Tuple<IGenerator, IModel, double> this[int i]
+        public static LearningModel Best(this IEnumerable<LearningModel> models)
         {
-            get
-            {
-                return new Tuple<IGenerator, IModel, double>(Generators[i], Models[i], Accuracy[i]);
-            }
+            var q = from m in models
+                    where m.Accuracy == (models.Select(s => s.Accuracy).Max())
+                    select m;
+
+            return q.FirstOrDefault();
         }
 
-        public Learner(params IGenerator[] generators)
+        public static LearningModel[] Learn(IEnumerable<object> examples, double trainingPercentage, params IGenerator[] generators)
         {
+            if (generators.Length == 0)
+                throw new InvalidOperationException("Need to have at least one generator!");
+
+            // for randomizing test sets
             MLRandom.SetSeedFromSystemTime();
-            Generators = generators;
-        }
 
-        /// <summary>
-        /// Given the labeled description, this method creates models for
-        /// each generator provided in the ctor using an 80/20 training/test
-        /// slice
-        /// </summary>
-        /// <param name="descriptor"></param>
-        /// <param name="examples"></param>
-        public void Learn(Descriptor descriptor, IEnumerable<object> examples)
-        {
+            // get first descriptor (they should all be the same)
+            var descriptor = generators[0].Descriptor;
             var total = examples.Count();
             
-            var trainingCount = (int)System.Math.Ceiling(total * .8);
+            // expand data
+            var data = descriptor.Convert(examples).ToExamples();
+            Matrix x = data.Item1;
+            Vector y = data.Item2;
 
-            // 20% for testing
-            var testingSlice = GetTestPoints(total - trainingCount, total)
-                                    .ToArray();
-            // 80% for training
-            var trainingSlice = GetTrainingPoints(testingSlice, total);
+            var models = new LearningModel[generators.Length];
 
+            // run in parallel since they all have 
+            // read-only references to the data model
+            // and update indices independently
+            Parallel.For(0, models.Length, i =>
+            {
+                var t = GenerateModel(generators[i], x, y, examples, trainingPercentage);
+
+                models[i].Generator = generators[i];
+                models[i].Model = t.Model;
+                models[i].Accuracy = t.Accuracy;
+            });
+
+            return models;
+            
+        }
+
+        public static LearningModel Repeat(IEnumerable<object> examples, double trainingPercentage, IGenerator generator, int repeat)
+        {
+            MLRandom.SetSeedFromSystemTime();
+            var total = examples.Count();
+            var descriptor = generator.Descriptor;
             var data = descriptor.Convert(examples).ToExamples();
 
             Matrix x = data.Item1;
             Vector y = data.Item2;
 
-            // training
-            var x_t = x.Slice(trainingSlice, VectorType.Row);
-            var y_t = y.Slice(trainingSlice);
-
-            foreach (IGenerator generator in Generators)
-                generator.Descriptor = descriptor;
-
-            Models = new IModel[Generators.Length];
+            var models = new IModel[repeat];
+            var accuracy = Vector.Zeros(repeat);
 
             // run in parallel since they all have 
             // read-only references to the data model
-            // and update independently to different
-            // spots
-            Parallel.For(0, Models.Length, i =>
+            // and update indices independently
+            Parallel.For(0, models.Length, i =>
             {
-                Models[i] = Generators[i].Generate(x_t, y_t);
-                Models[i].Descriptor = descriptor;
+                var t = GenerateModel(generator, x, y, examples, trainingPercentage);
+                models[i] = t.Model;
+                accuracy[i] = t.Accuracy;
             });
+
+            var idx = accuracy.MaxIndex();
+
+            return new LearningModel { Generator = generator, Model = models[idx], Accuracy = accuracy[idx] };
+        }
+
+        private static LearningModel GenerateModel(IGenerator generator, Matrix x, Vector y, IEnumerable<object> examples, double trainingPct)
+        {
+            var descriptor = generator.Descriptor;
+            var total = examples.Count();
+            var trainingCount = (int)System.Math.Floor(total * trainingPct);
+
+            // 100 - trainingPercentage for testing
+            var testingSlice = GetTestPoints(total - trainingCount, total).ToArray();
+
+            // trainingPercentage for training
+            var trainingSlice = GetTrainingPoints(testingSlice, total);
+
+            // training
+            var x_t = x.Slice(trainingSlice);
+            var y_t = y.Slice(trainingSlice);
+
+            // generate model
+            var model = generator.Generate(x_t, y_t);
+            model.Descriptor = descriptor;
 
             // testing            
             object[] test = GetTestExamples(testingSlice, examples);
-            Accuracy = Vector.Zeros(Models.Length);
-            for (int i = 0; i < Models.Length; i++)
+            double accuracy = 0;
+
+            for (int j = 0; j < test.Length; j++)
             {
-                Accuracy[i] = 0;
-                for (int j = 0; j < test.Length; j++)
-                {
-                    var truth = FastReflection.Get(test[j], descriptor.Label.Name);
+                // items under test
+                object o = test[j];
 
-                    var features = descriptor.Convert(test[j], false).ToVector();
-                    var p = Models[i].Predict(features);
+                // get truth
+                var truth = FastReflection.Get(o, descriptor.Label.Name);
 
-                    // set prediction
-                    Models[i].Predict(test[j]);
+                // make prediction
+                var features = descriptor.Convert(o, false).ToVector();
 
-                    // get prediction
-                    var pred = FastReflection.Get(test[j], descriptor.Label.Name);
+                var p = model.Predict(features);
+                var pred = descriptor.Label.Convert(p);
 
-                    if (truth.Equals(pred))
-                        Accuracy[i] += 1;
+                // assess accuracy
+                if (truth.Equals(pred))
+                    accuracy += 1;
+            }
 
-                    // put it back to the way it was
-                    FastReflection.Set(test[j], descriptor.Label.Name, truth);
-                }
+            // get percentage correct
+            accuracy /= test.Length;
 
-                Accuracy[i] /= test.Length;
-            };
+            return new LearningModel { Generator = generator, Model = model, Accuracy = accuracy };
         }
 
-        private object[] GetTestExamples(IEnumerable<int> slice, IEnumerable<object> examples)
+        private static object[] GetTestExamples(IEnumerable<int> slice, IEnumerable<object> examples)
         {
             return examples
                     .Where((o, i) => slice.Contains(i))
                     .ToArray();
         }
 
-        private IEnumerable<int> GetTestPoints(int testCount, int total)
+        private static IEnumerable<int> GetTestPoints(int testCount, int total)
         {
             List<int> taken = new List<int>(testCount);
             while (taken.Count < testCount)
@@ -124,11 +153,18 @@ namespace numl
             }
         }
 
-        private IEnumerable<int> GetTrainingPoints(IEnumerable<int> testPoints, int total)
+        private static IEnumerable<int> GetTrainingPoints(IEnumerable<int> testPoints, int total)
         {
             for (int i = 0; i < total; i++)
                 if (!testPoints.Contains(i))
                     yield return i;
         }
+    }
+
+    public class LearningModel
+    {
+        public IGenerator Generator { get; set; }
+        public IModel Model { get; set; }
+        public double Accuracy { get; set; }
     }
 }

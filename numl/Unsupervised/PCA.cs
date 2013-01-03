@@ -42,8 +42,7 @@ namespace numl.Unsupervised
 
             // get columns in reverse order
             // and stuff into matrix
-            Matrix reduc = Eigenvectors
-                                .Reverse(VectorType.Col)
+            Matrix reduc = Eigenvectors.GetCols()
                                 .Take(maxdim)
                                 .ToMatrix();
 

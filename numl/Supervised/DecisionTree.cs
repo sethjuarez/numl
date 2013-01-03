@@ -12,7 +12,6 @@ namespace numl.Supervised
 {
     public class DecisionTreeGenerator : Generator
     {
-        private Random _random;
         public int Depth { get; set; }
         public int Width { get; set; }
         public double Hint { get; set; }
@@ -39,7 +38,6 @@ namespace numl.Supervised
             if (width < 2)
                 throw new InvalidOperationException("Cannot set dt tree width to less than 2!");
 
-            _random = new Random(DateTime.Now.Millisecond);
             Descriptor = descriptor;
             Depth = depth;
             Width = width;

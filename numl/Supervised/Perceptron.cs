@@ -30,14 +30,7 @@ namespace numl.Supervised
             int n = 1;
 
             if (Normalize)
-            {
-                for (int i = 0; i < X.Rows; i++)
-                {
-                    var norm = X.Row(i).Norm(2);
-                    for (int j = 0; j < X.Cols; j++)
-                        X[i, j] = X[i, j] / norm;
-                }
-            }
+                X.Normalize(VectorType.Row);
 
             // repeat 10 times for *convergence*
             for (int i = 0; i < 10; i++)
