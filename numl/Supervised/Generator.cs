@@ -13,6 +13,13 @@ namespace numl.Supervised
     {
         public Descriptor Descriptor { get; set; }
 
+        public IModel Generate(IEnumerable<object> examples)
+        {
+            if (Descriptor == null)
+                throw new InvalidOperationException("Cannot generate model with empty Descriptor");
+            return Generate(Descriptor, examples);
+        }
+
         public IModel Generate(Descriptor description, IEnumerable<object> examples)
         {
             Descriptor = description;

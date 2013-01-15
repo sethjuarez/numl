@@ -60,7 +60,7 @@ namespace numl.Math.LinearAlgebra
             return new Tuple<double, double>(c, s);
         }
 
-        public void compute(double tol = .0001)
+        public void compute(double tol = 1.0e-10)
         {
             int N = A.Cols;
             int sweep = 0;

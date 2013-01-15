@@ -11,6 +11,11 @@ namespace numl
 {
     public static class Learner
     {
+        static Learner()
+        {
+            MLRandom.SetSeedFromSystemTime();
+        }
+
         public static LearningModel Best(this IEnumerable<LearningModel> models)
         {
             var q = from m in models
@@ -20,44 +25,22 @@ namespace numl
             return q.FirstOrDefault();
         }
 
-        public static LearningModel[] Learn(IEnumerable<object> examples, double trainingPercentage, params IGenerator[] generators)
+        public static LearningModel[] Learn(IEnumerable<object> examples, double trainingPercentage, int repeat, params IGenerator[] generators)
         {
             if (generators.Length == 0)
                 throw new InvalidOperationException("Need to have at least one generator!");
 
-            // for randomizing test sets
-            MLRandom.SetSeedFromSystemTime();
-
-            // get first descriptor (they should all be the same)
-            var descriptor = generators[0].Descriptor;
-            var total = examples.Count();
-            
-            // expand data
-            var data = descriptor.Convert(examples).ToExamples();
-            Matrix x = data.Item1;
-            Vector y = data.Item2;
-
+            // set up models
             var models = new LearningModel[generators.Length];
 
-            // run in parallel since they all have 
-            // read-only references to the data model
-            // and update indices independently
-            Parallel.For(0, models.Length, i =>
-            {
-                var t = GenerateModel(generators[i], x, y, examples, trainingPercentage);
-
-                models[i].Generator = generators[i];
-                models[i].Model = t.Model;
-                models[i].Accuracy = t.Accuracy;
-            });
+            for (int i = 0; i < generators.Length; i++)
+                models[i] = Learn(examples, trainingPercentage, repeat, generators[i]);
 
             return models;
-            
         }
 
-        public static LearningModel Repeat(IEnumerable<object> examples, double trainingPercentage, IGenerator generator, int repeat)
+        public static LearningModel Learn(IEnumerable<object> examples, double trainingPercentage, int repeat, IGenerator generator)
         {
-            MLRandom.SetSeedFromSystemTime();
             var total = examples.Count();
             var descriptor = generator.Descriptor;
             var data = descriptor.Convert(examples).ToExamples();
@@ -93,7 +76,7 @@ namespace numl
             var testingSlice = GetTestPoints(total - trainingCount, total).ToArray();
 
             // trainingPercentage for training
-            var trainingSlice = GetTrainingPoints(testingSlice, total);
+            var trainingSlice = GetTrainingPoints(testingSlice, total).ToArray();
 
             // training
             var x_t = x.Slice(trainingSlice);
@@ -166,5 +149,13 @@ namespace numl
         public IGenerator Generator { get; set; }
         public IModel Model { get; set; }
         public double Accuracy { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("Learning Model:\n  Generator {0}\n  Model:\n{1}\n  Accuracy: {2:p}\n", 
+                Generator, 
+                Model, 
+                Accuracy);
+        }
     }
 }

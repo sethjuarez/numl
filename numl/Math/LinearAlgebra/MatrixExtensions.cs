@@ -88,7 +88,12 @@ namespace numl.Math.LinearAlgebra
 
         public static double Norm(this Matrix m)
         {
-            return Matrix.Norm(m);
+            return Matrix.Norm(m, 2);
+        }
+
+        public static double Norm(this Matrix m, double p)
+        {
+            return Matrix.Norm(m, p);
         }
 
         public static Tuple<Vector, Matrix> Eigs(this Matrix m)

@@ -53,11 +53,12 @@ namespace numl.Supervised
                 }
             }
 
-            return new PerceptronModel
-            {
-                W = w - (a / n),
-                B = wb - (ab / n),
-                Normalized = Normalize
+            return new PerceptronModel 
+            { 
+                W = w - (a / n), 
+                B = wb - (ab / n), 
+                Normalized = Normalize, 
+                Descriptor = Descriptor 
             };
         }
     }

@@ -11,19 +11,35 @@ namespace numl.Tests.MathTests
     [TestFixture]
     public class EvdTests
     {
-
-        [Test]
-        public void Simple_3_by_3()
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(5)]
+        [TestCase(10)]
+        [TestCase(20)]
+        [TestCase(30)]
+        //[TestCase(50)]
+        //[TestCase(100)]
+        public void CanFactorizeRandomSymmetricMatrix(int order)
         {
-            var s = 1 / System.Math.Sqrt(2);
-            var d = 1 / 3d;
-            Matrix A = new[,] {
-                {  d,  -d,  0 },
-                { -d, d+1, -s },
-                {  0,  -s,  1 }
-            };
+            var rand = Matrix.Rand(order, order, 1);
+            var A = rand.T * rand;
+            var evd = new Evd(A);
+            evd.compute();
+            var eigenvectors = evd.Eigenvectors;
+            var eigenvalues = evd.Eigenvalues;
 
 
+            Assert.AreEqual(order, eigenvectors.Rows);
+            Assert.AreEqual(order, eigenvectors.Cols);
+            Assert.AreEqual(order, eigenvalues.Length);
+
+            // make sure that A = V*λ*VT 
+            var computed = eigenvectors * eigenvalues.Diag() * eigenvectors.T;
+
+            for (var i = 0; i < computed.Rows; i++)
+                for (var j = 0; j < computed.Cols; j++)
+                    Assert.AreEqual(A[i, j], computed[i, j], 1.0e-10);
         }
 
     }

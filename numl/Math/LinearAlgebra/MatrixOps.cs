@@ -5,7 +5,7 @@ namespace numl.Math.LinearAlgebra
 {
     public partial class Matrix
     {
-        // --------------------- operators
+        // --------------------- implicity operators
         public static implicit operator Matrix(double[,] m)
         {
             return new Matrix(m);

@@ -27,6 +27,14 @@ namespace numl.Supervised
                 return _impurity;
             }
         }
+        public DecisionTreeGenerator(Descriptor descriptor)
+        {
+            Depth = 5;
+            Width = 2;
+            Descriptor = descriptor;
+            ImpurityType = typeof(Entropy);
+            Hint = double.Epsilon;
+        }
 
         public DecisionTreeGenerator(
             int depth = 5,
@@ -43,6 +51,11 @@ namespace numl.Supervised
             Width = width;
             ImpurityType = impurityType ?? typeof(Entropy);
             Hint = hint;
+        }
+
+        public void SetHint(object o)
+        {
+            Hint = Descriptor.Label.Convert(o).First();
         }
 
         public override IModel Generate(Matrix x, Vector y)
@@ -77,10 +90,6 @@ namespace numl.Supervised
             // but just in case...
             if (col == -1)
                 return BuildLeafNode(y.Mode());
-
-#if DEBUG
-            Console.WriteLine("Depth: {0}, Best Split: [{1}], Gain ({3})", depth, Descriptor.ColumnAt(col), col, gain);
-#endif
 
             used.Add(col);
 
@@ -123,15 +132,8 @@ namespace numl.Supervised
                     slice = x.Indices(v => v[col] >= segment.Min && v[col] < segment.Max);
                 }
 
-#if DEBUG
-                Console.WriteLine("\tBuilding Child for {0}", edge.Label);
-#endif
                 edge.Child = BuildTree(x.Slice(slice), y.Slice(slice), depth - 1, used);
             }
-
-#if DEBUG
-            Console.WriteLine("------------------------------------------------------------");
-#endif
 
             return node;
         }
@@ -157,14 +159,10 @@ namespace numl.Supervised
                 var property = Descriptor.At(i);
                 // if discrete, calculate full relative gain
                 if (property.Discrete)
-                    gain = measure.Gain(y, feature);
+                    gain = measure.RelativeGain(y, feature);
                 // otherwise segment based on width
                 else
-                    gain = measure.SegmentedGain(y, feature, Width);
-
-#if DEBUG
-                Console.WriteLine("\t\tGain for {0} = {1:0.0000}", Descriptor.ColumnAt(i), gain);
-#endif
+                    gain = measure.SegmentedRelativeGain(y, feature, Width);
 
                 // best one?
                 if (gain > bestGain)
@@ -180,9 +178,6 @@ namespace numl.Supervised
 
         private Node BuildLeafNode(double val)
         {
-#if DEBUG
-            Console.WriteLine("Building leaf node: {0}", Descriptor.Label.Convert(val));
-#endif
             // build leaf node
             return new Node { IsLeaf = true, Value = val, Edges = new Edge[] { }, Label = Descriptor.Label.Convert(val) };
         }

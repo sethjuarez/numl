@@ -16,7 +16,7 @@ namespace numl.Unsupervised
 
         public KMeans()
         {
-            
+
         }
 
         public Cluster Generate(Descriptor descriptor, IEnumerable<object> examples, int k, IDistance metric = null)
@@ -55,7 +55,6 @@ namespace numl.Unsupervised
                 metric = new EuclidianDistance();
 
             var means = InitializeRandom(X, k);
-            var diff = double.MaxValue;
             int[] assignments = new int[X.Rows];
 
             for (int i = 0; i < 100; i++)
@@ -65,49 +64,38 @@ namespace numl.Unsupervised
                 {
                     var min_index = -1;
                     var min = double.MaxValue;
-                    // current example
-                    var x = (Vector)X.Row(j);
                     for (int m = 0; m < means.Rows; m++)
                     {
-                        var d = (Vector)means.Row(m);
-                        var distance = metric.Compute(x, d);
-                        if (distance < min)
+                        var d = metric.Compute(X[j], means[m]);
+                        if (d < min)
                         {
-                            min = distance;
+                            min = d;
                             min_index = m;
                         }
-                        assignments[j] = min_index;
                     }
+
+                    assignments[j] = min_index;
                 });
 
                 // Update Step
-                // new means has k rows and X.Cols columns
                 Matrix new_means = Matrix.Zeros(k, X.Cols);
                 Vector sum = Vector.Zeros(k);
 
                 // Part 1: Sum up assignments
                 for (int j = 0; j < X.Rows; j++)
                 {
-                    for (int z = 0; z < X.Cols; z++)
-                        new_means[j, z] += X[j, z];
-                    sum[assignments[j]]++;
+                    int a = assignments[j];
+                    new_means[a] += X[j];
+                    sum[a]++;
                 }
 
                 // Part 2: Divide by counts
                 for (int j = 0; j < new_means.Rows; j++)
-                    for(int z= 0; z < new_means.Cols; z++)
-                        new_means[j, z] /= sum[j];
-
+                    new_means[j] /= sum[j];
 
                 // Part 3: Check for convergence
-                // find sum of normdiff's of means
-                diff = means.GetRows()
-                    .Zip(new_means.GetRows(), (e1, e2) => new { V1 = e1, V2 = e2 })
-                    .Sum(a => (a.V1 - a.V2).Norm());
-
-
-                // small diff? return
-                if (diff < .00001)
+                // find norm of the difference
+                if ((means - new_means).Norm() < .00001)
                     break;
 
                 means = new_means;
@@ -160,7 +148,7 @@ namespace numl.Unsupervised
             // initialize mean variables
             // to random existing points
             var m = Matrix.Zeros(k, X.Cols);
-            
+
             var seeds = new List<int>(k);
             for (int i = 0; i < k; i++)
             {

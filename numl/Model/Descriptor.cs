@@ -3,6 +3,8 @@ using numl.Utils;
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
+using numl.Math.LinearAlgebra;
+using System.Text;
 
 namespace numl.Model
 {
@@ -32,6 +34,7 @@ namespace numl.Model
                 return _vectorLength;
             }
         }
+        public static Type Type { get; set; }
 
         public Property At(int i)
         {
@@ -39,8 +42,8 @@ namespace numl.Model
                 throw new IndexOutOfRangeException(string.Format("{0} falls outside of the appropriate range", i));
 
             var q = (from p in Features
-                    where i >= p.Start && i < p.Start + p.Length
-                    select p);
+                     where i >= p.Start && i < p.Start + p.Length
+                     select p);
 
             return q.First();
         }
@@ -94,7 +97,7 @@ namespace numl.Model
                 feature.PreProcess(items);
             if (Label != null)
                 Label.PreProcess(items);
-            
+
             // convert items
             foreach (object o in items)
                 yield return Convert(o);
@@ -106,6 +109,16 @@ namespace numl.Model
                 Label.PostProcess(items);
         }
 
+        public Tuple<Matrix, Vector> ToExamples(IEnumerable<object> examples)
+        {
+            return Convert(examples).ToExamples();
+        }
+
+        public Matrix ToMatrix(IEnumerable<object> examples)
+        {
+            return Convert(examples).ToMatrix();
+        }
+
         public static Descriptor Create<T>()
             where T : class
         {
@@ -114,6 +127,7 @@ namespace numl.Model
 
         public static Descriptor Create(Type t)
         {
+            Type = t;
             if (!t.IsClass)
                 throw new InvalidOperationException("Can only work with class types");
 
@@ -132,11 +146,11 @@ namespace numl.Model
                     Property p = attrib.GenerateProperty(property);
 
                     // feature
-                    if (attrib.GetType().IsSubclassOf(typeof(FeatureAttribute)) || 
+                    if (attrib.GetType().IsSubclassOf(typeof(FeatureAttribute)) ||
                         attrib is FeatureAttribute)
                         features.Add(p);
                     // label
-                    else if (attrib.GetType().IsSubclassOf(typeof(LabelAttribute)) || 
+                    else if (attrib.GetType().IsSubclassOf(typeof(LabelAttribute)) ||
                         attrib is LabelAttribute)
                     {
                         if (label != null)
@@ -151,6 +165,19 @@ namespace numl.Model
                 Features = features.ToArray(),
                 Label = label
             };
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(String.Format("Descriptor ({0}) {{", Type.Name));
+            for (int i = 0; i < Features.Length; i++)
+                sb.AppendLine(string.Format("   {0}", Features[i]));
+            if (Label != null)
+                sb.AppendLine(string.Format("  *{0}", Label));
+
+            sb.AppendLine("}");
+            return sb.ToString();
         }
     }
 }

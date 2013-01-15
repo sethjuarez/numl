@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace numl.Math.LinearAlgebra
 {
@@ -68,13 +69,13 @@ namespace numl.Math.LinearAlgebra
         /// </summary>
         /// <param name="A">Input Matrix</param>
         /// <returns>Standard Norm (double)</returns>
-        public static double Norm(Matrix A)
+        public static double Norm(Matrix A, double p)
         {
             double norm = 0;
             for (int i = 0; i < A.Rows; i++)
                 for (int j = 0; j < A.Cols; j++)
-                    norm += System.Math.Pow(System.Math.Abs(A[i, j]), 2);
-            return System.Math.Sqrt(norm);
+                    norm += System.Math.Pow(System.Math.Abs(A[i, j]), p);
+            return System.Math.Pow(norm, 1d/p);
         }
 
         /// <summary>
@@ -321,9 +322,11 @@ namespace numl.Math.LinearAlgebra
         {
             int length = t == VectorType.Row ? source.Rows : source.Cols;
             Matrix m = new Matrix(length);
-            for (int i = 0; i < length; i++)
-                for (int j = i; j < length; j++) // symmetric matrix
-                    m[i, j] = m[j, i] = source[i, t].Covariance(source[j, t]);
+            //for (int i = 0; i < length; i++)
+            Parallel.For(0, length, i =>
+                //for (int j = i; j < length; j++) // symmetric matrix
+                Parallel.For(i, length, j =>
+                    m[i, j] = m[j, i] = source[i, t].Covariance(source[j, t])));
             return m;
         }
 
