@@ -8,7 +8,6 @@ namespace numl.Math.LinearAlgebra
     {
         private Matrix A;
         private Matrix V;
-        private Matrix J;
 
         public Matrix Eigenvectors
         {
@@ -26,22 +25,22 @@ namespace numl.Math.LinearAlgebra
             V = Matrix.Identity(A.Rows);
         }
 
-        public double off(Matrix A)
+        public double off(Matrix a)
         {
             double sum = 0;
-            for (int i = 0; i < A.Rows; i++)
-                for (int j = 0; j < A.Cols; j++)
+            for (int i = 0; i < a.Rows; i++)
+                for (int j = 0; j < a.Cols; j++)
                     if (i != j)
-                        sum += sqr(A[i, j]);
+                        sum += sqr(a[i, j]);
             return sqrt(sum);
         }
-        
-        public Tuple<double, double> schur(int p, int q)
+
+        public Tuple<double, double> schur(Matrix a, int p, int q)
         {
             double c, s = 0;
-            if (A[p, q] != 0)
+            if (a[p, q] != 0)
             {
-                var tau = (A[q, q] - A[p, p]) / (2 * A[p, q]);
+                var tau = (a[q, q] - a[p, p]) / (2 * a[p, q]);
                 var t = 0d;
                 if (tau >= 0)
                     t = 1 / (tau + sqrt(tau + sqr(tau)));
@@ -65,7 +64,6 @@ namespace numl.Math.LinearAlgebra
             int N = A.Cols;
             int sweep = 0;
             double o = off(A);
-            if (J == null) J = Matrix.Identity(N);
 
             while (off(A) > tol)
             {
@@ -74,25 +72,54 @@ namespace numl.Math.LinearAlgebra
                     for (int q = p + 1; q < N; q++)
                     {
                         // set jacobi rotation matrix
-                        var cs = schur(p, q);
+                        var cs = schur(A, p, q);
                         double c = cs.Item1;
                         double s = cs.Item2;
 
                         // no work
                         if (c == 1 && s == 0) continue;
 
-                        J[p, p] = J[q, q] = c;
-                        J[p, q] = s; J[q, p] = -s;
+                        /*************************
+                         * perform jacobi rotation
+                         *************************/
+                        // calculating intermediate J.T * A
+                        for (int i = 0; i < A.Cols; i++)
+                        {
+                            var Api = A[p, i];
+                            var Aqi = A[q, i];
 
-                        // perform rotation
-                        A = J.T * A * J;
+                            A[p, i] = Api * c + Aqi * -s;
+                            A[q, i] = Aqi * c + Api * s;
+                        }
+                        
+                        // calculating A * J
+                        // only inner p, q square
+                        var App = A[p, p] * c + A[p, q] * -s;
+                        var Apq = A[p, q] * c + A[p, p] * s;
+                        var Aqq = A[q, q] * c + A[q, p] * s;
 
-                        // store accumulated results
-                        V = V * J;
+                        // col p, q is transpose of earlier calc
+                        for (int i = 0; i < A.Cols; i++)
+                        {
+                            A[i, p] = A[p, i];
+                            A[i, q] = A[q, i];
+                        }
 
-                        // reset Jacobi
-                        J[p, p] = J[q, q] = 1;
-                        J[p, q] = J[q, p] = 0;
+                        // fill in changes along box
+                        A[p, p] = App;
+                        A[q, q] = Aqq;
+                        A[p, q] = A[q, p] = Apq;
+
+                        /***************************
+                         * store accumulated results
+                         ***************************/
+                        for (int i = 0; i < V.Rows; i++)
+                        {
+                            var Vip = V[i, p];
+                            var Viq = V[i, q];
+                            V[i, p] = Vip * c + Viq * -s;
+                            V[i, q] = Viq * c + Vip * s;
+                        }
                     }
                 }
 
@@ -129,35 +156,6 @@ namespace numl.Math.LinearAlgebra
             Console.Write("---------------------------------\n\n");
 #endif
         }
-
-
-
-        public void sort(Vector v, Matrix x)
-        {
-            var eigs = v.Select((d, i) => new Tuple<int, double>(i, d))
-                        .OrderByDescending(j => j.Item2)
-                        .ToArray();
-#if DEBUG
-            Console.WriteLine(v);
-            Console.WriteLine(x);
-            foreach (var e in eigs)
-                Console.Write("{0},", e);
-            Console.WriteLine("");
-#endif
-            var copy = Matrix.Zeros(x.Rows, x.Cols);
-            for (int i = 0; i < eigs.Length; i++)
-                copy[i, VectorType.Col] = x[eigs[i].Item1, VectorType.Col];
-
-            copy.Normalize(VectorType.Col);
-            Vector vec = eigs.Select(t => t.Item2).ToArray();
-
-#if DEBUG
-            Console.WriteLine(vec);
-            Console.WriteLine(copy);
-#endif
-
-        }
-
 
         #region for brevity...
         private double sqrt(double x)

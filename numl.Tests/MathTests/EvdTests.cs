@@ -18,8 +18,8 @@ namespace numl.Tests.MathTests
         [TestCase(10)]
         [TestCase(20)]
         [TestCase(30)]
-        //[TestCase(50)]
-        //[TestCase(100)]
+        [TestCase(50)]
+        [TestCase(100)]
         public void CanFactorizeRandomSymmetricMatrix(int order)
         {
             var rand = Matrix.Rand(order, order, 1);
@@ -28,7 +28,6 @@ namespace numl.Tests.MathTests
             evd.compute();
             var eigenvectors = evd.Eigenvectors;
             var eigenvalues = evd.Eigenvalues;
-
 
             Assert.AreEqual(order, eigenvectors.Rows);
             Assert.AreEqual(order, eigenvectors.Cols);
