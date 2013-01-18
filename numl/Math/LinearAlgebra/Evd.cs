@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Collections.Concurrent;
+using System.Threading;
 
 namespace numl.Math.LinearAlgebra
 {
@@ -35,7 +38,7 @@ namespace numl.Math.LinearAlgebra
             return sqrt(sum);
         }
 
-        public Tuple<double, double> schur(Matrix a, int p, int q)
+        private Tuple<double, double> schur(Matrix a, int p, int q)
         {
             double c, s = 0;
             if (a[p, q] != 0)
@@ -59,102 +62,150 @@ namespace numl.Math.LinearAlgebra
             return new Tuple<double, double>(c, s);
         }
 
-        public void compute(double tol = 1.0e-10)
+        private void sweep(int p, int q)
         {
-            int N = A.Cols;
-            int sweep = 0;
-            double o = off(A);
+            // set jacobi rotation matrix
+            var cs = schur(A, p, q);
+            double c = cs.Item1;
+            double s = cs.Item2;
 
-            while (off(A) > tol)
+            if (c != 1 || s != 0) // if rotation
             {
-                for (int p = 0; p < N - 1; p++)
+
+                /*************************
+                 * perform jacobi rotation
+                 *************************/
+                // calculating intermediate J.T * A
+                for (int i = 0; i < A.Cols; i++)
                 {
-                    for (int q = p + 1; q < N; q++)
-                    {
-                        // set jacobi rotation matrix
-                        var cs = schur(A, p, q);
-                        double c = cs.Item1;
-                        double s = cs.Item2;
+                    var Api = A[p, i];
+                    var Aqi = A[q, i];
 
-                        // no work
-                        if (c == 1 && s == 0) continue;
-
-                        /*************************
-                         * perform jacobi rotation
-                         *************************/
-                        // calculating intermediate J.T * A
-                        for (int i = 0; i < A.Cols; i++)
-                        {
-                            var Api = A[p, i];
-                            var Aqi = A[q, i];
-
-                            A[p, i] = Api * c + Aqi * -s;
-                            A[q, i] = Aqi * c + Api * s;
-                        }
-                        
-                        // calculating A * J
-                        // only inner p, q square
-                        var App = A[p, p] * c + A[p, q] * -s;
-                        var Apq = A[p, q] * c + A[p, p] * s;
-                        var Aqq = A[q, q] * c + A[q, p] * s;
-
-                        // col p, q is transpose of earlier calc
-                        for (int i = 0; i < A.Cols; i++)
-                        {
-                            A[i, p] = A[p, i];
-                            A[i, q] = A[q, i];
-                        }
-
-                        // fill in changes along box
-                        A[p, p] = App;
-                        A[q, q] = Aqq;
-                        A[p, q] = A[q, p] = Apq;
-
-                        /***************************
-                         * store accumulated results
-                         ***************************/
-                        for (int i = 0; i < V.Rows; i++)
-                        {
-                            var Vip = V[i, p];
-                            var Viq = V[i, q];
-                            V[i, p] = Vip * c + Viq * -s;
-                            V[i, q] = Viq * c + Vip * s;
-                        }
-                    }
+                    A[p, i] = Api * c + Aqi * -s;
+                    A[q, i] = Aqi * c + Api * s;
                 }
 
-                sweep++;
-                o = off(A);
+                // calculating A * J
+                // only inner p, q square
+                var App = A[p, p] * c + A[p, q] * -s;
+                var Apq = A[p, q] * c + A[p, p] * s;
+                var Aqq = A[q, q] * c + A[q, p] * s;
 
-#if DEBUG
-                Console.WriteLine("---------------------------------");
-                Console.WriteLine("Sweep: {0}, off(A): {1}", sweep, o);
-                Console.WriteLine("---------------------------------\n\n");
-#endif
+                // col p, q is transpose of earlier calc
+                for (int i = 0; i < A.Cols; i++)
+                {
+                    A[i, p] = A[p, i];
+                    A[i, q] = A[q, i];
+                }
+
+                // fill in changes along box
+                A[p, p] = App;
+                A[q, q] = Aqq;
+                A[p, q] = A[q, p] = Apq;
+
+                /***************************
+                 * store accumulated results
+                 ***************************/
+                for (int i = 0; i < V.Rows; i++)
+                {
+                    var Vip = V[i, p];
+                    var Viq = V[i, q];
+                    V[i, p] = Vip * c + Viq * -s;
+                    V[i, q] = Viq * c + Vip * s;
+                }
+            }
+        }
+
+        public void parallel()
+        {
+            Console.WriteLine("Starting new sweep!");
+            int N = A.Cols;
+            // make even pairings
+            int n = N % 2 == 0 ? N : N + 1;
+
+            // queue up round-iness of the robin
+            Queue<int> queue = new Queue<int>(n - 1);
+
+            // fill queue
+            for (int i = 1; i < N; i++) queue.Enqueue(i);
+            // add extra for odd pairings
+            if (N % 2 == 1) queue.Enqueue(-1);
+
+            for (int i = 0; i < n - 1; i++)
+            {
+                Parallel.For(0, n / 2, j => 
+                {
+                    int p, q, k = n - 1 - j;
+                    int eK = queue.ElementAt(k - 1);
+                    if (j == 0)
+                    {
+                        p = min(0, eK);
+                        q = max(0, eK);
+                    }
+                    else
+                    {
+                        int eJ = queue.ElementAt(j - 1);
+                        p = min(eJ, eK);
+                        q = max(eJ, eK);
+                    }
+
+                    // are we in a buy week?
+                    if (p >= 0)
+                        sweep(p, q);
+                    
+                    Console.WriteLine("({0}, {1}) [{2}] {3}", p, q, Thread.CurrentThread.ManagedThreadId, p < 0 ? "buy" : "");
+
+                });
+
+                Console.WriteLine("----------[{0}]----------", Thread.CurrentThread.ManagedThreadId);
+                // move stuff around
+                queue.Enqueue(queue.Dequeue());
             }
 
+        }
+
+        private void factorize()
+        {
+            int N = A.Cols;
+            for (int p = 0; p < N - 1; p++)
+                for (int q = p + 1; q < N; q++)
+                    sweep(p, q);
+        }
+
+        public void compute(double tol = 1.0e-10)
+        {
+            int s = 0;
+            do
+            {
+                s++;
+                if (A.Cols <= 300) // small enough
+                    parallel();
+                else          // parallelize
+                    parallel();
+
+            } while (off(A) > tol);
+
+            sort();
+        }
+
+        private void sort()
+        {
             //ordering
             var eigs = A.Diag()
                         .Select((d, i) => new Tuple<int, double>(i, d))
                         .OrderByDescending(j => j.Item2)
                         .ToArray();
 
+            // sort eigenvectors
             var copy = V.Copy();
             for (int i = 0; i < eigs.Length; i++)
                 copy[i, VectorType.Col] = V[eigs[i].Item1, VectorType.Col];
 
+            // normalize eigenvectors
+            copy.Normalize(VectorType.Col);
             V = copy;
-            V.Normalize(VectorType.Col);
-            Eigenvalues = eigs.Select(t => t.Item2).ToArray();
 
-#if DEBUG
-            Console.WriteLine("eigenvalues: ");
-            Console.WriteLine(Eigenvalues);
-            Console.Write("\n");
-            Console.WriteLine("eigenvectors: ");
-            Console.WriteLine(Eigenvectors);
-            Console.Write("---------------------------------\n\n");
-#endif
+            Eigenvalues = eigs.Select(t => t.Item2).ToArray();
         }
 
         #region for brevity...
@@ -166,6 +217,16 @@ namespace numl.Math.LinearAlgebra
         private double sqr(double x)
         {
             return System.Math.Pow(x, 2);
+        }
+
+        private int min(int a, int b)
+        {
+            return System.Math.Min(a, b);
+        }
+
+        private int max(int a, int b)
+        {
+            return System.Math.Max(a, b);
         }
         #endregion
     }

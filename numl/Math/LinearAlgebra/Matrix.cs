@@ -339,8 +339,21 @@ namespace numl.Math.LinearAlgebra
             return _matrix.GetHashCode();
         }
 
+        public bool Equals(Matrix m, double tol)
+        {
+            if (Rows != m.Rows || Cols != m.Cols)
+                return false;
+
+            for (int i = 0; i < Rows; i++)
+                for (int j = 0; j < Cols; j++)
+                    if (System.Math.Abs(this[i, j] - m[i, j]) > tol)
+                        return false;
+            return true;
+        }
+
         public override bool Equals(object obj)
         {
+
             if (obj is Matrix)
             {
                 var m = obj as Matrix;
@@ -443,7 +456,7 @@ namespace numl.Math.LinearAlgebra
         /// <param name="n">rows</param>
         /// <param name="d">cols</param>
         /// <returns>n x d Matrix</returns>
-        public static Matrix Rand(int n, int d, int min = 0)
+        public static Matrix Rand(int n, int d, double min = 0)
         {
             var m = new double[n][];
             for (int i = 0; i < n; i++)
@@ -456,7 +469,12 @@ namespace numl.Math.LinearAlgebra
             return new Matrix { _matrix = m, _asTransposeRef = false, Cols = d, Rows = n };
         }
 
-        public static Matrix NormRand(int n, int d, int min = 0)
+        public static Matrix Rand(int n, double min = 0)
+        {
+            return Matrix.Rand(n, n, min);
+        }
+
+        public static Matrix NormRand(int n, int d, double min = 0)
         {
             var m = new double[n][];
             for (int i = 0; i < n; i++)
@@ -469,6 +487,11 @@ namespace numl.Math.LinearAlgebra
             return new Matrix { _matrix = m, _asTransposeRef = false, Cols = d, Rows = n };
         }
 
+        public static Matrix NormRand(int n, double min = 0)
+        {
+            return Matrix.NormRand(n, n, min);
+        }
+
         public static Matrix NormRand(Vector means, Vector stdDev, int n)
         {
             if (means.Length != stdDev.Length)
@@ -476,7 +499,7 @@ namespace numl.Math.LinearAlgebra
 
             int d = means.Length;
             var m = new double[n][];
-            
+
             for (int i = 0; i < n; i++)
             {
                 m[i] = new double[d];
