@@ -47,6 +47,14 @@ namespace numl.Math.LinearAlgebra
             return result;
         }
 
+        public static Vector Calc(Vector v, Func<int, double, double> f)
+        {
+            var result = v.Copy();
+            for (int i = 0; i < v.Length; i++)
+                result[i] = f(i, result[i]);
+            return result;
+        }
+
         public static Vector Ones(int n)
         {
             double[] x = new double[n];

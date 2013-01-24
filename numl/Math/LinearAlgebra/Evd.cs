@@ -76,43 +76,37 @@ namespace numl.Math.LinearAlgebra
                  * perform jacobi rotation
                  *************************/
                 // calculating intermediate J.T * A
-                for (int i = 0; i < A.Cols; i++)
-                {
-                    var Api = A[p, i];
-                    var Aqi = A[q, i];
+                var pV = Vector.Create(A.Cols, i => A[p, i] * c + A[q, i] * -s);
+                var qV = Vector.Create(A.Cols, i => A[q, i] * c + A[p, i] * s);
 
-                    A[p, i] = Api * c + Aqi * -s;
-                    A[q, i] = Aqi * c + Api * s;
-                }
-
-                // calculating A * J
-                // only inner p, q square
-                var App = A[p, p] * c + A[p, q] * -s;
-                var Apq = A[p, q] * c + A[p, p] * s;
-                var Aqq = A[q, q] * c + A[q, p] * s;
-
-                // col p, q is transpose of earlier calc
-                for (int i = 0; i < A.Cols; i++)
-                {
-                    A[i, p] = A[p, i];
-                    A[i, q] = A[q, i];
-                }
+                // calculating A * J for inner p, q square
+                var App = pV[p] * c + pV[q] * -s;
+                var Apq = pV[q] * c + pV[p] * s;
+                var Aqq = qV[q] * c + qV[p] * s;
 
                 // fill in changes along box
-                A[p, p] = App;
-                A[q, q] = Aqq;
-                A[p, q] = A[q, p] = Apq;
+                pV[p] = App;
+                pV[q] = qV[p] = Apq;
+                qV[q] = Aqq;
 
                 /***************************
                  * store accumulated results
                  ***************************/
-                for (int i = 0; i < V.Rows; i++)
-                {
-                    var Vip = V[i, p];
-                    var Viq = V[i, q];
-                    V[i, p] = Vip * c + Viq * -s;
-                    V[i, q] = Viq * c + Vip * s;
-                }
+                var pE = Vector.Create(V.Rows, i => V[i, p] * c + V[i, q] * -s);
+                var qE = Vector.Create(V.Rows, i => V[i, q] * c + V[i, p] * s);
+
+                /****************
+                 * matrix updates
+                 ****************/
+                // Update A
+                A[p, VectorType.Col] = pV;
+                A[p, VectorType.Row] = pV;
+                A[q, VectorType.Col] = qV;
+                A[q, VectorType.Row] = qV;
+
+                // Update V - not critical 
+                V[p, VectorType.Col] = pE;
+                V[q, VectorType.Col] = qE;
             }
         }
 
@@ -133,26 +127,20 @@ namespace numl.Math.LinearAlgebra
 
             for (int i = 0; i < n - 1; i++)
             {
-                Parallel.For(0, n / 2, j => 
+                Parallel.For(0, n / 2, j =>
                 {
                     int p, q, k = n - 1 - j;
+
                     int eK = queue.ElementAt(k - 1);
-                    if (j == 0)
-                    {
-                        p = min(0, eK);
-                        q = max(0, eK);
-                    }
-                    else
-                    {
-                        int eJ = queue.ElementAt(j - 1);
-                        p = min(eJ, eK);
-                        q = max(eJ, eK);
-                    }
+                    int eJ = j == 0 ? 0 : queue.ElementAt(j - 1);
+
+                    p = min(eJ, eK);
+                    q = max(eJ, eK);
 
                     // are we in a buy week?
                     if (p >= 0)
                         sweep(p, q);
-                    
+
                     Console.WriteLine("({0}, {1}) [{2}] {3}", p, q, Thread.CurrentThread.ManagedThreadId, p < 0 ? "buy" : "");
 
                 });
@@ -178,10 +166,11 @@ namespace numl.Math.LinearAlgebra
             do
             {
                 s++;
-                if (A.Cols <= 300) // small enough
-                    parallel();
-                else          // parallelize
-                    parallel();
+                factorize();
+                //if (A.Cols <= 300) // small enough
+                //    factorize();
+                //else          // parallelize
+                //    parallel();
 
             } while (off(A) > tol);
 

@@ -273,6 +273,22 @@ namespace numl.Math.LinearAlgebra
             return sb.ToString();
         }
 
+        public static Vector Create(int length, Func<double> f)
+        {
+            double[] vector = new double[length];
+            for (int i = 0; i < length; i++)
+                vector[i] = f();
+            return new Vector(vector);
+        }
+
+        public static Vector Create(int length, Func<int, double> f)
+        {
+            double[] vector = new double[length];
+            for (int i = 0; i < length; i++)
+                vector[i] = f(i);
+            return new Vector(vector);
+        }
+
         public static Vector Range(int s, int e = -1)
         {
             if (e > 0)

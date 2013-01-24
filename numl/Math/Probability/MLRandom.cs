@@ -243,6 +243,11 @@ namespace numl.Math.Probability
             double v = GetGamma(b, 1.0);
             return u / (u + v);
         }
-    }
 
+        public static double GetPower(double a, double min = 1)
+        {
+            double u = GetUniform();
+            return min * System.Math.Pow(1d - u, -1d / (a - 1d));
+        }
+    }
 }

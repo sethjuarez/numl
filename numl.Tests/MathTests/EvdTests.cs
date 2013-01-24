@@ -22,7 +22,7 @@ namespace numl.Tests.MathTests
         //[TestCase(53)]
         //[TestCase(100)]
         //[TestCase(200)]
-        [TestCase(8)]
+        [TestCase(310)]
         //[TestCase(500)]
         //[TestCase(1000)]
         public void CanFactorizeRandomSymmetricMatrix(int order)
