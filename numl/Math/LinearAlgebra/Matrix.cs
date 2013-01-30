@@ -463,7 +463,7 @@ namespace numl.Math.LinearAlgebra
             {
                 m[i] = new double[d];
                 for (int j = 0; j < d; j++)
-                    m[i][j] = MLRandom.GetUniform() + min;
+                    m[i][j] = Sampling.GetUniform() + min;
             }
 
             return new Matrix { _matrix = m, _asTransposeRef = false, Cols = d, Rows = n };
@@ -481,7 +481,7 @@ namespace numl.Math.LinearAlgebra
             {
                 m[i] = new double[d];
                 for (int j = 0; j < d; j++)
-                    m[i][j] = MLRandom.GetNormal() + min;
+                    m[i][j] = Sampling.GetNormal() + min;
             }
 
             return new Matrix { _matrix = m, _asTransposeRef = false, Cols = d, Rows = n };
@@ -504,7 +504,7 @@ namespace numl.Math.LinearAlgebra
             {
                 m[i] = new double[d];
                 for (int j = 0; j < d; j++)
-                    m[i][j] = MLRandom.GetNormal(means[j], stdDev[j]);
+                    m[i][j] = Sampling.GetNormal(means[j], stdDev[j]);
             }
 
             return new Matrix { _matrix = m, _asTransposeRef = false, Cols = d, Rows = n };
@@ -529,6 +529,34 @@ namespace numl.Math.LinearAlgebra
         public static Matrix Identity(int n)
         {
             return Identity(n, n);
+        }
+
+        public static Matrix Create(int n, Func<double> f)
+        {
+            return Create(n, n, f);
+        }
+
+        public static Matrix Create(int n, int d, Func<double> f)
+        {
+            Matrix matrix = new Matrix(n, d);
+            for (int i = 0; i < matrix.Rows; i++)
+                for (int j = 0; j < matrix.Cols; j++)
+                matrix[i, j] = f();
+            return matrix;
+        }
+
+        public static Matrix Create(int n, Func<int, int, double> f)
+        {
+            return Create(n, n, f);
+        }
+
+        public static Matrix Create(int n, int d, Func<int, int, double> f)
+        {
+            Matrix matrix = new Matrix(n, d);
+            for (int i = 0; i < matrix.Rows; i++)
+                for (int j = 0; j < matrix.Cols; j++)
+                    matrix[i, j] = f(i, j);
+            return matrix;
         }
 
         //--------------- aggregation/structural

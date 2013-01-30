@@ -13,7 +13,7 @@ namespace numl
     {
         static Learner()
         {
-            MLRandom.SetSeedFromSystemTime();
+            Sampling.SetSeedFromSystemTime();
         }
 
         public static LearningModel Best(this IEnumerable<LearningModel> models)
@@ -127,7 +127,7 @@ namespace numl
             List<int> taken = new List<int>(testCount);
             while (taken.Count < testCount)
             {
-                int i = MLRandom.GetUniform(total);
+                int i = Sampling.GetUniform(total);
                 if (!taken.Contains(i))
                 {
                     taken.Add(i);

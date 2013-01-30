@@ -73,7 +73,7 @@ namespace numl.Math.LinearAlgebra
         {
             double[] x = new double[n];
             for (int i = 0; i < n; i++)
-                x[i] = MLRandom.GetUniform();
+                x[i] = Sampling.GetUniform();
 
             return new Vector(x);
         }
@@ -84,9 +84,9 @@ namespace numl.Math.LinearAlgebra
             for (int i = 0; i < n; i++)
             {
                 if (precision > -1)
-                    x[i] = System.Math.Round(MLRandom.GetNormal(mean, stdDev), precision);
+                    x[i] = System.Math.Round(Sampling.GetNormal(mean, stdDev), precision);
                 else
-                    x[i] = MLRandom.GetNormal(mean, stdDev);
+                    x[i] = Sampling.GetNormal(mean, stdDev);
             }
 
             return new Vector(x);

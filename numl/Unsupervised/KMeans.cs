@@ -158,7 +158,7 @@ namespace numl.Unsupervised
                     // pick random row that has not yet 
                     // been used (need to fix this...)
 
-                    index = MLRandom.GetUniform(k);
+                    index = Sampling.GetUniform(k);
 
                     if (!seeds.Contains(index))
                     {

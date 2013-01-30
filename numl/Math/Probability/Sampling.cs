@@ -14,12 +14,12 @@ namespace numl.Math.Probability
     /// Written by John D. Cook 
     /// http://www.johndcook.com
     /// </summary>
-    public class MLRandom
+    public class Sampling
     {
         private static uint m_w;
         private static uint m_z;
 
-        static MLRandom()
+        static Sampling()
         {
             // These values are not magical, just the default values Marsaglia used.
             // Any pair of unsigned integers should be fine.
