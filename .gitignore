@@ -1,0 +1,13 @@
+*scc
+*.user
+*.suo
+*.orig
+*.dat
+[Tt]humbs.db
+obj/
+[Bb]in
+[Dd]ebug*/
+[Rr]elease*/
+numl.repl/*
+packages/*
+TestResults/*
