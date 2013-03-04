@@ -7,6 +7,9 @@ using System.Globalization;
 using numl.Math.Probability;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using System.IO;
+using numl.Utils;
+using System.Runtime.Serialization;
 
 namespace numl.Math.LinearAlgebra
 {
@@ -541,7 +544,7 @@ namespace numl.Math.LinearAlgebra
             Matrix matrix = new Matrix(n, d);
             for (int i = 0; i < matrix.Rows; i++)
                 for (int j = 0; j < matrix.Cols; j++)
-                matrix[i, j] = f();
+                    matrix[i, j] = f();
             return matrix;
         }
 
@@ -676,6 +679,77 @@ namespace numl.Math.LinearAlgebra
 
                 writer.WriteEndElement();
             }
+        }
+
+        public void Save(string file)
+        {
+            using (var stream = File.OpenWrite(file)) 
+                Save(stream);
+        }
+
+        public void Save(Stream stream)
+        {
+            using (var writer = new StreamWriter(stream))
+            {
+                writer.Write(Environment.NewLine);
+                // header
+                writer.Write(Rows);
+                writer.Write(",");
+                writer.Write(Cols);
+                writer.Write(Environment.NewLine);
+
+                // contents
+                for (int i = 0; i < Rows; i++)
+                {
+                    for (int j = 0; j < Cols; j++)
+                    {
+                        if (j > 0) writer.Write(",");
+                        writer.Write(this[i, j].ToString("r"));
+                    }
+                    writer.Write(Environment.NewLine);
+                }
+            }
+        }
+
+        public static Matrix Load(string file)
+        {
+            if (File.Exists(file))
+                using (var stream = File.OpenRead(file)) return Load(stream);
+            else
+                throw new FileNotFoundException();
+        }
+
+        public static Matrix Load(Stream stream)
+        {
+            Matrix matrix = null;
+            using (var reader = new StreamReader(stream))
+            {
+                int i = 0;
+                while (!reader.EndOfStream)
+                {
+                    var line = reader.ReadLine().Trim();
+                    if (!line.StartsWith("--"))
+                    {
+                        var numbers = line.Split(',');
+                        // need to create new matrix
+                        if (matrix == null)
+                        {
+                            if (numbers.Length >= 2)
+                                matrix = new Matrix(int.Parse(numbers[0].Trim()), int.Parse(numbers[1].Trim()));
+                            else
+                                throw new InvalidOperationException("Invalid matrix format");
+                        }
+                        else
+                        {
+                            for (int j = 0; j < numbers.Length; j++)
+                                matrix[i, j] = double.Parse(numbers[j]);
+                            i++;
+                        }
+                    }
+                }
+            }
+
+            return matrix;
         }
     }
 }
