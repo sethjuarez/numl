@@ -135,6 +135,8 @@ namespace numl.Utils
         public static object Get(object o, string name)
         {
             var type = o.GetType();
+            if (typeof(IDictionary<string, object>).IsAssignableFrom(type))
+                type = typeof(IDictionary<string, object>);
             Func<object, object> accessor = GetAccessor(type, name);
             return accessor.Invoke(o);
         }

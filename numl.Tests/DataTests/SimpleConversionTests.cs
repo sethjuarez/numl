@@ -29,6 +29,7 @@ using System.Linq;
 using numl.Tests.Data;
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Dynamic;
 
 namespace numl.Tests.DataTests
 {
@@ -343,14 +344,37 @@ namespace numl.Tests.DataTests
                 new Property { Name = "Good", },
             };
 
-            Dictionary<string, object> o = new Dictionary<string, object>();
-            o["Age"] = 23;
-            o["Height"] = 6.21;
-            o["Weight"] = 220m;
-            o["Good"] = false;
+            Dictionary<string, object> item = new Dictionary<string, object>();
+            item["Age"] = 23;
+            item["Height"] = 6.21;
+            item["Weight"] = 220m;
+            item["Good"] = false;
 
             var truths = new double[] { 23, 6.21, 220, -1 };
-            var actual = d.Convert(o);
+            var actual = d.Convert(item);
+            Assert.AreEqual(truths, actual);
+        }
+
+        [Test]
+        public void Test_Vector_Expando_Conversion_Simple_Numbers()
+        {
+            Descriptor d = new Descriptor();
+            d.Features = new Property[]
+            {
+                new Property { Name = "Age", },
+                new Property { Name = "Height", },
+                new Property { Name = "Weight", },
+                new Property { Name = "Good", },
+            };
+
+            dynamic item = new ExpandoObject();
+            item.Age = 23;
+            item.Height = 6.21;
+            item.Weight = 220m;
+            item.Good = false;
+
+            var truths = new double[] { 23, 6.21, 220, -1 };
+            var actual = d.Convert(item);
             Assert.AreEqual(truths, actual);
         }
 
@@ -559,7 +583,6 @@ namespace numl.Tests.DataTests
             var actual = d.Convert(o);
             Assert.AreEqual(truths, actual);
         }
-
 
         [Test]
         public void Test_Matrix_Conversion_With_Label()
