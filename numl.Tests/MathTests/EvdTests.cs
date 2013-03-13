@@ -1,10 +1,8 @@
-﻿using numl.Math.LinearAlgebra;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using NUnit.Framework;
+using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
 
 namespace numl.Tests.MathTests
 {
@@ -18,11 +16,11 @@ namespace numl.Tests.MathTests
         //[TestCase(10)]
         //[TestCase(20)]
         //[TestCase(30)]
-        //[TestCase(50)]
+        [TestCase(50)]
         //[TestCase(53)]
         //[TestCase(100)]
         //[TestCase(200)]
-        [TestCase(310)]
+        //[TestCase(310)]
         //[TestCase(500)]
         //[TestCase(1000)]
         public void CanFactorizeRandomSymmetricMatrix(int order)

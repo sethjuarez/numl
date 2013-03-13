@@ -1,9 +1,7 @@
-﻿using numl.Model;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using numl.Model;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace numl.Data
 {

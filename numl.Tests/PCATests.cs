@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using numl.Math;
 using numl.Unsupervised;
 using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
 
 namespace numl.Tests
 {
