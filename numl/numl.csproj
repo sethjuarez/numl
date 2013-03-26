@@ -97,7 +97,7 @@
     <Compile Include="Unsupervised\PCA.cs" />
     <Compile Include="Utils\FastReflection.cs" />
     <Compile Include="Model\NumlAttributes.cs" />
-    <Compile Include="Model\StringHelpers.cs" />
+    <Compile Include="Utils\StringHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Supervised\Generator.cs" />
     <Compile Include="Supervised\IGenerator.cs" />

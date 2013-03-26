@@ -6,6 +6,7 @@ using numl.Math.Probability;
 using System.Threading.Tasks;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
+using numl.Model;
 
 namespace numl
 {
@@ -97,6 +98,10 @@ namespace numl
 
                 // get truth
                 var truth = FastReflection.Get(o, descriptor.Label.Name);
+
+                // if truth is a string, sanitize
+                if (descriptor.Label.Type == typeof(string))
+                    truth = StringHelpers.Sanitize(truth.ToString());
 
                 // make prediction
                 var features = descriptor.Convert(o, false).ToVector();

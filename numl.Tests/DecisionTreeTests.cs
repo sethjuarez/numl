@@ -62,5 +62,31 @@ namespace numl.Tests
             iris = model.Predict<Iris>(iris);
             Assert.AreEqual("IRISSETOSA", iris.Class);
         }
+
+        [Test]
+        public void Iris_DT_and_Prediction_with_Learner()
+        {
+            var data = Iris.Load();
+
+            var generator = new DecisionTreeGenerator(50) 
+            { 
+                Descriptor = Descriptor.Create<Iris>(),
+                Hint = 0
+            };
+
+            var lmodel = Learner.Learn(data, .80, 1000, generator);
+
+            // should be Iris-Setosa
+            Iris iris = new Iris
+            {
+                PetalWidth = 0.5m,
+                PetalLength = 2.3m,
+                SepalLength = 2.1m,
+                SepalWidth = 2.1m
+            };
+
+            iris = lmodel.Model.Predict<Iris>(iris);
+            Assert.AreEqual("IRISSETOSA", iris.Class);
+        }
     }
 }
