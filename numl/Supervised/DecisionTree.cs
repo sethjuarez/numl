@@ -217,7 +217,7 @@ namespace numl.Supervised
                 Edge edge = node.Edges[i];
                 if (edge.Discrete && v[col] == edge.Min)
                     return WalkNode(v, edge.Child);
-                if (!edge.Discrete && v[col] >= edge.Min && v[col] < edge.Min)
+                if (!edge.Discrete && v[col] >= edge.Min && v[col] < edge.Max)
                     return WalkNode(v, edge.Child);
             }
 

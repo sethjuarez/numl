@@ -51,6 +51,7 @@
     <Compile Include="Data\Feed.cs" />
     <Compile Include="Data\Generic.cs" />
     <Compile Include="Data\House.cs" />
+    <Compile Include="Data\Iris.cs" />
     <Compile Include="Data\Student.cs" />
     <Compile Include="Data\Tennis.cs" />
     <Compile Include="DecisionTreeTests.cs" />
@@ -70,6 +71,11 @@
       <Project>{11022b54-2310-42aa-b80f-660733243406}</Project>
       <Name>numl</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\iris.data">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
