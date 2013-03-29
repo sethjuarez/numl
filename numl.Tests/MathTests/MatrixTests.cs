@@ -28,7 +28,7 @@ namespace numl.Tests
             };
 
             for (int i = 0; i < 3; i++)
-                Assert.AreEqual(a[i], _test[i, VectorType.Row]);
+                Assert.IsTrue(a[i] == _test[i, VectorType.Row]);
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace numl.Tests
             };
 
             for (int i = 0; i < 3; i++)
-                Assert.AreEqual(a[i], _test[i, VectorType.Col]);
+                Assert.IsTrue(a[i] == _test[i, VectorType.Col]);
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace numl.Tests
             };
 
             for (int i = 0; i < 3; i++)
-                Assert.AreEqual(a[i], _test.T[i, VectorType.Row]);
+                Assert.IsTrue(a[i] == _test.T[i, VectorType.Row]);
         }
 
         [Test]

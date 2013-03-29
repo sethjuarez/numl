@@ -83,7 +83,7 @@ namespace numl.Tests
 
             Vector v1 = one[1, VectorType.Col];
             Vector v2 = new[] { 2, 5, 8 };
-            Assert.AreEqual(v2, v1);
+            Assert.IsTrue(v2 == v1);
         }
 
         [Test]
@@ -100,8 +100,8 @@ namespace numl.Tests
             Vector v1Truth = new[] { 4, 5, 6 };
             Vector v2Truth = new[] { 1, 2, 3 };
 
-            Assert.AreEqual(v1Truth, v1);
-            Assert.AreEqual(v2Truth, v2);
+            Assert.IsTrue(v1Truth == v1);
+            Assert.IsTrue(v2Truth == v2);
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace numl.Tests
             Vector toAssign = new[] { 1, 1, 1 };
             one[1, VectorType.Col] = toAssign;
 
-            Assert.AreEqual(toAssign, one[1, VectorType.Col]);
+            Assert.IsTrue(toAssign == one[1, VectorType.Col]);
         }
 
         [Test]

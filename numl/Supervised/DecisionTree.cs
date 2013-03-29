@@ -75,14 +75,13 @@ namespace numl.Supervised
 
         private Node BuildTree(Matrix x, Vector y, int depth, List<int> used)
         {
-            if (depth < 0 || y.Distinct().Count() == 1)
+            if (depth < 0)
                 return BuildLeafNode(y.Mode());
 
             var tuple = GetBestSplit(x, y, used);
             var col = tuple.Item1;
             var gain = tuple.Item2;
             var measure = tuple.Item3;
-
 
 
             // uh oh, need to return something?
@@ -98,22 +97,22 @@ namespace numl.Supervised
                 Column = col,
                 Gain = gain,
                 IsLeaf = false,
-                Name = Descriptor.ColumnAt(col),
-                Edges = new Edge[measure.Segments.Length]
+                Name = Descriptor.ColumnAt(col)
             };
 
             // populate edges
-            for (int i = 0; i < node.Edges.Length; i++)
+            List<Edge> edges = new List<Edge>(measure.Segments.Length);
+            for (int i = 0; i < measure.Segments.Length; i++)
             {
                 // working set
                 var segment = measure.Segments[i];
-                node.Edges[i] = new Edge();
-                var edge = node.Edges[i];
-
-                edge.Parent = node;
-                edge.Discrete = measure.Discrete;
-                edge.Min = segment.Min;
-                edge.Max = segment.Max;
+                var edge = new Edge() 
+                { 
+                    Parent = node, 
+                    Discrete = measure.Discrete, 
+                    Min = segment.Min, 
+                    Max = segment.Max 
+                };
 
                 IEnumerable<int> slice;
 
@@ -132,8 +131,29 @@ namespace numl.Supervised
                     slice = x.Indices(v => v[col] >= segment.Min && v[col] < segment.Max);
                 }
 
-                edge.Child = BuildTree(x.Slice(slice), y.Slice(slice), depth - 1, used);
+                // something to look at?
+                // if this number is 0 then this edge 
+                // leads to a dead end - the edge will 
+                // not be built
+                if (slice.Count() > 0)
+                {
+                    Vector ySlice = y.Slice(slice);
+                    // only one answer, set leaf
+                    if (ySlice.Distinct().Count() == 1)
+                        edge.Child = BuildLeafNode(ySlice[0]);
+                    // otherwise continue to build tree
+                    else
+                        edge.Child = BuildTree(x.Slice(slice), ySlice, depth - 1, used);
+
+                    edges.Add(edge);
+                }
             }
+
+            // might check if there are no edges
+            // if this is the case should convert
+            // node to leaf and bail
+
+            node.Edges = edges.ToArray();
 
             return node;
         }
@@ -229,7 +249,7 @@ namespace numl.Supervised
 
         public override string ToString()
         {
-            return PrintNode(Tree, "\t");   
+            return PrintNode(Tree, "\t");
         }
 
         private string PrintNode(Node n, string pre)
