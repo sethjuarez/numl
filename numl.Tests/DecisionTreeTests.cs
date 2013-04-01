@@ -8,6 +8,8 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using numl.Tests.Data;
 
+//TODO I've added some general unit tests.  One of which is marked below as a failing test.
+
 namespace numl.Tests
 {
     [TestFixture]
@@ -106,5 +108,89 @@ namespace numl.Tests
             var os = model.Predict<ValueObject>(o).R;
             Assert.AreEqual("l".Sanitize(), os);
         }
+
+        [Test]
+        public void ArbitraryPrediction_Test_With_Enum_Label()
+        {
+            var data = ArbitraryPrediction.GetData();
+            var description = Descriptor.Create<ArbitraryPrediction>();
+            var generator = new DecisionTreeGenerator(50);
+            var model = generator.Generate(description, data);
+
+            ArbitraryPrediction minimumPredictionValue = new ArbitraryPrediction
+            {
+                FirstTestFeature = 1.0m,
+                SecondTestFeature = 10.0m,
+                ThirdTestFeature = 1.2m
+            };
+
+            ArbitraryPrediction maximumPredictionValue = new ArbitraryPrediction
+            {
+                FirstTestFeature = 1.0m,
+                SecondTestFeature = 55.0m,
+                ThirdTestFeature = 1.2m
+            };
+
+            var expectedMinimum = model.Predict<ArbitraryPrediction>(minimumPredictionValue).OutcomeLabel;
+            var expectedMaximum = model.Predict<ArbitraryPrediction>(maximumPredictionValue).OutcomeLabel;
+
+            //The value should be minimum, however, maximum is returned
+            Assert.AreEqual(ArbitraryPrediction.PredictionLabel.Minimum, expectedMinimum);
+            //Maximum is returned as expected
+            Assert.AreEqual(ArbitraryPrediction.PredictionLabel.Maximum, expectedMaximum);
+        }
+
+        [Test]
+        public void ArbitraryPrediction_Test_With_Feature_Value_Greater_Than_Trained_Instances()
+        {
+            //TODO Seth, this test has an error
+            var data = ArbitraryPrediction.GetData();
+            var description = Descriptor.Create<ArbitraryPrediction>();
+            var generator = new DecisionTreeGenerator(50);
+            var model = generator.Generate(description, data);
+
+            ArbitraryPrediction predictionValue = new ArbitraryPrediction
+            {
+                FirstTestFeature = 1.0m,
+                //This value is greater than any of the trained instances
+                SecondTestFeature = 106.0m,
+                ThirdTestFeature = 1.2m
+            };
+
+            var expectedValue = model.Predict<ArbitraryPrediction>(predictionValue).OutcomeLabel;
+            Assert.AreEqual(ArbitraryPrediction.PredictionLabel.Maximum, expectedValue);
+        }
+
+        [Test]
+        public void ArbitraryPrediction_Test_With_Named_Iterator()
+        {
+            var data = ArbitraryPrediction.GetDataUsingNamedIterator();
+            var description = Descriptor.Create<ArbitraryPrediction>();
+            var generator = new DecisionTreeGenerator(50);
+            var model = generator.Generate(description, data);
+
+            ArbitraryPrediction minimumPredictionValue = new ArbitraryPrediction
+            {
+                FirstTestFeature = 1.0m,
+                SecondTestFeature = 10.0m,
+                ThirdTestFeature = 1.2m
+            };
+
+            ArbitraryPrediction maximumPredictionValue = new ArbitraryPrediction
+            {
+                FirstTestFeature = 1.0m,
+                SecondTestFeature = 57.0m,
+                ThirdTestFeature = 1.2m
+            };
+
+            var expectedMinimum = model.Predict<ArbitraryPrediction>(minimumPredictionValue).OutcomeLabel;
+            var expectedMaximum = model.Predict<ArbitraryPrediction>(maximumPredictionValue).OutcomeLabel;
+
+            //The value should be minimum, however, maximum is returned
+            Assert.AreEqual(ArbitraryPrediction.PredictionLabel.Minimum, expectedMinimum);
+            //Maximum is returned as expected
+            Assert.AreEqual(ArbitraryPrediction.PredictionLabel.Maximum, expectedMaximum);
+        }
+
     }
 }

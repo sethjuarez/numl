@@ -47,6 +47,7 @@
     <Compile Include="DataTests\DescriptorTests.cs" />
     <Compile Include="DataTests\LinAlgConversionTests.cs" />
     <Compile Include="DataTests\SimpleConversionTests.cs" />
+    <Compile Include="Data\ArbitraryPrediction.cs" />
     <Compile Include="Data\Fake.cs" />
     <Compile Include="Data\Feed.cs" />
     <Compile Include="Data\Generic.cs" />
