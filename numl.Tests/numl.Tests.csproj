@@ -54,6 +54,7 @@
     <Compile Include="Data\Iris.cs" />
     <Compile Include="Data\Student.cs" />
     <Compile Include="Data\Tennis.cs" />
+    <Compile Include="Data\ValueObject.cs" />
     <Compile Include="DecisionTreeTests.cs" />
     <Compile Include="MathTests\DistanceTests.cs" />
     <Compile Include="MathTests\EvdTests.cs" />

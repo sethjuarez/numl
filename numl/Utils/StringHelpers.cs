@@ -11,7 +11,7 @@ namespace numl.Utils
         public const string NUMBER_STRING = "#NUM#";
         public const string SYMBOL_STRING = "#SYM#";
 
-        public static string Sanitize(string s)
+        public static string Sanitize(this string s)
         {
             if (string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s))
                 return EMPTY_STRING;

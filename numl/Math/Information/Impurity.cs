@@ -55,7 +55,7 @@ namespace numl.Math.Information
         /// </summary>
         /// <param name="y">Target impurity</param>
         /// <param name="x">Conditioned impurity</param>
-        /// <param name="segments">Number of segments over x to condition upon</param>
+        /// <param name="ranges">Number of segments over x to condition upon</param>
         /// <returns>Segmented conditional impurity measure</returns>
         public double SegmentedConditional(Vector y, Vector x, IEnumerable<Range> ranges)
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using numl.Data;
 using numl.Model;
+using numl.Utils;
 using System.Linq;
 using numl.Supervised;
 using NUnit.Framework;
@@ -60,7 +61,7 @@ namespace numl.Tests
             };
 
             iris = model.Predict<Iris>(iris);
-            Assert.AreEqual("IRISSETOSA", iris.Class);
+            Assert.AreEqual("Iris-setosa".Sanitize(), iris.Class);
         }
 
         [Test]
@@ -86,7 +87,24 @@ namespace numl.Tests
             };
 
             iris = lmodel.Model.Predict<Iris>(iris);
-            Assert.AreEqual("IRISSETOSA", iris.Class);
+            Assert.AreEqual("Iris-setosa".Sanitize(), iris.Class);
+        }
+
+        [Test]
+        public void ValueObject_Test_With_Yield_Enumerator()
+        {
+            var data = ValueObject.GetData();
+            var generator = new DecisionTreeGenerator()
+            {
+                Descriptor = Descriptor.Create<ValueObject>()
+            };
+
+            var decisionTree = new DecisionTreeGenerator();
+            var model = generator.Generate(data);
+
+            var o = new ValueObject() { V1 = 1, V2 = 406 };
+            var os = model.Predict<ValueObject>(o).R;
+            Assert.AreEqual("l".Sanitize(), os);
         }
     }
 }
