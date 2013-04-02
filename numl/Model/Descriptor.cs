@@ -8,10 +8,34 @@ using System.Text;
 
 namespace numl.Model
 {
+    /// <summary>
+    /// Theis class is designed to describe the underlying types that
+    /// will be used in the machine learning process. Any machine learning
+    /// process requires a set of <see cref="Features"/> that will be used to discriminate
+    /// the <see cref="Label"/>. The <see cref="Label"/> itself is the target element that the machine
+    /// learning algorithms learn to predict.
+    /// </summary>
     public class Descriptor
     {
+        /// <summary>
+        /// Set of features used to discriminate or 
+        /// learn about the <see cref="Label"/>.
+        /// </summary>
         public Property[] Features { get; set; }
+        /// <summary>
+        /// Target property that is the target
+        /// of machine learning.
+        /// </summary>
         public Property Label { get; set; }
+
+        /// <summary>
+        /// Available column names used to discriminate
+        /// or learn about <see cref="Label"/>. The number
+        /// of columns does not necessarily equal the
+        /// number of <see cref="Features"/> given that
+        /// there might exist multi-valued features.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<string> GetColumns()
         {
             foreach (var p in Features)
@@ -21,8 +45,10 @@ namespace numl.Model
 
         private int _vectorLength = -1;
         /// <summary>
-        /// total feature count (could be more
-        /// than Features.Length)
+        /// Total feature count The number
+        /// of features does not necessarily equal the
+        /// number of <see cref="Features"/> given that
+        /// there might exist multi-valued features.
         /// </summary>
         public int VectorLength
         {
@@ -34,7 +60,9 @@ namespace numl.Model
                 return _vectorLength;
             }
         }
-        public static Type Type { get; set; }
+
+
+        public Type Type { get; set; }
 
         public Property At(int i)
         {
@@ -119,6 +147,21 @@ namespace numl.Model
             return Convert(examples).ToMatrix();
         }
 
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(String.Format("Descriptor ({0}) {{", Type == null ? "N/A" : Type.Name));
+            for (int i = 0; i < Features.Length; i++)
+                sb.AppendLine(string.Format("   {0}", Features[i]));
+            if (Label != null)
+                sb.AppendLine(string.Format("  *{0}", Label));
+
+            sb.AppendLine("}");
+            return sb.ToString();
+        }
+
+        //---- Creational
+
         public static Descriptor Create<T>()
             where T : class
         {
@@ -127,7 +170,7 @@ namespace numl.Model
 
         public static Descriptor Create(Type t)
         {
-            Type = t;
+
             if (!t.IsClass)
                 throw new InvalidOperationException("Can only work with class types");
 
@@ -163,21 +206,132 @@ namespace numl.Model
             return new Descriptor
             {
                 Features = features.ToArray(),
-                Label = label
+                Label = label,
+                Type = t
             };
         }
 
-        public override string ToString()
+        public static Descriptor New()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine(String.Format("Descriptor ({0}) {{", Type.Name));
-            for (int i = 0; i < Features.Length; i++)
-                sb.AppendLine(string.Format("   {0}", Features[i]));
-            if (Label != null)
-                sb.AppendLine(string.Format("  *{0}", Label));
+            return new Descriptor() { Features = new Property[] { } };
+        }
 
-            sb.AppendLine("}");
-            return sb.ToString();
+        public DescriptorProperty With(string name)
+        {
+            return new DescriptorProperty(this, name, false);
+        }
+
+        public DescriptorProperty Learn(string name)
+        {
+            return new DescriptorProperty(this, name, true);
+        }
+        
+        //---- Fluent API
+        public class DescriptorProperty
+        {
+            private readonly Descriptor _descriptor;
+            private readonly string _name;
+            private readonly bool _label;
+            protected internal DescriptorProperty(Descriptor descriptor, string name, bool label)
+            {
+                _label = label;
+                _name = name;
+                _descriptor = descriptor;
+            }
+
+            public Descriptor Use(Func<object, double> conversion)
+            {
+                throw new NotImplementedException("Not yet ;)");
+                //return _descriptor;
+            }
+
+            public Descriptor As(Type type)
+            {
+                Property p;
+                if (_label)
+                    p = TypeHelpers.GenerateLabel(type, _name);
+                else
+                    p = TypeHelpers.GenerateFeature(type, _name);
+                AddProperty(p);
+                return _descriptor;
+            }
+
+            public Descriptor AsString()
+            {
+                StringProperty p = new StringProperty();
+                p.AsEnum = _label;
+                AddProperty(p);
+                return _descriptor;
+            }
+
+            public Descriptor AsString(StringSplitType splitType, string separator = " ", string exclusions = null)
+            {
+                StringProperty p = new StringProperty();
+                p.SplitType = splitType;
+                p.Separator = separator;
+                p.ImportExclusions(exclusions);
+                p.AsEnum = _label;
+                AddProperty(p);
+                return _descriptor;
+            }
+
+            public Descriptor AsDateTime(DateTimeFeature features)
+            {
+                if (_label)
+                    throw new DescriptorException("Cannot use a DateTime property as a label");
+
+                var p = new DateTimeProperty(features)
+                {
+                    Discrete = true,
+                    Name = _name
+                };
+
+                AddProperty(p);
+                return _descriptor;
+            }
+
+            public Descriptor AsDateTime(DatePortion portion)
+            {
+                if (_label)
+                    throw new DescriptorException("Cannot use an DateTime property as a label");
+
+                var p = new DateTimeProperty(portion)
+                {
+                    Discrete = true,
+                    Name = _name
+                };
+
+                AddProperty(p);
+                return _descriptor;
+            }
+
+            public Descriptor AsEnumerable(int length)
+            {
+                if (_label)
+                    throw new DescriptorException("Cannot use an Enumerable property as a label");
+
+                var p = new EnumerableProperty(length)
+                {
+                    Name = _name,
+                    Discrete = false
+                };
+
+                AddProperty(p);
+
+                return _descriptor;
+            }
+
+            private void AddProperty(Property p)
+            {
+                if (_label)
+                    _descriptor.Label = p;
+                else
+                {
+                    var features = new List<Property>(_descriptor.Features);
+                    features.Add(p);
+                    _descriptor.Features = features.ToArray();
+                }
+            }
         }
     }
 }

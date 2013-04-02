@@ -244,7 +244,7 @@ namespace numl.Supervised
             if (Hint != double.Epsilon)
                 return Hint;
             else
-                throw new InvalidOperationException(String.Format("Unable to match split value {0} for feature {1}[2]", v[col], Descriptor.At(col), col));
+                throw new InvalidOperationException(String.Format("Unable to match split value {0} for feature {1}[2]\nConsider setting a Hint in order to avoid this error.", v[col], Descriptor.At(col), col));
         }
 
         public override string ToString()

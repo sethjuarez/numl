@@ -15,7 +15,7 @@ namespace numl.Math.LinearAlgebra
         private double[] _vector;
         private bool _asMatrixRef;
         private readonly bool _asCol;
-        private double[][] _matrix = null;
+        private readonly double[][] _matrix = null;
         private int _staticIdx = -1;
         private Matrix _transpose;
 
@@ -197,7 +197,10 @@ namespace numl.Math.LinearAlgebra
 
         public override int GetHashCode()
         {
-            return _vector.GetHashCode();
+            if (_asMatrixRef)
+                return _matrix.GetHashCode();
+            else
+                return _vector.GetHashCode();
         }
 
         internal int MaxIndex(int startAt)

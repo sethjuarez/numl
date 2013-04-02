@@ -81,8 +81,10 @@
     <Compile Include="Math\Metrics\TanimotoCoefficient.cs" />
     <Compile Include="Math\Probability\Sampling.cs" />
     <Compile Include="Math\Range.cs" />
+    <Compile Include="Model\DescriptorException.cs" />
     <Compile Include="Model\EnumerableProperty.cs" />
     <Compile Include="Model\DateTimeProperty.cs" />
+    <Compile Include="Model\ExceptionDescendant.cs" />
     <Compile Include="Model\Property.cs" />
     <Compile Include="Model\StringProperty.cs" />
     <Compile Include="Supervised\DecisionTree.cs" />
@@ -105,11 +107,17 @@
     <Compile Include="Supervised\IModel.cs" />
     <Compile Include="Supervised\Model.cs" />
     <Compile Include="Supervised\Node.cs" />
+    <Compile Include="Utils\TypeHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Supervised\KernelPerceptron.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties DocumentXCommentEditorState="&lt;HtmlEditState&gt;&#xA;  &lt;Attributes&gt;&#xA;    &lt;Attribute key=&quot;dtscrollpos&quot; valuetype=&quot;integer&quot;&gt;0&lt;/Attribute&gt;&#xA;    &lt;Attribute key=&quot;lang_VB&quot; valuetype=&quot;string&quot;&gt;on&lt;/Attribute&gt;&#xA;    &lt;Attribute key=&quot;lang_VBUsage&quot; valuetype=&quot;string&quot;&gt;on&lt;/Attribute&gt;&#xA;    &lt;Attribute key=&quot;lang_CS&quot; valuetype=&quot;string&quot;&gt;on&lt;/Attribute&gt;&#xA;    &lt;Attribute key=&quot;lang_CPP2005&quot; valuetype=&quot;string&quot;&gt;on&lt;/Attribute&gt;&#xA;    &lt;Attribute key=&quot;inheritedMembers&quot; valuetype=&quot;string&quot;&gt;on&lt;/Attribute&gt;&#xA;    &lt;Attribute key=&quot;protectedMembers&quot; valuetype=&quot;string&quot;&gt;on&lt;/Attribute&gt;&#xA;    &lt;Attribute key=&quot;SyntaxGroup_SelectedTab&quot; valuetype=&quot;string&quot;&gt;SyntaxTab_VB&lt;/Attribute&gt;&#xA;  &lt;/Attributes&gt;&#xA;&lt;/HtmlEditState&gt;" />
+    </VisualStudio>
+  </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

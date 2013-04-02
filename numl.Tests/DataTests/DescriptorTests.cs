@@ -74,5 +74,23 @@ namespace numl.Tests.DataTests
         {
             Descriptor.Create<FakEnumerableWithError2>();
         }
+
+        [Test]
+        public void Test_Fluent_Api()
+        {
+            var d = Descriptor.New()
+                        .With("SepalLength").As(typeof(decimal))
+                        .With("SepalWidth").As(typeof(double))
+                        .With("PetalLength").As(typeof(decimal))
+                        .With("PetalWidth").As(typeof(int))
+                        .Learn("Class").As(typeof(string));
+
+            Assert.AreEqual(4, d.Features.Length);
+            Assert.AreEqual(typeof(decimal), d.Features[0].Type);
+            Assert.AreEqual(typeof(double), d.Features[1].Type);
+            Assert.AreEqual(typeof(decimal), d.Features[2].Type);
+            Assert.AreEqual(typeof(int), d.Features[3].Type);
+            Assert.AreEqual("Class", d.Label.Name);
+        }
     }
 }

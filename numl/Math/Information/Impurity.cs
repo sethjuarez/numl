@@ -19,14 +19,14 @@ namespace numl.Math.Information
         public bool Discrete { get; set; }
 
         /// <summary>
-        /// Calculates impurity measure of <c>x</c>.
+        /// Calculates impurity measure of x.
         /// </summary>
         /// <param name="x">The list in question</param>
         /// <returns>Impurity measure</returns>
         public abstract double Calculate(Vector x);
 
         /// <summary>
-        /// Calculates segmented conditional impurity of <c>y | x</c>
+        /// Calculates segmented conditional impurity of y | x
         /// When stipulating segments (s), X is broken up into 
         /// s many segments therefore P(X=x_s) becomes a range probability
         /// rather than a fixed probability. In essence the average over
@@ -46,7 +46,7 @@ namespace numl.Math.Information
         }
 
         /// <summary>
-        /// Calculates segmented conditional impurity of <c>y | x</c>
+        /// Calculates segmented conditional impurity of y | x
         /// When stipulating ranges (r), X is broken up into 
         /// |r| many segments therefore P(X=x_r) becomes a range probability
         /// rather than a fixed probability. In essence the average over
@@ -89,7 +89,7 @@ namespace numl.Math.Information
         }
 
         /// <summary>
-        /// Calculates conditional impurity of <c>y | x</c>
+        /// Calculates conditional impurity of y | x
         /// R(Y|X) is the average of H(Y|X = x) over all possible values
         /// X may take. 
         /// </summary>
@@ -132,7 +132,7 @@ namespace numl.Math.Information
         }
         
         /// <summary>
-        /// Calculates information gain of <c>y | x</c>
+        /// Calculates information gain of y | x
         /// </summary>
         /// <param name="y">Target impurity</param>
         /// <param name="x">Conditioned impurity</param>
@@ -154,7 +154,7 @@ namespace numl.Math.Information
         }
 
         /// <summary>
-        /// Calculates relative information gain of <c>y | x</c>
+        /// Calculates relative information gain of y | x
         /// </summary>
         /// <param name="y">Target impurity</param>
         /// <param name="x">Conditioned impurity</param>
@@ -167,6 +167,14 @@ namespace numl.Math.Information
             return (h_y - h_yx) / h_y;
         }
 
+        /// <summary>
+        /// Calculates relative information gain of y | x with a specified
+        /// number of segments
+        /// </summary>
+        /// <param name="y">Target impurity</param>
+        /// <param name="x">Conditioned impurity</param>
+        /// <param name="segments">Number of segments</param>
+        /// <returns>Relative segmented information gain using appropriate measure</returns>
         public double SegmentedRelativeGain(Vector y, Vector x, int segments)
         {
             var h_yx = SegmentedConditional(y, x, segments);
@@ -174,6 +182,14 @@ namespace numl.Math.Information
             return (h_y - h_yx) / h_y;
         }
 
+        /// <summary>
+        /// Calculates relative information gain of y | x with under specified
+        /// ranges
+        /// </summary>
+        /// <param name="y">Target impurity</param>
+        /// <param name="x">Conditioned impurity</param>
+        /// <param name="ranges">Range breakdown</param>
+        /// <returns>Relative segmented information gain using appropriate measure</returns>
         public double SegmentedRelativeGain(Vector y, Vector x, IEnumerable<Range> ranges)
         {
             var h_yx = SegmentedConditional(y, x, ranges);

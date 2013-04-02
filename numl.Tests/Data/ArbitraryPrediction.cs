@@ -47,8 +47,6 @@ namespace numl.Tests.Data
 
         public static IEnumerable<ArbitraryPrediction> GetDataUsingNamedIterator()
         {
-            var returnData = new List<ArbitraryPrediction>();
-
             for (int i = 0; i < 80; i++)
             {
                 yield return new ArbitraryPrediction

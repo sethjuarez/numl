@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
+using numl.Utils;
 
 namespace numl.Model
 {
@@ -11,29 +12,7 @@ namespace numl.Model
     {
         public virtual Property GenerateProperty(PropertyInfo property)
         {
-            Property p;
-            Type type = property.PropertyType;
-            if (type == typeof(string))
-                p = new StringProperty();
-            else if (type == typeof(DateTime))
-                p = new DateTimeProperty();
-            else if (type.GetInterfaces().Contains(typeof(IEnumerable)))
-                throw new InvalidOperationException(
-                    string.Format("Property {0} needs to be labeled as an EnumerableFeature", property.Name));
-            else
-                p = new Property();
-
-
-            p.Discrete = type.BaseType == typeof(Enum) ||
-                         type == typeof(bool) ||
-                         type == typeof(string) ||
-                         type == typeof(char) ||
-                         type == typeof(DateTime);
-
-            p.Type = type;
-            p.Name = property.Name;
-
-            return p;
+            return TypeHelpers.GenerateFeature(property.PropertyType, property.Name);
         }
     }
 
@@ -45,10 +24,7 @@ namespace numl.Model
     {
         public override Property GenerateProperty(PropertyInfo property)
         {
-            var p = base.GenerateProperty(property);
-            if (p is StringProperty) // if it is a label, must be enum
-                ((StringProperty)p).AsEnum = true;
-            return p;
+            return TypeHelpers.GenerateLabel(property.PropertyType, property.Name);
         }
     }
 

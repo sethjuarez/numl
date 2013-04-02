@@ -8,8 +8,6 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using numl.Tests.Data;
 
-//TODO I've added some general unit tests.  One of which is marked below as a failing test.
-
 namespace numl.Tests
 {
     [TestFixture]
@@ -140,7 +138,7 @@ namespace numl.Tests
             Assert.AreEqual(ArbitraryPrediction.PredictionLabel.Maximum, expectedMaximum);
         }
 
-        [Test]
+        [Test, ExpectedException(typeof(InvalidOperationException))]
         public void ArbitraryPrediction_Test_With_Feature_Value_Greater_Than_Trained_Instances()
         {
             //TODO Seth, this test has an error

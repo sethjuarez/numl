@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Xml;
 using System.Text;
 using System.Linq;
@@ -7,9 +8,6 @@ using System.Globalization;
 using numl.Math.Probability;
 using System.Xml.Serialization;
 using System.Collections.Generic;
-using System.IO;
-using numl.Utils;
-using System.Runtime.Serialization;
 
 namespace numl.Math.LinearAlgebra
 {
@@ -276,14 +274,10 @@ namespace numl.Math.LinearAlgebra
         public Vector ToVector()
         {
             if (Rows == 1)
-            {
                 return this[0, VectorType.Row].Copy();
-            }
 
             if (Cols == 1)
-            {
                 return this[0, VectorType.Col].Copy();
-            }
 
             throw new InvalidOperationException("Matrix conversion failed: More then one row or one column!");
         }
@@ -356,7 +350,6 @@ namespace numl.Math.LinearAlgebra
 
         public override bool Equals(object obj)
         {
-
             if (obj is Matrix)
             {
                 var m = obj as Matrix;
@@ -563,8 +556,6 @@ namespace numl.Math.LinearAlgebra
         }
 
         //--------------- aggregation/structural
-
-
         public void SwapRow(int from, int to)
         {
             Swap(from, to, VectorType.Row);

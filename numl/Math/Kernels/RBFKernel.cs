@@ -14,7 +14,6 @@ namespace numl.Math.Kernels
             Sigma = sigma;
         }
 
-
         public Matrix Compute(Matrix m)
         {
             var K = Matrix.Zeros(m.Rows);
