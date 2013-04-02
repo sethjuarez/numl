@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>$id$</id>
+        <version>$version$</version>
+        <title>numl</title>
+        <authors>Seth Juarez</authors>
+        <owners>Seth Juarez</owners>
+        <licenseUrl>https://github.com/sethjuarez/numl/blob/master/LICENSE.md</licenseUrl>
+        <projectUrl>http://numl.net</projectUrl>
+        <iconUrl>http://numl.net/Media/Default/images/numl.png</iconUrl>
+        <requireLicenseAcceptance>true</requireLicenseAcceptance>
+        <description>$description$</description>
+        <summary>GPLv2</summary>
+        <copyright>2013</copyright>
+        <language>en-US</language>
+        <tags>machine learning, framework</tags>
+    </metadata>
+    <files>
+        <file src="numl\bin\Release\numl.dll" target="lib\net40\numl.dll" />
+        <file src="numl\bin\Release\numl.pdb" target="lib\net40\numl.pdb" />
+    </files>
+</package>
