@@ -10,7 +10,7 @@
         <projectUrl>http://numl.net</projectUrl>
         <iconUrl>http://numl.net/Media/Default/images/numl.png</iconUrl>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
-        <description>$description$</description>
+        <description>numl is a machine learning library intended to ease the use of using standard modeling techniques for both prediction and clustering</description>
         <summary>GPLv2</summary>
         <copyright>2013</copyright>
         <language>en-US</language>
