@@ -32,17 +32,20 @@ namespace numl.Math.Probability
         // 2) specifying one non-zero unsigned integer and taking a default value for the second
         // 3) setting the seed from the system time
 
-        public static void SetSeed(uint u, uint v)
+        private static void SetSeed(uint u, uint v)
         {
             if (u != 0) m_w = u;
             if (v != 0) m_z = v;
         }
 
-        public static void SetSeed(uint u)
+        private static void SetSeed(uint u)
         {
             m_w = u;
         }
 
+        /// <summary>
+        /// Creates random number generator seed
+        /// </summary>
         public static void SetSeedFromSystemTime()
         {
             DateTime dt = DateTime.Now;
@@ -50,8 +53,11 @@ namespace numl.Math.Probability
             SetSeed((uint)(x >> 16), (uint)(x % 4294967296));
         }
 
-        // Produce a uniform random sample from the open interval (0, 1).
-        // The method will not return either end point.
+        /// <summary>
+        /// Produce a uniform random sample from the open interval (0, 1).
+        /// The method will not return either end point.
+        /// </summary>
+        /// <returns>Random Sample</returns>
         public static double GetUniform()
         {
             // 0 <= u <= 2^32
@@ -61,11 +67,24 @@ namespace numl.Math.Probability
             return (u + 1) * 2.328306435454494e-10;
         }
 
+        /// <summary>
+        /// Produce a uniform random sample from the open interval (0, max).
+        /// The method will not return either end point.
+        /// </summary>
+        /// <param name="max">Max (Exclusive)</param>
+        /// <returns>Random Sample</returns>
         public static int GetUniform(int max)
         {
             return GetUniform(0, max);
         }
 
+        /// <summary>
+        /// Produce a uniform random sample from the open interval (min, max).
+        /// The method will not return either end point.
+        /// </summary>
+        /// <param name="min">Min (exclusive)</param>
+        /// <param name="max">Max (exclusive)</param>
+        /// <returns>Random Sample</returns>
         public static int GetUniform(int min, int max)
         {
             return min + (int)(GetUniform() * ((max - min) + 1));
@@ -81,7 +100,10 @@ namespace numl.Math.Probability
             return (m_z << 16) + (m_w & 65535);
         }
 
-        // Get normal (Gaussian) random sample with mean 0 and standard deviation 1
+        /// <summary>
+        /// Normal (Gaussian) random sample with mean 0 and standard deviation 1
+        /// </summary>
+        /// <returns>Random Sample</returns>
         public static double GetNormal()
         {
             // Use Box-Muller algorithm
@@ -92,7 +114,12 @@ namespace numl.Math.Probability
             return r * System.Math.Sin(theta);
         }
 
-        // Get normal (Gaussian) random sample with specified mean and standard deviation
+        /// <summary>
+        /// Normal (Gaussian) random sample with specified mean and standard deviation 
+        /// </summary>
+        /// <param name="mean">Mean</param>
+        /// <param name="standardDeviation">Standard deviation</param>
+        /// <returns>Random Sample</returns>
         public static double GetNormal(double mean, double standardDeviation)
         {
             if (standardDeviation <= 0.0)
@@ -103,13 +130,20 @@ namespace numl.Math.Probability
             return mean + standardDeviation * GetNormal();
         }
 
-        // Get exponential random sample with mean 1
+        /// <summary>
+        /// Exponential random sample with mean 1
+        /// </summary>
+        /// <returns>Random Sample</returns>
         public static double GetExponential()
         {
             return -System.Math.Log(GetUniform());
         }
 
-        // Get exponential random sample with specified mean
+        /// <summary>
+        /// Exponential random sample with specified mean 
+        /// </summary>
+        /// <param name="mean">mean parameter</param>
+        /// <returns>Random Sample</returns>
         public static double GetExponential(double mean)
         {
             if (mean <= 0.0)

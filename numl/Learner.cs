@@ -6,10 +6,15 @@ using numl.Math.Probability;
 using System.Threading.Tasks;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
-using numl.Model;
 
 namespace numl
 {
+    /// <summary>
+    /// Primary class for running model generators.
+    /// It is designed to abstract the separation
+    /// of training and test sets as well as best
+    /// model selection.
+    /// </summary>
     public static class Learner
     {
         static Learner()
@@ -17,6 +22,12 @@ namespace numl
             Sampling.SetSeedFromSystemTime();
         }
 
+        /// <summary>
+        /// Retrieve best model (or model with the
+        /// highest accuracy)
+        /// </summary>
+        /// <param name="models">List of models</param>
+        /// <returns>Best Model</returns>
         public static LearningModel Best(this IEnumerable<LearningModel> models)
         {
             var q = from m in models
@@ -26,6 +37,17 @@ namespace numl
             return q.FirstOrDefault();
         }
 
+        /// <summary>
+        /// Trains an arbitrary number of models on the
+        /// provided examples by creating a separation
+        /// of data based on training percentage. Each generator
+        /// is rerun a predetermined amount of times.
+        /// </summary>
+        /// <param name="examples">Source data</param>
+        /// <param name="trainingPercentage">Data split percentage</param>
+        /// <param name="repeat">Number of repetitions per generator</param>
+        /// <param name="generators">Model generators used</param>
+        /// <returns>Best models for each generator</returns>
         public static LearningModel[] Learn(IEnumerable<object> examples, double trainingPercentage, int repeat, params IGenerator[] generators)
         {
             if (generators.Length == 0)
@@ -40,6 +62,17 @@ namespace numl
             return models;
         }
 
+        /// <summary>
+        /// Trains a single model based on a generator
+        /// a predefined number of times with the provided
+        /// examples and data split and selects the best 
+        /// (or most accurate) model
+        /// </summary>
+        /// <param name="examples">Source data</param>
+        /// <param name="trainingPercentage">Data split percentage</param>
+        /// <param name="repeat">Number of repetitions per generator</param>
+        /// <param name="generator">Model generator used</param>
+        /// <returns>Best model for provided generator</returns>
         public static LearningModel Learn(IEnumerable<object> examples, double trainingPercentage, int repeat, IGenerator generator)
         {
             var total = examples.Count();
@@ -149,12 +182,29 @@ namespace numl
         }
     }
 
+    /// <summary>
+    /// Structure to hold generator, model, and
+    /// accuracy information.
+    /// </summary>
     public class LearningModel
     {
+        /// <summary>
+        /// Generator used to create model
+        /// </summary>
         public IGenerator Generator { get; set; }
+        /// <summary>
+        /// Model created by generator
+        /// </summary>
         public IModel Model { get; set; }
+        /// <summary>
+        /// Accuracy of model on test set
+        /// </summary>
         public double Accuracy { get; set; }
 
+        /// <summary>
+        /// Textual representation of structure
+        /// </summary>
+        /// <returns>string</returns>
         public override string ToString()
         {
             return string.Format("Learning Model:\n  Generator {0}\n  Model:\n{1}\n  Accuracy: {2:p}\n", 
