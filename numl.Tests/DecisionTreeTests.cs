@@ -41,7 +41,19 @@ namespace numl.Tests
             var description = Descriptor.Create<Tennis>();
             var generator = new DecisionTreeGenerator(50);
             var model = generator.Generate(description, data);
+
+            Tennis t = new Tennis
+            {
+                Humidity = Humidity.Normal,
+                Outlook = Outlook.Overcast,
+                Temperature = Temperature.Cool,
+                Windy = true
+            };
+
+            model.Predict<Tennis>(t);
+            Assert.IsTrue(t.Play);
         }
+
 
         [Test]
         public void Iris_DT_and_Prediction()

@@ -84,7 +84,6 @@
     <Compile Include="Model\DescriptorException.cs" />
     <Compile Include="Model\EnumerableProperty.cs" />
     <Compile Include="Model\DateTimeProperty.cs" />
-    <Compile Include="Model\ExceptionDescendant.cs" />
     <Compile Include="Model\Property.cs" />
     <Compile Include="Model\StringProperty.cs" />
     <Compile Include="Supervised\DecisionTree.cs" />
