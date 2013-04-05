@@ -61,9 +61,18 @@ namespace numl.Model
             }
         }
 
-
+        /// <summary>
+        /// Base type of object being described. 
+        /// This could also be null.
+        /// </summary>
         public Type Type { get; set; }
 
+        /// <summary>
+        /// Gets related property given its
+        /// offset within the vector representation
+        /// </summary>
+        /// <param name="i">Vector Index</param>
+        /// <returns>Associated Feature</returns>
         public Property At(int i)
         {
             if (i < 0 || i > VectorLength)
@@ -76,6 +85,12 @@ namespace numl.Model
             return q.First();
         }
 
+        /// <summary>
+        /// Gets related property column name given its
+        /// offset within the vector representation
+        /// </summary>
+        /// <param name="i">Vector Index</param>
+        /// <returns>Associated Property Name</returns>
         public string ColumnAt(int i)
         {
             var prop = At(i);
@@ -84,11 +99,27 @@ namespace numl.Model
             return col;
         }
 
+        /// <summary>
+        /// Converts a given example into a lazy
+        /// list of doubles in preparation for
+        /// vector conversion (both features
+        /// and corresponding label)
+        /// </summary>
+        /// <param name="item">Example</param>
+        /// <returns>Lazy List of doubles</returns>
         public IEnumerable<double> Convert(object item)
         {
             return Convert(item, true);
         }
 
+        /// <summary>
+        /// Converts a given example into a lazy
+        /// list of doubles in preparation for
+        /// vector conversion
+        /// </summary>
+        /// <param name="item">Example</param>
+        /// <param name="withLabel">Should convert label as well</param>
+        /// <returns>Lazy List of doubles</returns>
         public IEnumerable<double> Convert(object item, bool withLabel)
         {
             if (Features.Length == 0)
@@ -98,6 +129,9 @@ namespace numl.Model
             {
                 // current feature
                 var feature = Features[i];
+
+                // pre-process item
+                feature.PreProcess(item);
 
                 // start start position
                 if (feature.Start < 0)
@@ -109,6 +143,9 @@ namespace numl.Model
                 // convert item
                 foreach (double val in feature.Convert(o))
                     yield return val;
+
+                // post-process item
+                feature.PostProcess(item);
             }
 
             // convert label (if available)
@@ -118,11 +155,18 @@ namespace numl.Model
 
         }
 
+        /// <summary>
+        /// Converts a list of examples into a lazy double
+        /// list of doubles
+        /// </summary>
+        /// <param name="items">Examples</param>
+        /// <returns>Lazy double enumerable of doubles</returns>
         public IEnumerable<IEnumerable<double>> Convert(IEnumerable<object> items)
         {
             // Pre processing items
             foreach (Property feature in Features)
                 feature.PreProcess(items);
+
             if (Label != null)
                 Label.PreProcess(items);
 
@@ -133,20 +177,35 @@ namespace numl.Model
             // Post processing items
             foreach (Property feature in Features)
                 feature.PostProcess(items);
+
             if (Label != null)
                 Label.PostProcess(items);
         }
 
+        /// <summary>
+        /// Converts a list of examples into a Matrix/Vector tuple
+        /// </summary>
+        /// <param name="examples">Examples</param>
+        /// <returns>Tuple containing Matrix and Vector</returns>
         public Tuple<Matrix, Vector> ToExamples(IEnumerable<object> examples)
         {
             return Convert(examples).ToExamples();
         }
 
+        /// <summary>
+        /// Converts a list of examples into a Matrix
+        /// </summary>
+        /// <param name="examples">Examples</param>
+        /// <returns>Matrix representation</returns>
         public Matrix ToMatrix(IEnumerable<object> examples)
         {
             return Convert(examples).ToMatrix();
         }
 
+        /// <summary>
+        /// Pretty printed descriptor
+        /// </summary>
+        /// <returns>Pretty printed string</returns>
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -162,12 +221,24 @@ namespace numl.Model
 
         //---- Creational
 
+        /// <summary>
+        /// Creates a descriptor based upon a marked up
+        /// concrete class
+        /// </summary>
+        /// <typeparam name="T">Class Type</typeparam>
+        /// <returns>Descriptor</returns>
         public static Descriptor Create<T>()
             where T : class
         {
             return Create(typeof(T));
         }
 
+        /// <summary>
+        /// Creates a descriptor based upon a marked up
+        /// concrete type
+        /// </summary>
+        /// <param name="t">Class Type</param>
+        /// <returns>Descriptor</returns>
         public static Descriptor Create(Type t)
         {
 
@@ -211,40 +282,79 @@ namespace numl.Model
             };
         }
 
+        /// <summary>
+        /// Creates a new descriptor using
+        /// a fluent approach. This initial
+        /// descriptor is worthless without 
+        /// adding features
+        /// </summary>
+        /// <returns>Empty Descriptor</returns>
         public static Descriptor New()
         {
             return new Descriptor() { Features = new Property[] { } };
         }
 
+        /// <summary>
+        /// Adds a new feature to descriptor
+        /// </summary>
+        /// <param name="name">Name of feature (must match property name or dictionary key)</param>
+        /// <returns>method for describing feature</returns>
         public DescriptorProperty With(string name)
         {
             return new DescriptorProperty(this, name, false);
         }
 
+        /// <summary>
+        /// Adds (or replaces) a label to the descriptor
+        /// </summary>
+        /// <param name="name">Name of label (must match property name or dictionary key)</param>
+        /// <returns></returns>
         public DescriptorProperty Learn(string name)
         {
             return new DescriptorProperty(this, name, true);
         }
         
-        //---- Fluent API
+        /// <summary>
+        /// Fluent API addition for simplifying the process
+        /// of adding features and labels to a descriptor
+        /// </summary>
         public class DescriptorProperty
         {
             private readonly Descriptor _descriptor;
             private readonly string _name;
             private readonly bool _label;
-            protected internal DescriptorProperty(Descriptor descriptor, string name, bool label)
+
+            /// <summary>
+            /// internal constructor used for
+            /// creating chaining
+            /// </summary>
+            /// <param name="descriptor">descriptor</param>
+            /// <param name="name">name of property</param>
+            /// <param name="label">label property?</param>
+            internal DescriptorProperty(Descriptor descriptor, string name, bool label)
             {
                 _label = label;
                 _name = name;
                 _descriptor = descriptor;
             }
 
+            /// <summary>
+            /// Not ready
+            /// </summary>
+            /// <param name="conversion">Conversion method</param>
+            /// <returns>Descriptor</returns>
             public Descriptor Use(Func<object, double> conversion)
             {
                 throw new NotImplementedException("Not yet ;)");
                 //return _descriptor;
             }
 
+            /// <summary>
+            /// Adds property to descriptor
+            /// with chained name and type
+            /// </summary>
+            /// <param name="type">Property Type</param>
+            /// <returns>descriptor with added property</returns>
             public Descriptor As(Type type)
             {
                 Property p;
@@ -256,6 +366,11 @@ namespace numl.Model
                 return _descriptor;
             }
 
+            /// <summary>
+            /// Adds the default string property to 
+            /// descriptor with previously chained name 
+            /// </summary>
+            /// <returns>descriptor with added property</returns>
             public Descriptor AsString()
             {
                 StringProperty p = new StringProperty();
@@ -264,6 +379,14 @@ namespace numl.Model
                 return _descriptor;
             }
 
+            /// <summary>
+            /// Adds string property to descriptor 
+            /// with previously chained name 
+            /// </summary>
+            /// <param name="splitType">How to split string</param>
+            /// <param name="separator">Separator to use</param>
+            /// <param name="exclusions">file describing strings to exclude</param>
+            /// <returns>descriptor with added property</returns>
             public Descriptor AsString(StringSplitType splitType, string separator = " ", string exclusions = null)
             {
                 StringProperty p = new StringProperty();
@@ -275,6 +398,12 @@ namespace numl.Model
                 return _descriptor;
             }
 
+            /// <summary>
+            /// Adds DateTime property to descriptor
+            /// with previously chained name
+            /// </summary>
+            /// <param name="features">Which date features to use (can pipe: DateTimeFeature.Year | DateTimeFeature.DayOfWeek)</param>
+            /// <returns>descriptor with added property</returns>
             public Descriptor AsDateTime(DateTimeFeature features)
             {
                 if (_label)
@@ -290,6 +419,12 @@ namespace numl.Model
                 return _descriptor;
             }
 
+            /// <summary>
+            /// Adds DateTime property to descriptor
+            /// with previously chained name
+            /// </summary>
+            /// <param name="portion">Which date portions to use (can pipe: DateTimeFeature.Year | DateTimeFeature.DayOfWeek)</param>
+            /// <returns>descriptor with added property</returns>
             public Descriptor AsDateTime(DatePortion portion)
             {
                 if (_label)
@@ -305,6 +440,12 @@ namespace numl.Model
                 return _descriptor;
             }
 
+            /// <summary>
+            /// Adds Enumerable property to descriptor
+            /// with previousy chained name
+            /// </summary>
+            /// <param name="length">length of enumerable to expand</param>
+            /// <returns>descriptor with added property</returns>
             public Descriptor AsEnumerable(int length)
             {
                 if (_label)

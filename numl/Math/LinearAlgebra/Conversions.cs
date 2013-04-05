@@ -30,7 +30,7 @@ namespace numl.Math.LinearAlgebra
             var pad = cols.Select(c => d - c).Sum();
 
             // check sparsity
-            var percent = (decimal)(zeros + pad) / (decimal)(n * d);
+            //var percent = (decimal)(zeros + pad) / (decimal)(n * d);
 
             Matrix m = Matrix.Zeros(n, clip ? d - 1 : d);
 

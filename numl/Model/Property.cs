@@ -23,9 +23,19 @@ namespace numl.Model
             return;
         }
 
+        public virtual void PreProcess(object example)
+        {
+            return;
+        }
+
         public virtual void PostProcess(IEnumerable<object> examples)
         {
             return;
+        }
+
+        public virtual void PostProcess(object example)
+        {
+
         }
 
         public virtual object Convert(double val)

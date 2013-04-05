@@ -18,7 +18,6 @@ namespace numl.Tests.MathTests
         [TestCase(30)]
         [TestCase(50)]
         [TestCase(100)]
-        [TestCase(200)]
         public void CanFactorizeRandomSymmetricMatrix(int order)
         {
             // create random matrix
