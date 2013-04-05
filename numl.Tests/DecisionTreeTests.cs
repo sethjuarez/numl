@@ -111,10 +111,10 @@ namespace numl.Tests
                 Descriptor = Descriptor.Create<ValueObject>()
             };
 
-            var decisionTree = new DecisionTreeGenerator();
             var model = generator.Generate(data);
+            var s = model.ToString();
 
-            var o = new ValueObject() { V1 = 1, V2 = 406 };
+            var o = new ValueObject() { V1 = 1, V2 = 60 };
             var os = model.Predict<ValueObject>(o).R;
             Assert.AreEqual("l".Sanitize(), os);
         }

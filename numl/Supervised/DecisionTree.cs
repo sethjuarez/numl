@@ -106,12 +106,12 @@ namespace numl.Supervised
             {
                 // working set
                 var segment = measure.Segments[i];
-                var edge = new Edge() 
-                { 
-                    Parent = node, 
-                    Discrete = measure.Discrete, 
-                    Min = segment.Min, 
-                    Max = segment.Max 
+                var edge = new Edge()
+                {
+                    Parent = node,
+                    Discrete = measure.Discrete,
+                    Min = segment.Min,
+                    Max = segment.Max
                 };
 
                 IEnumerable<int> slice;
@@ -152,8 +152,14 @@ namespace numl.Supervised
             // might check if there are no edges
             // if this is the case should convert
             // node to leaf and bail
-
-            node.Edges = edges.ToArray();
+            var egs = edges.ToArray();
+            // problem, need to convert
+            // parent to terminal node
+            // with mode
+            if (egs.Length <= 1)
+                node = BuildLeafNode(y.Mode());
+            else
+                node.Edges = egs;
 
             return node;
         }

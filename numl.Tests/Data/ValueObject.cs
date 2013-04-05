@@ -16,7 +16,7 @@ namespace numl.Tests.Data
 
         public static IEnumerable<ValueObject> GetData()
         {
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 100; i++)
             {
                 yield return new ValueObject { V1 = 1, V2 = i, R = (i > 50) ? "l" : "s" };
             }
