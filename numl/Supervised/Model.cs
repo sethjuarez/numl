@@ -32,30 +32,30 @@ namespace numl.Supervised
             return (T)Predict((object)o);
         }
 
-
-        public void Save(string file)
+        public virtual void Save(string file)
         {
             using (var stream = File.OpenWrite(file))
                 Save(stream);
         }
 
-        public void Save(Stream stream)
+        public virtual void Save(Stream stream)
         {
-            XmlSerializer serializer = new XmlSerializer(this.GetType());
+            XmlSerializer serializer = new XmlSerializer(GetType());
             XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
             ns.Add("", "");
+            
             serializer.Serialize(stream, this, ns);
         }
 
-        public IModel Load(string file)
+        public virtual IModel Load(string file)
         {
             using (var stream = File.OpenRead(file))
                 return Load(stream);
         }
 
-        public IModel Load(Stream stream)
+        public virtual IModel Load(Stream stream)
         {
-            XmlSerializer serializer = new XmlSerializer(this.GetType());
+            XmlSerializer serializer = new XmlSerializer(GetType());
             var o = serializer.Deserialize(stream);
             return (IModel)o;
         }

@@ -4,6 +4,8 @@ using numl.Utils;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace numl.Model
 {
@@ -19,6 +21,7 @@ namespace numl.Model
         Word
     }
 
+    [XmlRoot("StringProperty"), Serializable]
     public class StringProperty : Property
     {
         public StringProperty()
@@ -136,6 +139,55 @@ namespace numl.Model
             }
             else
                 Exclude = new string[] { };
+        }
+
+        public override void ReadXml(XmlReader reader)
+        {
+            base.ReadXml(reader);
+            Separator = reader.GetAttribute("Separator");
+            SplitType = (StringSplitType)Enum.Parse(typeof(StringSplitType), reader.GetAttribute("SplitType"));
+            AsEnum = bool.Parse(reader.GetAttribute("AsEnum"));
+
+            reader.ReadStartElement();
+
+            Dictionary = new string[int.Parse(reader.GetAttribute("Length"))];
+            reader.ReadStartElement("Dictionary");
+            for (int i = 0; i < Dictionary.Length; i++)
+                Dictionary[i] = reader.ReadElementString("item");
+            reader.ReadEndElement();
+
+            Exclude = new string[int.Parse(reader.GetAttribute("Length"))];
+            reader.ReadStartElement("Exclude");
+            for (int i = 0; i < Exclude.Length; i++)
+                Exclude[i] = reader.ReadElementString("item");
+        }
+
+        public override void WriteXml(XmlWriter writer)
+        {
+            base.WriteXml(writer);
+            writer.WriteAttributeString("Separator", Separator);
+            writer.WriteAttributeString("SplitType", SplitType.ToString());
+            writer.WriteAttributeString("AsEnum", AsEnum.ToString());
+
+            writer.WriteStartElement("Dictionary");
+            writer.WriteAttributeString("Length", Dictionary.Length.ToString());
+            for (int i = 0; i < Dictionary.Length; i++)
+            {
+                writer.WriteStartElement("item");
+                writer.WriteValue(Dictionary[i]);
+                writer.WriteEndElement();
+            }
+            writer.WriteEndElement();
+
+            writer.WriteStartElement("Exclude");
+            writer.WriteAttributeString("Length", Exclude.Length.ToString());
+            for (int i = 0; i < Exclude.Length; i++)
+            {
+                writer.WriteStartElement("item");
+                writer.WriteValue(Exclude[i]);
+                writer.WriteEndElement();
+            }
+            writer.WriteEndElement();
         }
     }
 }

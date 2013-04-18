@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace numl.Model
 {
@@ -43,6 +45,9 @@ namespace numl.Model
         /// Second
         /// </summary>
         Second = 0x0100,
+        /// <summary>
+        /// Millisecond
+        /// </summary>
         Millisecond = 0x0200
     }
 
@@ -71,6 +76,7 @@ namespace numl.Model
         TimeExtended = 0x0010
     }
 
+    [XmlRoot("DateTimeProperty"), Serializable]
     public class DateTimeProperty : Property
     {
         public DateTimeFeature Features { get; private set; }
@@ -78,7 +84,7 @@ namespace numl.Model
         public DateTimeProperty()
             : base()
         {
-            Initialize(DatePortion.DateExtended);
+            Initialize(DatePortion.Date | DatePortion.DateExtended);
         }
 
         public DateTimeProperty(DatePortion portion)
@@ -201,5 +207,16 @@ namespace numl.Model
             else throw new InvalidCastException("Object is not a date");
         }
 
+        public override void WriteXml(XmlWriter writer)
+        {
+            base.WriteXml(writer);
+            writer.WriteAttributeString("Features", ((int)Features).ToString());
+        }
+
+        public override void ReadXml(XmlReader reader)
+        {
+            base.ReadXml(reader);
+            Features = (DateTimeFeature)int.Parse(reader.GetAttribute("Features"));
+        }
     }
 }

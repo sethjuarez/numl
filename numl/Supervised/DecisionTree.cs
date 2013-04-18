@@ -7,6 +7,8 @@ using numl.Math.LinearAlgebra;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Schema;
+using System.Xml;
 
 namespace numl.Supervised
 {
@@ -205,16 +207,16 @@ namespace numl.Supervised
         private Node BuildLeafNode(double val)
         {
             // build leaf node
-            return new Node { IsLeaf = true, Value = val, Edges = new Edge[] { }, Label = Descriptor.Label.Convert(val) };
+            return new Node { IsLeaf = true, Value = val, Edges = null, Label = Descriptor.Label.Convert(val) };
         }
     }
 
-    [XmlRoot("dt")]
-    public class DecisionTreeModel : Model
+    [Serializable]
+    public class DecisionTreeModel : Model, IXmlSerializable
     {
-        [XmlElement("tree")]
+        [XmlElement]
         public Node Tree { get; set; }
-        [XmlAttribute("hint")]
+        [XmlAttribute]
         public double Hint { get; set; }
 
         public DecisionTreeModel()
@@ -253,6 +255,14 @@ namespace numl.Supervised
                 throw new InvalidOperationException(String.Format("Unable to match split value {0} for feature {1}[2]\nConsider setting a Hint in order to avoid this error.", v[col], Descriptor.At(col), col));
         }
 
+        public override IModel Load(System.IO.Stream stream)
+        {
+            var model = base.Load(stream) as DecisionTreeModel;
+
+
+            return model;
+        }
+
         public override string ToString()
         {
             return PrintNode(Tree, "\t");
@@ -274,6 +284,54 @@ namespace numl.Supervised
 
                 return sb.ToString();
             }
+        }
+
+        public XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        public void ReadXml(XmlReader reader)
+        {
+            reader.MoveToContent();
+            Hint = double.Parse(reader.GetAttribute("Hint"));
+            reader.ReadStartElement();
+
+            XmlSerializer dserializer = new XmlSerializer(typeof(Descriptor));
+            Descriptor = (Descriptor)dserializer.Deserialize(reader);
+            reader.Read();
+
+            XmlSerializer serializer = new XmlSerializer(typeof(Node));
+            Tree = (Node)serializer.Deserialize(reader);
+            // re-establish tree cycles and values
+            ReLinkNodes(Tree);
+        }
+
+        private void ReLinkNodes(Node n)
+        {
+            if (n.Edges != null)
+            {
+                foreach (Edge e in n.Edges)
+                {
+                    e.Parent = n;
+                    if (e.Child.IsLeaf)
+                        e.Child.Label = Descriptor.Label.Convert(e.Child.Value);
+                    else
+                        ReLinkNodes(e.Child);
+                }
+            }
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+            writer.WriteAttributeString("Hint", Hint.ToString("r"));
+            XmlSerializer dserializer = new XmlSerializer(typeof(Descriptor));
+            dserializer.Serialize(writer, Descriptor);
+
+            XmlSerializer serializer = new XmlSerializer(Tree.GetType());
+            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+            ns.Add("", "");
+            serializer.Serialize(writer, Tree, ns);
         }
     }
 }

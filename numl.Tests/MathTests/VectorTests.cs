@@ -5,7 +5,7 @@ using NUnit.Framework;
 using numl.Math.LinearAlgebra;
 using System.Xml.Serialization;
 
-namespace numl.Tests
+namespace numl.Tests.MathTests
 {
     /// <summary>
     /// Summary description for VectorTests

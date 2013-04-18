@@ -2,10 +2,14 @@ using System;
 using numl.Utils;
 using System.Linq;
 using System.Collections.Generic;
+using System.Xml.Serialization;
+using System.Xml.Schema;
+using System.Xml;
 
 namespace numl.Model
 {
-    public class Property
+    [XmlRoot("Property"), Serializable]
+    public class Property : IXmlSerializable
     {
         public Property()
         {
@@ -13,7 +17,7 @@ namespace numl.Model
         }
 
         public string Name { get; set; }
-        public Type Type { get; set; }
+        public virtual Type Type { get; set; }
         public virtual int Length { get { return 1; } }
         public int Start { get; set; }
         public bool Discrete { get; set; }
@@ -59,6 +63,30 @@ namespace numl.Model
         public override string ToString()
         {
             return string.Format("[{0}, {1}, {2}]", Name, Start, Length);
+        }
+
+        // serialization
+
+        public XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        public virtual void ReadXml(XmlReader reader)
+        {
+            reader.MoveToContent();
+            Name = reader.GetAttribute("Name");
+            Type = FastReflection.FindType(reader.GetAttribute("Type"));
+            Discrete = bool.Parse(reader.GetAttribute("Discrete"));
+            Start = int.Parse(reader.GetAttribute("Start"));
+        }
+
+        public virtual void WriteXml(XmlWriter writer)
+        {
+            writer.WriteAttributeString("Name", Name);
+            writer.WriteAttributeString("Type", Type.Name);
+            writer.WriteAttributeString("Discrete", Discrete.ToString());
+            writer.WriteAttributeString("Start", Start.ToString());
         }
     }
 }

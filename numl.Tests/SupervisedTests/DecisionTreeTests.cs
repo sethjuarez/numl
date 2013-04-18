@@ -7,8 +7,9 @@ using numl.Supervised;
 using NUnit.Framework;
 using System.Collections.Generic;
 using numl.Tests.Data;
+using System.IO;
 
-namespace numl.Tests
+namespace numl.Tests.SupervisedTests
 {
     [TestFixture]
     public class DecisionTreeTests
@@ -201,6 +202,5 @@ namespace numl.Tests
             //Maximum is returned as expected
             Assert.AreEqual(ArbitraryPrediction.PredictionLabel.Maximum, expectedMaximum);
         }
-
     }
 }

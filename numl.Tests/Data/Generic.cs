@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using numl.Model;
 
 namespace numl.Tests.Data
 {
@@ -21,30 +22,48 @@ namespace numl.Tests.Data
     public class Generic
     {
         // univariate types
+        [Feature]
         public Boolean VarBoolean { get; set; }
+        [Feature]
         public Byte VarByte { get; set; }
+        [Feature]
         public SByte VarSbyte { get; set; }
+        [Feature]
         public Char VarChar { get; set; }
+        [Feature]
         public Decimal VarDecimal { get; set; }
+        [Feature]
         public Double VarDouble { get; set; }
+        [Feature]
         public Single VarSingle { get; set; }
+        [Feature]
         public Int16 VarInt16 { get; set; }
+        [Feature]
         public UInt16 VarUInt16 { get; set; }
+        [Feature]
         public Int32 VarInt32 { get; set; }
+        [Feature]
         public UInt32 VarUInt32 { get; set; }
+        [Feature]
         public Int64 VarInt64 { get; set; }
+        [Feature]
         public UInt64 VarUInt64 { get; set; }
-        public Enum VarEnum { get; set; }
+        [Feature]
+        public FakeEnum VarEnum { get; set; }
+        [Feature]
         public TimeSpan VarTimeSpan { get; set; }
 
         // default ignore types
         public Guid VarGuid { get; set; }
 
         // implicit multivariate types
+        [Feature]
         public String VarString { get; set; }
+        [DateFeature(DatePortion.Date | DatePortion.Time)]
         public DateTime VarDateTime { get; set; }
 
         // explicit multivariate types
+        [EnumerableFeature(10)]
         public Byte[] VarByteArray { get; set; }
 
         public static IEnumerable<Generic> GetRows(int count)
@@ -65,7 +84,7 @@ namespace numl.Tests.Data
                     VarUInt32 = (UInt32)4,
                     VarInt64 = (Int64)5,
                     VarUInt64 = (UInt64)6,
-                    VarEnum = (Enum)FakeEnum.Item0,
+                    VarEnum = FakeEnum.Item0,
                     VarTimeSpan = (TimeSpan)TimeSpan.FromSeconds(100),
 
                     VarString = (String)"test1",

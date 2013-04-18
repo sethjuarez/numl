@@ -3,12 +3,16 @@ using numl.Utils;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace numl.Model
 {
+    [XmlRoot("EnumerableProperty"), Serializable]
     public class EnumerableProperty : Property
     {
-        private readonly int _length;
+        private int _length;
+        internal EnumerableProperty() { }
         public EnumerableProperty(int length)
         {
             _length = length;
@@ -72,6 +76,26 @@ namespace numl.Model
             else
                 throw new InvalidCastException(
                     string.Format("Cannot cast {0} to an IEnumerable", o.GetType().Name));
+        }
+
+        public override void WriteXml(XmlWriter writer)
+        {
+            writer.WriteAttributeString("Name", Name);
+            writer.WriteAttributeString("ElementType", Type.Name);
+            writer.WriteAttributeString("Discrete", Discrete.ToString());
+            writer.WriteAttributeString("Start", Start.ToString());
+
+            writer.WriteAttributeString("Length", _length.ToString());
+        }
+
+        public override void ReadXml(XmlReader reader)
+        {
+            reader.MoveToContent();
+            Name = reader.GetAttribute("Name");
+            Type = FastReflection.FindType(reader.GetAttribute("ElementType"));
+            Discrete = bool.Parse(reader.GetAttribute("Discrete"));
+            Start = int.Parse(reader.GetAttribute("Start"));
+            _length = int.Parse(reader.GetAttribute("Length"));
         }
     }
 }

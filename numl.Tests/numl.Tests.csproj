@@ -56,7 +56,9 @@
     <Compile Include="Data\Student.cs" />
     <Compile Include="Data\Tennis.cs" />
     <Compile Include="Data\ValueObject.cs" />
-    <Compile Include="DecisionTreeTests.cs" />
+    <Compile Include="SerializationTests\BaseSerialization.cs" />
+    <Compile Include="SerializationTests\DecisionTreeSerializationTests.cs" />
+    <Compile Include="SupervisedTests\DecisionTreeTests.cs" />
     <Compile Include="MathTests\DistanceTests.cs" />
     <Compile Include="MathTests\EvdTests.cs" />
     <Compile Include="MathTests\HelperTests.cs" />
@@ -64,9 +66,10 @@
     <Compile Include="MathTests\LinkerTests.cs" />
     <Compile Include="MathTests\MatrixTests.cs" />
     <Compile Include="MathTests\VectorTests.cs" />
-    <Compile Include="PCATests.cs" />
-    <Compile Include="PerceptronTests.cs" />
+    <Compile Include="UnsupervisedTests\PCATests.cs" />
+    <Compile Include="SupervisedTests\PerceptronTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SerializationTests\PropertySerializationTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\numl\numl.csproj">

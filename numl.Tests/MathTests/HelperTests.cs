@@ -6,7 +6,7 @@ using numl.Math;
 using numl.Math.Information;
 using numl.Math.LinearAlgebra;
 
-namespace numl.Tests.Math
+namespace numl.Tests.MathTests
 {
     [TestFixture]
     public class HelperTests

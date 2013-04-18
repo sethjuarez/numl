@@ -5,7 +5,7 @@ using NUnit.Framework;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 
-namespace numl.Tests
+namespace numl.Tests.SupervisedTests
 {
     [TestFixture]
     public class PerceptronTests

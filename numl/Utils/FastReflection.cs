@@ -5,6 +5,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace numl.Utils
 {
@@ -187,7 +188,7 @@ namespace numl.Utils
                    t == typeof(bool) ||
                    t == typeof(char) ||
                    t.BaseType == typeof(Enum) ||
-                   t == typeof(TimeSpan) || 
+                   t == typeof(TimeSpan) ||
                    TypeDescriptor.GetConverter(t).CanConvertTo(typeof(double));
         }
 
@@ -207,7 +208,7 @@ namespace numl.Utils
             // etc)
             if (o == null) return double.NaN;
             var t = o.GetType();
-            
+
             if (t == typeof(bool))
                 return (bool)o ? 1d : -1d;
             else if (t == typeof(char)) // ascii number of character
@@ -246,26 +247,64 @@ namespace numl.Utils
             }
         }
 
+        private readonly static Dictionary<string, Type> _types = new Dictionary<string, Type>();
         public static Type FindType(string s)
         {
+            if (_types.ContainsKey(s))
+                return _types[s];
+
             var type = Type.GetType(s);
 
-            if (type != null) return type;
-            else // need to look elsewhere
+            if (type == null) // need to look elsewhere
             {
                 // someones notational laziness causes me to look
                 // everywhere... sorry... I know it's slow...
+                // that's why I am caching things...
                 var q = (from p in AppDomain.CurrentDomain.GetAssemblies()
-                         from t in p.GetTypes()
+                         from t in p.GetTypesSafe()
                          where t.FullName == s || t.Name == s
                          select t).ToArray();
 
                 if (q.Length == 1)
-                    return q[0];
-                else
-                    throw new TypeLoadException(string.Format("Cannot find type {0}", s));
+                    type = q[0];
             }
 
+            if (type != null)
+            {
+                // cache
+                _types[s] = type;
+                return type;
+            }
+            else
+                throw new TypeLoadException(string.Format("Cannot find type {0}", s));
+
+        }
+
+        private readonly static Dictionary<Type, Type[]> _descendants = new Dictionary<Type, Type[]>();
+        internal static Type[] FindAllAssignableFrom(Type type)
+        {
+            if (!_descendants.ContainsKey(type))
+            {
+                // find all descendants of given type
+                _descendants[type] = (from p in AppDomain.CurrentDomain.GetAssemblies()
+                                      from t in p.GetTypesSafe()
+                                      where type.IsAssignableFrom(t)
+                                      select t).ToArray();
+            }
+
+            return _descendants[type];
+        }
+
+        private static IEnumerable<Type> GetTypesSafe(this Assembly a)
+        {
+            try
+            {
+                return a.GetTypes();
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                return ex.Types.Where(x => x != null);
+            }
         }
     }
 }

@@ -5,18 +5,24 @@ using System.Reflection;
 using System.Collections.Generic;
 using numl.Math.LinearAlgebra;
 using System.Text;
+using System.Xml.Serialization;
+using System.Xml;
+using System.Xml.Schema;
 
 namespace numl.Model
 {
     /// <summary>
-    /// Theis class is designed to describe the underlying types that
+    /// This class is designed to describe the underlying types that
     /// will be used in the machine learning process. Any machine learning
     /// process requires a set of <see cref="Features"/> that will be used to discriminate
     /// the <see cref="Label"/>. The <see cref="Label"/> itself is the target element that the machine
     /// learning algorithms learn to predict.
     /// </summary>
-    public class Descriptor
+    [XmlRoot("Descriptor"), Serializable]
+    public class Descriptor : IXmlSerializable
     {
+        public Descriptor() { }
+
         /// <summary>
         /// Set of features used to discriminate or 
         /// learn about the <see cref="Label"/>.
@@ -278,7 +284,7 @@ namespace numl.Model
             {
                 Features = features.ToArray(),
                 Label = label,
-                Type = t
+                Type = t,
             };
         }
 
@@ -314,6 +320,84 @@ namespace numl.Model
             return new DescriptorProperty(this, name, true);
         }
 
+
+        public XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        public void ReadXml(XmlReader reader)
+        {
+            Type[] descendants = FastReflection.FindAllAssignableFrom(typeof(Property));
+            // don't want to leak memory, should reuse serializers
+            Dictionary<string, XmlSerializer> serializers = new Dictionary<string, XmlSerializer>();
+            Func<string, XmlSerializer> serializer = s =>
+            {
+                if (!serializers.ContainsKey(s))
+                {
+                    var t = (from y in descendants
+                             where y.Name == s
+                             select y).FirstOrDefault();
+                    if (t == null) throw new TypeLoadException(string.Format("Could not find type {0}", reader.LocalName));
+
+                    serializers[s] = new XmlSerializer(t);
+                }
+
+                return serializers[reader.LocalName];
+            };
+
+            reader.MoveToContent();
+            string type = reader.GetAttribute("Type");
+            if (type.ToLowerInvariant() != "none")
+                Type = FastReflection.FindType(type);
+
+            reader.ReadStartElement();
+            Features = new Property[int.Parse(reader.GetAttribute("Length"))];
+            reader.ReadStartElement("Features");
+            for (int i = 0; i < Features.Length; i++)
+            {
+                Features[i] = (Property)serializer(reader.LocalName).Deserialize(reader);
+                reader.Read();
+            }
+            reader.ReadEndElement();
+            // is there a label?
+            if (reader.LocalName == "Label")
+            {
+                reader.ReadStartElement("Label");
+                Label = (Property)serializer(reader.LocalName).Deserialize(reader);
+                reader.Read();
+                reader.ReadEndElement();
+            }
+            
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+            // don't want to leak memory, should reuse serializers
+            Dictionary<Type, XmlSerializer> serializers = new Dictionary<Type, XmlSerializer>();
+
+            writer.WriteAttributeString("Type", Type == null ? "None" : Type.Name);
+
+            writer.WriteStartElement("Features");
+            writer.WriteAttributeString("Length", Features.Length.ToString());
+            for (int i = 0; i < Features.Length; i++)
+            {
+                var prop = Features[i];
+                if (!serializers.ContainsKey(prop.GetType()))
+                    serializers[prop.GetType()] = new XmlSerializer(prop.GetType());
+                serializers[prop.GetType()].Serialize(writer, prop);
+            }
+            writer.WriteEndElement();
+
+            if (Label != null)
+            {
+                writer.WriteStartElement("Label");
+                if (!serializers.ContainsKey(Label.GetType()))
+                    serializers[Label.GetType()] = new XmlSerializer(Label.GetType());
+                serializers[Label.GetType()].Serialize(writer, Label);
+                writer.WriteEndElement();
+            }
+        }
     }
 
 

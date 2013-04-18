@@ -5,7 +5,7 @@ using numl.Unsupervised;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 
-namespace numl.Tests
+namespace numl.Tests.UnsupervisedTests
 {
     [TestFixture]
     public class PCATests

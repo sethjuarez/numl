@@ -120,11 +120,15 @@ namespace numl.Model
             if (_length <= 0)
                 throw new InvalidOperationException("Cannot have an enumerable feature of 0 or less.");
 
+            Type type = property.PropertyType;
             var ep = new EnumerableProperty(_length);
-            // unless proven otherwise
-            // at expansion time
-            ep.Discrete = false;
+            // good assumption??
+            ep.Discrete = type.BaseType == typeof(Enum) ||
+                          type == typeof(bool) ||
+                          type == typeof(char);
             ep.Name = property.Name;
+            
+            ep.Type = type.GetElementType();
             return ep;
         }
     }
