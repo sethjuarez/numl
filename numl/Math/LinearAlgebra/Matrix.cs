@@ -135,7 +135,7 @@ namespace numl.Math.LinearAlgebra
         /// <summary>
         /// returns col/row vector at index j
         /// </summary>
-        /// <param name="j">Col/Row</param>
+        /// <param name="i">Col/Row</param>
         /// <param name="t">Row or Column</param>
         /// <returns>Vector</returns>
         public virtual Vector this[int i, VectorType t]

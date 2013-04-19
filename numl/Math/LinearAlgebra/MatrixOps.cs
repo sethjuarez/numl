@@ -101,7 +101,9 @@ namespace numl.Math.LinearAlgebra
 
         public static Matrix operator -(double s, Matrix m)
         {
-            return m - s;
+            // subtracting matrix so every item
+            // in matrix is negated and s is added
+            return (-1 * m) + s;
         }
 
         /// <summary>
@@ -214,11 +216,35 @@ namespace numl.Math.LinearAlgebra
         /// <returns>Inverse (or exception if matrix is singular)</returns>
         public static Matrix operator ^(Matrix mat, int n)
         {
-            if (n != -1)
-                throw new InvalidOperationException("This is a hack for the inverse, please use it as such!");
             if (mat.Rows != mat.Cols)
-                throw new InvalidOperationException("Can only find inverse of square matrix!");
+                throw new InvalidOperationException("Can only find powers of square matrices!");
 
+            if (n == 0)
+                return Matrix.Identity(mat.Rows, mat.Cols);
+            if (n == 1)
+                return mat.Copy();
+            if (n == -1)
+            {
+                #warning This is not the most efficient way to solve a system of Linear Equations. Consider using the \ operator
+                return Inverse(mat);
+            }
+            var negative = n < 0;
+            var pow = System.Math.Abs(n);
+            var scratch = mat.Copy();
+            for (int i = 0; i < pow; i++)
+                scratch = scratch * mat;
+
+            if (!negative)
+                return scratch;
+            else
+            {
+                #warning This is not the most efficient way to solve a system of Linear Equations. Consider using the \ operator
+                return Inverse(scratch);
+            }
+        }
+
+        private static Matrix Inverse(Matrix mat)
+        {
             // working space
             Matrix matrix = new Matrix(mat.Rows, 2 * mat.Cols);
             // copy over colums
@@ -272,6 +298,5 @@ namespace numl.Math.LinearAlgebra
 
             return result;
         }
-        
     }
 }
