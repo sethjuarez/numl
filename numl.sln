@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "numl.Visualizers", "numl.Vi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "numl.Tests", "numl.Tests\numl.Tests.csproj", "{C6EBD1E6-5744-4FB0-A223-FD0D0A23B985}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "numl.TitanicPassengersChallenge", "numl.TestPredictions\numl.TitanicPassengersChallenge.csproj", "{648B6E13-E545-4AD4-A533-41BE77A5DB55}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = numl.vsmdi
@@ -28,6 +30,10 @@ Global
 		{C6EBD1E6-5744-4FB0-A223-FD0D0A23B985}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6EBD1E6-5744-4FB0-A223-FD0D0A23B985}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6EBD1E6-5744-4FB0-A223-FD0D0A23B985}.Release|Any CPU.Build.0 = Release|Any CPU
+		{648B6E13-E545-4AD4-A533-41BE77A5DB55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{648B6E13-E545-4AD4-A533-41BE77A5DB55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{648B6E13-E545-4AD4-A533-41BE77A5DB55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{648B6E13-E545-4AD4-A533-41BE77A5DB55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
