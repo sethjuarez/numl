@@ -8,6 +8,8 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using numl.Tests.Data;
 using System.IO;
+using numl.TitanicPassengersChallenge;
+using System.Diagnostics;
 
 namespace numl.Tests.SupervisedTests
 {
@@ -82,8 +84,8 @@ namespace numl.Tests.SupervisedTests
         {
             var data = Iris.Load();
 
-            var generator = new DecisionTreeGenerator(50) 
-            { 
+            var generator = new DecisionTreeGenerator(50)
+            {
                 Descriptor = Descriptor.Create<Iris>(),
                 Hint = 0
             };
@@ -201,6 +203,44 @@ namespace numl.Tests.SupervisedTests
             Assert.AreEqual(ArbitraryPrediction.PredictionLabel.Minimum, expectedMinimum);
             //Maximum is returned as expected
             Assert.AreEqual(ArbitraryPrediction.PredictionLabel.Maximum, expectedMaximum);
+        }
+
+        [Test]
+        public void Titanic_Passenger_Survival_Test_Success_Percentage_Should_Be_Seventy_Five_Percent()
+        {
+            var generator = new DecisionTreeGenerator(50)
+            {
+                Descriptor = Descriptor.Create<Passenger>(),
+                Hint = 0
+            };
+
+            var data = Passenger.LoadData(@"D:\Development\machinelearning\numl-fork\numl\numl.TestPredictions\Data\Titanic_Training_Data.csv", true);
+
+            var model = generator.Generate(data);
+            //var model = Learner.Learn(data, .90, 1000, generator);
+
+            int incorrectPredictions = 0;
+            int correctPredictions = 0;
+
+            for (int passengerIndex = 0; passengerIndex < 800; passengerIndex++)
+            {
+                var passenger = data[passengerIndex];
+                var survived = passenger.PassengerSurvived;
+
+                var passengerPredicted =
+                    model.Predict<Passenger>(passenger);
+
+                if (survived != passengerPredicted.PassengerSurvived)
+                    incorrectPredictions++;
+                else
+                    correctPredictions++;
+            }
+
+            var percentageCorrect = (correctPredictions / 800.0) * 100;
+            var percentageIncorrect = (incorrectPredictions / 800.0) * 100;
+
+            Debug.WriteLine(string.Format("Out of 800 predictions, the engine predicted {0}% correctly and {1}% incorrectly", percentageCorrect, percentageIncorrect));
+            Assert.IsTrue(percentageCorrect >= 70.0);
         }
     }
 }

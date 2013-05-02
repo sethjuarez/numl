@@ -53,6 +53,7 @@
     <Compile Include="Data\Generic.cs" />
     <Compile Include="Data\House.cs" />
     <Compile Include="Data\Iris.cs" />
+    <Compile Include="Data\Passenger.cs" />
     <Compile Include="Data\Student.cs" />
     <Compile Include="Data\Tennis.cs" />
     <Compile Include="Data\ValueObject.cs" />
@@ -81,6 +82,8 @@
     <None Include="Data\iris.data">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Data\titanic_passenger_testing.csv" />
+    <None Include="Data\titanic_passenger_training.csv" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
