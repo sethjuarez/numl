@@ -555,7 +555,7 @@ namespace numl.Model
                 _descriptor.Label = p;
             else
             {
-                var features = new List<Property>(_descriptor.Features);
+                var features = new List<Property>(_descriptor.Features ?? new Property[] { });
                 features.Add(p);
                 _descriptor.Features = features.ToArray();
             }

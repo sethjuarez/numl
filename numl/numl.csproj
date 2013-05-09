@@ -79,6 +79,7 @@
     <Compile Include="Math\Metrics\ManhattanDistance.cs" />
     <Compile Include="Math\Metrics\PearsonCorrelation.cs" />
     <Compile Include="Math\Metrics\TanimotoCoefficient.cs" />
+    <Compile Include="Math\Probability\Distribution.cs" />
     <Compile Include="Math\Probability\Sampling.cs" />
     <Compile Include="Math\Range.cs" />
     <Compile Include="Model\DescriptorException.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Supervised\DecisionTree.cs" />
     <Compile Include="Supervised\KNN.cs" />
     <Compile Include="Supervised\LinearRegression.cs" />
+    <Compile Include="Supervised\NaiveBayes.cs" />
     <Compile Include="Supervised\Perceptron.cs" />
     <Compile Include="Unsupervised\Cluster.cs" />
     <Compile Include="Unsupervised\GMM.cs" />
@@ -97,6 +99,7 @@
     <Compile Include="Model\Descriptor.cs" />
     <Compile Include="Unsupervised\KMeans.cs" />
     <Compile Include="Unsupervised\PCA.cs" />
+    <Compile Include="Utils\DictionaryHelpers.cs" />
     <Compile Include="Utils\FastReflection.cs" />
     <Compile Include="Model\NumlAttributes.cs" />
     <Compile Include="Utils\StringHelpers.cs" />

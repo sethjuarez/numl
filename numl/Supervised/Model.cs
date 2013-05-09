@@ -47,6 +47,17 @@ namespace numl.Supervised
             serializer.Serialize(stream, this, ns);
         }
 
+        public virtual string ToXml()
+        {
+            XmlSerializer serializer = new XmlSerializer(GetType());
+            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+            StringWriter textWriter = new StringWriter();
+            ns.Add("", "");
+
+            serializer.Serialize(textWriter, this, ns);
+            return textWriter.ToString();
+        }
+
         public virtual IModel Load(string file)
         {
             using (var stream = File.OpenRead(file))
@@ -57,6 +68,15 @@ namespace numl.Supervised
         {
             XmlSerializer serializer = new XmlSerializer(GetType());
             var o = serializer.Deserialize(stream);
+            return (IModel)o;
+        }
+
+
+        public virtual IModel LoadXml(string xml)
+        {
+            TextReader reader = new StringReader(xml);
+            XmlSerializer serializer = new XmlSerializer(GetType());
+            var o = serializer.Deserialize(reader);
             return (IModel)o;
         }
     }
