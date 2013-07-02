@@ -30,14 +30,17 @@ namespace numl.Tests.UnsupervisedTests
     {
         private static Matrix GenerateData(int size)
         {
+            // this creates [size] points in graph quadrant 1
             var A = Matrix.Create(size, 2, () => Sampling.GetNormal());
             A[0, VectorType.Col] -= 20;
             A[1, VectorType.Col] -= 20;
 
+            // this creates [size] points in graph quadrant 3
             var B = Matrix.Create(size, 2, () => Sampling.GetNormal());
             B[0, VectorType.Col] += 20;
             B[1, VectorType.Col] += 20;
 
+            // stack them
             var X = A.Stack(B);
             return X;
         }
@@ -80,7 +83,8 @@ namespace numl.Tests.UnsupervisedTests
             KMeans model = new KMeans();
             var clusters = model.Generate(descriptor, objects, 2, new EuclidianDistance());
             Assert.AreEqual(2, clusters.Children.Length);
+            Assert.AreEqual(size, clusters[0].Members.Length);
+            Assert.AreEqual(size, clusters[1].Members.Length);
         }
-
     }
 }

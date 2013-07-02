@@ -85,7 +85,6 @@ namespace numl.Supervised.DecisionTree
             var gain = tuple.Item2;
             var measure = tuple.Item3;
 
-
             // uh oh, need to return something?
             // a weird node of some sort...
             // but just in case...

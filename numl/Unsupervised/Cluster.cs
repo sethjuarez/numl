@@ -30,5 +30,16 @@ namespace numl.Unsupervised
             Id = id;
             Children = children.ToArray();
         }
+
+        public Cluster this[int i]
+        {
+            get
+            {
+                if (i >= Children.Length)
+                    throw new IndexOutOfRangeException();
+                else
+                    return Children[i];
+            }
+        }
     }
 }

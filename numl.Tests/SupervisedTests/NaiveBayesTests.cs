@@ -17,7 +17,7 @@ namespace numl.Tests.SupervisedTests
         {
             var data = Iris.Load();
             var description = Descriptor.Create<Iris>();
-            var generator = new NaiveBayesGenerator();
+            var generator = new NaiveBayesGenerator(2);
             var model = generator.Generate(description, data);
 
             // should be Iris-Setosa
