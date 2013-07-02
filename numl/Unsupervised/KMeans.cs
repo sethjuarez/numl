@@ -14,39 +14,31 @@ namespace numl.Unsupervised
         public Descriptor Descriptor { get; set; }
         public Matrix Centers { get; set; }
 
-        public KMeans()
-        {
-
-        }
-
         public Cluster Generate(Descriptor descriptor, IEnumerable<object> examples, int k, IDistance metric = null)
         {
             var data = examples.ToArray();
             Descriptor = descriptor;
-            Matrix X = Descriptor.Convert(examples).ToMatrix();
+            Matrix X = Descriptor.Convert(data).ToMatrix();
 
+            // generate assignments
             var assignments = Generate(X, k, metric);
 
-            return GenerateClustering(X, assignments, data);
+            // begin packing objects into clusters
+            var objects = new List<object>[k];
+            for (int i = 0; i < assignments.Length; i++)
+            {
+                var a = assignments[i];
+                if (objects[a] == null) objects[a] = new List<object>();
+                objects[a].Add(data[i]);
+            }
 
-        }
+            // create clusters
+            List<Cluster> clusters = new List<Cluster>(k);
+            for (int i = 0; i < k; i++)
+                clusters.Add(new Cluster { Id = i + 1, Members = objects[i].ToArray(), Children = new Cluster[] { } });
 
-
-        private Cluster GenerateClustering(Matrix x, int[] assignments, object[] data = null)
-        {
-            var clusters = new List<Cluster>();
-
-            // Create a new cluster for each data point
-            for (int i = 0; i < x.Rows; i++)
-                clusters.Add(new Cluster
-                {
-                    Id = i,
-                    Points = new Vector[] { x[i] },
-                    Members = data != null ? new object[] { data[i] } : new object[] { x[i] }
-                });
-
-            // TODO: FINISH HERE!
-            throw new NotImplementedException();
+            // return single cluster with K children
+            return new Cluster { Id = 0, Children = clusters.ToArray() };
         }
 
         public int[] Generate(Matrix X, int k, IDistance metric, object[] data = null)

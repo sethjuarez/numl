@@ -2,7 +2,7 @@
 using numl.Math;
 using System.Xml.Serialization;
 
-namespace numl.Supervised
+namespace numl.Supervised.DecisionTree
 {
     [XmlRoot("Node")]
     public class Node

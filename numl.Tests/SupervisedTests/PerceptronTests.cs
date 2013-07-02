@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using numl.Supervised;
 using NUnit.Framework;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
+using numl.Supervised.Perceptron;
 
 namespace numl.Tests.SupervisedTests
 {

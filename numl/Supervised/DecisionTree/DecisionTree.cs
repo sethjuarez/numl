@@ -10,7 +10,7 @@ using System.Text;
 using System.Xml.Schema;
 using System.Xml;
 
-namespace numl.Supervised
+namespace numl.Supervised.DecisionTree
 {
     public class DecisionTreeGenerator : Generator
     {

@@ -5,6 +5,7 @@ using numl.Supervised;
 using numl.Tests.Data;
 using NUnit.Framework;
 using System.Collections.Generic;
+using numl.Supervised.NaiveBayes;
 
 namespace numl.Tests.SupervisedTests
 {

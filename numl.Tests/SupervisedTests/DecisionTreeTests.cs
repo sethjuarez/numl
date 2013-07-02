@@ -8,6 +8,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using numl.Tests.Data;
 using System.IO;
+using numl.Supervised.DecisionTree;
 
 namespace numl.Tests.SupervisedTests
 {

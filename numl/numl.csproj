@@ -79,7 +79,6 @@
     <Compile Include="Math\Metrics\ManhattanDistance.cs" />
     <Compile Include="Math\Metrics\PearsonCorrelation.cs" />
     <Compile Include="Math\Metrics\TanimotoCoefficient.cs" />
-    <Compile Include="Math\Probability\Distribution.cs" />
     <Compile Include="Math\Probability\Sampling.cs" />
     <Compile Include="Math\Range.cs" />
     <Compile Include="Model\DescriptorException.cs" />
@@ -87,11 +86,11 @@
     <Compile Include="Model\DateTimeProperty.cs" />
     <Compile Include="Model\Property.cs" />
     <Compile Include="Model\StringProperty.cs" />
-    <Compile Include="Supervised\DecisionTree.cs" />
-    <Compile Include="Supervised\KNN.cs" />
-    <Compile Include="Supervised\LinearRegression.cs" />
-    <Compile Include="Supervised\NaiveBayes.cs" />
-    <Compile Include="Supervised\Perceptron.cs" />
+    <Compile Include="Supervised\DecisionTree\DecisionTree.cs" />
+    <Compile Include="Supervised\KNN\KNN.cs" />
+    <Compile Include="Supervised\Regression\LinearRegression.cs" />
+    <Compile Include="Supervised\NaiveBayes\NaiveBayes.cs" />
+    <Compile Include="Supervised\Perceptron\Perceptron.cs" />
     <Compile Include="Unsupervised\Cluster.cs" />
     <Compile Include="Unsupervised\GMM.cs" />
     <Compile Include="Unsupervised\HClusterModel.cs" />
@@ -108,11 +107,11 @@
     <Compile Include="Supervised\IGenerator.cs" />
     <Compile Include="Supervised\IModel.cs" />
     <Compile Include="Supervised\Model.cs" />
-    <Compile Include="Supervised\Node.cs" />
+    <Compile Include="Supervised\DecisionTree\Node.cs" />
     <Compile Include="Utils\TypeHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Supervised\KernelPerceptron.cs" />
+    <Compile Include="Supervised\Perceptron\KernelPerceptron.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

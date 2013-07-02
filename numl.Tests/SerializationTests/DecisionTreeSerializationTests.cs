@@ -1,6 +1,7 @@
 ﻿using numl.Data;
 using numl.Model;
 using numl.Supervised;
+using numl.Supervised.DecisionTree;
 using numl.Tests.Data;
 using NUnit.Framework;
 using System;
