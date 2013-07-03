@@ -5,43 +5,86 @@ using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 using numl.Model;
 using numl.Math;
+using System.Drawing;
 
 namespace numl.Supervised.NaiveBayes
 {
     public class Pair
     {
-        public bool Discrete { get; set; }
-        public Range Range { get; set; }
-        public double Value { get; set; }
+        public Range X { get; set; }
+        public double Y { get; set; }
     }
 
-    public class ConditionalProbability
+    public class FeatureStatistic
     {
-        public ConditionalProbability(IEnumerable<Range> x, IEnumerable<double> y, bool discrete)
+        public bool Discrete { get; set; }
+
+        public FeatureStatistic(Vector x, Vector y, int width = 0)
         {
-            _counts = new Dictionary<Pair, int>(x.Count() * y.Count());
-            foreach (Range range in x)
+            Discrete = width <= 0;
+
+            if (width <= 0)
+                Initialize(x.Select(d => Range.Make(d, d)), y.Distinct());
+            else
+                Initialize(x.Segment(width), y.Distinct());
+
+            Count(x, y);
+
+        }
+
+
+        private void Initialize(IEnumerable<Range> x, IEnumerable<double> y)
+        {
+            _conditional = new Dictionary<double, Dictionary<Range, double>>();
+            _statistic = new Dictionary<double, double>();
+            foreach (double item in y)
             {
-                foreach (double item in y)
+                _conditional[item] = new Dictionary<Range, double>();
+                _statistic[item] = 0;
+                foreach (Range range in x.OrderBy(d => d.Min))
                 {
-                    
+                    _conditional[item][range] = 1;
+                    _statistic[item]++;    
                 }
             }
         }
 
+        private void Count(Vector x, Vector y)
+        {
+            if (x.Length != y.Length)
+                throw new InvalidOperationException();
 
-        private Dictionary<Pair, int> _counts;
+            for (int i = 0; i < x.Length; i++)
+            {
+                this[x[i], y[i]]++;
+                _statistic[y[i]]++;
+            }
+        }
+
+
+        private Dictionary<double, Dictionary<Range, double>> _conditional;
+        private Dictionary<double, double> _statistic;
 
 
         public double this[double x, double y]
         {
+            //TODO: FINISH HERE!!
             get
             {
-                return 0;
+                var cond = _conditional[y];
+                foreach (var i in cond)
+                    if (Discrete && i.Key.Min == x)
+                        return i.Value;
+                    else if (i.Key.Test(x))
+                        return i.Value;
+
+                throw new IndexOutOfRangeException();
+                
             }
             set
             {
-
+                var cond = _conditional[y];
+                
             }
         }
 
@@ -65,24 +108,21 @@ namespace numl.Supervised.NaiveBayes
             if (!Descriptor.Label.Discrete)
                 throw new InvalidOperationException("Need to use regression for non-discrete labels!");
 
-            var labels = new Dictionary<double, double>();
-            for (int i = 0; i < y.Length; i++)
-            {
-                if (!labels.ContainsKey(y[i]))
-                    labels[i] = 1;
-                else labels[i]++;
-            }
 
             // create conditional probabilities
             for (int i = 0; i < x.Cols; i++)
             {
                 var p = Descriptor.At(i);
                 // setup (all have a count of 1 to start for smoothing)
+                FeatureStatistic cp = new FeatureStatistic(
+                                                    x[i, VectorType.Col], 
+                                                    y, 
+                                                    p.Discrete ? 0 : Width);
 
 
             }
 
-            
+
 
             //var lablCounts = new Dictionary<double, double>();
             //var condCounts = new Dictionary<Tuple<double, double>, double>();

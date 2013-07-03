@@ -9,6 +9,11 @@ namespace numl.Math
         public double Min { get; set; }
         public double Max { get; set; }
 
+        public bool Test(double d)
+        {
+            return d >= Min && d < Max;
+        }
+
         public static Range Make(double min, double max)
         {
             return new Range { Min = min, Max = max };
