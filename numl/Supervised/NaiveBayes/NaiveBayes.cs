@@ -6,17 +6,14 @@ using System.Collections.Generic;
 using numl.Model;
 using numl.Math;
 using System.Drawing;
+using System.Collections;
 
 namespace numl.Supervised.NaiveBayes
 {
-    public class Pair
-    {
-        public Range X { get; set; }
-        public double Y { get; set; }
-    }
-
     public class FeatureStatistic
     {
+        private Dictionary<double, Dictionary<Range, double>> _conditional;
+        private Dictionary<double, double> _statistic;
         public bool Discrete { get; set; }
 
         public FeatureStatistic(Vector x, Vector y, int width = 0)
@@ -29,9 +26,8 @@ namespace numl.Supervised.NaiveBayes
                 Initialize(x.Segment(width), y.Distinct());
 
             Count(x, y);
-
+            Normalize();
         }
-
 
         private void Initialize(IEnumerable<Range> x, IEnumerable<double> y)
         {
@@ -44,7 +40,7 @@ namespace numl.Supervised.NaiveBayes
                 foreach (Range range in x.OrderBy(d => d.Min))
                 {
                     _conditional[item][range] = 1;
-                    _statistic[item]++;    
+                    _statistic[item]++;
                 }
             }
         }
@@ -56,38 +52,57 @@ namespace numl.Supervised.NaiveBayes
 
             for (int i = 0; i < x.Length; i++)
             {
-                this[x[i], y[i]]++;
+                var range = FindRange(x[i], y[i]);
+                if (range == null) throw new IndexOutOfRangeException();
+                _conditional[y[i]][range]++;
                 _statistic[y[i]]++;
             }
         }
 
-
-        private Dictionary<double, Dictionary<Range, double>> _conditional;
-        private Dictionary<double, double> _statistic;
-
-
-        public double this[double x, double y]
+        private void Normalize()
         {
-            //TODO: FINISH HERE!!
-            get
+            var sum = _statistic.Select(kv => kv.Value).Sum();
+            for(int i = 0; i < _statistic.Keys.Count; i++)
             {
-                var cond = _conditional[y];
-                foreach (var i in cond)
-                    if (Discrete && i.Key.Min == x)
-                        return i.Value;
-                    else if (i.Key.Test(x))
-                        return i.Value;
-
-                throw new IndexOutOfRangeException();
-                
-            }
-            set
-            {
-                var cond = _conditional[y];
-                
+                var key = _statistic.Keys.ElementAt(i);
+                _statistic[key] /= sum;
+                var cond = _conditional[key];
+                var csum = cond.Select(kv => kv.Value).Sum();
+                for(int j = 0; j < cond.Keys.Count; j++)
+                {
+                    var ckey = cond.Keys.ElementAt(j);
+                    _conditional[key][ckey] /= csum;
+                }
             }
         }
 
+        public double this[double x, double y]
+        {
+            get
+            {
+                var range = FindRange(x, y);
+                if (range == null) throw new IndexOutOfRangeException();
+                return _conditional[y][range];
+            }
+            set
+            {
+                var range = FindRange(x, y);
+                if (range == null) throw new IndexOutOfRangeException();
+                _conditional[y][range] = value;
+            }
+        }
+
+        private Range FindRange(double x, double y)
+        {
+            Range key = null;
+            var cond = _conditional[y];
+            foreach (var i in cond)
+                if (Discrete && i.Key.Min == x)
+                    return i.Key;
+                else if (i.Key.Test(x))
+                    return i.Key;
+            return null;
+        }
     }
 
     public class NaiveBayesGenerator : Generator
@@ -108,31 +123,18 @@ namespace numl.Supervised.NaiveBayes
             if (!Descriptor.Label.Discrete)
                 throw new InvalidOperationException("Need to use regression for non-discrete labels!");
 
-
             // create conditional probabilities
+            FeatureStatistic[] statistics = new FeatureStatistic[x.Cols];
             for (int i = 0; i < x.Cols; i++)
             {
                 var p = Descriptor.At(i);
                 // setup (all have a count of 1 to start for smoothing)
                 FeatureStatistic cp = new FeatureStatistic(
-                                                    x[i, VectorType.Col], 
-                                                    y, 
+                                                    x[i, VectorType.Col],
+                                                    y,
                                                     p.Discrete ? 0 : Width);
-
-
+                statistics[i] = cp;
             }
-
-
-
-            //var lablCounts = new Dictionary<double, double>();
-            //var condCounts = new Dictionary<Tuple<double, double>, double>();
-            //// generate counts
-            //for (int i = 0; i < x.Rows; i++)
-            //{
-            //    lablCounts.AddOrUpdate(y[i], v => v + 1, 0);
-            //    for (int j = 0; j < x.Cols; j++)
-            //        condCounts.AddOrUpdate(Tuple.Create(y[i], x[i, j]), v => v + 1, 0);
-            //}
 
             return new NaiveBayesModel();
         }
