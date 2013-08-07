@@ -35,6 +35,20 @@ namespace numl.Model
         public Property Label { get; set; }
 
         /// <summary>
+        /// Index into features (for convenience)
+        /// </summary>
+        /// <param name="i">Feature index</param>
+        /// <returns>Feature Property</returns>
+        public Property this[int i]
+        {
+            get
+            {
+                if (i >= Features.Length) throw new IndexOutOfRangeException();
+                else return Features[i];
+            }
+        }
+
+        /// <summary>
         /// Available column names used to discriminate
         /// or learn about <see cref="Label"/>. The number
         /// of columns does not necessarily equal the
@@ -301,6 +315,18 @@ namespace numl.Model
         }
 
         /// <summary>
+        /// Creates a new descriptor using
+        /// a fluent approach. This initial
+        /// descriptor is worthless without 
+        /// adding features
+        /// </summary>
+        /// <param name="type">Type mapping</param>
+        /// <returns></returns>
+        public static Descriptor New(Type type)
+        {
+            return new Descriptor() { Type = type, Features = new Property[] { } };
+        }
+        /// <summary>
         /// Adds a new feature to descriptor
         /// </summary>
         /// <param name="name">Name of feature (must match property name or dictionary key)</param>
@@ -461,6 +487,7 @@ namespace numl.Model
         public Descriptor AsString()
         {
             StringProperty p = new StringProperty();
+            p.Name = _name;
             p.AsEnum = _label;
             AddProperty(p);
             return _descriptor;
@@ -477,10 +504,25 @@ namespace numl.Model
         public Descriptor AsString(StringSplitType splitType, string separator = " ", string exclusions = null)
         {
             StringProperty p = new StringProperty();
+            p.Name = _name;
             p.SplitType = splitType;
             p.Separator = separator;
             p.ImportExclusions(exclusions);
             p.AsEnum = _label;
+            AddProperty(p);
+            return _descriptor;
+        }
+
+        /// <summary>
+        /// Adds string property to descriptor 
+        /// with previously chained name 
+        /// </summary>
+        /// <returns>descriptor with added property</returns>
+        public Descriptor AsStringEnum()
+        {
+            StringProperty p = new StringProperty();
+            p.Name = _name;
+            p.AsEnum = true;
             AddProperty(p);
             return _descriptor;
         }
