@@ -7,7 +7,7 @@ namespace numl.Supervised.DecisionTree
     [XmlRoot("Node")]
     public class Node
     {
-        public Node() { }
+        public Node() {  }
 
         // if is a leaf
         [XmlAttribute("Leaf")]
