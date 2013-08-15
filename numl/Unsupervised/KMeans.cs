@@ -35,10 +35,20 @@ namespace numl.Unsupervised
             // create clusters
             List<Cluster> clusters = new List<Cluster>(k);
             for (int i = 0; i < k; i++)
-                clusters.Add(new Cluster { Id = i + 1, Members = objects[i].ToArray(), Children = new Cluster[] { } });
+                clusters.Add(new Cluster { 
+                    Id = i + 1, 
+                    Center = Centers[i],
+                    Members = objects[i].ToArray(), 
+                    Children = new Cluster[] { } 
+                });
 
             // return single cluster with K children
-            return new Cluster { Id = 0, Children = clusters.ToArray() };
+            return new Cluster 
+            { 
+                Id = 0, 
+                Center = X.Mean(VectorType.Row), 
+                Children = clusters.ToArray() 
+            };
         }
 
         public int[] Generate(Matrix X, int k, IDistance metric, object[] data = null)

@@ -7,10 +7,11 @@ namespace numl.Unsupervised
 {
     public class Cluster
     {
-        internal int Id { get; set; }
+        public int Id { get; set; }
         internal IEnumerable<Vector> Points { get; set; }
         public object[] Members { get; set; }
         public Cluster[] Children { get; set; }
+        public Vector Center { get; set; }
 
         public Cluster()
         {
