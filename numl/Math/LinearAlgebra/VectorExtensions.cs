@@ -168,7 +168,7 @@ namespace numl.Math.LinearAlgebra
 
         public static Matrix Stats(this Vector x)
         {
-            return (from i in x.Distinct()
+            return (from i in x.Distinct().OrderBy(d => d)
                     let q = (from j in x
                              where j == i
                              select j).Count()

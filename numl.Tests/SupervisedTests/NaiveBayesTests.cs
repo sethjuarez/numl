@@ -6,6 +6,7 @@ using numl.Tests.Data;
 using NUnit.Framework;
 using System.Collections.Generic;
 using numl.Supervised.NaiveBayes;
+using numl.Data;
 
 namespace numl.Tests.SupervisedTests
 {
@@ -15,22 +16,10 @@ namespace numl.Tests.SupervisedTests
         [Test]
         public void Main_Naive_Bayes_Test()
         {
-            var data = Iris.Load();
-            var description = Descriptor.Create<Iris>();
+            var data = Tennis.GetData();
+            var description = Descriptor.Create<Tennis>();
             var generator = new NaiveBayesGenerator(2);
             var model = generator.Generate(description, data);
-
-            // should be Iris-Setosa
-            Iris iris = new Iris
-            {
-                PetalWidth = 0.5m,
-                PetalLength = 2.3m,
-                SepalLength = 2.1m,
-                SepalWidth = 2.1m
-            };
-
-            //iris = model.Predict<Iris>(iris);
-            //Assert.AreEqual("Iris-setosa".Sanitize(), iris.Class);
         }
     }
 }

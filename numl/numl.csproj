@@ -88,6 +88,8 @@
     <Compile Include="Model\StringProperty.cs" />
     <Compile Include="Supervised\DecisionTree\DecisionTree.cs" />
     <Compile Include="Supervised\KNN\KNN.cs" />
+    <Compile Include="Supervised\NaiveBayes\Statistic.cs" />
+    <Compile Include="Supervised\NaiveBayes\FeatureStatistic.cs" />
     <Compile Include="Supervised\Regression\LinearRegression.cs" />
     <Compile Include="Supervised\NaiveBayes\NaiveBayes.cs" />
     <Compile Include="Supervised\Perceptron\Perceptron.cs" />
