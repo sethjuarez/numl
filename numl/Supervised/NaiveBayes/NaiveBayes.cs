@@ -28,61 +28,119 @@ namespace numl.Supervised.NaiveBayes
             if (!Descriptor.Label.Discrete)
                 throw new InvalidOperationException("Need to use regression for non-discrete labels!");
 
+            // compute Y probabilities
+            Statistic[] statistics = GetLabelStats(y);
 
+            Measure root = new Measure
+            {
+                Discrete = true,
+                Label = Descriptor.Label.Name,
+                Probabilities = statistics
+            };
+
+            // collect feature ranges
+            Measure[] features = GetBaseConditionals(x);
+
+            // compute conditional counts
+            for (int i = 0; i < y.Length; i++)
+            {
+                var stat = statistics.Where(s => s.X.Min == y[i]).First();
+                if (stat.Conditionals == null)
+                    stat.Conditionals = CloneMeasure(features);
+
+                for (int j = 0; j < x.Cols; j++)
+                {
+                    var s = stat.Conditionals[j];
+                    s.Increment(x[i, j]);
+                }
+            }
+
+            // normalize into probabilities
+            for (int i = 0; i < statistics.Length; i++)
+            {
+                var cond = statistics[i];
+                for (int j = 0; j < cond.Conditionals.Length; j++)
+                    cond.Conditionals[j].Normalize();
+            }
+                
+
+            return new NaiveBayesModel { Descriptor = Descriptor, Root = root };
+        }
+        private Statistic[] GetLabelStats(Vector y)
+        {
             var stats = y.Stats();
             Statistic[] statistics = new Statistic[stats.Rows];
             for (int i = 0; i < statistics.Length; i++)
             {
                 double yVal = stats[i, 0];
-                var s = new Statistic
-                {
-                    Discrete = true,
-                    X = new Range { Min = yVal, Max = yVal },
-                    Label = Descriptor.Label.Convert(stats[i, 0]).ToString(),
-                    Probability = stats[i, 2]
-                };
-
-
-                var conditionals = x.Slice(y.Indices(d => d == yVal), VectorType.Row)
-                                    .Stats(VectorType.Row);
-                
-
+                var s = Statistic.Make(Descriptor.Label.Convert(stats[i, 0]).ToString(), yVal);
+                s.Count = (int)stats[i, 1];
+                s.Probability = stats[i, 2];
                 statistics[i] = s;
             }
+            return statistics;
+        }
 
+        private Measure[] GetBaseConditionals(Matrix x)
+        {
+            Measure[] features = new Measure[x.Cols];
+            for (int i = 0; i < features.Length; i++)
+            {
+                Property p = Descriptor.At(i);
+                var f = new Measure
+                {
+                    Discrete = p.Discrete,
+                    Label = Descriptor.ColumnAt(i),
+                };
 
+                IEnumerable<Statistic> fstats;
+                if (f.Discrete)
+                    fstats = x[i, VectorType.Col].Distinct().OrderBy(d => d)
+                                                 .Select(d => Statistic.Make(p.Convert(d).ToString(), d, 1));
+                else
+                    fstats = x[i, VectorType.Col].Segment(Width)
+                                                 .Select(d => Statistic.Make(f.Label, d, 1));
 
+                f.Probabilities = fstats.ToArray();
+                features[i] = f;
+            }
 
-            // create conditional probabilities
-            //FeatureStatistic[] statistics = new FeatureStatistic[x.Cols];
-            //for (int i = 0; i < x.Cols; i++)
-            //{
-            //    var p = Descriptor.At(i);
-            //    // setup (all have a count of 1 to start for smoothing)
-            //    FeatureStatistic cp = new FeatureStatistic(
-            //                                        x[i, VectorType.Col],
-            //                                        y,
-            //                                        p.Discrete ? 0 : Width);
-            //    statistics[i] = cp;
-            //}
-            return new NaiveBayesModel { Descriptor = Descriptor };
+            return features;
+        }
+
+        private Measure[] CloneMeasure(Measure[] measures)
+        {
+            var m = new Measure[measures.Length];
+            for (int i = 0; i < m.Length; i++)
+                m[i] = measures[i].Clone();
+            return m;
         }
     }
 
     public class NaiveBayesModel : Model
     {
-        public FeatureStatistic[] Probabilities { get; set; }
+        public Measure Root { get; set; }
 
         public override double Predict(Vector y)
         {
-            Vector probs = Vector.Zeros(Probabilities.Length);
-            for (int i = 0; i < probs.Length; i++)
+            if (Root == null || Descriptor == null)
+                throw new InvalidOperationException("Invalid Model - Missing information");
+
+            Vector lp = Vector.Zeros(Root.Probabilities.Length);
+            for (int i = 0; i < Root.Probabilities.Length; i++)
             {
-
+                Statistic stat = Root.Probabilities[i];
+                lp[i] = System.Math.Log(stat.Probability);
+                for (int j = 0; j < y.Length; j++)
+                {
+                    Measure conditional = stat.Conditionals[j];
+                    var p = conditional.GetStatisticFor(y[j]);
+                    // check for missing range, assign bad probability
+                    lp[i] += System.Math.Log(p == null ? 10e-10 : p.Probability);
+                }
             }
-            
-
-            return 0;
+            var idx = lp.MaxIndex();
+            return Root.Probabilities[idx].X.Min;
         }
     }
 }
