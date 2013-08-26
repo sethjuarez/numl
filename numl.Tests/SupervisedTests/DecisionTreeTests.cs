@@ -155,7 +155,6 @@ namespace numl.Tests.SupervisedTests
         [Test, ExpectedException(typeof(InvalidOperationException))]
         public void ArbitraryPrediction_Test_With_Feature_Value_Greater_Than_Trained_Instances()
         {
-            //TODO Seth, this test has an error
             var data = ArbitraryPrediction.GetData();
             var description = Descriptor.Create<ArbitraryPrediction>();
             var generator = new DecisionTreeGenerator(50);
@@ -198,9 +197,7 @@ namespace numl.Tests.SupervisedTests
             var expectedMinimum = model.Predict<ArbitraryPrediction>(minimumPredictionValue).OutcomeLabel;
             var expectedMaximum = model.Predict<ArbitraryPrediction>(maximumPredictionValue).OutcomeLabel;
 
-            //The value should be minimum, however, maximum is returned
             Assert.AreEqual(ArbitraryPrediction.PredictionLabel.Minimum, expectedMinimum);
-            //Maximum is returned as expected
             Assert.AreEqual(ArbitraryPrediction.PredictionLabel.Maximum, expectedMaximum);
         }
     }

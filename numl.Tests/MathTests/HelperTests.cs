@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using numl.Math;
 using numl.Math.Information;
 using numl.Math.LinearAlgebra;
+using numl.Math.Probability;
 
 namespace numl.Tests.MathTests
 {
@@ -166,6 +167,32 @@ namespace numl.Tests.MathTests
             {
                 Assert.AreEqual(truth[i].Min, ranges[i].Min);
                 Assert.AreEqual(truth[i].Max, ranges[i].Max);
+            }
+        }
+
+        [Test]
+        public void Test_Range_Single_Testing()
+        {
+            for (int i = 0; i < 10000; i++)
+            {
+                var t = Sampling.GetUniform();
+                Assert.IsTrue(Range.Make(t).Test(t));
+            }
+        }
+
+        [Test]
+        public void Test_Range_Multi_Testing()
+        {
+            for (int i = 0; i < 10000; i++)
+            {
+                var a = Sampling.GetUniform();
+                var b = a + Sampling.GetUniform();
+                var test = Sampling.GetUniform();
+
+                // scale test to allowable range
+                var t = ((b - a) * test) + a;
+
+                Assert.IsTrue(Range.Make(a, b).Test(t));
             }
         }
     }

@@ -485,5 +485,15 @@ namespace numl.Math.LinearAlgebra
                 v[i] = m[i, i];
             return v;
         }
+
+        public static Matrix[] Stats(Matrix x, VectorType t = VectorType.Row)
+        {
+            int length = t == VectorType.Row ? x.Cols : x.Rows;
+            var type = t == VectorType.Row ? VectorType.Col : VectorType.Row;
+            Matrix[] result = new Matrix[length];
+            for (int i = 0; i < length; i++)
+                result[i] = x[i, type].Stats();
+            return result;
+        }
     }
 }

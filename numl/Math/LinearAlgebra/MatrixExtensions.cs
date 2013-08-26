@@ -143,5 +143,15 @@ namespace numl.Math.LinearAlgebra
             return Matrix.Diag(m);
         }
 
+        public static Matrix[] Stats(this Matrix m)
+        {
+            return Matrix.Stats(m, VectorType.Row);
+        }
+
+        public static Matrix[] Stats(this Matrix m, VectorType t)
+        {
+            return Matrix.Stats(m, t);
+        }
+
     }
 }
