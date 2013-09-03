@@ -33,14 +33,16 @@ namespace numl.Unsupervised
             }
 
             // create clusters
-            List<Cluster> clusters = new List<Cluster>(k);
-            for (int i = 0; i < k; i++)
-                clusters.Add(new Cluster { 
-                    Id = i + 1, 
-                    Center = Centers[i],
-                    Members = objects[i].ToArray(), 
-                    Children = new Cluster[] { } 
-                });
+            List<Cluster> clusters = new List<Cluster>();
+            for(int i = 0; i < k; i++)
+                if(!Centers[i].IsNaN()) // check for degenerate clusters
+                    clusters.Add(new Cluster
+                    {
+                        Id = i + 1,
+                        Center = Centers[i],
+                        Members = objects[i].ToArray(),
+                        Children = new Cluster[] { }
+                    });
 
             // return single cluster with K children
             return new Cluster 
@@ -51,7 +53,7 @@ namespace numl.Unsupervised
             };
         }
 
-        public int[] Generate(Matrix X, int k, IDistance metric, object[] data = null)
+        public int[] Generate(Matrix X, int k, IDistance metric)
         {
             if (metric == null)
                 metric = new EuclidianDistance();

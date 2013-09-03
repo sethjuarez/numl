@@ -196,5 +196,20 @@ namespace numl.Math.LinearAlgebra
                     .ToArray();
         }
 
+        public static bool ContainsNaN(Vector vector)
+        {
+            for (int i = 0; i < vector.Length; i++)
+                if(double.IsNaN(vector[i]))
+                    return true;
+            return false;
+        }
+
+        public static bool IsNaN(Vector vector)
+        {
+            bool nan = true;
+            for (int i = 0; i < vector.Length; i++)
+                nan = nan && double.IsNaN(vector[i]);
+            return nan;
+        }
     }
 }

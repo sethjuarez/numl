@@ -401,5 +401,15 @@ namespace numl.Math.LinearAlgebra
 
             return -1;
         }
+
+        public static bool ContainsNaN(this Vector vector)
+        {
+            return Vector.ContainsNaN(vector);
+        }
+
+        public static bool IsNaN(this Vector vector)
+        {
+            return Vector.IsNaN(vector);
+        }
     }
 }
