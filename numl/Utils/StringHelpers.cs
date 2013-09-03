@@ -16,6 +16,10 @@ namespace numl.Utils
             if (string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s))
                 return EMPTY_STRING;
 
+            // number check
+            double check = 0;
+            if (double.TryParse(s, out check)) return NUMBER_STRING;
+
             s = s.Trim().ToUpperInvariant();
             string item = s.Trim();
 
@@ -36,16 +40,8 @@ namespace numl.Utils
             // must be a symbol
             if (string.IsNullOrEmpty(item))
                 return SYMBOL_STRING;
-            // check if number, otherwise
             // return item
-            else
-            {
-                // all numbers
-                if (item.Where(c => char.IsNumber(c)).Count() == item.Length)
-                    return NUMBER_STRING;
-                else
-                    return item;
-            }
+            else return item;
         }
 
         /// <summary>
