@@ -7,6 +7,14 @@ namespace numl.Math.LinearAlgebra
 {
     public partial class Vector
     {
+        public static double Prod(Vector v)
+        {
+            var prod = v[0];
+            for (int i = 1; i < v.Length; i++)
+                prod *= v[i];
+            return prod;
+        }
+
         public static double Sum(Vector v)
         {
             double sum = 0;

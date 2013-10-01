@@ -13,12 +13,13 @@ namespace numl.Unsupervised
     {
         public Descriptor Descriptor { get; set; }
         public Matrix Centers { get; set; }
+        public Matrix X { get; set; }
 
         public Cluster Generate(Descriptor descriptor, IEnumerable<object> examples, int k, IDistance metric = null)
         {
             var data = examples.ToArray();
             Descriptor = descriptor;
-            Matrix X = Descriptor.Convert(data).ToMatrix();
+            X = Descriptor.Convert(data).ToMatrix();
 
             // generate assignments
             var assignments = Generate(X, k, metric);
@@ -53,10 +54,12 @@ namespace numl.Unsupervised
             };
         }
 
-        public int[] Generate(Matrix X, int k, IDistance metric)
+        public int[] Generate(Matrix x, int k, IDistance metric)
         {
             if (metric == null)
                 metric = new EuclidianDistance();
+
+            X = x;
 
             var means = InitializeRandom(X, k);
             int[] assignments = new int[X.Rows];

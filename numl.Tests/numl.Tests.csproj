@@ -56,6 +56,7 @@
     <Compile Include="Data\Student.cs" />
     <Compile Include="Data\Tennis.cs" />
     <Compile Include="Data\ValueObject.cs" />
+    <Compile Include="MathTests\PorbabilityTests.cs" />
     <Compile Include="SerializationTests\BaseSerialization.cs" />
     <Compile Include="SerializationTests\DecisionTreeSerializationTests.cs" />
     <Compile Include="SupervisedTests\DecisionTreeTests.cs" />

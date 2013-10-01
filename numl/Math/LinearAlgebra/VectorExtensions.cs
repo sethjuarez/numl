@@ -11,6 +11,11 @@ namespace numl.Math.LinearAlgebra
             return Vector.Sum(v);
         }
 
+        public static double Prod(this Vector v)
+        {
+            return Vector.Prod(v);
+        }
+
         public static Matrix Outer(this Vector x, Vector y)
         {
             return Vector.Outer(x, y);

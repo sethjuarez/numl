@@ -495,5 +495,36 @@ namespace numl.Math.LinearAlgebra
                 result[i] = x[i, type].Stats();
             return result;
         }
+
+        public static double Det(Matrix x)
+        {
+            //     0, 1, 2
+            //    --------
+            // 0 | a, b, c
+            // 1 | d, e, f
+            // 2 | g, h, i
+
+            if (x.Rows != x.Cols)
+                throw new InvalidOperationException("Can only compute determinants of square matrices");
+            int n = x.Rows;
+            if (n == 1) return x[0, 0];
+            else if (n == 2) return x[0, 0] * x[1, 1] - x[0, 1] * x[1, 0];
+            else if (n == 3) // aei + bfg + cdh - ceg - bdi - afh
+                return x[0, 0] * x[1, 1] * x[2, 2] +
+                       x[0, 1] * x[1, 2] * x[2, 0] +
+                       x[0, 2] * x[1, 0] * x[2, 1] -
+                       x[0, 2] * x[1, 1] * x[2, 0] -
+                       x[0, 1] * x[1, 0] * x[2, 2] -
+                       x[0, 0] * x[1, 2] * x[2, 1];
+            else 
+            {
+                // ruh roh, time for generalized determinant
+                // to save time we'll do a cholesky factorization
+                // (note, this requires a symmetric positive-semidefinite
+                // matrix or it might explode....)
+                // and square the product of the diagonals
+                return System.Math.Pow(x.Cholesky().Diag().Prod(), 2);
+            }
+        }
     }
 }

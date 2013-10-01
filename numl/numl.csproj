@@ -79,6 +79,7 @@
     <Compile Include="Math\Metrics\ManhattanDistance.cs" />
     <Compile Include="Math\Metrics\PearsonCorrelation.cs" />
     <Compile Include="Math\Metrics\TanimotoCoefficient.cs" />
+    <Compile Include="Math\Probability\NormalDistribution.cs" />
     <Compile Include="Math\Probability\Sampling.cs" />
     <Compile Include="Math\Range.cs" />
     <Compile Include="Model\DescriptorException.cs" />

@@ -707,5 +707,25 @@ namespace numl.Tests.MathTests
             var cov = x.Covariance().Round(5);
             Assert.AreEqual(covTruth, cov);
         }
+
+        [Test]
+        public void Matrix_Determinant_Test()
+        {
+
+            Matrix x = new[,]
+               {{ -2, 2, 3 },
+                { -1, 1, 3 },
+                { 2, 0, 1 }};
+
+            Assert.AreEqual(6, x.Det());
+
+            Matrix m = new[,] 
+                {{ 1, 2,  2, 1 },
+                 { 1, 2,  4, 2 },
+                 { 2, 7,  5, 2 },
+                 {-1, 4, -6, 3 }};
+
+            m.Det();
+        }
     }
 }
