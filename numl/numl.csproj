@@ -115,6 +115,9 @@
   <ItemGroup>
     <Compile Include="Supervised\Perceptron\KernelPerceptron.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>

@@ -36,9 +36,6 @@ namespace numl.Supervised.KNN
         {
             Tuple<int, double>[] distances = new Tuple<int, double>[y.Length];
 
-            //for (int i = 0; i < X.RowCount; i++) // distance (y - x[i]).Norm
-            //    distances[i] = new Tuple<int, double>(i, (y - X.Row(i)).Norm(2));
-
             // happens per slot so we are good to parallelize
             Parallel.For(0, X.Rows, i => distances[i] = new Tuple<int, double>(i, (y - X.Row(i)).Norm(2)));
 

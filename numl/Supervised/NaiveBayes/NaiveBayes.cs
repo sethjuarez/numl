@@ -66,6 +66,7 @@ namespace numl.Supervised.NaiveBayes
 
             return new NaiveBayesModel { Descriptor = Descriptor, Root = root };
         }
+
         private Statistic[] GetLabelStats(Vector y)
         {
             var stats = y.Stats();

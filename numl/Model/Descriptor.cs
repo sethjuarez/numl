@@ -346,7 +346,6 @@ namespace numl.Model
             return new DescriptorProperty(this, name, true);
         }
 
-
         public XmlSchema GetSchema()
         {
             return null;
