@@ -56,6 +56,28 @@ namespace numl.Tests.SupervisedTests
             Assert.IsTrue(t.Play);
         }
 
+        [Test]
+        public void TennisWithPlayers_DT_and_Prediction()
+        {
+            var data = TennisWithPlayers.GetData();
+            var description = Descriptor.Create<TennisWithPlayers>();
+            var generator = new DecisionTreeGenerator(50);
+            var model = generator.Generate(description, data);
+
+            var t = new TennisWithPlayers
+            {
+                Humidity = Humidity.Normal,
+                Outlook = Outlook.Rainy,
+                Temperature = Temperature.Cool,
+                Windy = true,
+                NumberOfPlayers=NumberOfPlayers.Four
+            };
+
+            model.Predict<TennisWithPlayers>(t);
+            Console.Write(model);
+            Assert.IsFalse(t.Play, "Cool, rainy, and windy, we should not be playing double in this!" );
+        }
+
 
         [Test]
         public void Iris_DT_and_Prediction()
