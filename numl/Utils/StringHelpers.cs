@@ -11,14 +11,17 @@ namespace numl.Utils
         public const string NUMBER_STRING = "#NUM#";
         public const string SYMBOL_STRING = "#SYM#";
 
-        public static string Sanitize(this string s)
+        public static string Sanitize(this string s, bool checkNumber = true)
         {
             if (string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s))
                 return EMPTY_STRING;
 
             // number check
-            double check = 0;
-            if (double.TryParse(s, out check)) return NUMBER_STRING;
+            if (checkNumber)
+            {
+                double check = 0;
+                if (double.TryParse(s, out check)) return NUMBER_STRING;
+            }
 
             s = s.Trim().ToUpperInvariant();
             string item = s.Trim();
@@ -132,13 +135,13 @@ namespace numl.Utils
             return counts;
         }
 
-        public static int GetWordPosition(string item, string[] dictionary)
+        public static int GetWordPosition(string item, string[] dictionary, bool checkNumber = true)
         {
             //string[] dictionary = property.Dictionary;
             if (dictionary == null || dictionary.Length == 0)
                 throw new InvalidOperationException("Cannot get word position with an empty dictionary");
 
-            item = Sanitize(item);
+            item = Sanitize(item, checkNumber);
 
             // is this the smartest thing?
             for (int i = 0; i < dictionary.Length; i++)

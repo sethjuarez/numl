@@ -89,7 +89,7 @@ namespace numl.Unsupervised
                 for (int j = 0; j < X.Rows; j++)
                 {
                     int a = assignments[j];
-                    new_means[a] += X[j];
+                    new_means[a] += X[j, VectorType.Row];
                     sum[a]++;
                 }
 

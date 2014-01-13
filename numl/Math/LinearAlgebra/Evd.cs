@@ -167,6 +167,7 @@ namespace numl.Math.LinearAlgebra
             {
                 s++;
                 factorize();
+                // TODO: Fix parallelization
                 //if (A.Cols <= 300) // small enough
                 //    factorize();
                 //else          // parallelize
