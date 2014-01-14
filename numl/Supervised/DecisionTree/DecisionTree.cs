@@ -17,6 +17,7 @@ namespace numl.Supervised.DecisionTree
         public int Depth { get; set; }
         public int Width { get; set; }
         public double Hint { get; set; }
+        public bool AllowColumnReuse { get; set; }
         public Type ImpurityType { get; set; }
 
         private Impurity _impurity;
@@ -36,6 +37,7 @@ namespace numl.Supervised.DecisionTree
             Descriptor = descriptor;
             ImpurityType = typeof(Entropy);
             Hint = double.Epsilon;
+            AllowColumnReuse = true;
         }
 
         public DecisionTreeGenerator(
@@ -43,7 +45,8 @@ namespace numl.Supervised.DecisionTree
             int width = 2,
             Descriptor descriptor = null,
             Type impurityType = null,
-            double hint = double.Epsilon)
+            double hint = double.Epsilon,
+            bool allowColumnReuse = true)
         {
             if (width < 2)
                 throw new InvalidOperationException("Cannot set dt tree width to less than 2!");
@@ -53,6 +56,7 @@ namespace numl.Supervised.DecisionTree
             Width = width;
             ImpurityType = impurityType ?? typeof(Entropy);
             Hint = hint;
+            AllowColumnReuse = allowColumnReuse;
         }
 
         public void SetHint(object o)
@@ -162,6 +166,10 @@ namespace numl.Supervised.DecisionTree
             else
                 node.Edges = egs;
 
+            //Returning this node and moving back up the tree
+            //It possible to reused this column in other branches if desired.
+            if(AllowColumnReuse)
+                used.Remove(col);
             return node;
         }
 
@@ -333,4 +341,8 @@ namespace numl.Supervised.DecisionTree
             serializer.Serialize(writer, Tree, ns);
         }
     }
+
+
+   
+
 }
