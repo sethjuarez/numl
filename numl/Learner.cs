@@ -153,7 +153,7 @@ namespace numl
                 object o = test[j];
 
                 // get truth
-                var truth = FastReflection.Get(o, descriptor.Label.Name);
+                var truth = Ject.Get(o, descriptor.Label.Name);
 
                 // if truth is a string, sanitize
                 if (descriptor.Label.Type == typeof(string))

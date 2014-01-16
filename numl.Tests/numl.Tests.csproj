@@ -58,6 +58,7 @@
     <Compile Include="Data\ValueObject.cs" />
     <Compile Include="SerializationTests\BaseSerialization.cs" />
     <Compile Include="SerializationTests\DecisionTreeSerializationTests.cs" />
+    <Compile Include="SerializationTests\NaiveBayesSerializationTests.cs" />
     <Compile Include="SupervisedTests\DecisionTreeTests.cs" />
     <Compile Include="MathTests\DistanceTests.cs" />
     <Compile Include="MathTests\EvdTests.cs" />

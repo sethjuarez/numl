@@ -12,7 +12,7 @@ namespace numl.Utils
     /// <summary>
     /// This class is used for fast reflection over types.
     /// </summary>
-    public static class FastReflection
+    public static class Ject
     {
         private static readonly Dictionary<Type, Dictionary<string, Func<object, object>>> accessors =
             new Dictionary<Type, Dictionary<string, Func<object, object>>>();

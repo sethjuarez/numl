@@ -1,31 +1,14 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
+using System.Xml;
+using numl.Model;
 
 namespace numl.Supervised.KNN
 {
-    public class KNNGenerator : Generator
-    {
-        public int K { get; set; }
-
-        public KNNGenerator(int k = 5)
-        {
-            K = k;
-        }
-
-        public override IModel Generate(Matrix x, Vector y)
-        {
-            return new KNNModel
-            {
-                X = x,
-                Y = y,
-                K = K
-            };
-        }
-    }
-
+    [Serializable]
     public class KNNModel : Model
     {
         public int K { get; set; }
@@ -46,5 +29,27 @@ namespace numl.Supervised.KNN
 
             return Y.Slice(slice).Mode();
         }
+
+        public override void WriteXml(XmlWriter writer)
+        {
+            writer.WriteAttributeString("K", K.ToString("r"));
+            WriteXml<Descriptor>(writer, Descriptor);
+            WriteXml<Matrix>(writer, X);
+            WriteXml<Vector>(writer, Y);
+
+        }
+
+        public override void ReadXml(XmlReader reader)
+        {
+            reader.MoveToContent();
+            K = int.Parse(reader.GetAttribute("K"));
+            reader.ReadStartElement();
+
+            Descriptor = ReadXml<Descriptor>(reader);
+            X = ReadXml<Matrix>(reader);
+            Y = ReadXml<Vector>(reader);
+        }
+
+        
     }
 }

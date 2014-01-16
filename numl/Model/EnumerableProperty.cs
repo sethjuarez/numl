@@ -48,7 +48,7 @@ namespace numl.Model
                 {
                     // if on first try we can't do anything, just bail;
                     // needs to be an enumeration of a simple type
-                    if (i == 0 && !FastReflection.CanUseSimpleType(item.GetType()))
+                    if (i == 0 && !Ject.CanUseSimpleType(item.GetType()))
                         throw new InvalidCastException(
                            string.Format("Cannot properly cast {0} to a number", item.GetType()));
 
@@ -62,7 +62,7 @@ namespace numl.Model
                                    type == typeof(char);
                     }
 
-                    yield return FastReflection.Convert(item);
+                    yield return Ject.Convert(item);
 
                     // should pull no more than specified length
                     if (++i == Length)
@@ -92,7 +92,7 @@ namespace numl.Model
         {
             reader.MoveToContent();
             Name = reader.GetAttribute("Name");
-            Type = FastReflection.FindType(reader.GetAttribute("ElementType"));
+            Type = Ject.FindType(reader.GetAttribute("ElementType"));
             Discrete = bool.Parse(reader.GetAttribute("Discrete"));
             Start = int.Parse(reader.GetAttribute("Start"));
             _length = int.Parse(reader.GetAttribute("Length"));

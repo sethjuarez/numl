@@ -16,13 +16,6 @@ namespace numl.Utils
             if (string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s))
                 return EMPTY_STRING;
 
-            // number check
-            if (checkNumber)
-            {
-                double check = 0;
-                if (double.TryParse(s, out check)) return NUMBER_STRING;
-            }
-
             s = s.Trim().ToUpperInvariant();
             string item = s.Trim();
 
@@ -43,8 +36,16 @@ namespace numl.Utils
             // must be a symbol
             if (string.IsNullOrEmpty(item))
                 return SYMBOL_STRING;
+
+            // number check
+            if (checkNumber)
+            {
+                double check = 0;
+                if (double.TryParse(item, out check)) return NUMBER_STRING;
+            }
+
             // return item
-            else return item;
+            return item;
         }
 
         /// <summary>

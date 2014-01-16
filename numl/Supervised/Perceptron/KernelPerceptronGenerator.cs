@@ -55,22 +55,4 @@ namespace numl.Supervised.Perceptron
             };
         }
     }
-
-    public class KernelPerceptronModel : Model
-    {
-        public IKernel Kernel { get; set; }
-        public Vector Y { get; set; }
-        public Vector A { get; set; }
-        public Matrix X { get; set; }
-
-        public override double Predict(Vector y)
-        {
-            var K = Kernel.Project(X, y);
-            double v = 0;
-            for (int i = 0; i < A.Length; i++)
-                v += A[i] * Y[i] * K[i];
-
-            return v;
-        }
-    }
 }

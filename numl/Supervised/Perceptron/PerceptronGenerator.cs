@@ -62,19 +62,4 @@ namespace numl.Supervised.Perceptron
             };
         }
     }
-
-    public class PerceptronModel : Model
-    {
-        public Vector W { get; set; }
-        public double B { get; set; }
-        public bool Normalized { get; set; }
-
-        public override double Predict(Vector y)
-        {
-            if (Normalized)
-                y = y / y.Norm();
-
-            return W.Dot(y) + B;
-        }
-    }
 }

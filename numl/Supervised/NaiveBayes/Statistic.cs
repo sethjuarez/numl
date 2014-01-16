@@ -4,17 +4,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net;
+using System.Xml.Serialization;
 
 namespace numl.Supervised.NaiveBayes
 {
+    [XmlRoot("Statistic")]
     public class Statistic
     {
+        [XmlAttribute("Label")]
         public string Label { get; set; }
+
+        [XmlAttribute("Discrete")]
         public bool Discrete { get; set; }
+
+        [XmlAttribute("Count")]
         public int Count { get; set; }
+
+        [XmlElement("Range")]
         public Range X { get; set; }
+
+        [XmlAttribute("Probability")]
         public double Probability { get; set; }
 
+        [XmlArray("Conditionals")]
         public Measure[] Conditionals { get; set; }
 
         public override string ToString()

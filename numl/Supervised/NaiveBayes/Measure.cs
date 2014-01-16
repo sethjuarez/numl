@@ -1,16 +1,18 @@
-using numl.Math;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Net;
+using System.Xml.Serialization;
+using System.Collections.Generic;
 
 namespace numl.Supervised.NaiveBayes
 {
+    [XmlRoot("Measure")]
     public class Measure
     {
+        [XmlAttribute("Label")]
         public string Label { get; set; }
+        [XmlAttribute("Discrete")]
         public bool Discrete { get; set; }
+        [XmlArray("Probabilities")]
         public Statistic[] Probabilities { get; set; }
 
         internal void Increment(double x)
