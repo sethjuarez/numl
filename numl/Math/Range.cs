@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace numl.Math
 {
+    [XmlRoot("Range")]
     public class Range
     {
+        [XmlAttribute("Min")]
         public double Min { get; set; }
+        [XmlAttribute("Max")]
         public double Max { get; set; }
 
         public bool Test(double d)

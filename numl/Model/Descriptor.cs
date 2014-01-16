@@ -158,7 +158,7 @@ namespace numl.Model
                     feature.Start = i == 0 ? 0 : Features[i - 1].Start + Features[i - 1].Length;
 
                 // retrieve item
-                var o = FastReflection.Get(item, feature.Name);
+                var o = Ject.Get(item, feature.Name);
 
                 // convert item
                 foreach (double val in feature.Convert(o))
@@ -170,7 +170,7 @@ namespace numl.Model
 
             // convert label (if available)
             if (Label != null && withLabel)
-                foreach (double val in Label.Convert(FastReflection.Get(item, Label.Name)))
+                foreach (double val in Label.Convert(Ject.Get(item, Label.Name)))
                     yield return val;
 
         }
@@ -346,7 +346,6 @@ namespace numl.Model
             return new DescriptorProperty(this, name, true);
         }
 
-
         public XmlSchema GetSchema()
         {
             return null;
@@ -354,7 +353,7 @@ namespace numl.Model
 
         public void ReadXml(XmlReader reader)
         {
-            Type[] descendants = FastReflection.FindAllAssignableFrom(typeof(Property));
+            Type[] descendants = Ject.FindAllAssignableFrom(typeof(Property));
             // don't want to leak memory, should reuse serializers
             Dictionary<string, XmlSerializer> serializers = new Dictionary<string, XmlSerializer>();
             Func<string, XmlSerializer> serializer = s =>
@@ -375,7 +374,7 @@ namespace numl.Model
             reader.MoveToContent();
             string type = reader.GetAttribute("Type");
             if (type.ToLowerInvariant() != "none")
-                Type = FastReflection.FindType(type);
+                Type = Ject.FindType(type);
 
             reader.ReadStartElement();
             Features = new Property[int.Parse(reader.GetAttribute("Length"))];

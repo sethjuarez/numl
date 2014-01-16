@@ -6,10 +6,12 @@ using System.Linq;
 using numl.Math.LinearAlgebra;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using System.Xml;
+using System.Xml.Schema;
 
 namespace numl.Supervised
 {
-    public abstract class Model : IModel
+    public abstract class Model : IModel, IXmlSerializable
     {
         public Descriptor Descriptor { get; set; }
 
@@ -23,7 +25,7 @@ namespace numl.Supervised
             var y = Descriptor.Convert(o, false).ToVector();
             var val = Predict(y);
             var result = Descriptor.Label.Convert(val);
-            FastReflection.Set(o, Descriptor.Label.Name, result);
+            Ject.Set(o, Descriptor.Label.Name, result);
             return o;
         }
 
@@ -43,7 +45,7 @@ namespace numl.Supervised
             XmlSerializer serializer = new XmlSerializer(GetType());
             XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
             ns.Add("", "");
-            
+
             serializer.Serialize(stream, this, ns);
         }
 
@@ -71,7 +73,6 @@ namespace numl.Supervised
             return (IModel)o;
         }
 
-
         public virtual IModel LoadXml(string xml)
         {
             TextReader reader = new StringReader(xml);
@@ -79,5 +80,31 @@ namespace numl.Supervised
             var o = serializer.Deserialize(reader);
             return (IModel)o;
         }
+
+        public virtual void WriteXml<T>(XmlWriter writer, T thing)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+            ns.Add("", "");
+            serializer.Serialize(writer, thing, ns);
+        }
+
+        public virtual T ReadXml<T>(XmlReader reader)
+        {
+            XmlSerializer dserializer = new XmlSerializer(typeof(T));
+            T item = (T)dserializer.Deserialize(reader);
+            // move to next thing
+            reader.Read();
+            return item;
+        }
+
+        public XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        public abstract void WriteXml(XmlWriter writer);
+
+        public abstract void ReadXml(XmlReader reader);
     }
 }

@@ -63,7 +63,7 @@ namespace numl.Model
         public override void PreProcess(IEnumerable<object> examples)
         {
             var q = from s in examples
-                    select FastReflection.Get(s, Name).ToString();
+                    select Ject.Get(s, Name).ToString();
 
             if (AsEnum)
                 Dictionary = StringHelpers.BuildEnumDictionary(q).Select(kv => kv.Key).ToArray();

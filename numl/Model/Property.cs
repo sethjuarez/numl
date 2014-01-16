@@ -44,13 +44,13 @@ namespace numl.Model
 
         public virtual object Convert(double val)
         {
-            return FastReflection.Convert(val, this.Type);
+            return Ject.Convert(val, this.Type);
         }
 
         public virtual IEnumerable<double> Convert(object o)
         {
-            if (FastReflection.CanUseSimpleType(o.GetType()))
-                yield return FastReflection.Convert(o);
+            if (Ject.CanUseSimpleType(o.GetType()))
+                yield return Ject.Convert(o);
             else
                 throw new InvalidOperationException(string.Format("Cannot convert {0} to a double", o.GetType()));
         }
@@ -76,7 +76,7 @@ namespace numl.Model
         {
             reader.MoveToContent();
             Name = reader.GetAttribute("Name");
-            Type = FastReflection.FindType(reader.GetAttribute("Type"));
+            Type = Ject.FindType(reader.GetAttribute("Type"));
             Discrete = bool.Parse(reader.GetAttribute("Discrete"));
             Start = int.Parse(reader.GetAttribute("Start"));
         }

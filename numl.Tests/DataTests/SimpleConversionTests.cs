@@ -40,40 +40,40 @@ namespace numl.Tests.DataTests
         public void Test_Univariate_Conversions()
         {
             // boolean
-            Assert.AreEqual(1, FastReflection.Convert(true));
-            Assert.AreEqual(-1, FastReflection.Convert(false));
+            Assert.AreEqual(1, Ject.Convert(true));
+            Assert.AreEqual(-1, Ject.Convert(false));
 
             // numeric types
-            Assert.AreEqual(1d, FastReflection.Convert((Byte)1));                            // byte
-            Assert.AreEqual(1d, FastReflection.Convert((SByte)1));                           // sbyte
-            Assert.AreEqual(0.4d, FastReflection.Convert((Decimal)0.4m));                    // decimal
-            Assert.AreEqual(0.1d, FastReflection.Convert((Double)0.1d));                     // double
-            Assert.AreEqual(300d, FastReflection.Convert((Single)300f));                     // single
-            Assert.AreEqual(1d, FastReflection.Convert((Int16)1));                           // int16
-            Assert.AreEqual(2d, FastReflection.Convert((UInt16)2));                          // uint16
-            Assert.AreEqual(2323432, FastReflection.Convert((Int32)2323432));                // int32
-            Assert.AreEqual(2323432d, FastReflection.Convert((UInt32)2323432));              // uint32
-            Assert.AreEqual(1232323434345d, FastReflection.Convert((Int64)1232323434345));   // int64
-            Assert.AreEqual(1232323434345d, FastReflection.Convert((UInt64)1232323434345));  // uint64
-            Assert.AreEqual(1232323434345d, FastReflection.Convert((long)1232323434345));    // long
+            Assert.AreEqual(1d, Ject.Convert((Byte)1));                            // byte
+            Assert.AreEqual(1d, Ject.Convert((SByte)1));                           // sbyte
+            Assert.AreEqual(0.4d, Ject.Convert((Decimal)0.4m));                    // decimal
+            Assert.AreEqual(0.1d, Ject.Convert((Double)0.1d));                     // double
+            Assert.AreEqual(300d, Ject.Convert((Single)300f));                     // single
+            Assert.AreEqual(1d, Ject.Convert((Int16)1));                           // int16
+            Assert.AreEqual(2d, Ject.Convert((UInt16)2));                          // uint16
+            Assert.AreEqual(2323432, Ject.Convert((Int32)2323432));                // int32
+            Assert.AreEqual(2323432d, Ject.Convert((UInt32)2323432));              // uint32
+            Assert.AreEqual(1232323434345d, Ject.Convert((Int64)1232323434345));   // int64
+            Assert.AreEqual(1232323434345d, Ject.Convert((UInt64)1232323434345));  // uint64
+            Assert.AreEqual(1232323434345d, Ject.Convert((long)1232323434345));    // long
 
             // enum
-            Assert.AreEqual(0d, FastReflection.Convert(FakeEnum.Item0));
-            Assert.AreEqual(1d, FastReflection.Convert(FakeEnum.Item1));
-            Assert.AreEqual(2d, FastReflection.Convert(FakeEnum.Item2));
-            Assert.AreEqual(3d, FastReflection.Convert(FakeEnum.Item3));
-            Assert.AreEqual(4d, FastReflection.Convert(FakeEnum.Item4));
-            Assert.AreEqual(5d, FastReflection.Convert(FakeEnum.Item5));
-            Assert.AreEqual(6d, FastReflection.Convert(FakeEnum.Item6));
-            Assert.AreEqual(7d, FastReflection.Convert(FakeEnum.Item7));
-            Assert.AreEqual(8d, FastReflection.Convert(FakeEnum.Item8));
-            Assert.AreEqual(9d, FastReflection.Convert(FakeEnum.Item9));
+            Assert.AreEqual(0d, Ject.Convert(FakeEnum.Item0));
+            Assert.AreEqual(1d, Ject.Convert(FakeEnum.Item1));
+            Assert.AreEqual(2d, Ject.Convert(FakeEnum.Item2));
+            Assert.AreEqual(3d, Ject.Convert(FakeEnum.Item3));
+            Assert.AreEqual(4d, Ject.Convert(FakeEnum.Item4));
+            Assert.AreEqual(5d, Ject.Convert(FakeEnum.Item5));
+            Assert.AreEqual(6d, Ject.Convert(FakeEnum.Item6));
+            Assert.AreEqual(7d, Ject.Convert(FakeEnum.Item7));
+            Assert.AreEqual(8d, Ject.Convert(FakeEnum.Item8));
+            Assert.AreEqual(9d, Ject.Convert(FakeEnum.Item9));
 
             // char
-            Assert.AreEqual(65d, FastReflection.Convert('A'));
+            Assert.AreEqual(65d, Ject.Convert('A'));
 
             // timespan
-            Assert.AreEqual(300d, FastReflection.Convert(TimeSpan.FromSeconds(300)));
+            Assert.AreEqual(300d, Ject.Convert(TimeSpan.FromSeconds(300)));
         }
 
         [Test]
@@ -148,19 +148,19 @@ namespace numl.Tests.DataTests
                 Nice = false
             };
 
-            var age = FastReflection.Get(o, "Age");
+            var age = Ject.Get(o, "Age");
             Assert.AreEqual(23, (int)age);
-            var friends = FastReflection.Get(o, "Friends");
+            var friends = Ject.Get(o, "Friends");
             Assert.AreEqual(12, (int)friends);
-            var gpa = FastReflection.Get(o, "GPA");
+            var gpa = Ject.Get(o, "GPA");
             Assert.AreEqual(3.2, (double)gpa);
-            var grade = FastReflection.Get(o, "Grade");
+            var grade = Ject.Get(o, "Grade");
             Assert.AreEqual(Grade.A, (Grade)grade);
-            var name = FastReflection.Get(o, "Name");
+            var name = Ject.Get(o, "Name");
             Assert.AreEqual("Jordan Spears", (string)name);
-            var tall = FastReflection.Get(o, "Tall");
+            var tall = Ject.Get(o, "Tall");
             Assert.AreEqual(true, (bool)tall);
-            var nice = FastReflection.Get(o, "Nice");
+            var nice = Ject.Get(o, "Nice");
             Assert.AreEqual(false, (bool)nice);
         }
 
@@ -178,25 +178,25 @@ namespace numl.Tests.DataTests
                 Nice = false
             };
 
-            FastReflection.Set(o, "Age", 25);
+            Ject.Set(o, "Age", 25);
             Assert.AreEqual(25, o.Age);
 
-            FastReflection.Set(o, "Friends", 1);
+            Ject.Set(o, "Friends", 1);
             Assert.AreEqual(1, o.Friends);
 
-            FastReflection.Set(o, "GPA", 1.2);
+            Ject.Set(o, "GPA", 1.2);
             Assert.AreEqual(1.2, o.GPA);
 
-            FastReflection.Set(o, "Grade", Grade.C);
+            Ject.Set(o, "Grade", Grade.C);
             Assert.AreEqual(Grade.C, o.Grade);
 
-            FastReflection.Set(o, "Name", "Seth Juarez");
+            Ject.Set(o, "Name", "Seth Juarez");
             Assert.AreEqual("Seth Juarez", o.Name);
 
-            FastReflection.Set(o, "Tall", false);
+            Ject.Set(o, "Tall", false);
             Assert.AreEqual(false, o.Tall);
 
-            FastReflection.Set(o, "Nice", true);
+            Ject.Set(o, "Nice", true);
             Assert.AreEqual(true, o.Nice);
         }
 
@@ -212,19 +212,19 @@ namespace numl.Tests.DataTests
             o["Tall"] = true;
             o["Nice"] = false;
 
-            var age = FastReflection.Get(o, "Age");
+            var age = Ject.Get(o, "Age");
             Assert.AreEqual(23, (int)age);
-            var friends = FastReflection.Get(o, "Friends");
+            var friends = Ject.Get(o, "Friends");
             Assert.AreEqual(12, (int)friends);
-            var gpa = FastReflection.Get(o, "GPA");
+            var gpa = Ject.Get(o, "GPA");
             Assert.AreEqual(3.2, (double)gpa);
-            var grade = FastReflection.Get(o, "Grade");
+            var grade = Ject.Get(o, "Grade");
             Assert.AreEqual(Grade.A, (Grade)grade);
-            var name = FastReflection.Get(o, "Name");
+            var name = Ject.Get(o, "Name");
             Assert.AreEqual("Jordan Spears", (string)name);
-            var tall = FastReflection.Get(o, "Tall");
+            var tall = Ject.Get(o, "Tall");
             Assert.AreEqual(true, (bool)tall);
-            var nice = FastReflection.Get(o, "Nice");
+            var nice = Ject.Get(o, "Nice");
             Assert.AreEqual(false, (bool)nice);
         }
 
@@ -240,25 +240,25 @@ namespace numl.Tests.DataTests
             o["Tall"] = true;
             o["Nice"] = false;
 
-            FastReflection.Set(o, "Age", 25);
+            Ject.Set(o, "Age", 25);
             Assert.AreEqual(25, o["Age"]);
 
-            FastReflection.Set(o, "Friends", 1);
+            Ject.Set(o, "Friends", 1);
             Assert.AreEqual(1, o["Friends"]);
 
-            FastReflection.Set(o, "GPA", 1.2);
+            Ject.Set(o, "GPA", 1.2);
             Assert.AreEqual(1.2, o["GPA"]);
 
-            FastReflection.Set(o, "Grade", Grade.C);
+            Ject.Set(o, "Grade", Grade.C);
             Assert.AreEqual(Grade.C, o["Grade"]);
 
-            FastReflection.Set(o, "Name", "Seth Juarez");
+            Ject.Set(o, "Name", "Seth Juarez");
             Assert.AreEqual("Seth Juarez", o["Name"]);
 
-            FastReflection.Set(o, "Tall", false);
+            Ject.Set(o, "Tall", false);
             Assert.AreEqual(false, o["Tall"]);
 
-            FastReflection.Set(o, "Nice", true);
+            Ject.Set(o, "Nice", true);
             Assert.AreEqual(true, o["Nice"]);
         }
 
@@ -415,12 +415,12 @@ namespace numl.Tests.DataTests
             // [THE, QUICK, BROWN, FOX, #NUM#, SUPER, BEAR, UGLY]
             // [  0,     1,     2,   3,     4,     5,    6,    7]
 
-            var o = new { Age = 23, Height = 6.21d, Weight = 220m, Good = false, Words = "432342" };
+            var o = new { Age = 23, Height = 6.21d, Weight = 220m, Good = false, Words = "QUICK" };
 
             // array generated by descriptor ordering
             var truths = new double[] { 23, 6.21,  
                                         /* BEGIN TEXT */ 
-                                        4,
+                                        1,
                                         /* END TEXT */
                                         220, -1 };
             var actual = d.Convert(o);
@@ -503,12 +503,12 @@ namespace numl.Tests.DataTests
             // ["O",  "N",  "E", "#SYM#", "T", "W", "#NUM#", "H", "R"]
             // [  2,    1,   0,        1,   0,   0,       1,   0,   3]
 
-            var o = new { Age = 23, Height = 6.21d, Chars = "333", Weight = 220m, Good = false, };
+            var o = new { Age = 23, Height = 6.21d, Chars = "N", Weight = 220m, Good = false, };
 
             // array generated by descriptor ordering
             var truths = new double[] { 23, 6.21,  
                                         /* BEGIN CHARS */ 
-                                        6,
+                                        1,
                                         /* END CHARS */
                                         220, -1 };
 
