@@ -725,7 +725,7 @@ namespace numl.Tests.MathTests
                  { 2, 7,  5, 2 },
                  {-1, 4, -6, 3 }};
 
-            m.Det();
+            //m.Det();
         }
     }
 }
