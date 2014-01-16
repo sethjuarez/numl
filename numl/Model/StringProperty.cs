@@ -104,7 +104,7 @@ namespace numl.Model
 
             // returns single number
             if (AsEnum)
-                yield return (double)StringHelpers.GetWordPosition(s, Dictionary);
+                yield return (double)StringHelpers.GetWordPosition(s, Dictionary, false);
             // returns list
             else
                 foreach (double val in StringHelpers.GetWordCount(s, this))
