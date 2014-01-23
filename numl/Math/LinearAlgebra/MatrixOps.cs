@@ -191,6 +191,7 @@ namespace numl.Math.LinearAlgebra
             // regular solve
             else
             {
+
                 // need to be smarter here....
                 return ((A ^ -1) * b).ToVector();
             }

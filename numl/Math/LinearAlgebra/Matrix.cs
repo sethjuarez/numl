@@ -259,6 +259,15 @@ namespace numl.Math.LinearAlgebra
             return new Vector(v);
         }
 
+        public Matrix GetMatrix(int d1, int d2, int n1, int n2)
+        {
+            Matrix m = Matrix.Zeros(n2 - n1 + 1, d2 - d1 + 1);
+            for (int i = 0; i < m.Rows; i++)
+                for (int j = 0; j < m.Cols; j++)
+                    m[i, j] = this[i + n1, j + d1];
+            return m;
+        }
+
         public IEnumerable<Vector> GetRows()
         {
             for (int i = 0; i < Rows; i++)
@@ -380,7 +389,7 @@ namespace numl.Math.LinearAlgebra
                 }
             }
             StringBuilder matrix = new StringBuilder();
-            matrix.Append("[");
+            matrix.Append("\n[");
             for (int i = 0; i < Rows; i++)
             {
                 if (i == 0)
@@ -674,7 +683,7 @@ namespace numl.Math.LinearAlgebra
 
         public void Save(string file)
         {
-            using (var stream = File.OpenWrite(file)) 
+            using (var stream = File.OpenWrite(file))
                 Save(stream);
         }
 

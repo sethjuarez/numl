@@ -558,6 +558,27 @@ namespace numl.Tests.MathTests
         }
 
         [Test]
+        public void Matrix_Sub_Matrix_Test()
+        {
+            Matrix one = new[,]
+                {{1, 2, 3},
+                 {4, 5, 6},
+                 {7, 8, 9}};
+
+            Matrix sol1 = new[,]
+                {{ 2, 3 },
+                 { 5, 6 },
+                 { 8, 9 }};
+
+            Matrix sol2 = new[,]
+                {{ 5, 6 },
+                 { 8, 9 }};
+
+            Assert.AreEqual(sol1, one.GetMatrix(1, 2, 0, 2));
+            Assert.AreEqual(sol2, one.GetMatrix(1, 2, 1, 2));
+        }
+
+        [Test]
         [ExpectedException(typeof(InvalidOperationException))]
         public void Matrix_Multiply_Non_Aligned_Test()
         {
@@ -659,6 +680,50 @@ namespace numl.Tests.MathTests
         }
 
         [Test]
+        public void Matrix_Doolittle_Pivot_Test()
+        {
+            Matrix A = new[,] {{ 1, 4, 2, 3 },
+                               { 1, 2, 1, 0 },
+                               { 2, 6, 3, 1 },
+                               { 0, 0, 1, 4 }};
+
+            Matrix B = new[,] {{ 2,  3,  1,  2 },
+                                {-1,  2,  7,  5 },
+                                {-4, -3,  4,  2 },
+                                { 3,  1,  6,  3 }};
+
+            Matrix P = new[,] {{ 0, 0, 0, 1 },
+                               { 0, 1, 0, 0 },
+                               { 1, 0, 0, 0 },
+                               { 0, 0, 1, 0 }};
+
+
+            var I = Matrix.DoolittlePivot(B);
+            Assert.AreEqual(P, I);
+        }
+
+        [Test]
+        public void Matrix_LU_Test()
+        {
+            //Matrix A = new[,] {{ 1, 2, 0 },
+            //                   { 3, 6, -1},
+            //                   { 1, 2, 1 }};
+
+            Matrix A = new[,] {{ 7,  3, -1,  2},
+                               { 3,  8,  1, -4},
+                               {-1,  1,  4, -1},
+                               { 2, -4, -1,  6}};
+
+            var t = Matrix.LU(A);
+            var L = t.Item1;
+            var U = t.Item2;
+
+            // close enough...
+            //var diff = A.Norm() - (Q * R).Norm();
+            //Assert.AreEqual(0, diff);
+        }
+
+        [Test]
         public void Matrix_Extract_Test()
         {
             Matrix A = new[,]
@@ -725,7 +790,17 @@ namespace numl.Tests.MathTests
                  { 2, 7,  5, 2 },
                  {-1, 4, -6, 3 }};
 
-            //m.Det();
+            // -42 + residual
+            var det = m.Det();
+
+            Matrix q = new[,] 
+                 {{ 3,   2,  -1,   4, },
+                  { 2,   1,   5,   7, },
+                  { 0,   5,   2,  -6, },
+                  { -1,   2,   1,   0, }};
+
+            // -418
+            var qd = q.Det();
         }
     }
 }
