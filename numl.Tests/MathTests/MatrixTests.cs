@@ -692,35 +692,49 @@ namespace numl.Tests.MathTests
                                 {-4, -3,  4,  2 },
                                 { 3,  1,  6,  3 }};
 
+            Matrix C = new[,] {{ 1, 4, 2, 3 },
+                               { 1, 2, 1, 0 },
+                               { 2, 6, 3, 1 },
+                               { 0, 0, 1, 4 }};
+
             Matrix P = new[,] {{ 0, 0, 0, 1 },
                                { 0, 1, 0, 0 },
                                { 1, 0, 0, 0 },
                                { 0, 0, 1, 0 }};
 
 
-            var I = Matrix.DoolittlePivot(B);
+            var I = Matrix.Pivot(B);
             //Assert.AreEqual(P, I);
         }
 
         [Test]
         public void Matrix_LU_Test()
         {
-            //Matrix A = new[,] {{ 1, 2, 0 },
-            //                   { 3, 6, -1},
-            //                   { 1, 2, 1 }};
+            Matrix A = new[,] {{ 1, 2, 0 },
+                               { 3, 6, -1},
+                               { 1, 2, 1 }};
 
-            Matrix A = new[,] {{ 7,  3, -1,  2},
+            Matrix B = new[,] {{ 7,  3, -1,  2},
                                { 3,  8,  1, -4},
                                {-1,  1,  4, -1},
                                { 2, -4, -1,  6}};
 
-            var t = Matrix.LU(A);
-            var L = t.Item1;
-            var U = t.Item2;
+            Matrix C = new[,] {{ 1, 4, 2, 3 },
+                               { 1, 2, 1, 0 },
+                               { 2, 6, 3, 1 },
+                               { 0, 0, 1, 4 }};
 
-            // close enough...
-            //var diff = A.Norm() - (Q * R).Norm();
-            //Assert.AreEqual(0, diff);
+            Matrix D = new[,] {{ 2,  3,  1,  2 },
+                               {-1,  2,  7,  5 },
+                               {-4, -3,  4,  2 },
+                               { 3,  1,  6,  3 }};
+
+            var t = Matrix.LU(D);
+            var P = t.Item1;
+            var L = t.Item2;
+            var U = t.Item3;
+
+            var T = Matrix.Stack(P, L).Stack(U);
         }
 
         [Test]

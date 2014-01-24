@@ -115,83 +115,65 @@ namespace numl.Math.LinearAlgebra
 		/// </summary>
 		/// <param name="A"></param>
 		/// <returns></returns>
-		public static Tuple<Matrix, Matrix> LU(Matrix A)
+		public static Tuple<Matrix, Matrix, Matrix> LU(Matrix A)
 		{
 			// TODO: FINISH ALGORITHM
 			if (A.Rows != A.Cols)
 				throw new InvalidOperationException("Factorization requires a symmetric positive semidefinite matrix!");
 
-            //Matrix L = Matrix.Identity(n);
-            //Matrix U = Matrix.Zeros(n);
-            //Vector v = Vector.Zeros(n);
-            //for (int j = 0; j < n; j++)
-            //{
-            //    if (j == 0)
-            //        for (int i = j; i < n; i++)
-            //            v[i] = A[i, j];
-            //    else
-            //    {
-            //        // solve for z
-            //        Vector z = Vector.Zeros(j);
-            //        for (int i = 0; i < z.Length; i++)
-            //        {
-            //            double sum = 0;
-            //            for (int k = 0; k < i; k++)
-            //                sum += A[i, k] * z[k];
-            //            z[i] = (A[i, j] - sum) / L[i, i];
-            //        }
+            int n = A.Rows;
 
-            //        // set U
-            //        for (int i = 0; i < z.Length; i++)
-            //            U[i, j] = z[i];
+            Matrix P = Pivot(A);
+            Matrix M = P * A;
 
-            //        // set v
-            //        for (int i = j; i < n; i++)
-            //        {
-            //            v[i] = A[i, j];
-            //            for (int k = 0; k < z.Length; k++)
-            //                v[i] -= L[i, k] * z[k];
-            //        }
-            //    }
+			Matrix L = Matrix.Identity(n);
+			Matrix U = Matrix.Zeros(n);
 
-            //    if (j < n)
-            //        for (int i = j + 1; i < n; i++)
-            //            L[i, j] = v[i] / v[j];
+            for (int j = 0; j < n; j++)
+            {
+                L[j, j] = 1;
 
-            //    U[j, j] = v[j];
-            //}
+                for (int i = 0; i < j + 1; i++)
+                {
+                    U[i, j] = M[i, j];
+                    for (int k = 0; k < i; k++)
+                        U[i, j] -= U[k, j] * L[i, k];
+                }
 
-            ////throw new NotImplementedException();
-            //return new Tuple<Matrix, Matrix>(L, U);
 
-			int n = A.Rows;
-            var L = Matrix.Zeros(n);
-            var U = Matrix.Zeros(n);
+                for (int i = j; i < n; i++)
+                {
+                    L[i, j] = M[i, j];
+                    for (int k = 0; k < j; k++)
+                        L[i, j] -= U[k, j] * L[i, k];
 
-            throw new NotImplementedException();
-            return new Tuple<Matrix, Matrix>(L, U);
+                    if (U[j, j] == 0)
+                        System.Diagnostics.Trace.TraceWarning("Unstable divisor...");
+
+                    L[i, j] /= U[j, j];
+                }
+            }
+
+            return new Tuple<Matrix,Matrix,Matrix>(P, L, U);
 		}
 
-        public static Matrix DoolittlePivot(Matrix M)
+        public static Matrix Pivot(Matrix M)
         {
             if (M.Rows != M.Cols)
                 throw new InvalidOperationException("Factorization requires a symmetric positive semidefinite matrix!");
 
             var m = M.Rows;
             var P = Matrix.Identity(m);
+            Tuple<int, double> row = new Tuple<int, double>(0, 0);
             for (int j = 0; j < m; j++)
             {
-                var row = -1;
-                var max = double.MinValue;
-                for (int k = j; k < m; k++)
-                    if (max <= System.Math.Abs(M[k, j]))
-                    {
-                        max = System.Math.Abs(M[k, j]);
-                        row = k;
-                    }
+                row = new Tuple<int, double>(j, 0);
+                for (int i = j; i < m; i++)
+                    if (row.Item2 < System.Math.Abs(M[i, j]))
+                        row = new Tuple<int, double>(i, System.Math.Abs(M[i, j]));
 
-                if (row != j)
-                    P.SwapRow(j, row);
+                if (row.Item1 != j)
+                    P.SwapRow(j, row.Item1);
             }
 
             return P;

@@ -8,6 +8,8 @@ using System.Text;
 using System.Xml.Serialization;
 using System.Xml;
 using System.Xml.Schema;
+using System.Linq.Expressions;
+using System.Collections;
 
 namespace numl.Model
 {
@@ -326,6 +328,12 @@ namespace numl.Model
         {
             return new Descriptor() { Type = type, Features = new Property[] { } };
         }
+
+        public static Descriptor<T> For<T>()
+        {
+            return new Descriptor<T>() { Type = typeof(T), Features = new Property[] { } };
+        }
+
         /// <summary>
         /// Adds a new feature to descriptor
         /// </summary>
@@ -422,6 +430,98 @@ namespace numl.Model
                 serializers[Label.GetType()].Serialize(writer, Label);
                 writer.WriteEndElement();
             }
+        }
+    }
+
+    public class Descriptor<T> : Descriptor
+    {
+        private void AddProperty(Property p, bool label)
+        {
+            if (label)
+                Label = p;
+            else
+            {
+                var features = new List<Property>(Features ?? new Property[] { });
+                features.Add(p);
+                Features = features.ToArray();
+            }
+        }
+
+        private static PropertyInfo GetPropertyInfo<K>(Expression<Func<T, K>> property)
+        {
+            PropertyInfo propertyInfo = null;
+            if (property.Body is MemberExpression)
+                propertyInfo = (property.Body as MemberExpression).Member as PropertyInfo;
+            else
+                propertyInfo = (((UnaryExpression)property.Body).Operand as MemberExpression).Member as PropertyInfo;
+
+            return propertyInfo;
+        }
+
+        public Descriptor<T> With(Expression<Func<T, Object>> property)
+        {
+            var pi = GetPropertyInfo<Object>(property);
+            AddProperty(TypeHelpers.GenerateFeature(pi.PropertyType, pi.Name), false);
+            return this;
+        }
+
+        public Descriptor<T> WithString(Expression<Func<T, string>> property, StringSplitType splitType, string separator = " ", bool asEnum = false, string exclusions = null)
+        {
+            var pi = GetPropertyInfo<string>(property);
+            StringProperty p = new StringProperty();
+            p.Name = pi.Name;
+            p.SplitType = splitType;
+            p.Separator = separator;
+            p.ImportExclusions(exclusions);
+            p.AsEnum = asEnum;
+            AddProperty(p, false);
+            return this;
+        }
+
+        public Descriptor<T> WithDateTime(Expression<Func<T, DateTime>> property, DateTimeFeature features)
+        {
+            var pi = GetPropertyInfo<DateTime>(property);
+            var p = new DateTimeProperty(features)
+            {
+                Discrete = true,
+                Name = pi.Name
+            };
+
+            AddProperty(p, false);
+            return this;
+        }
+
+        public Descriptor<T> WithDateTime(Expression<Func<T, DateTime>> property, DatePortion portion)
+        {
+            var pi = GetPropertyInfo<DateTime>(property);
+            var p = new DateTimeProperty(portion)
+            {
+                Discrete = true,
+                Name = pi.Name
+            };
+
+            AddProperty(p, false);
+            return this;
+        }
+
+        public Descriptor<T> WithEnumerable(Expression<Func<T, IEnumerable>> property, int length)
+        {
+            var pi = GetPropertyInfo<IEnumerable>(property);
+            var p = new EnumerableProperty(length)
+            {
+                Name = pi.Name,
+                Discrete = false
+            };
+
+            AddProperty(p, false);
+            return this;
+        }
+
+        public Descriptor<T> Learn(Expression<Func<T, Object>> property)
+        {
+            var pi = GetPropertyInfo(property);
+            AddProperty(TypeHelpers.GenerateFeature(pi.PropertyType, pi.Name), true);
+            return this;
         }
     }
 
