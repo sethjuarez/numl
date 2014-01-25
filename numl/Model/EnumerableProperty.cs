@@ -8,6 +8,9 @@ using System.Xml.Serialization;
 
 namespace numl.Model
 {
+    /// <summary>
+    /// Enumerable property. Expanded feature.
+    /// </summary>
     [XmlRoot("EnumerableProperty"), Serializable]
     public class EnumerableProperty : Property
     {

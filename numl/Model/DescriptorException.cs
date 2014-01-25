@@ -6,6 +6,9 @@ using System.Runtime.Serialization;
 
 namespace numl.Model
 {
+    /// <summary>
+    /// Descriptor Exception.
+    /// </summary>
     public class DescriptorException : Exception
     {
         public DescriptorException()

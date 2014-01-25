@@ -83,6 +83,7 @@
     <Compile Include="Math\Probability\Sampling.cs" />
     <Compile Include="Math\Range.cs" />
     <Compile Include="Model\DescriptorException.cs" />
+    <Compile Include="Model\DescriptorProperty.cs" />
     <Compile Include="Model\EnumerableProperty.cs" />
     <Compile Include="Model\DateTimeProperty.cs" />
     <Compile Include="Model\Property.cs" />

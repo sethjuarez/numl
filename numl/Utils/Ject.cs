@@ -133,6 +133,12 @@ namespace numl.Utils
             }
         }
 
+        /// <summary>
+        /// Get a property value dynamically from an object
+        /// </summary>
+        /// <param name="o">object</param>
+        /// <param name="name">parameter to extract</param>
+        /// <returns>parameter value</returns>
         public static object Get(object o, string name)
         {
             var type = o.GetType();
@@ -142,6 +148,13 @@ namespace numl.Utils
             return accessor.Invoke(o);
         }
 
+        /// <summary>
+        /// Get a property value dynamically from a set of objects
+        /// </summary>
+        /// <typeparam name="T">Type of value to return</typeparam>
+        /// <param name="items">set of objects</param>
+        /// <param name="name">paramater to extract</param>
+        /// <returns>lazy list of parameter values</returns>
         public static IEnumerable<T> Get<T>(IEnumerable items, string name)
         {
             Type type = null;
