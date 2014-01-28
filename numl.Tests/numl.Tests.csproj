@@ -69,6 +69,7 @@
     <Compile Include="MathTests\MatrixTests.cs" />
     <Compile Include="MathTests\VectorTests.cs" />
     <Compile Include="SupervisedTests\NaiveBayesTests.cs" />
+    <Compile Include="UnsupervisedTests\HierarchicalClusteringTests.cs" />
     <Compile Include="UnsupervisedTests\KMeansTests.cs" />
     <Compile Include="UnsupervisedTests\PCATests.cs" />
     <Compile Include="SupervisedTests\PerceptronTests.cs" />
