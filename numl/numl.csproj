@@ -123,7 +123,10 @@
   <ItemGroup>
     <Compile Include="Supervised\Perceptron\KernelPerceptronGenerator.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Supervised\NeuralNetworks\" />
+    <Folder Include="Supervised\SVM\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>

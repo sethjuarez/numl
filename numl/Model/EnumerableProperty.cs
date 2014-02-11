@@ -84,7 +84,7 @@ namespace numl.Model
         public override void WriteXml(XmlWriter writer)
         {
             writer.WriteAttributeString("Name", Name);
-            writer.WriteAttributeString("ElementType", Type.Name);
+            writer.WriteAttributeString("ElementType", Type == null ? "None" : Type.Name);
             writer.WriteAttributeString("Discrete", Discrete.ToString());
             writer.WriteAttributeString("Start", Start.ToString());
 
@@ -95,7 +95,9 @@ namespace numl.Model
         {
             reader.MoveToContent();
             Name = reader.GetAttribute("Name");
-            Type = Ject.FindType(reader.GetAttribute("ElementType"));
+            string elementType = reader.GetAttribute("ElementType");
+            if (elementType != "None")
+                Type = Ject.FindType(elementType);
             Discrete = bool.Parse(reader.GetAttribute("Discrete"));
             Start = int.Parse(reader.GetAttribute("Start"));
             _length = int.Parse(reader.GetAttribute("Length"));

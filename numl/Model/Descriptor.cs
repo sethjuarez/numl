@@ -23,8 +23,12 @@ namespace numl.Model
     [XmlRoot("Descriptor"), Serializable]
     public class Descriptor : IXmlSerializable
     {
-        public Descriptor() { }
+        public Descriptor() { Name = ""; }
 
+        /// <summary>
+        /// Descriptor name
+        /// </summary>
+        public string Name { get; set; }
         /// <summary>
         /// Set of features used to discriminate or 
         /// learn about the <see cref="Label"/>.
@@ -47,6 +51,22 @@ namespace numl.Model
             {
                 if (i >= Features.Length) throw new IndexOutOfRangeException();
                 else return Features[i];
+            }
+        }
+
+        /// <summary>
+        /// Index intor features (for convenience)
+        /// </summary>
+        /// <param name="name">Feature name</param>
+        /// <returns>Feature Property</returns>
+        public Property this[string name]
+        {
+            get
+            {
+                if (Features.Where(p => p.Name == name).Count() == 1)
+                    return Features.Where(p => p.Name == name).First();
+                else
+                    return null;
             }
         }
 
@@ -225,13 +245,24 @@ namespace numl.Model
         }
 
         /// <summary>
+        /// Convert an object to its vector representation based
+        /// on the descriptor properties
+        /// </summary>
+        /// <param name="item">object to convert</param>
+        /// <returns>Vector representation</returns>
+        public Vector ToVector(object item)
+        {
+            return Convert(item).ToVector();
+        }
+
+        /// <summary>
         /// Pretty printed descriptor
         /// </summary>
         /// <returns>Pretty printed string</returns>
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine(String.Format("Descriptor ({0}) {{", Type == null ? "N/A" : Type.Name));
+            sb.AppendLine(String.Format("Descriptor ({0}) {{", Type == null ? Name : Type.Name));
             for (int i = 0; i < Features.Length; i++)
                 sb.AppendLine(string.Format("   {0}", Features[i]));
             if (Label != null)
@@ -322,6 +353,19 @@ namespace numl.Model
         /// descriptor is worthless without 
         /// adding features
         /// </summary>
+        /// <param name="name">Desired name</param>
+        /// <returns>Empty Named Descriptor</returns>
+        public static Descriptor New(string name)
+        {
+            return new Descriptor() { Name = name, Features = new Property[] { } };
+        }
+
+        /// <summary>
+        /// Creates a new descriptor using
+        /// a fluent approach. This initial
+        /// descriptor is worthless without 
+        /// adding features
+        /// </summary>
         /// <param name="type">Type mapping</param>
         /// <returns></returns>
         public static Descriptor New(Type type)
@@ -329,9 +373,31 @@ namespace numl.Model
             return new Descriptor() { Type = type, Features = new Property[] { } };
         }
 
+        /// <summary>
+        /// Creates a new descriptor using
+        /// a strongly typed fluent approach.
+        /// This initial descriptor is worthless 
+        /// without adding features
+        /// </summary>
+        /// <typeparam name="T">Source Object Type</typeparam>
+        /// <returns>Empty Descriptor</returns>
         public static Descriptor<T> For<T>()
         {
             return new Descriptor<T>() { Type = typeof(T), Features = new Property[] { } };
+        }
+
+        /// <summary>
+        /// Creates a new descriptor using
+        /// a strongly typed fluent approach.
+        /// This initial descriptor is worthless 
+        /// without adding features
+        /// </summary>
+        /// <typeparam name="T">Source Object Type</typeparam>
+        /// <param name="name">Desired Descriptor Name</param>
+        /// <returns>Empty Descriptor</returns>
+        public static Descriptor<T> For<T>(string name)
+        {
+            return new Descriptor<T>() { Name = name, Type = typeof(T), Features = new Property[] { } };
         }
 
         /// <summary>
@@ -384,6 +450,8 @@ namespace numl.Model
             if (type.ToLowerInvariant() != "none")
                 Type = Ject.FindType(type);
 
+            Name = reader.GetAttribute("Name");
+
             reader.ReadStartElement();
             Features = new Property[int.Parse(reader.GetAttribute("Length"))];
             reader.ReadStartElement("Features");
@@ -410,6 +478,7 @@ namespace numl.Model
             Dictionary<Type, XmlSerializer> serializers = new Dictionary<Type, XmlSerializer>();
 
             writer.WriteAttributeString("Type", Type == null ? "None" : Type.Name);
+            writer.WriteAttributeString("Name", Name == null ? "" : Name);
 
             writer.WriteStartElement("Features");
             writer.WriteAttributeString("Length", Features.Length.ToString());
