@@ -520,7 +520,7 @@ namespace numl.Model
         public Descriptor<T> Learn(Expression<Func<T, Object>> property)
         {
             var pi = GetPropertyInfo(property);
-            AddProperty(TypeHelpers.GenerateFeature(pi.PropertyType, pi.Name), true);
+            AddProperty(TypeHelpers.GenerateLabel(pi.PropertyType, pi.Name), true);
             return this;
         }
     }

@@ -39,7 +39,33 @@ namespace numl.Tests.SupervisedTests
         public void Iris_DT_and_Prediction()
         {
             var data = Iris.Load();
-            var description = Descriptor.Create<Iris>();
+            var description = Descriptor.Create<Iris>();            
+            var generator = new NaiveBayesGenerator(2);
+            var model = generator.Generate(description, data);
+
+            // should be Iris-Setosa
+            Iris iris = new Iris
+            {
+                SepalLength = 2.1m,
+                SepalWidth = 2.2m,
+                PetalWidth = 0.5m,
+                PetalLength = 2.3m,
+            };
+
+            iris = model.Predict<Iris>(iris);
+            Assert.AreEqual("Iris-setosa".Sanitize(), iris.Class);
+        }
+
+        [Test]
+        public void Iris_FluentDescriptor_DT_and_Prediction()
+        {
+            var data = Iris.Load();
+            var description = Descriptor.For<Iris>()
+                .Learn(x => x.Class)
+                .With(x => x.PetalLength)
+                .With(x => x.PetalWidth)
+                .With(x => x.SepalLength)
+                .With(x => x.SepalWidth);
             var generator = new NaiveBayesGenerator(2);
             var model = generator.Generate(description, data);
 
