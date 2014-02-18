@@ -129,7 +129,7 @@ namespace numl.Tests.DataTests
             Assert.AreEqual("Class", d.Label.Name);
         }
 
-        [Test]
+      [Test]
         public void Test_Typed_Fluent_Api()
         {
             var d = Descriptor.For<Iris>()
@@ -138,13 +138,28 @@ namespace numl.Tests.DataTests
                                 .With(i => i.PetalLength)
                                 .With(i => i.PetalWidth)
                                 .Learn(i => i.Class);
-
+          
             Assert.AreEqual(4, d.Features.Length);
             Assert.AreEqual(typeof(decimal), d.Features[0].Type);
             Assert.AreEqual(typeof(decimal), d.Features[1].Type);
             Assert.AreEqual(typeof(decimal), d.Features[2].Type);
             Assert.AreEqual(typeof(decimal), d.Features[3].Type);
-            Assert.AreEqual("Class", d.Label.Name);
+            Assert.AreEqual("Class", d.Label.Name);           
+            Assert.AreEqual(1, d.Label.Length);           
         }
+
+      [Test]
+      public void Test_Attributes_Api()
+      {
+          var d = Descriptor.Create<Iris>();
+
+          Assert.AreEqual(4, d.Features.Length);
+          Assert.AreEqual(typeof(decimal), d.Features[0].Type);
+          Assert.AreEqual(typeof(decimal), d.Features[1].Type);
+          Assert.AreEqual(typeof(decimal), d.Features[2].Type);
+          Assert.AreEqual(typeof(decimal), d.Features[3].Type);
+          Assert.AreEqual("Class", d.Label.Name);
+          Assert.AreEqual(1, d.Label.Length);           
+      }
     }
 }
