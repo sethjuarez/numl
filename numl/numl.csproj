@@ -96,6 +96,9 @@
     <Compile Include="Supervised\NaiveBayes\Measure.cs" />
     <Compile Include="Supervised\NaiveBayes\NaiveBayesGenerator.cs" />
     <Compile Include="Supervised\NaiveBayes\Statistic.cs" />
+    <Compile Include="Supervised\NeuralNetwork\NeuralNetworkGenerator.cs" />
+    <Compile Include="Supervised\NeuralNetwork\NeuralNetworkModel.cs" />
+    <Compile Include="Supervised\NeuralNetwork\Neuron.cs" />
     <Compile Include="Supervised\Perceptron\KernelPerceptronModel.cs" />
     <Compile Include="Supervised\Perceptron\PerceptronModel.cs" />
     <Compile Include="Supervised\Regression\LinearRegression.cs" />
@@ -124,7 +127,6 @@
     <Compile Include="Supervised\Perceptron\KernelPerceptronGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Supervised\NeuralNetworks\" />
     <Folder Include="Supervised\SVM\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

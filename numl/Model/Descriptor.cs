@@ -10,6 +10,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Linq.Expressions;
 using System.Collections;
+using System.IO;
 
 namespace numl.Model
 {
@@ -399,6 +400,31 @@ namespace numl.Model
         {
             return new Descriptor<T>() { Name = name, Type = typeof(T), Features = new Property[] { } };
         }
+
+        /// <summary>
+        /// Load a descriptor from a file
+        /// </summary>
+        /// <param name="file">File Location</param>
+        /// <returns>Descriptor</returns>
+        public static Descriptor Load(string file)
+        {
+            using (var stream = File.OpenRead(file))
+                return Load(stream);
+        }
+
+        /// <summary>
+        /// Load a descriptor from a stream
+        /// </summary>
+        /// <param name="stream">Stream</param>
+        /// <returns>Descriptor</returns>
+        public static Descriptor Load(Stream stream)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(Descriptor));
+            var o = serializer.Deserialize(stream);
+            return (Descriptor)o;
+        }
+
+        
 
         /// <summary>
         /// Adds a new feature to descriptor
