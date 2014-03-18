@@ -6,6 +6,11 @@ namespace numl.Math.LinearAlgebra
 {
     public static class VectorExtensions
     {
+        public static Vector Calc(this Vector v, Func<double, double> f)
+        {
+            return Vector.Calc(v, f);
+        }
+
         public static double Sum(this Vector v)
         {
             return Vector.Sum(v);

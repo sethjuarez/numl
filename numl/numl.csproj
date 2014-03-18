@@ -47,6 +47,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Learner.cs" />
+    <Compile Include="Math\Functions\Function.cs" />
+    <Compile Include="Math\Functions\Ident.cs" />
+    <Compile Include="Math\Functions\IFunction.cs" />
+    <Compile Include="Math\Functions\Logistic.cs" />
+    <Compile Include="Math\Functions\Tanh.cs" />
     <Compile Include="Math\Information\Entropy.cs" />
     <Compile Include="Math\Information\Error.cs" />
     <Compile Include="Math\Information\Gini.cs" />

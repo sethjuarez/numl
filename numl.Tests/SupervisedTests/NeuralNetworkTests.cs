@@ -10,6 +10,7 @@ using numl.Tests.Data;
 using System.IO;
 using numl.Supervised.DecisionTree;
 using numl.Supervised.NeuralNetwork;
+using numl.Math.LinearAlgebra;
 
 namespace numl.Tests.SupervisedTests
 {
@@ -35,6 +36,27 @@ namespace numl.Tests.SupervisedTests
 
             iris = model.Predict<Iris>(iris);
             Assert.AreEqual("Iris-setosa".Sanitize(), iris.Class);
+        }
+
+        [Test]
+        public void xor_test()
+        {
+            var xor = new[]
+            {
+                new { a = false, b = false, c = false },
+                new { a = false, b = true, c = true },
+                new { a = true, b = false, c = true },
+                new { a = true, b = true, c = false },
+            };
+
+            var d = Descriptor.New("XOR")
+                              .With("a").As(typeof(bool))
+                              .With("b").As(typeof(bool))
+                              .Learn("c").As(typeof(bool));
+
+            var generator = new NeuralNetworkGenerator();
+            var model = generator.Generate(d, xor);
+
         }
     }
 }
