@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using numl.Math.LinearAlgebra;
 using System.Xml;
+using numl.Math.Functions;
 
 namespace numl.Supervised.NeuralNetwork
 {
@@ -21,34 +22,13 @@ namespace numl.Supervised.NeuralNetwork
 
         public override IModel Generate(Matrix x, Vector y)
         {
-            // set output to number of
-            // choices of available
-            // 1 if only two choices
-            if (Output == -1)
+            var network = Network.Default(Descriptor, x, y, new Tanh());
+
+            for (int i = 0; i < x.Rows; i++)
             {
-                int distinct = y.Distinct().Count();
-                Output = distinct > 2 ? distinct : 1;
+                network.Evaluate(x[i, VectorType.Row]);
+                network.Backprop(y[i]);
             }
-
-            // set number of hidden units to 
-            // (Input + Hidden) * 2/3 as basic
-            // best guess
-            if (Hidden == -1)
-                Hidden = (int)System.Math.Ceiling((decimal)(x.Cols + Output) * 2m / 3m);
-
-            // initial weight vector (add one for bias)
-            Vector W = Vector.Ones(x.Cols + 1);
-            // activation layer
-            Vector A = Vector.Ones(Hidden);
-            // activation output
-            Vector Z = Vector.Ones(Hidden);
-            // final output
-            Vector Y = Vector.Ones(Output);
-
-            // forward propagation
-
-
-
 
             throw new NotImplementedException();
         }
