@@ -15,7 +15,7 @@ namespace numl.Supervised.NeuralNetwork
         {
             Output = 0d;
             Input = 0d;
-            Error = 0d;
+            Delta = 0d;
             Label = String.Empty;
             Out = new List<Edge>();
             In = new List<Edge>();
@@ -23,7 +23,7 @@ namespace numl.Supervised.NeuralNetwork
 
         public double Output { get; set; }
         public double Input { get; set; }
-        public double Error { get; set; }
+        public double Delta { get; set; }
         public string Label { get; set; }
         public List<Edge> Out { get; set; }
         public List<Edge> In { get; set; }
@@ -51,15 +51,28 @@ namespace numl.Supervised.NeuralNetwork
             }
         }
 
-        public double CalcError(double t)
+        public double Error(double t)
         {
             // output node
             if (Out.Count == 0)
-                Error = Output - t;
+                Delta = Output - t;
             else // internal nodes
-                Error = Out.Select(e => e.Weight * e.Target.CalcError(t)).Sum();
+            {
+                double h = Activation == null ? 1 : Activation.Derivative(Output);
+                Delta =  h * Out.Select(e => e.Weight * e.Target.Error(t)).Sum();
+            }
 
-            return Error;
+            return Delta;
+        }
+
+        public void Update(double learningRate)
+        {
+            if (In.Count > 0)
+                foreach (Edge edge in In)
+                    edge.Weight = learningRate * Delta * Input;
+
+            foreach (Edge edge in Out)
+                edge.Target.Update(learningRate);
         }
 
         public override string ToString()
@@ -120,7 +133,7 @@ namespace numl.Supervised.NeuralNetwork
 
             // creating hidden nodes
             Node[] h = new Node[hidden + 1];
-            h[0] = new Node { Label = "Bias[hidden]", Activation = activation };
+            h[0] = new Node { Label = "Bias[hidden]", Input = 1 };
             for (int i = 1; i < hidden + 1; i++)
                 h[i] = new Node { Label = "Hidden " + i.ToString(), Activation = activation };
 
@@ -129,8 +142,9 @@ namespace numl.Supervised.NeuralNetwork
             for (int i = 0; i < output; i++)
                 nn.Out[i] = new Node { Label = GetLabel(i, d) };
 
-            // link input to hidden (full)
-            for (int i = 0; i < h.Length; i++)
+            // link input to hidden. Note: there are
+            // no inputs to the hidden bias node
+            for (int i = 1; i < h.Length; i++) 
                 for (int j = 0; j < nn.In.Length; j++)
                     Edge.Create(nn.In[j], h[i]);
 
@@ -151,7 +165,7 @@ namespace numl.Supervised.NeuralNetwork
             else return d.Label.Name;
         }
 
-        public void Evaluate(Vector x)
+        public void Forward(Vector x)
         {
             if (In.Length != x.Length + 1)
                 throw new InvalidOperationException("Input nodes not aligned to input vector");
@@ -164,13 +178,15 @@ namespace numl.Supervised.NeuralNetwork
                 In[i].Evaluate();
         }
 
-        public void Backprop(double t)
+        public void Back(double t, double learningRate)
         {
-            // propagate error
-            for (int i = 0; i < Out.Length; i++)
-                Out[i].CalcError(t);
+            // propagate error gradients
+            for (int i = 0; i < In.Length; i++)
+                In[i].Error(t);
 
             // reset weights
+            for(int i = 0; i < In.Length; i++)
+                In[i].Update(learningRate);
         }
     }
 }

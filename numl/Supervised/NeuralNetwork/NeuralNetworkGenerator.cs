@@ -10,27 +10,31 @@ namespace numl.Supervised.NeuralNetwork
 {
     public class NeuralNetworkGenerator : Generator
     {
-        public int Hidden { get; private set; }
-        public int Output { get; private set; }
-        
+        public double LearningRate { get; set; }
+        public int MaxIterations { get; set; }
+        public IFunction Activation { get; set; }
 
-        public NeuralNetworkGenerator(int hidden = -1, int output = -1)
+        public NeuralNetworkGenerator()
         {
-            Output = output;
-            Hidden = hidden;
+            LearningRate = 0.9;
+            MaxIterations = -1;
+            Activation = new Tanh();
         }
 
         public override IModel Generate(Matrix x, Vector y)
         {
-            var network = Network.Default(Descriptor, x, y, new Tanh());
+            // because I said so...
+            if (MaxIterations == -1) MaxIterations = x.Rows * 100;
 
-            for (int i = 0; i < x.Rows; i++)
+            var network = Network.Default(Descriptor, x, y, Activation);
+
+            for (int i = 0; i < MaxIterations; i++)
             {
-                network.Evaluate(x[i, VectorType.Row]);
-                network.Backprop(y[i]);
+                network.Forward(x[i % x.Rows, VectorType.Row]);
+                network.Back(y[i % y.Length], LearningRate);
             }
 
-            throw new NotImplementedException();
+            return new NeuralNetworkModel { Descriptor = Descriptor, Network = network };
         }
     }
 }

@@ -56,7 +56,7 @@ namespace numl.Tests.SupervisedTests
 
             var generator = new NeuralNetworkGenerator();
             var model = generator.Generate(d, xor);
-
+            var o = model.Predict(new Vector(new[] { 1d, 1d }));
         }
     }
 }

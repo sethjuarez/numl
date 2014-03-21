@@ -9,9 +9,11 @@ namespace numl.Supervised.NeuralNetwork
 {
     public class NeuralNetworkModel : Model
     {
+        public Network Network { get; set; }
         public override double Predict(Vector y)
         {
-            throw new NotImplementedException();
+            Network.Forward(y);
+            return Network.Out[0].Output;
         }
 
         public override void WriteXml(XmlWriter writer)
