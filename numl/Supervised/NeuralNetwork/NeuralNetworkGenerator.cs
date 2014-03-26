@@ -24,14 +24,15 @@ namespace numl.Supervised.NeuralNetwork
         public override IModel Generate(Matrix x, Vector y)
         {
             // because I said so...
-            if (MaxIterations == -1) MaxIterations = x.Rows * 100;
+            if (MaxIterations == -1) MaxIterations = x.Rows * 1000;
 
             var network = Network.Default(Descriptor, x, y, Activation);
 
             for (int i = 0; i < MaxIterations; i++)
             {
-                network.Forward(x[i % x.Rows, VectorType.Row]);
-                network.Back(y[i % y.Length], LearningRate);
+                int idx = i % x.Rows;
+                network.Forward(x[idx, VectorType.Row]);
+                network.Back(y[idx], LearningRate);
             }
 
             return new NeuralNetworkModel { Descriptor = Descriptor, Network = network };

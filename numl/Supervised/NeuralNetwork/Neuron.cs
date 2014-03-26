@@ -13,8 +13,11 @@ namespace numl.Supervised.NeuralNetwork
     {
         public Node()
         {
-            Output = 0d;
-            Input = 0d;
+            // assume bias node unless
+            // otherwise told through
+            // links
+            Output = 1d;
+            Input = 1d;
             Delta = 0d;
             Label = String.Empty;
             Out = new List<Edge>();
@@ -33,10 +36,7 @@ namespace numl.Supervised.NeuralNetwork
         {
             // input node?
             if (In.Count == 0)
-            {
-                Output = Input;
                 Out.ForEach(e => e.Target.Evaluate());
-            }
             else
             {
                 Input = In.Select(e => e.Weight * e.Source.Output).Sum();
@@ -58,8 +58,8 @@ namespace numl.Supervised.NeuralNetwork
                 Delta = Output - t;
             else // internal nodes
             {
-                double h = Activation == null ? 1 : Activation.Derivative(Output);
-                Delta =  h * Out.Select(e => e.Weight * e.Target.Error(t)).Sum();
+                var hp = Activation == null ? 1 : Activation.Derivative(Input);
+                Delta = hp * Out.Select(e => e.Weight * e.Target.Error(t)).Sum();
             }
 
             return Delta;
@@ -67,9 +67,12 @@ namespace numl.Supervised.NeuralNetwork
 
         public void Update(double learningRate)
         {
-            if (In.Count > 0)
-                foreach (Edge edge in In)
-                    edge.Weight = learningRate * Delta * Input;
+            foreach (Edge edge in In)
+            {
+                // for output nodes, the derivative is the Delta
+                //var d = Activation == null ? 1 : Activation.Derivative(Output);
+                edge.Weight -= learningRate * Delta * edge.Source.Output;
+            }
 
             foreach (Edge edge in Out)
                 edge.Target.Update(learningRate);
@@ -85,7 +88,14 @@ namespace numl.Supervised.NeuralNetwork
     {
         public Edge()
         {
-            Weight = Sampling.GetUniform();
+            // random initialization
+            // R. D. Reed and R. J. Marks II, "Neural Smithing: 
+            // Supervised Learning in Feedforward Artificial 
+            // Neural Networks", Mit Press, 1999. pg 57
+            // selecting values from range [-a,+a] where 0.1 < a < 2
+            Weight = (double)Sampling.GetUniform(1, 20) / 10d;
+            if (Sampling.GetUniform() < .5)
+                Weight *= -1;
         }
 
         public Node Source { get; set; }
@@ -118,8 +128,8 @@ namespace numl.Supervised.NeuralNetwork
             // 1 if only two choices
             int distinct = y.Distinct().Count();
             int output = distinct > 2 ? distinct : 1;
-            
-            if (output > 1) throw new NotImplementedException("Still deciding what to do here ;)");
+
+            //if (output > 1) throw new NotImplementedException("Still deciding what to do here ;)");
 
             // set number of hidden units to (Input + Hidden) * 2/3
             // as basic best guess
@@ -144,7 +154,7 @@ namespace numl.Supervised.NeuralNetwork
 
             // link input to hidden. Note: there are
             // no inputs to the hidden bias node
-            for (int i = 1; i < h.Length; i++) 
+            for (int i = 1; i < h.Length; i++)
                 for (int j = 0; j < nn.In.Length; j++)
                     Edge.Create(nn.In[j], h[i]);
 
@@ -172,7 +182,7 @@ namespace numl.Supervised.NeuralNetwork
 
             // set input
             for (int i = 0; i < In.Length; i++)
-                In[i].Input = i == 0 ? 1 : x[i - 1];
+                In[i].Input = In[i].Output = i == 0 ? 1 : x[i - 1];
             // evaluate
             for (int i = 0; i < In.Length; i++)
                 In[i].Evaluate();
@@ -185,7 +195,7 @@ namespace numl.Supervised.NeuralNetwork
                 In[i].Error(t);
 
             // reset weights
-            for(int i = 0; i < In.Length; i++)
+            for (int i = 0; i < In.Length; i++)
                 In[i].Update(learningRate);
         }
     }
