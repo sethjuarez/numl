@@ -76,10 +76,10 @@ namespace numl.Tests.SupervisedTests
             var model = Learner.Learn(xor, .75, 1000, generator).Model;
                         
             Matrix x = new[,]
-                {{ -1, -1 }, // false, false -> +
-                 { -1,  1 }, // false, true  -> -
-                 {  1, -1 }, // true, false  -> -
-                 {  1,  1 }};// false, false -> +
+                {{ -1, -1 },  // false, false -> +
+                 { -1,  1 },  // false, true  -> -
+                 {  1, -1 },  // true, false  -> -
+                 {  1,  1 }}; // false, false -> +
 
             Vector y = new[] { 0, 0, 0, 0 };
 

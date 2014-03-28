@@ -22,12 +22,14 @@ namespace numl.Supervised.NeuralNetwork
             Label = String.Empty;
             Out = new List<Edge>();
             In = new List<Edge>();
+            Id = Guid.NewGuid().ToString();
         }
 
         public double Output { get; set; }
         public double Input { get; set; }
         public double Delta { get; set; }
         public string Label { get; set; }
+        public string Id { get; set; }
         public List<Edge> Out { get; set; }
         public List<Edge> In { get; set; }
         public IFunction Activation { get; set; }
@@ -128,15 +130,15 @@ namespace numl.Supervised.NeuralNetwork
 
             // creating input nodes
             nn.In = new Node[x.Cols + 1];
-            nn.In[0] = new Node { Label = "Bias[input]", Activation = ident };
+            nn.In[0] = new Node { Label = "B0", Activation = ident };
             for (int i = 1; i < x.Cols + 1; i++)
                 nn.In[i] = new Node { Label = d.ColumnAt(i - 1), Activation = ident };
 
             // creating hidden nodes
             Node[] h = new Node[hidden + 1];
-            h[0] = new Node { Label = "Bias[hidden]", Activation = ident };
+            h[0] = new Node { Label = "B1", Activation = ident };
             for (int i = 1; i < hidden + 1; i++)
-                h[i] = new Node { Label = "Hidden " + i.ToString(), Activation = activation };
+                h[i] = new Node { Label = "H" + i.ToString(), Activation = activation };
 
             // creating output nodes
             nn.Out = new Node[output];
