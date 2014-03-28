@@ -13,7 +13,7 @@ namespace numl.Math.Functions
 
         public override double Derivative(double x)
         {
-            return 0;
+            return 1;
         }
     }
 }

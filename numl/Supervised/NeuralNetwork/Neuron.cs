@@ -32,23 +32,15 @@ namespace numl.Supervised.NeuralNetwork
         public List<Edge> In { get; set; }
         public IFunction Activation { get; set; }
 
-        public void Evaluate()
+        public double Evaluate()
         {
-            // input node?
-            if (In.Count == 0)
-                Out.ForEach(e => e.Target.Evaluate());
-            else
+            if (In.Count > 0)
             {
-                Input = In.Select(e => e.Weight * e.Source.Output).Sum();
-                // no output nodes? input passed to output
-                if (Out.Count == 0)
-                    Output = Input;
-                else
-                {
-                    Output = Activation.Compute(Input);
-                    Out.ForEach(e => e.Target.Evaluate());
-                }
+                Input = In.Select(e => e.Weight * e.Source.Evaluate()).Sum();
+                Output = Activation.Compute(Input);
             }
+
+            return Output;
         }
 
         public double Error(double t)
@@ -58,7 +50,7 @@ namespace numl.Supervised.NeuralNetwork
                 Delta = Output - t;
             else // internal nodes
             {
-                var hp = Activation == null ? 1 : Activation.Derivative(Input);
+                var hp = Activation.Derivative(Input);
                 Delta = hp * Out.Select(e => e.Weight * e.Target.Error(t)).Sum();
             }
 
@@ -70,17 +62,14 @@ namespace numl.Supervised.NeuralNetwork
             foreach (Edge edge in In)
             {
                 // for output nodes, the derivative is the Delta
-                //var d = Activation == null ? 1 : Activation.Derivative(Output);
                 edge.Weight -= learningRate * Delta * edge.Source.Output;
+                edge.Source.Update(learningRate);
             }
-
-            foreach (Edge edge in Out)
-                edge.Target.Update(learningRate);
         }
 
         public override string ToString()
         {
-            return string.Format("{0}", Label);
+            return string.Format("{0} ({1} | {2})", Label, Input, Output);
         }
     }
 
@@ -96,6 +85,9 @@ namespace numl.Supervised.NeuralNetwork
             Weight = (double)Sampling.GetUniform(1, 20) / 10d;
             if (Sampling.GetUniform() < .5)
                 Weight *= -1;
+
+            // to test calculations...
+            Weight = 1;
         }
 
         public Node Source { get; set; }
@@ -112,7 +104,7 @@ namespace numl.Supervised.NeuralNetwork
 
         public override string ToString()
         {
-            return string.Format("{0} [{1}] -[{2}]-> [{3}] {4}", Source.Label, Source.Output, Weight, Target.Input, Target.Label);
+            return string.Format("{0} ---- {1} ----> {2}", Source, Weight, Target);
         }
     }
 
@@ -128,6 +120,8 @@ namespace numl.Supervised.NeuralNetwork
             // 1 if only two choices
             int distinct = y.Distinct().Count();
             int output = distinct > 2 ? distinct : 1;
+            // identity funciton for bias nodes
+            IFunction ident = new Ident();
 
             //if (output > 1) throw new NotImplementedException("Still deciding what to do here ;)");
 
@@ -137,20 +131,20 @@ namespace numl.Supervised.NeuralNetwork
 
             // creating input nodes
             nn.In = new Node[x.Cols + 1];
-            nn.In[0] = new Node { Label = "Bias[input]" };
+            nn.In[0] = new Node { Label = "Bias[input]", Activation = ident };
             for (int i = 1; i < x.Cols + 1; i++)
-                nn.In[i] = new Node { Label = d.ColumnAt(i - 1) };
+                nn.In[i] = new Node { Label = d.ColumnAt(i - 1), Activation = ident };
 
             // creating hidden nodes
             Node[] h = new Node[hidden + 1];
-            h[0] = new Node { Label = "Bias[hidden]", Input = 1 };
+            h[0] = new Node { Label = "Bias[hidden]", Activation = ident };
             for (int i = 1; i < hidden + 1; i++)
                 h[i] = new Node { Label = "Hidden " + i.ToString(), Activation = activation };
 
             // creating output nodes
             nn.Out = new Node[output];
             for (int i = 0; i < output; i++)
-                nn.Out[i] = new Node { Label = GetLabel(i, d) };
+                nn.Out[i] = new Node { Label = GetLabel(i, d), Activation = activation };
 
             // link input to hidden. Note: there are
             // no inputs to the hidden bias node
@@ -184,8 +178,8 @@ namespace numl.Supervised.NeuralNetwork
             for (int i = 0; i < In.Length; i++)
                 In[i].Input = In[i].Output = i == 0 ? 1 : x[i - 1];
             // evaluate
-            for (int i = 0; i < In.Length; i++)
-                In[i].Evaluate();
+            for (int i = 0; i < Out.Length; i++)
+                Out[i].Evaluate();
         }
 
         public void Back(double t, double learningRate)
@@ -195,8 +189,8 @@ namespace numl.Supervised.NeuralNetwork
                 In[i].Error(t);
 
             // reset weights
-            for (int i = 0; i < In.Length; i++)
-                In[i].Update(learningRate);
+            for (int i = 0; i < Out.Length; i++)
+                Out[i].Update(learningRate);
         }
     }
 }

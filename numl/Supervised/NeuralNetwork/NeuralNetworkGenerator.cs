@@ -24,7 +24,7 @@ namespace numl.Supervised.NeuralNetwork
         public override IModel Generate(Matrix x, Vector y)
         {
             // because I said so...
-            if (MaxIterations == -1) MaxIterations = x.Rows * 1000;
+            if (MaxIterations == -1) MaxIterations = x.Rows * 100000;
 
             var network = Network.Default(Descriptor, x, y, Activation);
 

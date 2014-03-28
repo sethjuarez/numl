@@ -56,23 +56,17 @@ namespace numl.Tests.SupervisedTests
 
             var generator = new NeuralNetworkGenerator();
             var model = generator.Generate(d, xor);
-            Vector test = new[] { -1d, -1d, -1d, -1d };
 
-
-           Matrix x =  new[,]
+            Matrix x = new[,]
                 {{ -1, -1 },
                  { -1,  1 },
                  {  1, -1 },
                  {  1,  1 }};
 
-           Vector y = new[] { 0, 0, 0, 0 };
+            Vector y = new[] { 0, 0, 0, 0 };
 
-           for (int i = 0; i < xor.Length; i++)
-           {
-               y[i] = model.Predict(x[i]);
-           }
-
-            
+            for (int i = 0; i < xor.Length; i++)
+                y[i] = model.Predict(x[i]);
         }
     }
 }
