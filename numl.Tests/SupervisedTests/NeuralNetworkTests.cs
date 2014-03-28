@@ -11,6 +11,7 @@ using System.IO;
 using numl.Supervised.DecisionTree;
 using numl.Supervised.NeuralNetwork;
 using numl.Math.LinearAlgebra;
+using numl.Math.Probability;
 
 namespace numl.Tests.SupervisedTests
 {
@@ -39,10 +40,27 @@ namespace numl.Tests.SupervisedTests
         }
 
         [Test]
-        public void xor_test()
+        public void xor_test_learner()
         {
+            Sampling.SetSeedFromSystemTime();
             var xor = new[]
             {
+                new { a = false, b = false, c = false },
+                new { a = false, b = true, c = true },
+                new { a = true, b = false, c = true },
+                new { a = true, b = true, c = false },
+                new { a = false, b = false, c = false },
+                new { a = false, b = true, c = true },
+                new { a = true, b = false, c = true },
+                new { a = true, b = true, c = false },
+                new { a = false, b = false, c = false },
+                new { a = false, b = true, c = true },
+                new { a = true, b = false, c = true },
+                new { a = true, b = true, c = false },
+                new { a = false, b = false, c = false },
+                new { a = false, b = true, c = true },
+                new { a = true, b = false, c = true },
+                new { a = true, b = true, c = false },
                 new { a = false, b = false, c = false },
                 new { a = false, b = true, c = true },
                 new { a = true, b = false, c = true },
@@ -54,19 +72,20 @@ namespace numl.Tests.SupervisedTests
                               .With("b").As(typeof(bool))
                               .Learn("c").As(typeof(bool));
 
-            var generator = new NeuralNetworkGenerator();
-            var model = generator.Generate(d, xor);
-
+            var generator = new NeuralNetworkGenerator { Descriptor = d };
+            var model = Learner.Learn(xor, .75, 1000, generator).Model;
+                        
             Matrix x = new[,]
-                {{ -1, -1 },
-                 { -1,  1 },
-                 {  1, -1 },
-                 {  1,  1 }};
+                {{ -1, -1 }, // false, false -> +
+                 { -1,  1 }, // false, true  -> -
+                 {  1, -1 }, // true, false  -> -
+                 {  1,  1 }};// false, false -> +
 
             Vector y = new[] { 0, 0, 0, 0 };
 
-            for (int i = 0; i < xor.Length; i++)
-                y[i] = model.Predict(x[i]);
+            for (int i = 0; i < x.Rows; i++)
+                y[i] = model.Predict(x[i, VectorType.Row]);
+
         }
     }
 }

@@ -62,7 +62,7 @@ namespace numl.Supervised.NeuralNetwork
             foreach (Edge edge in In)
             {
                 // for output nodes, the derivative is the Delta
-                edge.Weight -= learningRate * Delta * edge.Source.Output;
+                edge.Weight = learningRate * Delta * edge.Source.Output;
                 edge.Source.Update(learningRate);
             }
         }
@@ -85,9 +85,6 @@ namespace numl.Supervised.NeuralNetwork
             Weight = (double)Sampling.GetUniform(1, 20) / 10d;
             if (Sampling.GetUniform() < .5)
                 Weight *= -1;
-
-            // to test calculations...
-            Weight = 1;
         }
 
         public Node Source { get; set; }

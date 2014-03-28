@@ -13,7 +13,7 @@ namespace numl.Supervised.NeuralNetwork
         public override double Predict(Vector y)
         {
             Network.Forward(y);
-            return Network.Out[0].Output;
+            return Network.Out.Select(n => n.Output).Max();
         }
 
         public override void WriteXml(XmlWriter writer)
