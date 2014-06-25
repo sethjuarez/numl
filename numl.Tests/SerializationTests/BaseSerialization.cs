@@ -1,12 +1,10 @@
-﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using NUnit.Framework;
+using System.Diagnostics;
 using System.Xml.Serialization;
+using System.Collections.Generic;
 
 namespace numl.Tests.SerializationTests
 {

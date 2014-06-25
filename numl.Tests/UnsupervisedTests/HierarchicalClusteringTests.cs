@@ -1,14 +1,12 @@
-﻿using numl.Data;
+﻿using System;
+using numl.Model;
+using System.Linq;
+using numl.Tests.Data;
+using NUnit.Framework;
 using numl.Math.Linkers;
 using numl.Math.Metrics;
-using numl.Model;
 using numl.Unsupervised;
-using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace numl.Tests.UnsupervisedTests
 {
@@ -18,11 +16,11 @@ namespace numl.Tests.UnsupervisedTests
         [Test]
         public void Cluster_Student()
         {
-Student[] students = Student.GetData();
-HClusterModel cluster = new HClusterModel();
-Descriptor descriptor = Descriptor.Create<Student>();
-CentroidLinker linker = new CentroidLinker(new EuclidianDistance());
-Cluster root = cluster.Generate(descriptor, students, linker);
+            Student[] students = Student.GetData();
+            HClusterModel cluster = new HClusterModel();
+            Descriptor descriptor = Descriptor.Create<Student>();
+            CentroidLinker linker = new CentroidLinker(new EuclidianDistance());
+            Cluster root = cluster.Generate(descriptor, students, linker);
         }
     }
 }

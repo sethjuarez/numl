@@ -1,140 +1,82 @@
 ﻿using System;
-using numl.Data;
 using numl.Model;
 using numl.Utils;
 using System.Linq;
-using numl.Supervised;
 using NUnit.Framework;
-using System.Collections.Generic;
 using numl.Tests.Data;
-using System.IO;
+using System.Collections.Generic;
 using numl.Supervised.DecisionTree;
 
 namespace numl.Tests.SupervisedTests
 {
     [TestFixture]
-    public class DecisionTreeTests
+    public class DecisionTreeTests : BaseSupervised
     {
         [Test]
-        public void House_DT_and_Prediction()
+        public void Tennis_Tests()
         {
-            var data = House.GetData();
-
-            var description = Descriptor.Create<House>();
-            var generator = new DecisionTreeGenerator { Depth = 50 };
-            var model = generator.Generate(description, data);
-
-            House h = new House
-            {
-                District = District.Rural,
-                HouseType = HouseType.Detached,
-                Income = Income.High,
-                PreviousCustomer = false
-            };
-
-            var prediction = model.Predict(h);
-            Assert.IsTrue(prediction.Response);
+            TennisPrediction(new DecisionTreeGenerator(50));
         }
 
         [Test]
-        public void Tennis_DT_and_Prediction()
+        public void House_Tests()
         {
-            var data = Tennis.GetData();
-            var description = Descriptor.Create<Tennis>();
-            var generator = new DecisionTreeGenerator(50);
-            var model = generator.Generate(description, data);
-
-            Tennis t = new Tennis
-            {
-                Humidity = Humidity.Normal,
-                Outlook = Outlook.Overcast,
-                Temperature = Temperature.Cool,
-                Windy = true
-            };
-
-            model.Predict<Tennis>(t);
-            Assert.IsTrue(t.Play);
-        }
-
-
-        [Test]
-        public void Iris_DT_and_Prediction()
-        {
-            var data = Iris.Load();
-            var description = Descriptor.Create<Iris>();
-            var generator = new DecisionTreeGenerator(50);
-            var model = generator.Generate(description, data);
-
-            // should be Iris-Setosa
-            Iris iris = new Iris
-            {
-                PetalWidth = 0.5m,
-                PetalLength = 2.3m,
-                SepalLength = 2.1m,
-                SepalWidth = 2.1m
-            };
-
-            iris = model.Predict<Iris>(iris);
-            Assert.AreEqual("Iris-setosa".Sanitize(), iris.Class);
+            HousePrediction(new DecisionTreeGenerator(50));
         }
 
         [Test]
-        public void Iris_DT_and_Prediction_with_Learner()
+        public void Iris_Tests()
         {
-            var data = Iris.Load();
+            IrisPrediction(new DecisionTreeGenerator(50));
+        }
 
-            var generator = new DecisionTreeGenerator(50) 
-            { 
-                Descriptor = Descriptor.Create<Iris>(),
-                Hint = 0
-            };
+        [Test]
+        public void Tennis_Learner_Tests()
+        {
+            TennisLearnerPrediction(new DecisionTreeGenerator(50) { Hint = 0 });
+        }
 
-            var lmodel = Learner.Learn(data, .80, 1000, generator);
+        [Test]
+        public void House_Learner_Tests()
+        {
+            HouseLearnerPrediction(new DecisionTreeGenerator(50) { Hint = 0 });
+        }
 
-            // should be Iris-Setosa
-            Iris iris = new Iris
-            {
-                PetalWidth = 0.5m,
-                PetalLength = 2.3m,
-                SepalLength = 2.1m,
-                SepalWidth = 2.1m
-            };
-
-            iris = lmodel.Model.Predict<Iris>(iris);
-            Assert.AreEqual("Iris-setosa".Sanitize(), iris.Class);
+        [Test]
+        public void Iris_Learner_Tests()
+        {
+            IrisLearnerPrediction(new DecisionTreeGenerator(50) { Hint = 0 });
         }
 
         [Test]
         public void ValueObject_Test_With_Yield_Enumerator()
         {
-            var data = ValueObject.GetData();
-            var generator = new DecisionTreeGenerator()
-            {
-                Descriptor = Descriptor.Create<ValueObject>()
-            };
-
-            var model = generator.Generate(data);
-            var s = model.ToString();
-
             var o = new ValueObject() { V1 = 1, V2 = 60 };
-            var os = model.Predict<ValueObject>(o).R;
-            Assert.AreEqual("l".Sanitize(), os);
+
+            Prediction<ValueObject>(
+                new DecisionTreeGenerator(),
+                ValueObject.GetData(),
+                o,
+                vo => "l".Sanitize() == vo.R
+            );
         }
 
         [Test]
         public void ArbitraryPrediction_Test_With_Enum_Label()
         {
-            var data = ArbitraryPrediction.GetData();
-            var description = Descriptor.Create<ArbitraryPrediction>();
-            var generator = new DecisionTreeGenerator(50);
-            var model = generator.Generate(description, data);
-
             ArbitraryPrediction minimumPredictionValue = new ArbitraryPrediction
             {
                 FirstTestFeature = 1.0m,
                 SecondTestFeature = 10.0m,
                 ThirdTestFeature = 1.2m
             };
+
+            Prediction<ArbitraryPrediction>(
+                new DecisionTreeGenerator(50),
+                ArbitraryPrediction.GetData(),
+                minimumPredictionValue,
+                ap => ap.OutcomeLabel == ArbitraryPrediction.PredictionLabel.Minimum
+            );
 
             ArbitraryPrediction maximumPredictionValue = new ArbitraryPrediction
             {
@@ -143,22 +85,17 @@ namespace numl.Tests.SupervisedTests
                 ThirdTestFeature = 1.2m
             };
 
-            var expectedMinimum = model.Predict<ArbitraryPrediction>(minimumPredictionValue).OutcomeLabel;
-            var expectedMaximum = model.Predict<ArbitraryPrediction>(maximumPredictionValue).OutcomeLabel;
-
-            //The value should be minimum, however, maximum is returned
-            Assert.AreEqual(ArbitraryPrediction.PredictionLabel.Minimum, expectedMinimum);
-            //Maximum is returned as expected
-            Assert.AreEqual(ArbitraryPrediction.PredictionLabel.Maximum, expectedMaximum);
+            Prediction<ArbitraryPrediction>(
+                new DecisionTreeGenerator(50),
+                ArbitraryPrediction.GetData(),
+                maximumPredictionValue,
+                ap => ap.OutcomeLabel == ArbitraryPrediction.PredictionLabel.Maximum
+            );
         }
 
         [Test, ExpectedException(typeof(InvalidOperationException))]
         public void ArbitraryPrediction_Test_With_Feature_Value_Greater_Than_Trained_Instances()
         {
-            var data = ArbitraryPrediction.GetData();
-            var description = Descriptor.Create<ArbitraryPrediction>();
-            var generator = new DecisionTreeGenerator(50);
-            var model = generator.Generate(description, data);
 
             ArbitraryPrediction predictionValue = new ArbitraryPrediction
             {
@@ -168,8 +105,13 @@ namespace numl.Tests.SupervisedTests
                 ThirdTestFeature = 1.2m
             };
 
-            var expectedValue = model.Predict<ArbitraryPrediction>(predictionValue).OutcomeLabel;
-            Assert.AreEqual(ArbitraryPrediction.PredictionLabel.Maximum, expectedValue);
+            Prediction<ArbitraryPrediction>(
+                new DecisionTreeGenerator(50),
+                ArbitraryPrediction.GetData(),
+                predictionValue,
+                ap => ap.OutcomeLabel == ArbitraryPrediction.PredictionLabel.Maximum
+            );
+
         }
 
         [Test]

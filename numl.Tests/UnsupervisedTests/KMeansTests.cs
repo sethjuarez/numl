@@ -1,15 +1,14 @@
-﻿using numl.Math.LinearAlgebra;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using numl.Model;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using numl.Math.Probability;
+using NUnit.Framework;
+using numl.Tests.Data;
 using numl.Unsupervised;
 using numl.Math.Metrics;
-using numl.Model;
-using numl.Data;
+using numl.Math.Probability;
+using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
+
 
 namespace numl.Tests.UnsupervisedTests
 {

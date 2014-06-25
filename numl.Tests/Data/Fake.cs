@@ -3,7 +3,7 @@ using numl.Model;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace numl.Data
+namespace numl.Tests.Data
 {
     public class FakeDate
     {

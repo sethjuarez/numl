@@ -1,14 +1,10 @@
-﻿using numl.Data;
+﻿using System;
 using numl.Model;
-using numl.Supervised.NaiveBayes;
+using System.Linq;
 using numl.Tests.Data;
 using NUnit.Framework;
-using System;
+using numl.Supervised.NaiveBayes;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using numl.Utils;
 
 namespace numl.Tests.SerializationTests
 {
