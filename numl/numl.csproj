@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\numl.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\numl.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\numl.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -46,6 +47,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Learner.cs" />
+    <Compile Include="Math\Functions\Function.cs" />
+    <Compile Include="Math\Functions\Ident.cs" />
+    <Compile Include="Math\Functions\IFunction.cs" />
+    <Compile Include="Math\Functions\Logistic.cs" />
+    <Compile Include="Math\Functions\Tanh.cs" />
     <Compile Include="Math\Information\Entropy.cs" />
     <Compile Include="Math\Information\Error.cs" />
     <Compile Include="Math\Information\Gini.cs" />
@@ -83,6 +89,7 @@
     <Compile Include="Math\Probability\Sampling.cs" />
     <Compile Include="Math\Range.cs" />
     <Compile Include="Model\DescriptorException.cs" />
+    <Compile Include="Model\DescriptorProperty.cs" />
     <Compile Include="Model\EnumerableProperty.cs" />
     <Compile Include="Model\DateTimeProperty.cs" />
     <Compile Include="Model\Property.cs" />
@@ -94,6 +101,9 @@
     <Compile Include="Supervised\NaiveBayes\Measure.cs" />
     <Compile Include="Supervised\NaiveBayes\NaiveBayesGenerator.cs" />
     <Compile Include="Supervised\NaiveBayes\Statistic.cs" />
+    <Compile Include="Supervised\NeuralNetwork\NeuralNetworkGenerator.cs" />
+    <Compile Include="Supervised\NeuralNetwork\NeuralNetworkModel.cs" />
+    <Compile Include="Supervised\NeuralNetwork\Neuron.cs" />
     <Compile Include="Supervised\Perceptron\KernelPerceptronModel.cs" />
     <Compile Include="Supervised\Perceptron\PerceptronModel.cs" />
     <Compile Include="Supervised\Regression\LinearRegression.cs" />
@@ -122,7 +132,7 @@
     <Compile Include="Supervised\Perceptron\KernelPerceptronGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Data\" />
+    <Folder Include="Supervised\SVM\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

@@ -6,7 +6,7 @@
 using System;
 using numl.Model;
 
-namespace numl.Data
+namespace numl.Tests.Data
 {
 	public enum District
 	{

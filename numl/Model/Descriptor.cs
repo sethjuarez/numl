@@ -10,6 +10,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Linq.Expressions;
 using System.Collections;
+using System.IO;
 
 namespace numl.Model
 {
@@ -23,8 +24,12 @@ namespace numl.Model
     [XmlRoot("Descriptor"), Serializable]
     public class Descriptor : IXmlSerializable
     {
-        public Descriptor() { }
+        public Descriptor() { Name = ""; }
 
+        /// <summary>
+        /// Descriptor name
+        /// </summary>
+        public string Name { get; set; }
         /// <summary>
         /// Set of features used to discriminate or 
         /// learn about the <see cref="Label"/>.
@@ -47,6 +52,22 @@ namespace numl.Model
             {
                 if (i >= Features.Length) throw new IndexOutOfRangeException();
                 else return Features[i];
+            }
+        }
+
+        /// <summary>
+        /// Index intor features (for convenience)
+        /// </summary>
+        /// <param name="name">Feature name</param>
+        /// <returns>Feature Property</returns>
+        public Property this[string name]
+        {
+            get
+            {
+                if (Features.Where(p => p.Name == name).Count() == 1)
+                    return Features.Where(p => p.Name == name).First();
+                else
+                    return null;
             }
         }
 
@@ -225,13 +246,24 @@ namespace numl.Model
         }
 
         /// <summary>
+        /// Convert an object to its vector representation based
+        /// on the descriptor properties
+        /// </summary>
+        /// <param name="item">object to convert</param>
+        /// <returns>Vector representation</returns>
+        public Vector ToVector(object item)
+        {
+            return Convert(item).ToVector();
+        }
+
+        /// <summary>
         /// Pretty printed descriptor
         /// </summary>
         /// <returns>Pretty printed string</returns>
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine(String.Format("Descriptor ({0}) {{", Type == null ? "N/A" : Type.Name));
+            sb.AppendLine(String.Format("Descriptor ({0}) {{", Type == null ? Name : Type.Name));
             for (int i = 0; i < Features.Length; i++)
                 sb.AppendLine(string.Format("   {0}", Features[i]));
             if (Label != null)
@@ -322,6 +354,19 @@ namespace numl.Model
         /// descriptor is worthless without 
         /// adding features
         /// </summary>
+        /// <param name="name">Desired name</param>
+        /// <returns>Empty Named Descriptor</returns>
+        public static Descriptor New(string name)
+        {
+            return new Descriptor() { Name = name, Features = new Property[] { } };
+        }
+
+        /// <summary>
+        /// Creates a new descriptor using
+        /// a fluent approach. This initial
+        /// descriptor is worthless without 
+        /// adding features
+        /// </summary>
         /// <param name="type">Type mapping</param>
         /// <returns></returns>
         public static Descriptor New(Type type)
@@ -329,10 +374,57 @@ namespace numl.Model
             return new Descriptor() { Type = type, Features = new Property[] { } };
         }
 
+        /// <summary>
+        /// Creates a new descriptor using
+        /// a strongly typed fluent approach.
+        /// This initial descriptor is worthless 
+        /// without adding features
+        /// </summary>
+        /// <typeparam name="T">Source Object Type</typeparam>
+        /// <returns>Empty Descriptor</returns>
         public static Descriptor<T> For<T>()
         {
             return new Descriptor<T>() { Type = typeof(T), Features = new Property[] { } };
         }
+
+        /// <summary>
+        /// Creates a new descriptor using
+        /// a strongly typed fluent approach.
+        /// This initial descriptor is worthless 
+        /// without adding features
+        /// </summary>
+        /// <typeparam name="T">Source Object Type</typeparam>
+        /// <param name="name">Desired Descriptor Name</param>
+        /// <returns>Empty Descriptor</returns>
+        public static Descriptor<T> For<T>(string name)
+        {
+            return new Descriptor<T>() { Name = name, Type = typeof(T), Features = new Property[] { } };
+        }
+
+        /// <summary>
+        /// Load a descriptor from a file
+        /// </summary>
+        /// <param name="file">File Location</param>
+        /// <returns>Descriptor</returns>
+        public static Descriptor Load(string file)
+        {
+            using (var stream = File.OpenRead(file))
+                return Load(stream);
+        }
+
+        /// <summary>
+        /// Load a descriptor from a stream
+        /// </summary>
+        /// <param name="stream">Stream</param>
+        /// <returns>Descriptor</returns>
+        public static Descriptor Load(Stream stream)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(Descriptor));
+            var o = serializer.Deserialize(stream);
+            return (Descriptor)o;
+        }
+
+        
 
         /// <summary>
         /// Adds a new feature to descriptor
@@ -384,6 +476,8 @@ namespace numl.Model
             if (type.ToLowerInvariant() != "none")
                 Type = Ject.FindType(type);
 
+            Name = reader.GetAttribute("Name");
+
             reader.ReadStartElement();
             Features = new Property[int.Parse(reader.GetAttribute("Length"))];
             reader.ReadStartElement("Features");
@@ -410,6 +504,7 @@ namespace numl.Model
             Dictionary<Type, XmlSerializer> serializers = new Dictionary<Type, XmlSerializer>();
 
             writer.WriteAttributeString("Type", Type == null ? "None" : Type.Name);
+            writer.WriteAttributeString("Name", Name == null ? "" : Name);
 
             writer.WriteStartElement("Features");
             writer.WriteAttributeString("Length", Features.Length.ToString());
@@ -435,6 +530,15 @@ namespace numl.Model
 
     public class Descriptor<T> : Descriptor
     {
+        /// <summary>
+        /// Initializes a new instance of the Descriptor class.
+        /// </summary>
+        public Descriptor()
+        {
+            Type = typeof(T);
+            Features = new Property[] { };
+        }
+
         private void AddProperty(Property p, bool label)
         {
             if (label)
@@ -522,184 +626,6 @@ namespace numl.Model
             var pi = GetPropertyInfo(property);
             AddProperty(TypeHelpers.GenerateLabel(pi.PropertyType, pi.Name), true);
             return this;
-        }
-    }
-
-
-    /// <summary>
-    /// Fluent API addition for simplifying the process
-    /// of adding features and labels to a descriptor
-    /// </summary>
-    public class DescriptorProperty
-    {
-        private readonly Descriptor _descriptor;
-        private readonly string _name;
-        private readonly bool _label;
-
-        /// <summary>
-        /// internal constructor used for
-        /// creating chaining
-        /// </summary>
-        /// <param name="descriptor">descriptor</param>
-        /// <param name="name">name of property</param>
-        /// <param name="label">label property?</param>
-        internal DescriptorProperty(Descriptor descriptor, string name, bool label)
-        {
-            _label = label;
-            _name = name;
-            _descriptor = descriptor;
-        }
-
-        /// <summary>
-        /// Not ready
-        /// </summary>
-        /// <param name="conversion">Conversion method</param>
-        /// <returns>Descriptor</returns>
-        public Descriptor Use(Func<object, double> conversion)
-        {
-            throw new NotImplementedException("Not yet ;)");
-            //return _descriptor;
-        }
-
-        /// <summary>
-        /// Adds property to descriptor
-        /// with chained name and type
-        /// </summary>
-        /// <param name="type">Property Type</param>
-        /// <returns>descriptor with added property</returns>
-        public Descriptor As(Type type)
-        {
-            Property p;
-            if (_label)
-                p = TypeHelpers.GenerateLabel(type, _name);
-            else
-                p = TypeHelpers.GenerateFeature(type, _name);
-            AddProperty(p);
-            return _descriptor;
-        }
-
-        /// <summary>
-        /// Adds the default string property to 
-        /// descriptor with previously chained name 
-        /// </summary>
-        /// <returns>descriptor with added property</returns>
-        public Descriptor AsString()
-        {
-            StringProperty p = new StringProperty();
-            p.Name = _name;
-            p.AsEnum = _label;
-            AddProperty(p);
-            return _descriptor;
-        }
-
-        /// <summary>
-        /// Adds string property to descriptor 
-        /// with previously chained name 
-        /// </summary>
-        /// <param name="splitType">How to split string</param>
-        /// <param name="separator">Separator to use</param>
-        /// <param name="exclusions">file describing strings to exclude</param>
-        /// <returns>descriptor with added property</returns>
-        public Descriptor AsString(StringSplitType splitType, string separator = " ", string exclusions = null)
-        {
-            StringProperty p = new StringProperty();
-            p.Name = _name;
-            p.SplitType = splitType;
-            p.Separator = separator;
-            p.ImportExclusions(exclusions);
-            p.AsEnum = _label;
-            AddProperty(p);
-            return _descriptor;
-        }
-
-        /// <summary>
-        /// Adds string property to descriptor 
-        /// with previously chained name 
-        /// </summary>
-        /// <returns>descriptor with added property</returns>
-        public Descriptor AsStringEnum()
-        {
-            StringProperty p = new StringProperty();
-            p.Name = _name;
-            p.AsEnum = true;
-            AddProperty(p);
-            return _descriptor;
-        }
-
-        /// <summary>
-        /// Adds DateTime property to descriptor
-        /// with previously chained name
-        /// </summary>
-        /// <param name="features">Which date features to use (can pipe: DateTimeFeature.Year | DateTimeFeature.DayOfWeek)</param>
-        /// <returns>descriptor with added property</returns>
-        public Descriptor AsDateTime(DateTimeFeature features)
-        {
-            if (_label)
-                throw new DescriptorException("Cannot use a DateTime property as a label");
-
-            var p = new DateTimeProperty(features)
-            {
-                Discrete = true,
-                Name = _name
-            };
-
-            AddProperty(p);
-            return _descriptor;
-        }
-
-        /// <summary>
-        /// Adds DateTime property to descriptor
-        /// with previously chained name
-        /// </summary>
-        /// <param name="portion">Which date portions to use (can pipe: DateTimeFeature.Year | DateTimeFeature.DayOfWeek)</param>
-        /// <returns>descriptor with added property</returns>
-        public Descriptor AsDateTime(DatePortion portion)
-        {
-            if (_label)
-                throw new DescriptorException("Cannot use an DateTime property as a label");
-
-            var p = new DateTimeProperty(portion)
-            {
-                Discrete = true,
-                Name = _name
-            };
-
-            AddProperty(p);
-            return _descriptor;
-        }
-
-        /// <summary>
-        /// Adds Enumerable property to descriptor
-        /// with previousy chained name
-        /// </summary>
-        /// <param name="length">length of enumerable to expand</param>
-        /// <returns>descriptor with added property</returns>
-        public Descriptor AsEnumerable(int length)
-        {
-            if (_label)
-                throw new DescriptorException("Cannot use an Enumerable property as a label");
-
-            var p = new EnumerableProperty(length)
-            {
-                Name = _name,
-                Discrete = false
-            };
-
-            AddProperty(p);
-
-            return _descriptor;
-        }
-
-        private void AddProperty(Property p)
-        {
-            if (_label)
-                _descriptor.Label = p;
-            else
-            {
-                var features = new List<Property>(_descriptor.Features ?? new Property[] { });
-                features.Add(p);
-                _descriptor.Features = features.ToArray();
-            }
         }
     }
 }

@@ -1,14 +1,14 @@
-﻿using numl.Math.LinearAlgebra;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using numl.Model;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using numl.Math.Probability;
+using NUnit.Framework;
+using numl.Tests.Data;
 using numl.Unsupervised;
 using numl.Math.Metrics;
-using numl.Model;
+using numl.Math.Probability;
+using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
+
 
 namespace numl.Tests.UnsupervisedTests
 {
@@ -85,6 +85,22 @@ namespace numl.Tests.UnsupervisedTests
             Assert.AreEqual(2, clusters.Children.Length);
             Assert.AreEqual(size, clusters[0].Members.Length);
             Assert.AreEqual(size, clusters[1].Members.Length);
+        }
+
+        [Test]
+        public void Test_Feed_KMeans()
+        {
+            int groups = 4;
+            Feed[] feeds = Feed.GetData();
+            Descriptor descriptor = Descriptor.Create<Feed>();
+            KMeans kmeans = new KMeans();
+            kmeans.Descriptor = descriptor;
+
+            int[] grouping = kmeans.Generate(feeds, groups, new CosineDistance());
+
+            for (int i = 0; i < grouping.Length; i++)
+                feeds[i].Cluster = grouping[i];
+
         }
     }
 }

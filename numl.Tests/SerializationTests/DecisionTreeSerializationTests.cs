@@ -1,15 +1,10 @@
-﻿using numl.Data;
+﻿using System;
 using numl.Model;
-using numl.Supervised;
-using numl.Supervised.DecisionTree;
+using System.Linq;
 using numl.Tests.Data;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using numl.Supervised.DecisionTree;
 
 namespace numl.Tests.SerializationTests
 {

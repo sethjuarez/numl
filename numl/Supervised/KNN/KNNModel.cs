@@ -17,7 +17,7 @@ namespace numl.Supervised.KNN
 
         public override double Predict(Vector y)
         {
-            Tuple<int, double>[] distances = new Tuple<int, double>[y.Length];
+            Tuple<int, double>[] distances = new Tuple<int, double>[X.Rows];
 
             // happens per slot so we are good to parallelize
             Parallel.For(0, X.Rows, i => distances[i] = new Tuple<int, double>(i, (y - X.Row(i)).Norm(2)));

@@ -1,13 +1,12 @@
 using System;
-using numl.Data;
 using numl.Utils;
 using numl.Model;
 using System.Data;
 using System.Linq;
+using System.Dynamic;
 using numl.Tests.Data;
 using NUnit.Framework;
 using System.Collections.Generic;
-using System.Dynamic;
 
 namespace numl.Tests.DataTests
 {

@@ -19,6 +19,7 @@ namespace numl.Supervised.KNN
         {
             return new KNNModel
             {
+                Descriptor = Descriptor,
                 X = x,
                 Y = y,
                 K = K

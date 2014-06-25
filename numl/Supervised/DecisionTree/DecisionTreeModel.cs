@@ -66,7 +66,7 @@ namespace numl.Supervised.DecisionTree
         private string PrintNode(Node n, string pre)
         {
             if (n.IsLeaf)
-                return String.Format("{0} +({1}, {2:#.####})\n", pre, n.Label, n.Value);
+                return String.Format("{0} +({1}, {2})\n", pre, n.Label, n.Value);
             else
             {
                 StringBuilder sb = new StringBuilder();

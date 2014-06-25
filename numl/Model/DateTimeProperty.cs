@@ -76,6 +76,9 @@ namespace numl.Model
         TimeExtended = 0x0010
     }
 
+    /// <summary>
+    /// DateTime Property. Used as a feature expansion mechanism.
+    /// </summary>
     [XmlRoot("DateTimeProperty"), Serializable]
     public class DateTimeProperty : Property
     {

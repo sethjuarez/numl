@@ -1,10 +1,9 @@
 ﻿using System;
-using numl.Data;
 using numl.Model;
 using System.Linq;
 using NUnit.Framework;
-using System.Collections.Generic;
 using numl.Tests.Data;
+using System.Collections.Generic;
 
 namespace numl.Tests.DataTests
 {
