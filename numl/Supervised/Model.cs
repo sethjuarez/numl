@@ -34,68 +34,36 @@ namespace numl.Supervised
             return (T)Predict((object)o);
         }
 
+        // ----- saving stuff
+
         public virtual void Save(string file)
         {
-            using (var stream = File.OpenWrite(file))
-                Save(stream);
+            Xml.Save(file, this, GetType());
         }
 
         public virtual void Save(Stream stream)
         {
-            XmlSerializer serializer = new XmlSerializer(GetType());
-            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
-            ns.Add("", "");
-
-            serializer.Serialize(stream, this, ns);
+            Xml.Save(stream, this, GetType());
         }
 
         public virtual string ToXml()
         {
-            XmlSerializer serializer = new XmlSerializer(GetType());
-            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
-            StringWriter textWriter = new StringWriter();
-            ns.Add("", "");
-
-            serializer.Serialize(textWriter, this, ns);
-            return textWriter.ToString();
+            return Xml.ToXmlString(this, GetType());
         }
 
         public virtual IModel Load(string file)
         {
-            using (var stream = File.OpenRead(file))
-                return Load(stream);
+            return (IModel)Xml.Load(file, GetType());
         }
 
         public virtual IModel Load(Stream stream)
         {
-            XmlSerializer serializer = new XmlSerializer(GetType());
-            var o = serializer.Deserialize(stream);
-            return (IModel)o;
+            return (IModel)Xml.Load(stream, GetType());
         }
 
         public virtual IModel LoadXml(string xml)
         {
-            TextReader reader = new StringReader(xml);
-            XmlSerializer serializer = new XmlSerializer(GetType());
-            var o = serializer.Deserialize(reader);
-            return (IModel)o;
-        }
-
-        public virtual void WriteXml<T>(XmlWriter writer, T thing)
-        {
-            XmlSerializer serializer = new XmlSerializer(typeof(T));
-            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
-            ns.Add("", "");
-            serializer.Serialize(writer, thing, ns);
-        }
-
-        public virtual T ReadXml<T>(XmlReader reader)
-        {
-            XmlSerializer dserializer = new XmlSerializer(typeof(T));
-            T item = (T)dserializer.Deserialize(reader);
-            // move to next thing
-            reader.Read();
-            return item;
+            return (IModel)Xml.LoadXmlString(xml, GetType());
         }
 
         public XmlSchema GetSchema()

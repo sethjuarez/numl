@@ -4,8 +4,8 @@ using System.Xml;
 using System.Linq;
 using System.Text;
 using numl.Math.LinearAlgebra;
-using System.Xml.Serialization;
 using System.Collections.Generic;
+using numl.Utils;
 
 namespace numl.Supervised.DecisionTree
 {
@@ -102,8 +102,8 @@ namespace numl.Supervised.DecisionTree
             Hint = double.Parse(reader.GetAttribute("Hint"));
             reader.ReadStartElement();
 
-            Descriptor = ReadXml<Descriptor>(reader);
-            Tree = ReadXml<Node>(reader);
+            Descriptor = Xml.Read<Descriptor>(reader);
+            Tree = Xml.Read<Node>(reader);
 
             // re-establish tree cycles and values
             ReLinkNodes(Tree);
@@ -112,8 +112,8 @@ namespace numl.Supervised.DecisionTree
         public override void WriteXml(XmlWriter writer)
         {
             writer.WriteAttributeString("Hint", Hint.ToString("r"));
-            WriteXml<Descriptor>(writer, Descriptor);
-            WriteXml<Node>(writer, Tree);
+            Xml.Write<Descriptor>(writer, Descriptor);
+            Xml.Write<Node>(writer, Tree);
         }
     }
 }

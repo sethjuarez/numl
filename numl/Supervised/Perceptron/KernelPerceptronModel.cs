@@ -32,10 +32,10 @@ namespace numl.Supervised.Perceptron
         public override void WriteXml(XmlWriter writer)
         {
             writer.WriteAttributeString("Kernel", Kernel.GetType().Name);
-            WriteXml<Descriptor>(writer, Descriptor);
-            WriteXml<Vector>(writer, Y);
-            WriteXml<Vector>(writer, A);
-            WriteXml<Matrix>(writer, X);
+            Xml.Write<Descriptor>(writer, Descriptor);
+            Xml.Write<Vector>(writer, Y);
+            Xml.Write<Vector>(writer, A);
+            Xml.Write<Matrix>(writer, X);
         }
 
         public override void ReadXml(XmlReader reader)
@@ -45,10 +45,10 @@ namespace numl.Supervised.Perceptron
             Kernel = (IKernel)Activator.CreateInstance(type);
             reader.ReadStartElement();
 
-            Descriptor = ReadXml<Descriptor>(reader);
-            Y = ReadXml<Vector>(reader);
-            A = ReadXml<Vector>(reader);
-            X = ReadXml<Matrix>(reader);
+            Descriptor = Xml.Read<Descriptor>(reader);
+            Y = Xml.Read<Vector>(reader);
+            A = Xml.Read<Vector>(reader);
+            X = Xml.Read<Matrix>(reader);
         }
     }
 }

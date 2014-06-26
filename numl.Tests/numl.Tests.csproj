@@ -61,6 +61,7 @@
     <Compile Include="SerializationTests\DecisionTreeSerializationTests.cs" />
     <Compile Include="SerializationTests\DescriptorSerializationTests.cs" />
     <Compile Include="SerializationTests\NaiveBayesSerializationTests.cs" />
+    <Compile Include="SerializationTests\NeuralNetworkSerializationTests.cs" />
     <Compile Include="SupervisedTests\BaseSupervised.cs" />
     <Compile Include="SupervisedTests\DecisionTreeTests.cs" />
     <Compile Include="MathTests\DistanceTests.cs" />
@@ -85,11 +86,6 @@
       <Project>{11022b54-2310-42aa-b80f-660733243406}</Project>
       <Name>numl</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Data\iris.data">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -23,13 +23,14 @@ namespace numl.Tests.SupervisedTests
             Sampling.SetSeedFromSystemTime();
         }
 
-        public void Prediction<T>(IGenerator generator, IEnumerable<T> data, T item, Func<T, bool> test)
+        public static IModel Prediction<T>(IGenerator generator, IEnumerable<T> data, T item, Func<T, bool> test)
             where T : class
         {
             var description = Descriptor.Create<T>();
             var model = generator.Generate(description, data);
             var prediction = model.Predict(item);
             Assert.IsTrue(test(prediction));
+            return model;
         }
 
         public void HousePrediction(IGenerator generator)
@@ -89,7 +90,7 @@ namespace numl.Tests.SupervisedTests
             );
         }
 
-        public void LearnerPrediction<T>(IGenerator generator, IEnumerable<T> data, T item, Func<T, bool> test)
+        public static void LearnerPrediction<T>(IGenerator generator, IEnumerable<T> data, T item, Func<T, bool> test)
             where T : class
         {
             var description = Descriptor.Create<T>();

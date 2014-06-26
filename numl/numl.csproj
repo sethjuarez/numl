@@ -101,6 +101,8 @@
     <Compile Include="Supervised\NaiveBayes\Measure.cs" />
     <Compile Include="Supervised\NaiveBayes\NaiveBayesGenerator.cs" />
     <Compile Include="Supervised\NaiveBayes\Statistic.cs" />
+    <Compile Include="Supervised\NeuralNetwork\Edge.cs" />
+    <Compile Include="Supervised\NeuralNetwork\Network.cs" />
     <Compile Include="Supervised\NeuralNetwork\NeuralNetworkGenerator.cs" />
     <Compile Include="Supervised\NeuralNetwork\NeuralNetworkModel.cs" />
     <Compile Include="Supervised\NeuralNetwork\Neuron.cs" />
@@ -127,6 +129,7 @@
     <Compile Include="Supervised\Model.cs" />
     <Compile Include="Supervised\DecisionTree\Node.cs" />
     <Compile Include="Utils\TypeHelpers.cs" />
+    <Compile Include="Utils\Xml.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Supervised\Perceptron\KernelPerceptronGenerator.cs" />

@@ -6,6 +6,7 @@ using System.Xml.Schema;
 using numl.Math.LinearAlgebra;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using numl.Utils;
 
 namespace numl.Supervised.NaiveBayes
 {
@@ -39,14 +40,14 @@ namespace numl.Supervised.NaiveBayes
         {
             reader.MoveToContent();
             reader.ReadStartElement();
-            Descriptor = ReadXml<Descriptor>(reader);
-            Root = ReadXml<Measure>(reader);
+            Descriptor = Xml.Read<Descriptor>(reader);
+            Root = Xml.Read<Measure>(reader);
         }
 
         public override void WriteXml(XmlWriter writer)
         {
-            WriteXml<Descriptor>(writer, Descriptor);
-            WriteXml<Measure>(writer, Root);
+            Xml.Write<Descriptor>(writer, Descriptor);
+            Xml.Write<Measure>(writer, Root);
         }
     }
 }

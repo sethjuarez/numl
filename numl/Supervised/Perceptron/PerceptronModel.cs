@@ -4,6 +4,7 @@ using System.Linq;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 using numl.Model;
+using numl.Utils;
 
 namespace numl.Supervised.Perceptron
 {
@@ -26,8 +27,8 @@ namespace numl.Supervised.Perceptron
             writer.WriteAttributeString("B", B.ToString("r"));
             writer.WriteAttributeString("Normalized", Normalized.ToString());
 
-            WriteXml<Descriptor>(writer, Descriptor);
-            WriteXml<Vector>(writer, W);
+            Xml.Write<Descriptor>(writer, Descriptor);
+            Xml.Write<Vector>(writer, W);
         }
 
         public override void ReadXml(XmlReader reader)
@@ -37,8 +38,8 @@ namespace numl.Supervised.Perceptron
             Normalized = bool.Parse(reader.GetAttribute("Normalized"));
             reader.ReadStartElement();
 
-            Descriptor = ReadXml<Descriptor>(reader);
-            W = ReadXml<Vector>(reader);
+            Descriptor = Xml.Read<Descriptor>(reader);
+            W = Xml.Read<Vector>(reader);
         }
     }
 }

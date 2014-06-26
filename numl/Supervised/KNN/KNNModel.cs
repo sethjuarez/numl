@@ -5,6 +5,7 @@ using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 using System.Xml;
 using numl.Model;
+using numl.Utils;
 
 namespace numl.Supervised.KNN
 {
@@ -33,9 +34,9 @@ namespace numl.Supervised.KNN
         public override void WriteXml(XmlWriter writer)
         {
             writer.WriteAttributeString("K", K.ToString("r"));
-            WriteXml<Descriptor>(writer, Descriptor);
-            WriteXml<Matrix>(writer, X);
-            WriteXml<Vector>(writer, Y);
+            Xml.Write<Descriptor>(writer, Descriptor);
+            Xml.Write<Matrix>(writer, X);
+            Xml.Write<Vector>(writer, Y);
 
         }
 
@@ -45,9 +46,9 @@ namespace numl.Supervised.KNN
             K = int.Parse(reader.GetAttribute("K"));
             reader.ReadStartElement();
 
-            Descriptor = ReadXml<Descriptor>(reader);
-            X = ReadXml<Matrix>(reader);
-            Y = ReadXml<Vector>(reader);
+            Descriptor = Xml.Read<Descriptor>(reader);
+            X = Xml.Read<Matrix>(reader);
+            Y = Xml.Read<Vector>(reader);
         }
 
         

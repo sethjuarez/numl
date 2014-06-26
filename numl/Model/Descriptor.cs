@@ -1,16 +1,16 @@
 ﻿using System;
-using numl.Utils;
-using System.Linq;
-using System.Reflection;
-using System.Collections.Generic;
-using numl.Math.LinearAlgebra;
-using System.Text;
-using System.Xml.Serialization;
-using System.Xml;
-using System.Xml.Schema;
-using System.Linq.Expressions;
-using System.Collections;
 using System.IO;
+using numl.Utils;
+using System.Xml;
+using System.Linq;
+using System.Text;
+using System.Reflection;
+using System.Xml.Schema;
+using System.Collections;
+using numl.Math.LinearAlgebra;
+using System.Linq.Expressions;
+using System.Xml.Serialization;
+using System.Collections.Generic;
 
 namespace numl.Model
 {
