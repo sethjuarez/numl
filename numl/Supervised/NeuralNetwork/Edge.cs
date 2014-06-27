@@ -28,7 +28,9 @@ namespace numl.Supervised.NeuralNetwork
         }
 
         public Node Source { get; set; }
+        internal string SourceId { get; set; }
         public Node Target { get; set; }
+        internal string TargetId { get; set; }
         public double Weight { get; set; }
 
         public static Edge Create(Node source, Node target)
@@ -51,16 +53,18 @@ namespace numl.Supervised.NeuralNetwork
 
         public void ReadXml(XmlReader reader)
         {
-            
+            reader.MoveToContent();
+            SourceId = reader.GetAttribute("Source");
+            TargetId = reader.GetAttribute("Target");
+            Weight = double.Parse(reader.GetAttribute("Weight"));
+
         }
 
         public void WriteXml(XmlWriter writer)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(Node));
             writer.WriteAttributeString("Source", Source.Id);
             writer.WriteAttributeString("Target", Target.Id);
             writer.WriteAttributeString("Weight", Weight.ToString("r"));
-            serializer.Serialize(writer, Target);
         }
     }
 }

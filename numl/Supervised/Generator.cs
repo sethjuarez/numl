@@ -13,15 +13,25 @@ namespace numl.Supervised
     {
         public Descriptor Descriptor { get; set; }
 
+        /// <summary>
+        /// Generate model based on a set of examples
+        /// </summary>
+        /// <param name="examples">Example set</param>
+        /// <returns>Model</returns>
         public IModel Generate(IEnumerable<object> examples)
         {
-            if (Descriptor == null)
-                throw new InvalidOperationException("Cannot generate model with empty Descriptor");
+            if (examples.Count() == 0) throw new InvalidOperationException("Empty example set.");
+
+            if (Descriptor == null) // try to generate the descriptor
+                Descriptor = Descriptor.Create(examples.First().GetType());
+
             return Generate(Descriptor, examples);
         }
 
         public IModel Generate(Descriptor description, IEnumerable<object> examples)
         {
+            if (examples.Count() == 0) throw new InvalidOperationException("Empty example set.");
+
             Descriptor = description;
             if (Descriptor.Features == null || Descriptor.Features.Length == 0)
                 throw new InvalidOperationException("Invalid descriptor: Empty feature set!");

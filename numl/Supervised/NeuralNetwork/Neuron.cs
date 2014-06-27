@@ -5,6 +5,7 @@ using System.Xml.Serialization;
 using System.Collections.Generic;
 using System.Xml.Schema;
 using System.Xml;
+using numl.Utils;
 
 namespace numl.Supervised.NeuralNetwork
 {
@@ -81,25 +82,27 @@ namespace numl.Supervised.NeuralNetwork
 
         public void ReadXml(XmlReader reader)
         {
-            
+            reader.MoveToContent();
+            Id = reader.GetAttribute("Id");
+            Label = reader.GetAttribute("Label");
+            Input = double.Parse(reader.GetAttribute("Input"));
+            Output = double.Parse(reader.GetAttribute("Output"));
+            Delta = double.Parse(reader.GetAttribute("Delta"));
+
+            var activation = Ject.FindType(reader.GetAttribute("Activation"));
+            Activation = (IFunction)Activator.CreateInstance(activation);
+            In = new List<Edge>();
+            Out = new List<Edge>();
         }
 
         public void WriteXml(XmlWriter writer)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(Edge));
             writer.WriteAttributeString("Id", Id);
             writer.WriteAttributeString("Label", Label);
             writer.WriteAttributeString("Input", Input.ToString("r"));
             writer.WriteAttributeString("Output", Output.ToString("r"));
             writer.WriteAttributeString("Delta", Delta.ToString("r"));
             writer.WriteAttributeString("Activation", Activation.GetType().Name);
-
-            writer.WriteStartElement("Edges");
-            writer.WriteAttributeString("Length", Out.Count.ToString());
-
-            for (int i = 0; i < Out.Count; i++)
-                serializer.Serialize(writer, Out[i]);
-            writer.WriteEndElement();
         }
     }
 }

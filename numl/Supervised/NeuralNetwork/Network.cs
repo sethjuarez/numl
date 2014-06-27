@@ -26,8 +26,6 @@ namespace numl.Supervised.NeuralNetwork
             // identity funciton for bias nodes
             IFunction ident = new Ident();
 
-            //if (output > 1) throw new NotImplementedException("Still deciding what to do here ;)");
-
             // set number of hidden units to (Input + Hidden) * 2/3
             // as basic best guess
             int hidden = (int)System.Math.Ceiling((decimal)(x.Cols + output) * 2m / 3m);
@@ -42,7 +40,7 @@ namespace numl.Supervised.NeuralNetwork
             Node[] h = new Node[hidden + 1];
             h[0] = new Node { Label = "B1", Activation = ident };
             for (int i = 1; i < hidden + 1; i++)
-                h[i] = new Node { Label = "H" + i.ToString(), Activation = activation };
+                h[i] = new Node { Label = String.Format("H{0}", i), Activation = activation };
 
             // creating output nodes
             nn.Out = new Node[output];
@@ -66,7 +64,7 @@ namespace numl.Supervised.NeuralNetwork
         private static string GetLabel(int n, Descriptor d)
         {
             if (d.Label.Type.IsEnum)
-                return Enum.GetName(d.Label.Type, n).ToString();
+                return Enum.GetName(d.Label.Type, n);
             else if (d.Label is StringProperty && ((StringProperty)d.Label).AsEnum)
                 return ((StringProperty)d.Label).Dictionary[n];
             else return d.Label.Name;
@@ -103,18 +101,169 @@ namespace numl.Supervised.NeuralNetwork
 
         public void ReadXml(XmlReader reader)
         {
-            throw new NotImplementedException();
+            XmlSerializer nSerializer = new XmlSerializer(typeof(Node));
+            XmlSerializer eSerializer = new XmlSerializer(typeof(Edge));
+
+            reader.MoveToContent();
+
+
+            Dictionary<string, Node> nodes = new Dictionary<string, Node>();
+            int length = 0;
+            reader.ReadStartElement();
+            length = int.Parse(reader.GetAttribute("Length"));
+            reader.ReadStartElement("Nodes");
+            for (int i = 0; i < length; i++)
+            {
+                var node = (Node)nSerializer.Deserialize(reader);
+                nodes.Add(node.Id, node);
+                reader.Read();
+            }
+            reader.ReadEndElement();
+
+            length = int.Parse(reader.GetAttribute("Length"));
+            reader.ReadStartElement("Edges");
+            for (int i = 0; i < length; i++)
+            {
+                var edge = (Edge)eSerializer.Deserialize(reader);
+                reader.Read();
+
+                edge.Source = nodes[edge.SourceId];
+                edge.Target = nodes[edge.TargetId];
+
+                edge.Source.Out.Add(edge);
+                edge.Target.In.Add(edge);
+            }
+            reader.ReadEndElement();
+
+            length = int.Parse(reader.GetAttribute("Length"));
+            reader.ReadStartElement("In");
+            In = new Node[length];
+            for (int i = 0; i < length; i++)
+            {
+                reader.MoveToContent();
+                In[i] = nodes[reader.GetAttribute("Id")];
+                reader.Read();
+
+            }
+            reader.ReadEndElement();
+
+            length = int.Parse(reader.GetAttribute("Length"));
+            reader.ReadStartElement("Out");
+            Out = new Node[length];
+            for (int i = 0; i < length; i++)
+            {
+                reader.MoveToContent();
+                Out[i] = nodes[reader.GetAttribute("Id")];
+                reader.Read();
+
+            }
+            reader.ReadEndElement();
         }
 
         public void WriteXml(XmlWriter writer)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(Node));
-            writer.WriteAttributeString("In", In.Length.ToString());
+            XmlSerializer nSerializer = new XmlSerializer(typeof(Node));
+            XmlSerializer eSerializer = new XmlSerializer(typeof(Edge));
+
+            var nodes = GetNodes().ToArray();
             writer.WriteStartElement("Nodes");
-            for (int i = 0; i < In.Length; i++)
-                serializer.Serialize(writer, In[i]);
+            writer.WriteAttributeString("Length", nodes.Length.ToString());
+            foreach (var node in nodes)
+                nSerializer.Serialize(writer, node);
 
             writer.WriteEndElement();
+
+            var edges = GetEdges().ToArray();
+            writer.WriteStartElement("Edges");
+            writer.WriteAttributeString("Length", edges.Length.ToString());
+            foreach (var edge in edges)
+                eSerializer.Serialize(writer, edge);
+
+            writer.WriteEndElement();
+
+            writer.WriteStartElement("In");
+            writer.WriteAttributeString("Length", In.Length.ToString());
+            for (int i = 0; i < In.Length; i++)
+            {
+                writer.WriteStartElement("Node");
+                writer.WriteAttributeString("Id", In[i].Id);
+                writer.WriteEndElement();
+            }
+            writer.WriteEndElement();
+
+            writer.WriteStartElement("Out");
+            writer.WriteAttributeString("Length", Out.Length.ToString());
+            for (int i = 0; i < Out.Length; i++)
+            {
+                writer.WriteStartElement("Node");
+                writer.WriteAttributeString("Id", Out[i].Id);
+                writer.WriteEndElement();
+            }
+            writer.WriteEndElement();
+        }
+
+
+        private HashSet<string> _nodes;
+        public IEnumerable<Node> GetNodes()
+        {
+            if (_nodes == null) _nodes = new HashSet<string>();
+            else _nodes.Clear();
+
+            foreach (var node in Out)
+            {
+                _nodes.Add(node.Id);
+                yield return node;
+                foreach (var n in GetNodes(node))
+                {
+                    if (!_nodes.Contains(n.Id))
+                    {
+                        _nodes.Add(n.Id);
+                        yield return n;
+                    }
+                }
+            }
+        }
+
+        private IEnumerable<Node> GetNodes(Node n)
+        {
+            foreach (var edge in n.In)
+            {
+                yield return edge.Source;
+                foreach (var node in GetNodes(edge.Source))
+                    yield return node;
+            }
+        }
+
+
+        private HashSet<Tuple<string, string>> _edges;
+        public IEnumerable<Edge> GetEdges()
+        {
+            if (_edges == null) _edges = new HashSet<Tuple<string, string>>();
+            else _edges.Clear();
+
+            foreach (var node in Out)
+            {
+                foreach (var edge in GetEdges(node))
+                {
+                    var key = new Tuple<string, string>(edge.Source.Id, edge.Target.Id);
+                    if (!_edges.Contains(key))
+                    {
+                        _edges.Add(key);
+                        yield return edge;
+                    }
+                }
+            }
+        }
+
+
+        private IEnumerable<Edge> GetEdges(Node n)
+        {
+            foreach (var edge in n.In)
+            {
+                yield return edge;
+                foreach (var e in GetEdges(edge.Source))
+                    yield return e;
+            }
         }
     }
 }
