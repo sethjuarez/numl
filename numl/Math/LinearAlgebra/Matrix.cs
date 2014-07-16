@@ -1,4 +1,7 @@
-﻿using System;
+﻿// file:	Math\LinearAlgebra\Matrix.cs
+//
+// summary:	Implements the matrix class
+using System;
 using System.IO;
 using System.Xml;
 using System.Text;
@@ -11,39 +14,38 @@ using System.Collections.Generic;
 
 namespace numl.Math.LinearAlgebra
 {
+    /// <summary>A matrix.</summary>
     [XmlRoot("m"), Serializable]
     public partial class Matrix : IXmlSerializable
     {
+        /// <summary>The matrix.</summary>
         private double[][] _matrix;
+        /// <summary>true to as transpose reference.</summary>
         private bool _asTransposeRef;
+        /// <summary>Gets or sets the rows.</summary>
+        /// <value>The rows.</value>
         public int Rows { get; private set; }
+        /// <summary>Gets or sets the cols.</summary>
+        /// <value>The cols.</value>
         public int Cols { get; private set; }
 
         //--------------- ctor
 
-        /// <summary>
-        /// Used only internally
-        /// </summary>
+        /// <summary>Used only internally.</summary>
         private Matrix()
         {
 
         }
-
-        /// <summary>
-        /// Create matrix n x n matrix
-        /// </summary>
-        /// <param name="n">size</param>
+        /// <summary>Create matrix n x n matrix.</summary>
+        /// <param name="n">size.</param>
         public Matrix(int n) :
             this(n, n)
         {
 
         }
-
-        /// <summary>
-        /// Create new n x d matrix
-        /// </summary>
-        /// <param name="n">rows</param>
-        /// <param name="d">cols</param>
+        /// <summary>Create new n x d matrix.</summary>
+        /// <param name="n">rows.</param>
+        /// <param name="d">cols.</param>
         public Matrix(int n, int d)
         {
             _asTransposeRef = false;
@@ -58,12 +60,8 @@ namespace numl.Math.LinearAlgebra
             }
 
         }
-
-        /// <summary>
-        /// Create new matrix with prepopulated
-        /// vals
-        /// </summary>
-        /// <param name="m">initial matrix</param>
+        /// <summary>Create new matrix with prepopulated vals.</summary>
+        /// <param name="m">initial matrix.</param>
         public Matrix(double[,] m)
         {
             _asTransposeRef = false;
@@ -77,7 +75,9 @@ namespace numl.Math.LinearAlgebra
                     _matrix[i][j] = m[i, j];
             }
         }
-
+        /// <summary>Create matrix n x n matrix.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="m">initial matrix.</param>
         public Matrix(double[][] m)
         {
             _asTransposeRef = false;
@@ -91,12 +91,10 @@ namespace numl.Math.LinearAlgebra
         }
 
         //--------------- access
-        /// <summary>
-        /// Accessor
-        /// </summary>
-        /// <param name="i">Row</param>
-        /// <param name="j">Column</param>
-        /// <returns></returns>
+        /// <summary>Accessor.</summary>
+        /// <param name="i">Row.</param>
+        /// <param name="j">Column.</param>
+        /// <returns>The indexed item.</returns>
         public virtual double this[int i, int j]
         {
             get
@@ -114,12 +112,9 @@ namespace numl.Math.LinearAlgebra
                 _matrix[i][j] = value;
             }
         }
-
-        /// <summary>
-        /// Returns row vector specified at index i
-        /// </summary>
-        /// <param name="i">row index</param>
-        /// <returns></returns>
+        /// <summary>Returns row vector specified at index i.</summary>
+        /// <param name="i">row index.</param>
+        /// <returns>The indexed item.</returns>
         public virtual Vector this[int i]
         {
             get
@@ -131,13 +126,10 @@ namespace numl.Math.LinearAlgebra
                 this[i, VectorType.Row] = value;
             }
         }
-
-        /// <summary>
-        /// returns col/row vector at index j
-        /// </summary>
-        /// <param name="i">Col/Row</param>
-        /// <param name="t">Row or Column</param>
-        /// <returns>Vector</returns>
+        /// <summary>returns col/row vector at index j.</summary>
+        /// <param name="i">Col/Row.</param>
+        /// <param name="t">Row or Column.</param>
+        /// <returns>Vector.</returns>
         public virtual Vector this[int i, VectorType t]
         {
             get
@@ -192,17 +184,23 @@ namespace numl.Math.LinearAlgebra
                 }
             }
         }
-
+        /// <summary>Rows.</summary>
+        /// <param name="i">Zero-based index of the.</param>
+        /// <returns>A Vector.</returns>
         public Vector Row(int i)
         {
             return this[i, VectorType.Row];
         }
-
+        /// <summary>Cols.</summary>
+        /// <param name="i">Zero-based index of the.</param>
+        /// <returns>A Vector.</returns>
         public Vector Col(int i)
         {
             return this[i, VectorType.Col];
         }
-
+        /// <summary>Indexer to set items within this collection using array index syntax.</summary>
+        /// <param name="f">The Func&lt;double,bool&gt; to process.</param>
+        /// <returns>The indexed item.</returns>
         public double this[Func<double, bool> f]
         {
             set
@@ -213,7 +211,10 @@ namespace numl.Math.LinearAlgebra
                             this[i, j] = value;
             }
         }
-
+        /// <summary>Indexer to get items within this collection using array index syntax.</summary>
+        /// <param name="f">The Func&lt;Vector,bool&gt; to process.</param>
+        /// <param name="t">The VectorType to process.</param>
+        /// <returns>The indexed item.</returns>
         public Matrix this[Func<Vector, bool> f, VectorType t]
         {
             get
@@ -250,7 +251,12 @@ namespace numl.Math.LinearAlgebra
 
             }
         }
-
+        /// <summary>Gets a vector.</summary>
+        /// <param name="index">Zero-based index of the.</param>
+        /// <param name="from">Source for the.</param>
+        /// <param name="to">to.</param>
+        /// <param name="type">The type.</param>
+        /// <returns>The vector.</returns>
         public Vector GetVector(int index, int from, int to, VectorType type)
         {
             double[] v = (double[])Array.CreateInstance(typeof(double), to - from + 1);
@@ -258,7 +264,12 @@ namespace numl.Math.LinearAlgebra
                 v[j] = this[index, type][i];
             return new Vector(v);
         }
-
+        /// <summary>Gets a matrix.</summary>
+        /// <param name="d1">The first int.</param>
+        /// <param name="d2">The second int.</param>
+        /// <param name="n1">The first int.</param>
+        /// <param name="n2">The second int.</param>
+        /// <returns>The matrix.</returns>
         public Matrix GetMatrix(int d1, int d2, int n1, int n2)
         {
             Matrix m = Matrix.Zeros(n2 - n1 + 1, d2 - d1 + 1);
@@ -267,19 +278,27 @@ namespace numl.Math.LinearAlgebra
                     m[i, j] = this[i + n1, j + d1];
             return m;
         }
-
+        /// <summary>Gets the rows in this collection.</summary>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process the rows in this collection.
+        /// </returns>
         public IEnumerable<Vector> GetRows()
         {
             for (int i = 0; i < Rows; i++)
                 yield return this[i, VectorType.Row];
         }
-
+        /// <summary>Gets the cols in this collection.</summary>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process the cols in this collection.
+        /// </returns>
         public IEnumerable<Vector> GetCols()
         {
             for (int i = 0; i < Cols; i++)
                 yield return this[i, VectorType.Col];
         }
-
+        /// <summary>Converts this object to a vector.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <returns>This object as a Vector.</returns>
         public Vector ToVector()
         {
             if (Rows == 1)
@@ -290,14 +309,11 @@ namespace numl.Math.LinearAlgebra
 
             throw new InvalidOperationException("Matrix conversion failed: More then one row or one column!");
         }
-
-
         /// <summary>
-        /// Returns read-only transpose (uses matrix reference
-        /// to save space)
-        /// It will throw an exception if there is an attempt
-        /// to write to the matrix
+        /// Returns read-only transpose (uses matrix reference to save space)
+        /// It will throw an exception if there is an attempt to write to the matrix.
         /// </summary>
+        /// <value>The t.</value>
         public Matrix T
         {
             get
@@ -311,11 +327,8 @@ namespace numl.Math.LinearAlgebra
                 };
             }
         }
-
-        /// <summary>
-        /// Deep copy transpose
-        /// </summary>
-        /// <returns>Matrix</returns>
+        /// <summary>Deep copy transpose.</summary>
+        /// <returns>Matrix.</returns>
         public Matrix Transpose()
         {
             var m = new Matrix(Cols, Rows);
@@ -324,11 +337,8 @@ namespace numl.Math.LinearAlgebra
                     m[j, i] = this[i, j];
             return m;
         }
-
-        /// <summary>
-        /// create deep copy of matrix
-        /// </summary>
-        /// <returns>Matrix</returns>
+        /// <summary>create deep copy of matrix.</summary>
+        /// <returns>Matrix.</returns>
         public Matrix Copy()
         {
             var m = Matrix.Zeros(Rows, Cols);
@@ -338,13 +348,22 @@ namespace numl.Math.LinearAlgebra
             return m;
 
         }
-
-
+        /// <summary>Serves as a hash function for a particular type.</summary>
+        /// <returns>A hash code for the current <see cref="T:System.Object" />.</returns>
         public override int GetHashCode()
         {
             return _matrix.GetHashCode();
         }
-
+        /// <summary>
+        /// Determines whether the specified <see cref="T:System.Object" /> is equal to the current
+        /// <see cref="T:System.Object" />.
+        /// </summary>
+        /// <param name="m">initial matrix.</param>
+        /// <param name="tol">Double to be compared.</param>
+        /// <returns>
+        /// true if the specified <see cref="T:System.Object" /> is equal to the current
+        /// <see cref="T:System.Object" />; otherwise, false.
+        /// </returns>
         public bool Equals(Matrix m, double tol)
         {
             if (Rows != m.Rows || Cols != m.Cols)
@@ -356,7 +375,15 @@ namespace numl.Math.LinearAlgebra
                         return false;
             return true;
         }
-
+        /// <summary>
+        /// Determines whether the specified <see cref="T:System.Object" /> is equal to the current
+        /// <see cref="T:System.Object" />.
+        /// </summary>
+        /// <param name="obj">The object to compare with the current object.</param>
+        /// <returns>
+        /// true if the specified <see cref="T:System.Object" /> is equal to the current
+        /// <see cref="T:System.Object" />; otherwise, false.
+        /// </returns>
         public override bool Equals(object obj)
         {
             if (obj is Matrix)
@@ -375,7 +402,8 @@ namespace numl.Math.LinearAlgebra
             else
                 return false;
         }
-
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
             int maxlpad = int.MinValue;
@@ -415,22 +443,17 @@ namespace numl.Math.LinearAlgebra
         }
 
         //--------------- creation
-        /// <summary>
-        /// Initial Zero Matrix (n by n)
-        /// </summary>
-        /// <param name="n">Size</param>
-        /// <returns>Matrix</returns>
+        /// <summary>Initial Zero Matrix (n by n)</summary>
+        /// <param name="n">Size.</param>
+        /// <returns>Matrix.</returns>
         public static Matrix Zeros(int n)
         {
             return new Matrix(n, n);
         }
-
-        /// <summary>
-        /// n x d identity matrix
-        /// </summary>
-        /// <param name="n">rows</param>
-        /// <param name="d">cols</param>
-        /// <returns>Matrix</returns>
+        /// <summary>n x d identity matrix.</summary>
+        /// <param name="n">rows.</param>
+        /// <param name="d">cols.</param>
+        /// <returns>Matrix.</returns>
         public static Matrix Identity(int n, int d)
         {
             var m = new double[n][];
@@ -452,15 +475,13 @@ namespace numl.Math.LinearAlgebra
                 _asTransposeRef = false
             };
         }
-
         /// <summary>
-        /// Generate a matrix n x d with numbers
-        /// 0 less than x less than 1 drawn uniformly at
-        /// random
+        /// Generate a matrix n x d with numbers 0 less than x less than 1 drawn uniformly at random.
         /// </summary>
-        /// <param name="n">rows</param>
-        /// <param name="d">cols</param>
-        /// <returns>n x d Matrix</returns>
+        /// <param name="n">rows.</param>
+        /// <param name="d">cols.</param>
+        /// <param name="min">(Optional) the minimum.</param>
+        /// <returns>n x d Matrix.</returns>
         public static Matrix Rand(int n, int d, double min = 0)
         {
             var m = new double[n][];
@@ -473,12 +494,21 @@ namespace numl.Math.LinearAlgebra
 
             return new Matrix { _matrix = m, _asTransposeRef = false, Cols = d, Rows = n };
         }
-
+        /// <summary>
+        /// Generate a matrix n x d with numbers 0 less than x less than 1 drawn uniformly at random.
+        /// </summary>
+        /// <param name="n">rows.</param>
+        /// <param name="min">(Optional) the minimum.</param>
+        /// <returns>n x d Matrix.</returns>
         public static Matrix Rand(int n, double min = 0)
         {
             return Matrix.Rand(n, n, min);
         }
-
+        /// <summary>Normalise random.</summary>
+        /// <param name="n">Size.</param>
+        /// <param name="d">cols.</param>
+        /// <param name="min">(Optional) the minimum.</param>
+        /// <returns>A Matrix.</returns>
         public static Matrix NormRand(int n, int d, double min = 0)
         {
             var m = new double[n][];
@@ -491,12 +521,20 @@ namespace numl.Math.LinearAlgebra
 
             return new Matrix { _matrix = m, _asTransposeRef = false, Cols = d, Rows = n };
         }
-
+        /// <summary>Normalise random.</summary>
+        /// <param name="n">Size.</param>
+        /// <param name="min">(Optional) the minimum.</param>
+        /// <returns>A Matrix.</returns>
         public static Matrix NormRand(int n, double min = 0)
         {
             return Matrix.NormRand(n, n, min);
         }
-
+        /// <summary>Normalise random.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="means">The means.</param>
+        /// <param name="stdDev">The standard development.</param>
+        /// <param name="n">Size.</param>
+        /// <returns>A Matrix.</returns>
         public static Matrix NormRand(Vector means, Vector stdDev, int n)
         {
             if (means.Length != stdDev.Length)
@@ -514,33 +552,34 @@ namespace numl.Math.LinearAlgebra
 
             return new Matrix { _matrix = m, _asTransposeRef = false, Cols = d, Rows = n };
         }
-
-        /// <summary>
-        /// Initial zero matrix
-        /// </summary>
-        /// <param name="n"></param>
-        /// <param name="d"></param>
-        /// <returns></returns>
+        /// <summary>Initial zero matrix.</summary>
+        /// <param name="n">.</param>
+        /// <param name="d">.</param>
+        /// <returns>A Matrix.</returns>
         public static Matrix Zeros(int n, int d)
         {
             return new Matrix(n, d);
         }
-
-        /// <summary>
-        /// n x n identity matrix
-        /// </summary>
-        /// <param name="n">Size</param>
-        /// <returns>Matrix</returns>
+        /// <summary>n x n identity matrix.</summary>
+        /// <param name="n">Size.</param>
+        /// <returns>Matrix.</returns>
         public static Matrix Identity(int n)
         {
             return Identity(n, n);
         }
-
+        /// <summary>Creates a new Matrix.</summary>
+        /// <param name="n">Size.</param>
+        /// <param name="f">The Func&lt;int,int,double&gt; to process.</param>
+        /// <returns>A Matrix.</returns>
         public static Matrix Create(int n, Func<double> f)
         {
             return Create(n, n, f);
         }
-
+        /// <summary>Creates a new Matrix.</summary>
+        /// <param name="n">Size.</param>
+        /// <param name="d">cols.</param>
+        /// <param name="f">The Func&lt;int,int,double&gt; to process.</param>
+        /// <returns>A Matrix.</returns>
         public static Matrix Create(int n, int d, Func<double> f)
         {
             Matrix matrix = new Matrix(n, d);
@@ -549,12 +588,19 @@ namespace numl.Math.LinearAlgebra
                     matrix[i, j] = f();
             return matrix;
         }
-
+        /// <summary>Creates a new Matrix.</summary>
+        /// <param name="n">Size.</param>
+        /// <param name="f">The Func&lt;int,int,double&gt; to process.</param>
+        /// <returns>A Matrix.</returns>
         public static Matrix Create(int n, Func<int, int, double> f)
         {
             return Create(n, n, f);
         }
-
+        /// <summary>Creates a new Matrix.</summary>
+        /// <param name="n">Size.</param>
+        /// <param name="d">cols.</param>
+        /// <param name="f">The Func&lt;int,int,double&gt; to process.</param>
+        /// <returns>A Matrix.</returns>
         public static Matrix Create(int n, int d, Func<int, int, double> f)
         {
             Matrix matrix = new Matrix(n, d);
@@ -565,23 +611,34 @@ namespace numl.Math.LinearAlgebra
         }
 
         //--------------- aggregation/structural
+        /// <summary>Swap row.</summary>
+        /// <param name="from">Source for the.</param>
+        /// <param name="to">to.</param>
         public void SwapRow(int from, int to)
         {
             Swap(from, to, VectorType.Row);
         }
-
+        /// <summary>Swap col.</summary>
+        /// <param name="from">Source for the.</param>
+        /// <param name="to">to.</param>
         public void SwapCol(int from, int to)
         {
             Swap(from, to, VectorType.Col);
         }
-
+        /// <summary>Swaps.</summary>
+        /// <param name="from">Source for the.</param>
+        /// <param name="to">to.</param>
+        /// <param name="t">.</param>
         public void Swap(int from, int to, VectorType t)
         {
             var temp = this[from, t].Copy();
             this[from, t] = this[to, t];
             this[to, t] = temp;
         }
-
+        /// <summary>Removes this object.</summary>
+        /// <param name="index">Zero-based index of the.</param>
+        /// <param name="t">.</param>
+        /// <returns>A Matrix.</returns>
         public Matrix Remove(int index, VectorType t)
         {
             int max = t == VectorType.Row ? Rows : Cols;
@@ -600,23 +657,17 @@ namespace numl.Math.LinearAlgebra
         }
 
         //-------------- destructive ops
-        /// <summary>
-        /// In place normalization.
-        /// WARNING: WILL UPDATE MATRIX!
-        /// </summary>
-        /// <param name="t"></param>
+        /// <summary>In place normalization. WARNING: WILL UPDATE MATRIX!</summary>
+        /// <param name="t">.</param>
         public void Normalize(VectorType t)
         {
             int max = t == VectorType.Row ? Rows : Cols;
             for (int i = 0; i < max; i++)
                 this[i, t] /= this[i, t].Norm();
         }
-
-        /// <summary>
-        /// In place centering.
-        /// WARNING: WILL UPDATE MATRIX!
-        /// </summary>
-        /// <param name="t"></param>
+        /// <summary>In place centering. WARNING: WILL UPDATE MATRIX!</summary>
+        /// <param name="t">.</param>
+        /// <returns>A Matrix.</returns>
         public Matrix Center(VectorType t)
         {
             int max = t == VectorType.Row ? Rows : Cols;
@@ -627,11 +678,28 @@ namespace numl.Math.LinearAlgebra
 
 
         //---------------- Xml Serialization
+        /// <summary>
+        /// This method is reserved and should not be used. When implementing the IXmlSerializable
+        /// interface, you should return null (Nothing in Visual Basic) from this method, and instead, if
+        /// specifying a custom schema is required, apply the
+        /// <see cref="T:System.Xml.Serialization.XmlSchemaProviderAttribute" /> to the class.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Xml.Schema.XmlSchema" /> that describes the XML representation of the
+        /// object that is produced by the
+        /// <see cref="M:System.Xml.Serialization.IXmlSerializable.WriteXml(System.Xml.XmlWriter)" />
+        /// method and consumed by the
+        /// <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)" />
+        /// method.
+        /// </returns>
         public XmlSchema GetSchema()
         {
             return null;
         }
-
+        /// <summary>Generates an object from its XML representation.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is
+        /// deserialized.</param>
         public void ReadXml(XmlReader reader)
         {
             reader.MoveToContent();
@@ -661,7 +729,9 @@ namespace numl.Math.LinearAlgebra
             reader.ReadEndElement();
 
         }
-
+        /// <summary>Converts an object into its XML representation.</summary>
+        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
+        /// serialized.</param>
         public void WriteXml(XmlWriter writer)
         {
             writer.WriteAttributeString("cols", Cols.ToString());
@@ -680,13 +750,15 @@ namespace numl.Math.LinearAlgebra
                 writer.WriteEndElement();
             }
         }
-
+        /// <summary>Saves the given stream.</summary>
+        /// <param name="file">The file to load.</param>
         public void Save(string file)
         {
             using (var stream = File.OpenWrite(file))
                 Save(stream);
         }
-
+        /// <summary>Saves the given stream.</summary>
+        /// <param name="stream">The stream to load.</param>
         public void Save(Stream stream)
         {
             using (var writer = new StreamWriter(stream))
@@ -710,7 +782,10 @@ namespace numl.Math.LinearAlgebra
                 }
             }
         }
-
+        /// <summary>Loads the given stream.</summary>
+        /// <exception cref="FileNotFoundException">Thrown when the requested file is not present.</exception>
+        /// <param name="file">The file to load.</param>
+        /// <returns>A Matrix.</returns>
         public static Matrix Load(string file)
         {
             if (File.Exists(file))
@@ -718,7 +793,10 @@ namespace numl.Math.LinearAlgebra
             else
                 throw new FileNotFoundException();
         }
-
+        /// <summary>Loads the given stream.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="stream">The stream to load.</param>
+        /// <returns>A Matrix.</returns>
         public static Matrix Load(Stream stream)
         {
             Matrix matrix = null;

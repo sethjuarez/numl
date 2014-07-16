@@ -1,4 +1,7 @@
-﻿using System;
+﻿// file:	Unsupervised\GMM.cs
+//
+// summary:	Implements the gmm class
+using System;
 using numl.Math;
 using numl.Model;
 using System.Linq;
@@ -8,10 +11,16 @@ using numl.Math.Metrics;
 
 namespace numl.Unsupervised
 {
+    /// <summary>A gmm.</summary>
     public class GMM
     {
+        /// <summary>Gets or sets the descriptor.</summary>
+        /// <value>The descriptor.</value>
         public Descriptor Descriptor { get; set; }
-
+        /// <summary>Generates.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="examples">The examples.</param>
+        /// <param name="k">The int to process.</param>
         public void Generate(IEnumerable<object> examples, int k)
         {
             #region Sanity Checks
@@ -36,7 +45,9 @@ namespace numl.Unsupervised
             // generate model
             Generate(X, k);
         }
-
+        /// <summary>Generates.</summary>
+        /// <param name="X">The Matrix to process.</param>
+        /// <param name="k">The int to process.</param>
         public void Generate(Matrix X, int k)
         {
             int n = X.Rows;
@@ -165,14 +176,11 @@ namespace numl.Unsupervised
 
             } while (probability_difference > .0000000001 && mu_difference > .0000000001 && --max_iter >= 0);
         }
-
-        /// <summary>
-        /// Compute probability according to multivariate Gaussian
-        /// </summary>
-        /// <param name="x">Vector in question</param>
-        /// <param name="mu">Mean</param>
+        /// <summary>Compute probability according to multivariate Gaussian.</summary>
+        /// <param name="x">Vector in question.</param>
+        /// <param name="mu">Mean.</param>
         /// <param name="sigma">diag(covariance)</param>
-        /// <returns>Probability</returns>
+        /// <returns>Probability.</returns>
         private double Normal(Vector x, Vector mu, Vector sigma)
         {
             // 1 / (2pi)^(2/D) where D = length of sigma

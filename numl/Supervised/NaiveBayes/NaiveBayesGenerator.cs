@@ -1,3 +1,6 @@
+// file:	Supervised\NaiveBayes\NaiveBayesGenerator.cs
+//
+// summary:	Implements the naive bayes generator class
 using System;
 using numl.Model;
 using System.Linq;
@@ -6,15 +9,23 @@ using System.Collections.Generic;
 
 namespace numl.Supervised.NaiveBayes
 {
+    /// <summary>A naive bayes generator.</summary>
     public class NaiveBayesGenerator : Generator
     {
+        /// <summary>Gets or sets the width.</summary>
+        /// <value>The width.</value>
         public int Width { get; set; }
-
+        /// <summary>Constructor.</summary>
+        /// <param name="width">The width.</param>
         public NaiveBayesGenerator(int width)
         {
             Width = width;
         }
-
+        /// <summary>Generate model based on a set of examples.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="x">The Matrix to process.</param>
+        /// <param name="y">The Vector to process.</param>
+        /// <returns>Model.</returns>
         public override IModel Generate(Matrix x, Vector y)
         {
             if (Descriptor == null)
@@ -62,7 +73,9 @@ namespace numl.Supervised.NaiveBayes
 
             return new NaiveBayesModel { Descriptor = Descriptor, Root = root };
         }
-
+        /// <summary>Gets label statistics.</summary>
+        /// <param name="y">The Vector to process.</param>
+        /// <returns>An array of statistic.</returns>
         private Statistic[] GetLabelStats(Vector y)
         {
             var stats = y.Stats();
@@ -77,7 +90,9 @@ namespace numl.Supervised.NaiveBayes
             }
             return statistics;
         }
-
+        /// <summary>Gets base conditionals.</summary>
+        /// <param name="x">The Matrix to process.</param>
+        /// <returns>An array of measure.</returns>
         private Measure[] GetBaseConditionals(Matrix x)
         {
             Measure[] features = new Measure[x.Cols];
@@ -104,7 +119,9 @@ namespace numl.Supervised.NaiveBayes
 
             return features;
         }
-
+        /// <summary>Clone measure.</summary>
+        /// <param name="measures">The measures.</param>
+        /// <returns>A Measure[].</returns>
         private Measure[] CloneMeasure(Measure[] measures)
         {
             var m = new Measure[measures.Length];

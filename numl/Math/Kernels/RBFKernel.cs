@@ -1,3 +1,6 @@
+// file:	Math\Kernels\RBFKernel.cs
+//
+// summary:	Implements the rbf kernel class
 using System;
 using System.Linq;
 using numl.Math.LinearAlgebra;
@@ -6,33 +9,24 @@ using System.Collections.Generic;
 namespace numl.Math.Kernels
 {
     /// <summary>
-    /// The Radial Basis Function (RBF) Kernel is a projection
-    /// into infinite dimensional space and acts as a pseudo
-    /// similarity measure in the projected inner product 
-    /// space. It is governed by exp(||x - x'||2 / 2sigm^2)
+    /// The Radial Basis Function (RBF) Kernel is a projection into infinite dimensional space and
+    /// acts as a pseudo similarity measure in the projected inner product space. It is governed by
+    /// exp(||x - x'||2 / 2sigm^2)
     /// </summary>
     public class RBFKernel : IKernel
     {
-        /// <summary>
-        /// RBF free parameter
-        /// </summary>
+        /// <summary>RBF free parameter.</summary>
+        /// <value>The sigma.</value>
         public double Sigma { get; private set; }
-
-        /// <summary>
-        /// ctor
-        /// </summary>
-        /// <param name="sigma">Input Parameter</param>
+        /// <summary>ctor.</summary>
+        /// <param name="sigma">Input Parameter.</param>
         public RBFKernel(double sigma)
         {
             Sigma = sigma;
         }
-
-        /// <summary>
-        /// Computes RBF Kernel with provided
-        /// free sigma parameter
-        /// </summary>
-        /// <param name="m">Input Matrix</param>
-        /// <returns>RBF Kernel Matrix</returns>
+        /// <summary>Computes RBF Kernel with provided free sigma parameter.</summary>
+        /// <param name="m">Input Matrix.</param>
+        /// <returns>RBF Kernel Matrix.</returns>
         public Matrix Compute(Matrix m)
         {
             var K = Matrix.Zeros(m.Rows);
@@ -51,13 +45,10 @@ namespace numl.Math.Kernels
 
             return K;
         }
-
-        /// <summary>
-        /// Projects vector into rbf kernel space
-        /// </summary>
-        /// <param name="m">RBF Kernel Matrix</param>
-        /// <param name="x">Vector in original space</param>
-        /// <returns>Vector in RBF kernel space</returns>
+        /// <summary>Projects vector into rbf kernel space.</summary>
+        /// <param name="m">RBF Kernel Matrix.</param>
+        /// <param name="x">Vector in original space.</param>
+        /// <returns>Vector in RBF kernel space.</returns>
         public Vector Project(Matrix m, Vector x)
         {
             var K = Vector.Zeros(m.Rows);

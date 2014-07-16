@@ -1,3 +1,6 @@
+// file:	Model\DateTimeProperty.cs
+//
+// summary:	Implements the date time property class
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -6,10 +9,7 @@ using System.Xml.Serialization;
 
 namespace numl.Model
 {
-    /// <summary>
-    /// Features available for the
-    /// DateTime property
-    /// </summary>
+    /// <summary>Features available for the DateTime property.</summary>
     [Flags]
     public enum DateTimeFeature
     {
@@ -51,10 +51,7 @@ namespace numl.Model
         Millisecond = 0x0200
     }
 
-    /// <summary>
-    /// Date portions available for
-    /// the DateTime property
-    /// </summary>
+    /// <summary>Date portions available for the DateTime property.</summary>
     [Flags]
     public enum DatePortion
     {
@@ -76,27 +73,29 @@ namespace numl.Model
         TimeExtended = 0x0010
     }
 
-    /// <summary>
-    /// DateTime Property. Used as a feature expansion mechanism.
-    /// </summary>
+    /// <summary>DateTime Property. Used as a feature expansion mechanism.</summary>
     [XmlRoot("DateTimeProperty"), Serializable]
     public class DateTimeProperty : Property
     {
+        /// <summary>Gets or sets the features.</summary>
+        /// <value>The features.</value>
         public DateTimeFeature Features { get; private set; }
 
+        /// <summary>Default constructor.</summary>
         public DateTimeProperty()
             : base()
         {
             Initialize(DatePortion.Date | DatePortion.DateExtended);
         }
-
+        /// <summary>Constructor.</summary>
+        /// <param name="portion">The portion.</param>
         public DateTimeProperty(DatePortion portion)
             : base()
         {
             Initialize(portion);
         }
-
-
+        /// <summary>Constructor.</summary>
+        /// <param name="features">The features.</param>
         public DateTimeProperty(DateTimeFeature features)
             : base()
         {
@@ -104,7 +103,10 @@ namespace numl.Model
             Features = features;
         }
 
+        /// <summary>The length.</summary>
         private int _length = -1;
+        /// <summary>Length of property.</summary>
+        /// <value>The length.</value>
         public override int Length
         {
             get
@@ -135,12 +137,15 @@ namespace numl.Model
                 return _length;
             }
         }
-
+        /// <summary>Convert the numeric representation back to the original type.</summary>
+        /// <param name="val">.</param>
+        /// <returns>An object.</returns>
         public override object Convert(double val)
         {
             return val;
         }
-
+        /// <summary>Initializes this object.</summary>
+        /// <param name="portion">The portion.</param>
         private void Initialize(DatePortion portion)
         {
             Type = typeof(DateTime);
@@ -158,7 +163,13 @@ namespace numl.Model
             if (portion.HasFlag(DatePortion.TimeExtended))
                 Features |= DateTimeFeature.Second | DateTimeFeature.Millisecond;
         }
-
+        /// <summary>
+        /// Retrieve the list of expanded columns. If there is a one-to-one correspondence between the
+        /// type and its expansion it will return a single value/.
+        /// </summary>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process the columns in this collection.
+        /// </returns>
         public override IEnumerable<string> GetColumns()
         {
             if (Features.HasFlag(DateTimeFeature.Year))
@@ -180,7 +191,11 @@ namespace numl.Model
             if (Features.HasFlag(DateTimeFeature.Millisecond))
                 yield return "Millisecond";
         }
-
+        /// <summary>Convert an object to a list of numbers.</summary>
+        /// <exception cref="InvalidCastException">Thrown when an object cannot be cast to a required
+        /// type.</exception>
+        /// <param name="o">Object.</param>
+        /// <returns>Lazy list of doubles.</returns>
         public override IEnumerable<double> Convert(object o)
         {
             if (o.GetType() == typeof(DateTime))
@@ -209,13 +224,17 @@ namespace numl.Model
             }
             else throw new InvalidCastException("Object is not a date");
         }
-
+        /// <summary>Converts an object into its XML representation.</summary>
+        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
+        /// serialized.</param>
         public override void WriteXml(XmlWriter writer)
         {
             base.WriteXml(writer);
             writer.WriteAttributeString("Features", ((int)Features).ToString());
         }
-
+        /// <summary>Generates an object from its XML representation.</summary>
+        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is
+        /// deserialized.</param>
         public override void ReadXml(XmlReader reader)
         {
             base.ReadXml(reader);

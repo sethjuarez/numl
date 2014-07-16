@@ -1,4 +1,7 @@
-﻿using System;
+﻿// file:	Learner.cs
+//
+// summary:	Implements the learner class
+using System;
 using numl.Utils;
 using System.Linq;
 using numl.Supervised;
@@ -11,24 +14,19 @@ using System.Data;
 namespace numl
 {
     /// <summary>
-    /// Primary class for running model generators.
-    /// It is designed to abstract the separation
-    /// of training and test sets as well as best
-    /// model selection.
+    /// Primary class for running model generators. It is designed to abstract the separation of
+    /// training and test sets as well as best model selection.
     /// </summary>
     public static class Learner
     {
+        /// <summary>Static constructor.</summary>
         static Learner()
         {
             Sampling.SetSeedFromSystemTime();
         }
-
-        /// <summary>
-        /// Retrieve best model (or model with the
-        /// highest accuracy)
-        /// </summary>
-        /// <param name="models">List of models</param>
-        /// <returns>Best Model</returns>
+        /// <summary>Retrieve best model (or model with the highest accuracy)</summary>
+        /// <param name="models">List of models.</param>
+        /// <returns>Best Model.</returns>
         public static LearningModel Best(this IEnumerable<LearningModel> models)
         {
             var q = from m in models
@@ -37,18 +35,16 @@ namespace numl
 
             return q.FirstOrDefault();
         }
-
         /// <summary>
-        /// Trains an arbitrary number of models on the
-        /// provided examples by creating a separation
-        /// of data based on training percentage. Each generator
-        /// is rerun a predetermined amount of times.
+        /// Trains an arbitrary number of models on the provided examples by creating a separation of
+        /// data based on training percentage. Each generator is rerun a predetermined amount of times.
         /// </summary>
-        /// <param name="examples">Source data</param>
-        /// <param name="trainingPercentage">Data split percentage</param>
-        /// <param name="repeat">Number of repetitions per generator</param>
-        /// <param name="generators">Model generators used</param>
-        /// <returns>Best models for each generator</returns>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="examples">Source data.</param>
+        /// <param name="trainingPercentage">Data split percentage.</param>
+        /// <param name="repeat">Number of repetitions per generator.</param>
+        /// <param name="generators">Model generators used.</param>
+        /// <returns>Best models for each generator.</returns>
         public static LearningModel[] Learn(IEnumerable<object> examples, double trainingPercentage, int repeat, params IGenerator[] generators)
         {
             if (generators.Length == 0)
@@ -62,40 +58,38 @@ namespace numl
 
             return models;
         }
-
         /// <summary>
-        /// Trains a single model based on a generator
-        /// a predefined number of times with the provided
-        /// examples and data split and selects the best 
-        /// (or most accurate) model
+        /// Trains a single model based on a generator a predefined number of times with the provided
+        /// examples and data split and selects the best (or most accurate) model.
         /// </summary>
         /// <param name="examples">Source data (in datatable form)</param>
-        /// <param name="trainingPercentage">Data split percentage</param>
-        /// <param name="repeat">Number of repetitions per generator</param>
-        /// <param name="generator">Model generator used</param>
-        /// <returns>Best model for provided generator</returns>
+        /// <param name="trainingPercentage">Data split percentage.</param>
+        /// <param name="repeat">Number of repetitions per generator.</param>
+        /// <param name="generator">Model generator used.</param>
+        /// <returns>Best model for provided generator.</returns>
         public static LearningModel Learn(DataTable examples, double trainingPercentage, int repeat, IGenerator generator)
         {
             return Learn(GetRows(examples), trainingPercentage, repeat, generator);
         }
-
+        /// <summary>Gets the rows in this collection.</summary>
+        /// <param name="table">The table.</param>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process the rows in this collection.
+        /// </returns>
         private static IEnumerable<DataRow> GetRows(DataTable table)
         {
             foreach (DataRow row in table.Rows)
                 yield return row;
         }
-
         /// <summary>
-        /// Trains a single model based on a generator
-        /// a predefined number of times with the provided
-        /// examples and data split and selects the best 
-        /// (or most accurate) model
+        /// Trains a single model based on a generator a predefined number of times with the provided
+        /// examples and data split and selects the best (or most accurate) model.
         /// </summary>
-        /// <param name="examples">Source data</param>
-        /// <param name="trainingPercentage">Data split percentage</param>
-        /// <param name="repeat">Number of repetitions per generator</param>
-        /// <param name="generator">Model generator used</param>
-        /// <returns>Best model for provided generator</returns>
+        /// <param name="examples">Source data.</param>
+        /// <param name="trainingPercentage">Data split percentage.</param>
+        /// <param name="repeat">Number of repetitions per generator.</param>
+        /// <param name="generator">Model generator used.</param>
+        /// <returns>Best model for provided generator.</returns>
         public static LearningModel Learn(IEnumerable<object> examples, double trainingPercentage, int repeat, IGenerator generator)
         {
             var total = examples.Count();
@@ -122,7 +116,13 @@ namespace numl
 
             return new LearningModel { Generator = generator, Model = models[idx], Accuracy = accuracy[idx] };
         }
-
+        /// <summary>Generates a model.</summary>
+        /// <param name="generator">Model generator used.</param>
+        /// <param name="x">The Matrix to process.</param>
+        /// <param name="y">The Vector to process.</param>
+        /// <param name="examples">Source data.</param>
+        /// <param name="trainingPct">The training pct.</param>
+        /// <returns>The model.</returns>
         private static LearningModel GenerateModel(IGenerator generator, Matrix x, Vector y, IEnumerable<object> examples, double trainingPct)
         {
             var descriptor = generator.Descriptor;
@@ -175,14 +175,22 @@ namespace numl
 
             return new LearningModel { Generator = generator, Model = model, Accuracy = accuracy };
         }
-
+        /// <summary>Gets test examples.</summary>
+        /// <param name="slice">The slice.</param>
+        /// <param name="examples">Source data.</param>
+        /// <returns>An array of object.</returns>
         private static object[] GetTestExamples(IEnumerable<int> slice, IEnumerable<object> examples)
         {
             return examples
                     .Where((o, i) => slice.Contains(i))
                     .ToArray();
         }
-
+        /// <summary>Gets the test points in this collection.</summary>
+        /// <param name="testCount">Number of tests.</param>
+        /// <param name="total">Number of.</param>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process the test points in this collection.
+        /// </returns>
         private static IEnumerable<int> GetTestPoints(int testCount, int total)
         {
             List<int> taken = new List<int>(testCount);
@@ -196,7 +204,13 @@ namespace numl
                 }
             }
         }
-
+        /// <summary>Gets the training points in this collection.</summary>
+        /// <param name="testPoints">The test points.</param>
+        /// <param name="total">Number of.</param>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process the training points in this
+        /// collection.
+        /// </returns>
         private static IEnumerable<int> GetTrainingPoints(IEnumerable<int> testPoints, int total)
         {
             for (int i = 0; i < total; i++)
@@ -205,29 +219,20 @@ namespace numl
         }
     }
 
-    /// <summary>
-    /// Structure to hold generator, model, and
-    /// accuracy information.
-    /// </summary>
+    /// <summary>Structure to hold generator, model, and accuracy information.</summary>
     public class LearningModel
     {
-        /// <summary>
-        /// Generator used to create model
-        /// </summary>
+        /// <summary>Generator used to create model.</summary>
+        /// <value>The generator.</value>
         public IGenerator Generator { get; set; }
-        /// <summary>
-        /// Model created by generator
-        /// </summary>
+        /// <summary>Model created by generator.</summary>
+        /// <value>The model.</value>
         public IModel Model { get; set; }
-        /// <summary>
-        /// Accuracy of model on test set
-        /// </summary>
+        /// <summary>Accuracy of model on test set.</summary>
+        /// <value>The accuracy.</value>
         public double Accuracy { get; set; }
-
-        /// <summary>
-        /// Textual representation of structure
-        /// </summary>
-        /// <returns>string</returns>
+        /// <summary>Textual representation of structure.</summary>
+        /// <returns>string.</returns>
         public override string ToString()
         {
             return string.Format("Learning Model:\n  Generator {0}\n  Model:\n{1}\n  Accuracy: {2:p}\n", 

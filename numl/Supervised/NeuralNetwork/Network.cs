@@ -1,3 +1,6 @@
+// file:	Supervised\NeuralNetwork\Network.cs
+//
+// summary:	Implements the network class
 using System;
 using numl.Model;
 using System.Linq;
@@ -10,12 +13,22 @@ using System.Xml;
 
 namespace numl.Supervised.NeuralNetwork
 {
+    /// <summary>A network.</summary>
     [XmlRoot("Network")]
     public class Network : IXmlSerializable
     {
+        /// <summary>Gets or sets the in.</summary>
+        /// <value>The in.</value>
         public Node[] In { get; set; }
+        /// <summary>Gets or sets the out.</summary>
+        /// <value>The out.</value>
         public Node[] Out { get; set; }
-
+        /// <summary>Defaults.</summary>
+        /// <param name="d">The Descriptor to process.</param>
+        /// <param name="x">The Vector to process.</param>
+        /// <param name="y">The Vector to process.</param>
+        /// <param name="activation">The activation.</param>
+        /// <returns>A Network.</returns>
         public static Network Default(Descriptor d, Matrix x, Vector y, IFunction activation)
         {
             Network nn = new Network();
@@ -26,8 +39,7 @@ namespace numl.Supervised.NeuralNetwork
             // identity funciton for bias nodes
             IFunction ident = new Ident();
 
-            // set number of hidden units to (Input + Hidden) * 2/3
-            // as basic best guess
+            // set number of hidden units to (Input + Hidden) * 2/3 as basic best guess. 
             int hidden = (int)System.Math.Ceiling((decimal)(x.Cols + output) * 2m / 3m);
 
             // creating input nodes
@@ -60,7 +72,10 @@ namespace numl.Supervised.NeuralNetwork
 
             return nn;
         }
-
+        /// <summary>Gets a label.</summary>
+        /// <param name="n">The Node to process.</param>
+        /// <param name="d">The Descriptor to process.</param>
+        /// <returns>The label.</returns>
         private static string GetLabel(int n, Descriptor d)
         {
             if (d.Label.Type.IsEnum)
@@ -69,7 +84,9 @@ namespace numl.Supervised.NeuralNetwork
                 return ((StringProperty)d.Label).Dictionary[n];
             else return d.Label.Name;
         }
-
+        /// <summary>Forwards the given x coordinate.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="x">The Vector to process.</param>
         public void Forward(Vector x)
         {
             if (In.Length != x.Length + 1)
@@ -82,7 +99,9 @@ namespace numl.Supervised.NeuralNetwork
             for (int i = 0; i < Out.Length; i++)
                 Out[i].Evaluate();
         }
-
+        /// <summary>Backs.</summary>
+        /// <param name="t">The double to process.</param>
+        /// <param name="learningRate">The learning rate.</param>
         public void Back(double t, double learningRate)
         {
             // propagate error gradients
@@ -93,12 +112,27 @@ namespace numl.Supervised.NeuralNetwork
             for (int i = 0; i < Out.Length; i++)
                 Out[i].Update(learningRate);
         }
-
+        /// <summary>
+        /// This method is reserved and should not be used. When implementing the IXmlSerializable
+        /// interface, you should return null (Nothing in Visual Basic) from this method, and instead, if
+        /// specifying a custom schema is required, apply the
+        /// <see cref="T:System.Xml.Serialization.XmlSchemaProviderAttribute" /> to the class.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Xml.Schema.XmlSchema" /> that describes the XML representation of the
+        /// object that is produced by the
+        /// <see cref="M:System.Xml.Serialization.IXmlSerializable.WriteXml(System.Xml.XmlWriter)" />
+        /// method and consumed by the
+        /// <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)" />
+        /// method.
+        /// </returns>
         public XmlSchema GetSchema()
         {
             return null;
         }
-
+        /// <summary>Generates an object from its XML representation.</summary>
+        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is
+        /// deserialized.</param>
         public void ReadXml(XmlReader reader)
         {
             XmlSerializer nSerializer = new XmlSerializer(typeof(Node));
@@ -159,7 +193,9 @@ namespace numl.Supervised.NeuralNetwork
             }
             reader.ReadEndElement();
         }
-
+        /// <summary>Converts an object into its XML representation.</summary>
+        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
+        /// serialized.</param>
         public void WriteXml(XmlWriter writer)
         {
             XmlSerializer nSerializer = new XmlSerializer(typeof(Node));
@@ -203,7 +239,12 @@ namespace numl.Supervised.NeuralNetwork
         }
 
 
+        /// <summary>The nodes.</summary>
         private HashSet<string> _nodes;
+        /// <summary>Gets the nodes in this collection.</summary>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process the nodes in this collection.
+        /// </returns>
         public IEnumerable<Node> GetNodes()
         {
             if (_nodes == null) _nodes = new HashSet<string>();
@@ -223,7 +264,11 @@ namespace numl.Supervised.NeuralNetwork
                 }
             }
         }
-
+        /// <summary>Gets the nodes in this collection.</summary>
+        /// <param name="n">The Node to process.</param>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process the nodes in this collection.
+        /// </returns>
         private IEnumerable<Node> GetNodes(Node n)
         {
             foreach (var edge in n.In)
@@ -235,7 +280,12 @@ namespace numl.Supervised.NeuralNetwork
         }
 
 
+        /// <summary>The edges.</summary>
         private HashSet<Tuple<string, string>> _edges;
+        /// <summary>Gets the edges in this collection.</summary>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process the edges in this collection.
+        /// </returns>
         public IEnumerable<Edge> GetEdges()
         {
             if (_edges == null) _edges = new HashSet<Tuple<string, string>>();
@@ -254,8 +304,11 @@ namespace numl.Supervised.NeuralNetwork
                 }
             }
         }
-
-
+        /// <summary>Gets the edges in this collection.</summary>
+        /// <param name="n">The Node to process.</param>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process the edges in this collection.
+        /// </returns>
         private IEnumerable<Edge> GetEdges(Node n)
         {
             foreach (var edge in n.In)

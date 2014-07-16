@@ -1,4 +1,7 @@
-﻿using System;
+﻿// file:	Supervised\Perceptron\KernelPerceptronGenerator.cs
+//
+// summary:	Implements the kernel perceptron generator class
+using System;
 using System.Linq;
 using numl.Math.Kernels;
 using numl.Math.LinearAlgebra;
@@ -6,15 +9,22 @@ using System.Collections.Generic;
 
 namespace numl.Supervised.Perceptron
 {
+    /// <summary>A kernel perceptron generator.</summary>
     public class KernelPerceptronGenerator : Generator
     {
+        /// <summary>Gets or sets the kernel.</summary>
+        /// <value>The kernel.</value>
         public IKernel Kernel { get; set; }
-
+        /// <summary>Constructor.</summary>
+        /// <param name="kernel">The kernel.</param>
         public KernelPerceptronGenerator(IKernel kernel)
         {
             Kernel = kernel;
         }
-
+        /// <summary>Generate model based on a set of examples.</summary>
+        /// <param name="x">The Matrix to process.</param>
+        /// <param name="y">The Vector to process.</param>
+        /// <returns>Model.</returns>
         public override IModel Generate(Matrix x, Vector y)
         {
             int N = y.Length;

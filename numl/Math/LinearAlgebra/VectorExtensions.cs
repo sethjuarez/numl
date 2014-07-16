@@ -1,31 +1,50 @@
-﻿using System;
+﻿// file:	Math\LinearAlgebra\VectorExtensions.cs
+//
+// summary:	Implements the vector extensions class
+using System;
 using System.Linq;
 using System.Collections.Generic;
 
 namespace numl.Math.LinearAlgebra
 {
+    /// <summary>A vector extensions.</summary>
     public static class VectorExtensions
     {
+        /// <summary>A Vector extension method that calcs.</summary>
+        /// <param name="v">The v to act on.</param>
+        /// <param name="f">The Func&lt;T,double&gt; to process.</param>
+        /// <returns>A Vector.</returns>
         public static Vector Calc(this Vector v, Func<double, double> f)
         {
             return Vector.Calc(v, f);
         }
-
+        /// <summary>An IEnumerable&lt;Vector&gt; extension method that sums the given source.</summary>
+        /// <param name="v">The v to act on.</param>
+        /// <returns>A Vector.</returns>
         public static double Sum(this Vector v)
         {
             return Vector.Sum(v);
         }
-
+        /// <summary>A Vector extension method that products the given v.</summary>
+        /// <param name="v">The v to act on.</param>
+        /// <returns>A double.</returns>
         public static double Prod(this Vector v)
         {
             return Vector.Prod(v);
         }
-
+        /// <summary>A Vector extension method that outers.</summary>
+        /// <param name="x">The x to act on.</param>
+        /// <param name="y">The Vector to process.</param>
+        /// <returns>A Matrix.</returns>
         public static Matrix Outer(this Vector x, Vector y)
         {
             return Vector.Outer(x, y);
         }
-
+        /// <summary>A Vector extension method that eaches.</summary>
+        /// <param name="v">The v to act on.</param>
+        /// <param name="transform">The transform.</param>
+        /// <param name="asCopy">(Optional) true to as copy.</param>
+        /// <returns>A Vector.</returns>
         public static Vector Each(this Vector v, Func<double, double> transform, bool asCopy = false)
         {
             Vector vector = v;
@@ -37,18 +56,31 @@ namespace numl.Math.LinearAlgebra
 
             return v;
         }
-
+        /// <summary>Enumerates reverse in this collection.</summary>
+        /// <param name="v">The v to act on.</param>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process reverse in this collection.
+        /// </returns>
         public static IEnumerable<double> Reverse(this Vector v)
         {
             for (int i = v.Length - 1; i > -1; i--)
                 yield return v[i];
         }
-
+        /// <summary>
+        /// An IEnumerable&lt;int&gt; extension method that converts a seq to a vector.
+        /// </summary>
+        /// <param name="array">The array to act on.</param>
+        /// <returns>seq as a Vector.</returns>
         public static Vector ToVector(this double[] array)
         {
             return new Vector(array);
         }
-
+        /// <summary>
+        /// An IEnumerable&lt;double[]&gt; extension method that converts an e to a matrix.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="source">The source to act on.</param>
+        /// <returns>e as a Matrix.</returns>
         public static Matrix ToMatrix(this IEnumerable<Vector> source)
         {
             var c = source.Count();
@@ -67,37 +99,61 @@ namespace numl.Math.LinearAlgebra
 
             return new Matrix(m);
         }
-
+        /// <summary>
+        /// An IEnumerable&lt;double[]&gt; extension method that converts an e to a matrix.
+        /// </summary>
+        /// <param name="e">The e to act on.</param>
+        /// <returns>e as a Matrix.</returns>
         public static Matrix ToMatrix(this IEnumerable<double[]> e)
         {
             return new Matrix(e.ToArray());
         }
-
+        /// <summary>A Vector extension method that diags.</summary>
+        /// <param name="v">The v to act on.</param>
+        /// <returns>A Matrix.</returns>
         public static Matrix Diag(this Vector v)
         {
             return Vector.Diag(v);
         }
-
+        /// <summary>A Vector extension method that diags.</summary>
+        /// <param name="v">The v to act on.</param>
+        /// <param name="n">The int to process.</param>
+        /// <param name="d">The int to process.</param>
+        /// <returns>A Matrix.</returns>
         public static Matrix Diag(this Vector v, int n, int d)
         {
             return Vector.Diag(v, n, d);
         }
-
+        /// <summary>A Vector extension method that normals.</summary>
+        /// <param name="v">The v to act on.</param>
+        /// <returns>A double.</returns>
         public static double Norm(this Vector v)
         {
             return Vector.Norm(v, 2);
         }
-
+        /// <summary>A Vector extension method that normals.</summary>
+        /// <param name="v">The v to act on.</param>
+        /// <param name="p">The double to process.</param>
+        /// <returns>A double.</returns>
         public static double Norm(this Vector v, double p)
         {
             return Vector.Norm(v, p);
         }
-
+        /// <summary>
+        /// An IEnumerable&lt;Vector&gt; extension method that sums the given source.
+        /// </summary>
+        /// <param name="source">The source to act on.</param>
+        /// <returns>A Vector.</returns>
         public static Vector Sum(this IEnumerable<Vector> source)
         {
             return source.Aggregate((s, n) => s += n);
         }
-
+        /// <summary>
+        /// A Vector extension method that determines the mean of the given parameters.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="source">The source to act on.</param>
+        /// <returns>The mean value.</returns>
         public static Vector Mean(this IEnumerable<Vector> source)
         {
             var c = source.Count();
@@ -106,7 +162,12 @@ namespace numl.Math.LinearAlgebra
 
             return source.Sum() / c;
         }
-
+        /// <summary>
+        /// A Vector extension method that determines the mean of the given parameters.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="source">The source to act on.</param>
+        /// <returns>The mean value.</returns>
         public static double Mean(this Vector source)
         {
             if (source.Length == 0)
@@ -114,12 +175,16 @@ namespace numl.Math.LinearAlgebra
 
             return source.Sum() / source.Length;
         }
-
+        /// <summary>A Vector extension method that standard development.</summary>
+        /// <param name="source">The source to act on.</param>
+        /// <returns>A double.</returns>
         public static double StdDev(this Vector source)
         {
             return System.Math.Sqrt(source.Variance());
         }
-
+        /// <summary>A Vector extension method that variances the given x coordinate.</summary>
+        /// <param name="x">The x to act on.</param>
+        /// <returns>A double.</returns>
         public static double Variance(this Vector x)
         {
             var mean = x.Mean();
@@ -129,7 +194,11 @@ namespace numl.Math.LinearAlgebra
 
             return sum / (x.Length - 1);
         }
-
+        /// <summary>A Vector extension method that covariances.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="x">The x to act on.</param>
+        /// <param name="y">The Vector to process.</param>
+        /// <returns>A double.</returns>
         public static double Covariance(this Vector x, Vector y)
         {
             if (x.Length != y.Length)
@@ -144,14 +213,19 @@ namespace numl.Math.LinearAlgebra
 
             return sum / (x.Length - 1);
         }
-
+        /// <summary>A Vector extension method that correlations.</summary>
+        /// <param name="x">The x to act on.</param>
+        /// <param name="y">The Vector to process.</param>
+        /// <returns>A double.</returns>
         public static double Correlation(this Vector x, Vector y)
         {
             var s = (x.StdDev() * y.StdDev());
             if (s == 0) return double.NaN;
             else return x.Covariance(y) / s;
         }
-
+        /// <summary>A Vector extension method that modes the given source.</summary>
+        /// <param name="source">The source to act on.</param>
+        /// <returns>A double.</returns>
         public static double Mode(this Vector source)
         {
             var q = from i in source
@@ -175,7 +249,9 @@ namespace numl.Math.LinearAlgebra
 
             return mode;
         }
-
+        /// <summary>A Vector extension method that statistics the given x coordinate.</summary>
+        /// <param name="x">The x to act on.</param>
+        /// <returns>A Matrix.</returns>
         public static Matrix Stats(this Vector x)
         {
             return (from i in x.Distinct().OrderBy(d => d)
@@ -185,17 +261,25 @@ namespace numl.Math.LinearAlgebra
                     select new[] { i, q, q / (double)x.Length })
                      .ToMatrix();
         }
-
+        /// <summary>A Vector extension method that expands.</summary>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="n">The int to process.</param>
+        /// <returns>A Vector.</returns>
         public static Vector Expand(this Vector source, int n)
         {
             return Vector.Combine(source, new Vector(n));
         }
-
+        /// <summary>A Vector extension method that expands.</summary>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="s">The Vector to process.</param>
+        /// <returns>A Vector.</returns>
         public static Vector Expand(this Vector source, Vector s)
         {
             return Vector.Combine(source, s);
         }
-
+        /// <summary>An IEnumerable&lt;double&gt; extension method that minimum index.</summary>
+        /// <param name="source">The source to act on.</param>
+        /// <returns>An int.</returns>
         public static int MinIndex(this IEnumerable<double> source)
         {
             double minValue = double.MaxValue;
@@ -213,7 +297,9 @@ namespace numl.Math.LinearAlgebra
 
             return minIndex;
         }
-
+        /// <summary>An IEnumerable&lt;double&gt; extension method that maximum index.</summary>
+        /// <param name="source">The source to act on.</param>
+        /// <returns>An int.</returns>
         public static int MaxIndex(this IEnumerable<double> source)
         {
             double maxValue = double.MinValue;
@@ -231,7 +317,13 @@ namespace numl.Math.LinearAlgebra
 
             return maxIndex;
         }
-
+        /// <summary>Enumerates top in this collection.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="n">The int to process.</param>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process top in this collection.
+        /// </returns>
         public static IEnumerable<int> Top(this Vector source, int n)
         {
             if (source.Length < n)
@@ -257,7 +349,13 @@ namespace numl.Math.LinearAlgebra
 
             return hash.Keys.OrderBy(i => i);
         }
-
+        /// <summary>Enumerates top reverse in this collection.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="n">The int to process.</param>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process top reverse in this collection.
+        /// </returns>
         public static IEnumerable<int> TopReverse(this Vector source, int n)
         {
             if (source.Length < n)
@@ -284,7 +382,12 @@ namespace numl.Math.LinearAlgebra
 
             return hash.Keys.OrderByDescending(i => i);
         }
-
+        /// <summary>Enumerates indices in this collection.</summary>
+        /// <param name="source">The source to act on.</param>
+        /// <param name="f">The Func&lt;T,double&gt; to process.</param>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process indices in this collection.
+        /// </returns>
         public static IEnumerable<int> Indices(this IEnumerable<double> source, Func<double, bool> f)
         {
             int i = -1;
@@ -295,12 +398,20 @@ namespace numl.Math.LinearAlgebra
                     yield return i;
             }
         }
-
+        /// <summary>A Vector extension method that rounds.</summary>
+        /// <param name="v">The v to act on.</param>
+        /// <param name="decimals">(Optional) the decimals.</param>
+        /// <returns>A Vector.</returns>
         public static Vector Round(this Vector v, int decimals = 0)
         {
             return Vector.Round(v, decimals);
         }
-
+        /// <summary>Enumerates slice in this collection.</summary>
+        /// <param name="v">The v to act on.</param>
+        /// <param name="indices">The indices.</param>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process slice in this collection.
+        /// </returns>
         public static Vector Slice(this Vector v, IEnumerable<int> indices)
         {
             var q = indices.Distinct().Where(j => j < v.Length);
@@ -313,19 +424,31 @@ namespace numl.Math.LinearAlgebra
 
             return vector;
         }
-
+        /// <summary>Enumerates slice in this collection.</summary>
+        /// <param name="x">The x to act on.</param>
+        /// <param name="where">The where.</param>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process slice in this collection.
+        /// </returns>
         public static IEnumerable<double> Slice(this IEnumerable<double> x, Func<double, bool> where)
         {
             foreach (double d in x)
                 if (where(d))
                     yield return d;
         }
-
+        /// <summary>A Vector extension method that dots.</summary>
+        /// <param name="v">The v to act on.</param>
+        /// <param name="x">The x to act on.</param>
+        /// <returns>A double.</returns>
         public static double Dot(this Vector v, Vector x)
         {
             return Vector.Dot(v, x);
         }
-
+        /// <summary>A Vector extension method that segments.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="x">The x to act on.</param>
+        /// <param name="segments">The segments.</param>
+        /// <returns>A Range[].</returns>
         public static Range[] Segment(this Vector x, int segments)
         {
             if (segments < 2)
@@ -356,13 +479,22 @@ namespace numl.Math.LinearAlgebra
 
             return ranges;
         }
-        
+        /// <summary>Enumerates generate in this collection.</summary>
+        /// <param name="seq">The seq to act on.</param>
+        /// <param name="gen">The generate.</param>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process generate in this collection.
+        /// </returns>
         public static IEnumerable<double> Generate(this IEnumerable<double> seq, Func<double, double> gen)
         {
             foreach (double item in seq)
                 yield return gen(item);
         }
-
+        /// <summary>
+        /// An IEnumerable&lt;int&gt; extension method that converts a seq to a vector.
+        /// </summary>
+        /// <param name="seq">The seq to act on.</param>
+        /// <returns>seq as a Vector.</returns>
         public static Vector ToVector(this IEnumerable<double> seq)
         {
             Vector v = Vector.Zeros(seq.Count());
@@ -371,7 +503,13 @@ namespace numl.Math.LinearAlgebra
                 v[++i] = item;
             return v;
         }
-
+        /// <summary>
+        /// An IEnumerable&lt;T&gt; extension method that converts this object to a vector.
+        /// </summary>
+        /// <tparam name="T">Generic type parameter.</tparam>
+        /// <param name="seq">The seq to act on.</param>
+        /// <param name="f">The Func&lt;T,double&gt; to process.</param>
+        /// <returns>The given data converted to a Vector.</returns>
         public static Vector ToVector<T>(this IEnumerable<T> seq, Func<T, double> f)
         {
             Vector v = Vector.Zeros(seq.Count());
@@ -380,7 +518,11 @@ namespace numl.Math.LinearAlgebra
                 v[++i] = f(item);
             return v;
         }
-
+        /// <summary>
+        /// An IEnumerable&lt;int&gt; extension method that converts a seq to a vector.
+        /// </summary>
+        /// <param name="seq">The seq to act on.</param>
+        /// <returns>seq as a Vector.</returns>
         public static Vector ToVector(this IEnumerable<int> seq)
         {
             Vector v = Vector.Zeros(seq.Count());
@@ -389,7 +531,10 @@ namespace numl.Math.LinearAlgebra
                 v[++i] = (double)item;
             return v;
         }
-
+        /// <summary>A Vector extension method that firsts.</summary>
+        /// <param name="v">The v to act on.</param>
+        /// <param name="predicate">The predicate.</param>
+        /// <returns>An int.</returns>
         public static int First(this Vector v, Func<int, double, bool> predicate)
         {
             for (int i = 0; i < v.Length; i++)
@@ -400,7 +545,10 @@ namespace numl.Math.LinearAlgebra
 
             return -1;
         }
-
+        /// <summary>A Vector extension method that lasts.</summary>
+        /// <param name="v">The v to act on.</param>
+        /// <param name="predicate">The predicate.</param>
+        /// <returns>An int.</returns>
         public static int Last(this Vector v, Func<int, double, bool> predicate)
         {
             for (int i = v.Length - 1; i >= 0; i--)
@@ -411,12 +559,16 @@ namespace numl.Math.LinearAlgebra
 
             return -1;
         }
-
+        /// <summary>A Vector extension method that query if 'vector' contains na n.</summary>
+        /// <param name="vector">The vector to act on.</param>
+        /// <returns>true if it succeeds, false if it fails.</returns>
         public static bool ContainsNaN(this Vector vector)
         {
             return Vector.ContainsNaN(vector);
         }
-
+        /// <summary>A Vector extension method that query if 'vector' is na n.</summary>
+        /// <param name="vector">The vector to act on.</param>
+        /// <returns>true if na n, false if not.</returns>
         public static bool IsNaN(this Vector vector)
         {
             return Vector.IsNaN(vector);

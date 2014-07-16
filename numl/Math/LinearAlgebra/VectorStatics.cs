@@ -1,12 +1,19 @@
-﻿using System;
+﻿// file:	Math\LinearAlgebra\VectorStatics.cs
+//
+// summary:	Implements the vector statics class
+using System;
 using System.Linq;
 using numl.Math.Probability;
 using System.Collections.Generic;
 
 namespace numl.Math.LinearAlgebra
 {
+    /// <summary>A vector.</summary>
     public partial class Vector
     {
+        /// <summary>Products the given v.</summary>
+        /// <param name="v">A variable-length parameters list containing v.</param>
+        /// <returns>A double.</returns>
         public static double Prod(Vector v)
         {
             var prod = v[0];
@@ -14,7 +21,9 @@ namespace numl.Math.LinearAlgebra
                 prod *= v[i];
             return prod;
         }
-
+        /// <summary>Sums the given v.</summary>
+        /// <param name="v">A variable-length parameters list containing v.</param>
+        /// <returns>A double.</returns>
         public static double Sum(Vector v)
         {
             double sum = 0;
@@ -22,7 +31,11 @@ namespace numl.Math.LinearAlgebra
                 sum += v[i];
             return sum;
         }
-
+        /// <summary>Outers.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="x">The Vector to process.</param>
+        /// <param name="y">The Vector to process.</param>
+        /// <returns>A Matrix.</returns>
         public static Matrix Outer(Vector x, Vector y)
         {
             if (x.Length != y.Length)
@@ -36,17 +49,24 @@ namespace numl.Math.LinearAlgebra
 
             return m;
         }
-
+        /// <summary>Exponents the given v.</summary>
+        /// <param name="v">A variable-length parameters list containing v.</param>
+        /// <returns>A Vector.</returns>
         public static Vector Exp(Vector v)
         {
             return Calc(v, d => System.Math.Exp(d));
         }
-
+        /// <summary>Logs the given v.</summary>
+        /// <param name="v">A variable-length parameters list containing v.</param>
+        /// <returns>A Vector.</returns>
         public static Vector Log(Vector v)
         {
             return Calc(v, d => System.Math.Log(d));
         }
-
+        /// <summary>Calcs.</summary>
+        /// <param name="v">A variable-length parameters list containing v.</param>
+        /// <param name="f">The Func&lt;int,double,double&gt; to process.</param>
+        /// <returns>A Vector.</returns>
         public static Vector Calc(Vector v, Func<double, double> f)
         {
             var result = v.Copy();
@@ -54,7 +74,10 @@ namespace numl.Math.LinearAlgebra
                 result[i] = f(result[i]);
             return result;
         }
-
+        /// <summary>Calcs.</summary>
+        /// <param name="v">A variable-length parameters list containing v.</param>
+        /// <param name="f">The Func&lt;int,double,double&gt; to process.</param>
+        /// <returns>A Vector.</returns>
         public static Vector Calc(Vector v, Func<int, double, double> f)
         {
             var result = v.Copy();
@@ -62,7 +85,9 @@ namespace numl.Math.LinearAlgebra
                 result[i] = f(i, result[i]);
             return result;
         }
-
+        /// <summary>Ones.</summary>
+        /// <param name="n">The int to process.</param>
+        /// <returns>A Vector.</returns>
         public static Vector Ones(int n)
         {
             double[] x = new double[n];
@@ -71,12 +96,16 @@ namespace numl.Math.LinearAlgebra
 
             return new Vector(x);
         }
-
+        /// <summary>Zeros.</summary>
+        /// <param name="n">The int to process.</param>
+        /// <returns>A Vector.</returns>
         public static Vector Zeros(int n)
         {
             return new Vector(n);
         }
-
+        /// <summary>Rands.</summary>
+        /// <param name="n">The int to process.</param>
+        /// <returns>A Vector.</returns>
         public static Vector Rand(int n)
         {
             double[] x = new double[n];
@@ -85,7 +114,12 @@ namespace numl.Math.LinearAlgebra
 
             return new Vector(x);
         }
-
+        /// <summary>Normalise random.</summary>
+        /// <param name="n">The int to process.</param>
+        /// <param name="mean">(Optional) the mean.</param>
+        /// <param name="stdDev">(Optional) the standard development.</param>
+        /// <param name="precision">(Optional) the precision.</param>
+        /// <returns>A Vector.</returns>
         public static Vector NormRand(int n, double mean = 0, double stdDev = 1, int precision = -1)
         {
             double[] x = new double[n];
@@ -99,7 +133,11 @@ namespace numl.Math.LinearAlgebra
 
             return new Vector(x);
         }
-
+        /// <summary>Dots.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="one">The one.</param>
+        /// <param name="two">The two.</param>
+        /// <returns>A double.</returns>
         public static double Dot(Vector one, Vector two)
         {
             if (one.Length != two.Length)
@@ -110,12 +148,18 @@ namespace numl.Math.LinearAlgebra
                 total += one[i] * two[i];
             return total;
         }
-
+        /// <summary>Normals.</summary>
+        /// <param name="x">The Vector to process.</param>
+        /// <returns>A double.</returns>
         public static double Norm(Vector x)
         {
             return Vector.Norm(x, 2);
         }
-
+        /// <summary>Normals.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="x">The Vector to process.</param>
+        /// <param name="p">The double to process.</param>
+        /// <returns>A double.</returns>
         public static double Norm(Vector x, double p)
         {
             if (p < 1) throw new InvalidOperationException("p must be greater than 0");
@@ -149,7 +193,9 @@ namespace numl.Math.LinearAlgebra
                 return System.Math.Pow(value, 1 / p);
             }
         }
-
+        /// <summary>Diags.</summary>
+        /// <param name="v">A variable-length parameters list containing v.</param>
+        /// <returns>A Matrix.</returns>
         public static Matrix Diag(Vector v)
         {
             Matrix m = Matrix.Zeros(v.Length);
@@ -157,7 +203,11 @@ namespace numl.Math.LinearAlgebra
                 m[i, i] = v[i];
             return m;
         }
-
+        /// <summary>Diags.</summary>
+        /// <param name="v">A variable-length parameters list containing v.</param>
+        /// <param name="n">The int to process.</param>
+        /// <param name="d">The int to process.</param>
+        /// <returns>A Matrix.</returns>
         public static Matrix Diag(Vector v, int n, int d)
         {
             Matrix m = Matrix.Zeros(n, d);
@@ -166,14 +216,20 @@ namespace numl.Math.LinearAlgebra
                 m[i, i] = v[i];
             return m;
         }
-
+        /// <summary>Rounds.</summary>
+        /// <param name="v">A variable-length parameters list containing v.</param>
+        /// <param name="decimals">(Optional) the decimals.</param>
+        /// <returns>A Vector.</returns>
         public static Vector Round(Vector v, int decimals = 0)
         {
             for (int i = 0; i < v.Length; i++)
                 v[i] = System.Math.Round(v[i], decimals);
             return v;
         }
-
+        /// <summary>Combines the given v.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="v">A variable-length parameters list containing v.</param>
+        /// <returns>A Vector.</returns>
         public static Vector Combine(params Vector[] v)
         {
             if (v.Length == 0)
@@ -194,7 +250,9 @@ namespace numl.Math.LinearAlgebra
 
             return r;
         }
-
+        /// <summary>Sort order.</summary>
+        /// <param name="vector">The vector.</param>
+        /// <returns>The sorted order.</returns>
         public static Vector SortOrder(Vector vector)
         {
             return vector
@@ -203,7 +261,9 @@ namespace numl.Math.LinearAlgebra
                     .Select(t => t.Item1)
                     .ToArray();
         }
-
+        /// <summary>Query if 'vector' contains na n.</summary>
+        /// <param name="vector">The vector.</param>
+        /// <returns>true if it succeeds, false if it fails.</returns>
         public static bool ContainsNaN(Vector vector)
         {
             for (int i = 0; i < vector.Length; i++)
@@ -211,7 +271,9 @@ namespace numl.Math.LinearAlgebra
                     return true;
             return false;
         }
-
+        /// <summary>Query if 'vector' is na n.</summary>
+        /// <param name="vector">The vector.</param>
+        /// <returns>true if na n, false if not.</returns>
         public static bool IsNaN(Vector vector)
         {
             bool nan = true;

@@ -1,16 +1,26 @@
-﻿using System;
+﻿// file:	Utils\StringHelpers.cs
+//
+// summary:	Implements the string helpers class
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using numl.Model;
 
 namespace numl.Utils
 {
+    /// <summary>A string helpers.</summary>
     public static class StringHelpers
     {
+        /// <summary>The empty string.</summary>
         public const string EMPTY_STRING = "#EMPTY#";
+        /// <summary>Number of strings.</summary>
         public const string NUMBER_STRING = "#NUM#";
+        /// <summary>The symbol string.</summary>
         public const string SYMBOL_STRING = "#SYM#";
-
+        /// <summary>A string extension method that sanitizes.</summary>
+        /// <param name="s">string.</param>
+        /// <param name="checkNumber">(Optional) true to check number.</param>
+        /// <returns>A string.</returns>
         public static string Sanitize(this string s, bool checkNumber = true)
         {
             if (string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s))
@@ -47,13 +57,10 @@ namespace numl.Utils
             // return item
             return item;
         }
-
-        /// <summary>
-        /// Lazy list of available characters in a given string
-        /// </summary>
-        /// <param name="s">string</param>
-        /// <param name="exclusions">characters to ignore</param>
-        /// <returns>returns key value</returns>
+        /// <summary>Lazy list of available characters in a given string.</summary>
+        /// <param name="s">string.</param>
+        /// <param name="exclusions">(Optional) characters to ignore.</param>
+        /// <returns>returns key value.</returns>
         public static IEnumerable<string> GetChars(string s, string[] exclusions = null)
         {
             s = s.Trim().ToUpperInvariant();
@@ -77,14 +84,11 @@ namespace numl.Utils
                 yield return key;
             }
         }
-
-        /// <summary>
-        /// Lazy list of available words in a string
-        /// </summary>
-        /// <param name="s">input string</param>
-        /// <param name="separator">separator string</param>
-        /// <param name="exclusions">excluded words</param>
-        /// <returns>key words</returns>
+        /// <summary>Lazy list of available words in a string.</summary>
+        /// <param name="s">input string.</param>
+        /// <param name="separator">(Optional) separator string.</param>
+        /// <param name="exclusions">(Optional) excluded words.</param>
+        /// <returns>key words.</returns>
         public static IEnumerable<string> GetWords(string s, string separator = " ", string[] exclusions = null)
         {
             if (string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s))
@@ -110,7 +114,10 @@ namespace numl.Utils
                 }
             }
         }
-
+        /// <summary>Gets word count.</summary>
+        /// <param name="item">The item.</param>
+        /// <param name="property">The property.</param>
+        /// <returns>An array of double.</returns>
         public static double[] GetWordCount(string item, StringProperty property)
         {
             double[] counts = new double[property.Dictionary.Length];
@@ -135,7 +142,12 @@ namespace numl.Utils
 
             return counts;
         }
-
+        /// <summary>Gets word position.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="item">The item.</param>
+        /// <param name="dictionary">The dictionary.</param>
+        /// <param name="checkNumber">(Optional) true to check number.</param>
+        /// <returns>The word position.</returns>
         public static int GetWordPosition(string item, string[] dictionary, bool checkNumber = true)
         {
             //string[] dictionary = property.Dictionary;
@@ -152,7 +164,10 @@ namespace numl.Utils
             throw new InvalidOperationException(
                 string.Format("\"{0}\" does not exist in the property dictionary", item));
         }
-
+        /// <summary>Builds character dictionary.</summary>
+        /// <param name="examples">The examples.</param>
+        /// <param name="exclusion">(Optional) the exclusion.</param>
+        /// <returns>A Dictionary&lt;string,double&gt;</returns>
         public static Dictionary<string, double> BuildCharDictionary(IEnumerable<string> examples, string[] exclusion = null)
         {
             Dictionary<string, double> d = new Dictionary<string, double>();
@@ -170,7 +185,9 @@ namespace numl.Utils
 
             return d;
         }
-
+        /// <summary>Builds enum dictionary.</summary>
+        /// <param name="examples">The examples.</param>
+        /// <returns>A Dictionary&lt;string,double&gt;</returns>
         public static Dictionary<string, double> BuildEnumDictionary(IEnumerable<string> examples)
         {
             // TODO: Really need to consider this as an enum builder
@@ -207,7 +224,11 @@ namespace numl.Utils
 
             return d;
         }
-
+        /// <summary>Builds word dictionary.</summary>
+        /// <param name="examples">The examples.</param>
+        /// <param name="separator">(Optional) separator string.</param>
+        /// <param name="exclusion">(Optional) the exclusion.</param>
+        /// <returns>A Dictionary&lt;string,double&gt;</returns>
         public static Dictionary<string, double> BuildWordDictionary(IEnumerable<string> examples, string separator = " ", string[] exclusion = null)
         {
             Dictionary<string, double> d = new Dictionary<string, double>();

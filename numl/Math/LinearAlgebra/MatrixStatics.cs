@@ -1,16 +1,19 @@
-﻿using System;
+﻿// file:	Math\LinearAlgebra\MatrixStatics.cs
+//
+// summary:	Implements the matrix statics class
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace numl.Math.LinearAlgebra
 {
+    /// <summary>A matrix.</summary>
 	public partial class Matrix
 	{
-		/// <summary>
-		/// Computes the trace of a matrix
-		/// </summary>
-		/// <returns>trace</returns>
+        /// <summary>Computes the trace of a matrix.</summary>
+        /// <param name="m">Input Matrix.</param>
+        /// <returns>trace.</returns>
 		public static double Trace(Matrix m)
 		{
 			double t = 0;
@@ -18,11 +21,9 @@ namespace numl.Math.LinearAlgebra
 				t += m[i, i];
 			return t;
 		}
-
-		/// <summary>
-		/// Computes the sum of every element of the matrix
-		/// </summary>
-		/// <returns>sum</returns>
+        /// <summary>Computes the sum of every element of the matrix.</summary>
+        /// <param name="m">Input Matrix.</param>
+        /// <returns>sum.</returns>
 		public static double Sum(Matrix m)
 		{
 			double sum = 0;
@@ -31,14 +32,12 @@ namespace numl.Math.LinearAlgebra
 					sum += m[i, j];
 			return sum;
 		}
-
-		/// <summary>
-		/// Computes the sum of either the rows 
-		/// or columns of a matrix and returns
-		/// a vector
-		/// </summary>
-		/// <param name="t">Row or Column sum</param>
-		/// <returns>Vector Sum</returns>
+        /// <summary>
+        /// Computes the sum of either the rows or columns of a matrix and returns a vector.
+        /// </summary>
+        /// <param name="m">Input Matrix.</param>
+        /// <param name="t">Row or Column sum.</param>
+        /// <returns>Vector Sum.</returns>
 		public static Vector Sum(Matrix m, VectorType t)
 		{
 			if (t == VectorType.Row)
@@ -58,17 +57,19 @@ namespace numl.Math.LinearAlgebra
 				return result;
 			}
 		}
-
+        /// <summary>Computes the sum of every element of the matrix.</summary>
+        /// <param name="m">Input Matrix.</param>
+        /// <param name="i">Zero-based index of the.</param>
+        /// <param name="t">Row or Column sum.</param>
+        /// <returns>sum.</returns>
 		public static double Sum(Matrix m, int i, VectorType t)
 		{
 			return m[i, t].Sum();
 		}
-
-		/// <summary>
-		/// Standard Matrix Norm
-		/// </summary>
-		/// <param name="A">Input Matrix</param>
-		/// <returns>Standard Norm (double)</returns>
+        /// <summary>Standard Matrix Norm.</summary>
+        /// <param name="A">Input Matrix.</param>
+        /// <param name="p">The double to process.</param>
+        /// <returns>Standard Norm (double)</returns>
 		public static double Norm(Matrix A, double p)
 		{
 			double norm = 0;
@@ -77,44 +78,34 @@ namespace numl.Math.LinearAlgebra
 					norm += System.Math.Pow(System.Math.Abs(A[i, j]), p);
 			return System.Math.Pow(norm, 1d/p);
 		}
-
-		/// <summary>
-		/// Matrix Frobenius Norm
-		/// </summary>
-		/// <param name="A">Input Matrix</param>
-		/// <returns>Frobenius Norm (double)</returns>
+        /// <summary>Matrix Frobenius Norm.</summary>
+        /// <param name="A">Input Matrix.</param>
+        /// <returns>Frobenius Norm (double)</returns>
 		public static double FrobeniusNorm(Matrix A)
 		{
 			return System.Math.Sqrt((A.T * A).Trace());
 		}
-
-		/// <summary>
-		/// Eigen Decomposition
-		/// </summary>
-		/// <param name="A">Input Matrix</param>
-		/// <returns>Tuple(Eigen Values, Eigen Vectors)</returns>
+        /// <summary>Eigen Decomposition.</summary>
+        /// <param name="A">Input Matrix.</param>
+        /// <returns>Tuple(Eigen Values, Eigen Vectors)</returns>
 		public static Tuple<Vector, Matrix> Evd(Matrix A)
 		{
 			Evd eigs = new Evd(A);
 			eigs.compute();
 			return new Tuple<Vector, Matrix>(eigs.Eigenvalues, eigs.Eigenvectors);
 		}
-
-		/// <summary>
-		/// Singular Value Decomposition
-		/// </summary>
-		/// <param name="A">Input Matrix</param>
-		/// <returns>Tuple(Matrix U, Vector S, Matrix V)</returns>
+        /// <summary>Singular Value Decomposition.</summary>
+        /// <exception cref="NotImplementedException">Thrown when the requested operation is unimplemented.</exception>
+        /// <param name="A">Input Matrix.</param>
+        /// <returns>Tuple(Matrix U, Vector S, Matrix V)</returns>
 		public static Tuple<Matrix, Vector, Matrix> SVD(Matrix A)
 		{
 			throw new NotImplementedException();
 		}
-
-		/// <summary>
-		/// NOT IMPLEMENTED!
-		/// </summary>
-		/// <param name="A"></param>
-		/// <returns></returns>
+        /// <summary>NOT IMPLEMENTED!</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="A">.</param>
+        /// <returns>A Tuple&lt;Matrix,Matrix,Matrix&gt;</returns>
 		public static Tuple<Matrix, Matrix, Matrix> LU(Matrix A)
 		{
 			// TODO: FINISH ALGORITHM
@@ -156,7 +147,10 @@ namespace numl.Math.LinearAlgebra
 
             return new Tuple<Matrix,Matrix,Matrix>(P, L, U);
 		}
-
+        /// <summary>Pivots the given m.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="M">The Matrix to process.</param>
+        /// <returns>A Matrix.</returns>
         public static Matrix Pivot(Matrix M)
         {
             if (M.Rows != M.Cols)
@@ -178,12 +172,11 @@ namespace numl.Math.LinearAlgebra
 
             return P;
         }
-
-		/// <summary>
-		/// Cholesky Factorization of a Matrix
-		/// </summary>
-		/// <param name="m">Input Matrix</param>
-		/// <returns>Cholesky Faxtorization (R.T would be other matrix)</returns>
+        /// <summary>Cholesky Factorization of a Matrix.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <exception cref="SingularMatrixException">Thrown when a Singular Matrix error condition occurs.</exception>
+        /// <param name="m">Input Matrix.</param>
+        /// <returns>Cholesky Faxtorization (R.T would be other matrix)</returns>
 		public static Matrix Cholesky(Matrix m)
 		{
 			if (m.Rows != m.Cols)
@@ -213,13 +206,10 @@ namespace numl.Math.LinearAlgebra
 
 			return A;
 		}
-
-		/// <summary>
-		/// Matrix Roundoff
-		/// </summary>
-		/// <param name="m">Input Matrix</param>
-		/// <param name="decimals">Max number of decimals (default 0 - integral members)</param>
-		/// <returns>Rounded Matrix</returns>
+        /// <summary>Matrix Roundoff.</summary>
+        /// <param name="m">Input Matrix.</param>
+        /// <param name="decimals">(Optional) Max number of decimals (default 0 - integral members)</param>
+        /// <returns>Rounded Matrix.</returns>
 		public static Matrix Round(Matrix m, int decimals = 0)
 		{
 			for (int i = 0; i < m.Rows; i++)
@@ -227,12 +217,9 @@ namespace numl.Math.LinearAlgebra
 					m[i, j] = System.Math.Round(m[i, j], decimals);
 			return m;
 		}
-
-		/// <summary>
-		/// Modified Gram-Schmidt QR Factorization
-		/// </summary>
-		/// <param name="A">Matrix A</param>
-		/// <returns>Tuple(Q, R)</returns>
+        /// <summary>Modified Gram-Schmidt QR Factorization.</summary>
+        /// <param name="A">Matrix A.</param>
+        /// <returns>Tuple(Q, R)</returns>
 		public static Tuple<Matrix, Matrix> QR(Matrix A)
 		{
 			int n = A.Rows;
@@ -252,7 +239,10 @@ namespace numl.Math.LinearAlgebra
 
 			return new Tuple<Matrix, Matrix>(Q, R);
 		}
-
+        /// <summary>Backwards.</summary>
+        /// <param name="A">Input Matrix.</param>
+        /// <param name="b">The Vector to process.</param>
+        /// <returns>A Vector.</returns>
 		internal static Vector Backward(Matrix A, Vector b)
 		{
 			Vector x = Vector.Zeros(b.Length);
@@ -267,7 +257,10 @@ namespace numl.Math.LinearAlgebra
 
 			return x;
 		}
-
+        /// <summary>Forwards.</summary>
+        /// <param name="A">Input Matrix.</param>
+        /// <param name="b">The Vector to process.</param>
+        /// <returns>A Vector.</returns>
 		internal static Vector Forward(Matrix A, Vector b)
 		{
 			Vector x = Vector.Zeros(b.Length);
@@ -282,13 +275,11 @@ namespace numl.Math.LinearAlgebra
 
 			return x;
 		}
-
-		/// <summary>
-		/// Dot product between a matrix and a vector
-		/// </summary>
-		/// <param name="x">Matrix x</param>
-		/// <param name="v">Vector v</param>
-		/// <returns>Vector dot product</returns>
+        /// <summary>Dot product between a matrix and a vector.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="x">Matrix x.</param>
+        /// <param name="v">Vector v.</param>
+        /// <returns>Vector dot product.</returns>
 		public static Vector Dot(Matrix x, Vector v)
 		{
 			if (v.Length != x.Cols)
@@ -299,7 +290,11 @@ namespace numl.Math.LinearAlgebra
 				toReturn[i] = Vector.Dot(x[i, VectorType.Row], v);
 			return toReturn;
 		}
-
+        /// <summary>Dot product between a matrix and a vector.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="v">Vector v.</param>
+        /// <param name="x">Matrix x.</param>
+        /// <returns>Vector dot product.</returns>
 		public static Vector Dot(Vector v, Matrix x)
 		{
 			if (v.Length != x.Rows)
@@ -310,8 +305,10 @@ namespace numl.Math.LinearAlgebra
 				toReturn[i] = Vector.Dot(x[i, VectorType.Col], v);
 			return toReturn;
 		}
-
-
+        /// <summary>Determines the mean of the given parameters.</summary>
+        /// <param name="source">Source for the.</param>
+        /// <param name="t">Row or Column sum.</param>
+        /// <returns>The mean value.</returns>
 		public static Vector Mean(Matrix source, VectorType t)
 		{
 			int count = t == VectorType.Row ? source.Cols : source.Rows;
@@ -321,7 +318,9 @@ namespace numl.Math.LinearAlgebra
 				v[i] = source[i, type].Mean();
 			return v;
 		}
-
+        /// <summary>Determines the maximum of the given parameters.</summary>
+        /// <param name="source">Source for the.</param>
+        /// <returns>The maximum value.</returns>
 		public static double Max(Matrix source)
 		{
 			double max = double.MinValue;
@@ -332,7 +331,9 @@ namespace numl.Math.LinearAlgebra
 
 			return max;
 		}
-
+        /// <summary>Determines the minimum of the given parameters.</summary>
+        /// <param name="source">Source for the.</param>
+        /// <returns>The minimum value.</returns>
 		public static double Min(Matrix source)
 		{
 			double min = double.MaxValue;
@@ -343,7 +344,10 @@ namespace numl.Math.LinearAlgebra
 
 			return min;
 		}
-
+        /// <summary>Covariances.</summary>
+        /// <param name="source">Source for the.</param>
+        /// <param name="t">(Optional) Row or Column sum.</param>
+        /// <returns>A Matrix.</returns>
 		public static Matrix Covariance(Matrix source, VectorType t = VectorType.Col)
 		{
 			int length = t == VectorType.Row ? source.Rows : source.Cols;
@@ -355,7 +359,10 @@ namespace numl.Math.LinearAlgebra
 					m[i, j] = m[j, i] = source[i, t].Covariance(source[j, t])));
 			return m;
 		}
-
+        /// <summary>Covariance diagram.</summary>
+        /// <param name="source">Source for the.</param>
+        /// <param name="t">(Optional) Row or Column sum.</param>
+        /// <returns>A Vector.</returns>
 		public static Vector CovarianceDiag(Matrix source, VectorType t = VectorType.Col)
 		{
 			int length = t == VectorType.Row ? source.Rows : source.Cols;
@@ -364,7 +371,10 @@ namespace numl.Math.LinearAlgebra
 				vector[i] = source[i, t].Variance();
 			return vector;
 		}
-
+        /// <summary>Correlations.</summary>
+        /// <param name="source">Source for the.</param>
+        /// <param name="t">(Optional) Row or Column sum.</param>
+        /// <returns>A Matrix.</returns>
 		public static Matrix Correlation(Matrix source, VectorType t = VectorType.Col)
 		{
 			int length = t == VectorType.Row ? source.Rows : source.Cols;
@@ -374,19 +384,35 @@ namespace numl.Math.LinearAlgebra
 					m[i, j] = m[j, i] = source[i, t].Correlation(source[j, t]);
 			return m;
 		}
-
+        /// <summary>Enumerates reverse in this collection.</summary>
+        /// <param name="source">Source for the.</param>
+        /// <param name="t">(Optional) Row or Column sum.</param>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process reverse in this collection.
+        /// </returns>
 		public static IEnumerable<Vector> Reverse(Matrix source, VectorType t = VectorType.Row)
 		{
 			int length = t == VectorType.Row ? source.Rows : source.Cols;
 			for (int i = length - 1; i > -1; i--)
 				yield return source[i, t];
 		}
-
+        /// <summary>Enumerates indices in this collection.</summary>
+        /// <param name="source">Source for the.</param>
+        /// <param name="f">The Func&lt;Vector,bool&gt; to process.</param>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process indices in this collection.
+        /// </returns>
 		public static IEnumerable<int> Indices(Matrix source, Func<Vector, bool> f)
 		{
 			return Matrix.Indices(source, f, VectorType.Row);
 		}
-
+        /// <summary>Enumerates indices in this collection.</summary>
+        /// <param name="source">Source for the.</param>
+        /// <param name="f">The Func&lt;Vector,bool&gt; to process.</param>
+        /// <param name="t">Row or Column sum.</param>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process indices in this collection.
+        /// </returns>
 		public static IEnumerable<int> Indices(Matrix source, Func<Vector, bool> f, VectorType t)
 		{
 			int max = t == VectorType.Row ? source.Rows : source.Cols;
@@ -397,12 +423,11 @@ namespace numl.Math.LinearAlgebra
 
 
 		//---------------- structural
-		/// <summary>
-		/// Stack a set of vectors into a matrix
-		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="vectors"></param>
-		/// <returns></returns>
+        /// <summary>Stack a set of vectors into a matrix.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="type">.</param>
+        /// <param name="vectors">.</param>
+        /// <returns>A Matrix.</returns>
 		internal static Matrix Stack(VectorType type, params Vector[] vectors)
 		{
 			if (vectors.Length == 0)
@@ -420,17 +445,25 @@ namespace numl.Math.LinearAlgebra
 
 			return m;
 		}
-
+        /// <summary>Stack a set of vectors into a matrix.</summary>
+        /// <param name="vectors">.</param>
+        /// <returns>A Matrix.</returns>
 		public static Matrix Stack(params Vector[] vectors)
 		{
 			return Matrix.Stack(VectorType.Row, vectors);
 		}
-
+        /// <summary>Stacks.</summary>
+        /// <param name="vectors">.</param>
+        /// <returns>A Matrix.</returns>
 		public static Matrix VStack(params Vector[] vectors)
 		{
 			return Matrix.Stack(VectorType.Col, vectors);
 		}
-
+        /// <summary>Stack a set of vectors into a matrix.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="m">Input Matrix.</param>
+        /// <param name="t">Row or Column sum.</param>
+        /// <returns>A Matrix.</returns>
 		public static Matrix Stack(Matrix m, Matrix t)
 		{
 			if (m.Cols != t.Cols)
@@ -450,7 +483,11 @@ namespace numl.Math.LinearAlgebra
 
 			return p;
 		}
-
+        /// <summary>Stacks.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="m">Input Matrix.</param>
+        /// <param name="t">Row or Column sum.</param>
+        /// <returns>A Matrix.</returns>
 		public static Matrix VStack(Matrix m, Matrix t)
 		{
 			if (m.Rows != t.Rows)
@@ -470,12 +507,19 @@ namespace numl.Math.LinearAlgebra
 
 			return p;
 		}
-
+        /// <summary>Slices.</summary>
+        /// <param name="m">Input Matrix.</param>
+        /// <param name="indices">The indices.</param>
+        /// <returns>A Matrix.</returns>
 		public static Matrix Slice(Matrix m, IEnumerable<int> indices)
 		{
 			return MatrixExtensions.Slice(m, indices, VectorType.Row);
 		}
-
+        /// <summary>Slices.</summary>
+        /// <param name="m">Input Matrix.</param>
+        /// <param name="indices">The indices.</param>
+        /// <param name="t">Row or Column sum.</param>
+        /// <returns>A Matrix.</returns>
 		public static Matrix Slice(Matrix m, IEnumerable<int> indices, VectorType t)
 		{
 			var q = indices.Distinct();
@@ -491,7 +535,14 @@ namespace numl.Math.LinearAlgebra
 
 			return n;
 		}
-
+        /// <summary>Extracts this object.</summary>
+        /// <param name="m">Input Matrix.</param>
+        /// <param name="x">Matrix x.</param>
+        /// <param name="y">The y coordinate.</param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
+        /// <param name="safe">(Optional) true to safe.</param>
+        /// <returns>A Matrix.</returns>
 		public static Matrix Extract(Matrix m, int x, int y, int width, int height, bool safe = true)
 		{
 			Matrix m2 = Matrix.Zeros(height, width);
@@ -502,7 +553,9 @@ namespace numl.Math.LinearAlgebra
 
 			return m2;
 		}
-
+        /// <summary>Diagrams the given m.</summary>
+        /// <param name="m">Input Matrix.</param>
+        /// <returns>A Vector.</returns>
 		public static Vector Diag(Matrix m)
 		{
 			var length = m.Cols > m.Rows ? m.Rows : m.Cols;
@@ -511,7 +564,10 @@ namespace numl.Math.LinearAlgebra
 				v[i] = m[i, i];
 			return v;
 		}
-
+        /// <summary>Statistics.</summary>
+        /// <param name="x">Matrix x.</param>
+        /// <param name="t">(Optional) Row or Column sum.</param>
+        /// <returns>A Matrix[].</returns>
 		public static Matrix[] Stats(Matrix x, VectorType t = VectorType.Row)
 		{
 			int length = t == VectorType.Row ? x.Cols : x.Rows;
@@ -521,7 +577,10 @@ namespace numl.Math.LinearAlgebra
 				result[i] = x[i, type].Stats();
 			return result;
 		}
-
+        /// <summary>Dets the given x coordinate.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="x">Matrix x.</param>
+        /// <returns>A double.</returns>
 		public static double Det(Matrix x)
 		{
 			//     0, 1, 2

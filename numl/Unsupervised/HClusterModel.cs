@@ -1,4 +1,7 @@
-﻿using System;
+﻿// file:	Unsupervised\HClusterModel.cs
+//
+// summary:	Implements the cluster model class
+using System;
 using numl.Model;
 using System.Linq;
 using numl.Math.Linkers;
@@ -7,11 +10,20 @@ using System.Collections.Generic;
 
 namespace numl.Unsupervised
 {
+    /// <summary>A data Model for the cluster.</summary>
     public class HClusterModel
     {
+        /// <summary>Gets or sets the descriptor.</summary>
+        /// <value>The descriptor.</value>
         public Descriptor Descriptor { get; set; }
+        /// <summary>Gets or sets the linker.</summary>
+        /// <value>The linker.</value>
         public ILinker Linker { get; set; }
-
+        /// <summary>Generates.</summary>
+        /// <param name="desc">The description.</param>
+        /// <param name="examples">The examples.</param>
+        /// <param name="linker">The linker.</param>
+        /// <returns>A Cluster.</returns>
         public Cluster Generate(Descriptor desc, IEnumerable<object> examples, ILinker linker)
         {
             // Load data 
@@ -21,12 +33,19 @@ namespace numl.Unsupervised
 
             return GenerateClustering(X, linker, exampleArray);
         }
-
+        /// <summary>Generates.</summary>
+        /// <param name="x">The Matrix to process.</param>
+        /// <param name="linker">The linker.</param>
+        /// <returns>A Cluster.</returns>
         public Cluster Generate(Matrix x, ILinker linker)
         {
             return GenerateClustering(x, linker);
         }
-
+        /// <summary>Generates a clustering.</summary>
+        /// <param name="X">The Matrix to process.</param>
+        /// <param name="linker">The linker.</param>
+        /// <param name="data">(Optional) the data.</param>
+        /// <returns>The clustering.</returns>
         private Cluster GenerateClustering(Matrix X, ILinker linker, object[] data = null)
         {
             // Initialize

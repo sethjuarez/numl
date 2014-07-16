@@ -1,16 +1,23 @@
-﻿using System;
+﻿// file:	Math\LinearAlgebra\MatrixOps.cs
+//
+// summary:	Implements the matrix ops class
+using System;
 using System.Linq;
 
 namespace numl.Math.LinearAlgebra
 {
+    /// <summary>A matrix.</summary>
     public partial class Matrix
     {
         // --------------------- implicity operators
+        /// <summary>Matrix casting operator.</summary>
+        /// <param name="m">Matrix.</param>
         public static implicit operator Matrix(double[,] m)
         {
             return new Matrix(m);
         }
-
+        /// <summary>Matrix casting operator.</summary>
+        /// <param name="m">Matrix.</param>
         public static implicit operator Matrix(int[,] m)
         {
             Matrix matrix = new Matrix();
@@ -29,17 +36,27 @@ namespace numl.Math.LinearAlgebra
         }
 
         // --------------------- mathematical ops
-
+        /// <summary>Equality operator.</summary>
+        /// <param name="m1">The first Matrix.</param>
+        /// <param name="m2">The second Matrix.</param>
+        /// <returns>The result of the operation.</returns>
         public static bool operator ==(Matrix m1, Matrix m2)
         {
             return (object.ReferenceEquals(m1, null) && object.ReferenceEquals(m2, null) || m1.Equals(m2));
         }
-
+        /// <summary>Inequality operator.</summary>
+        /// <param name="m1">The first Matrix.</param>
+        /// <param name="m2">The second Matrix.</param>
+        /// <returns>The result of the operation.</returns>
         public static bool operator !=(Matrix m1, Matrix m2)
         {
             return !m1.Equals(m2);
         }
-
+        /// <summary>Addition operator.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="m1">The first Matrix.</param>
+        /// <param name="m2">The second Matrix.</param>
+        /// <returns>The result of the operation.</returns>
         public static Matrix operator +(Matrix m1, Matrix m2)
         {
             if (m1.Rows != m2.Rows || m1.Cols != m2.Cols)
@@ -52,7 +69,11 @@ namespace numl.Math.LinearAlgebra
 
             return result;
         }
-
+        /// <summary>Subtraction operator.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="m1">The first Matrix.</param>
+        /// <param name="m2">The second Matrix.</param>
+        /// <returns>The result of the operation.</returns>
         public static Matrix operator -(Matrix m1, Matrix m2)
         {
             if (m1.Rows != m2.Rows || m1.Cols != m2.Cols)
@@ -65,13 +86,10 @@ namespace numl.Math.LinearAlgebra
 
             return result;
         }
-
-        /// <summary>
-        /// In memory addition of double to matrix
-        /// </summary>
-        /// <param name="m">Matrix</param>
-        /// <param name="s">double</param>
-        /// <returns></returns>
+        /// <summary>In memory addition of double to matrix.</summary>
+        /// <param name="m">Matrix.</param>
+        /// <param name="s">double.</param>
+        /// <returns>The result of the operation.</returns>
         public static Matrix operator +(Matrix m, double s)
         {
             for (int i = 0; i < m.Rows; i++)
@@ -79,18 +97,18 @@ namespace numl.Math.LinearAlgebra
                     m[i, j] += s;
             return m;
         }
-
+        /// <summary>Addition operator.</summary>
+        /// <param name="s">The double to process.</param>
+        /// <param name="m">The Matrix to process.</param>
+        /// <returns>The result of the operation.</returns>
         public static Matrix operator +(double s, Matrix m)
         {
             return m + s;
         }
-
-        /// <summary>
-        /// Subtract double from every element in the Matrix
-        /// </summary>
-        /// <param name="m">Matrix</param>
-        /// <param name="s">Double</param>
-        /// <returns></returns>
+        /// <summary>Subtract double from every element in the Matrix.</summary>
+        /// <param name="m">Matrix.</param>
+        /// <param name="s">Double.</param>
+        /// <returns>The result of the operation.</returns>
         public static Matrix operator -(Matrix m, double s)
         {
             for (int i = 0; i < m.Rows; i++)
@@ -98,20 +116,21 @@ namespace numl.Math.LinearAlgebra
                     m[i, j] -= s;
             return m;
         }
-
+        /// <summary>Subtraction operator.</summary>
+        /// <param name="s">The double to process.</param>
+        /// <param name="m">The Matrix to process.</param>
+        /// <returns>The result of the operation.</returns>
         public static Matrix operator -(double s, Matrix m)
         {
             // subtracting matrix so every item
             // in matrix is negated and s is added
             return (-1 * m) + s;
         }
-
-        /// <summary>
-        /// matrix multiplication
-        /// </summary>
-        /// <param name="m1">left hand side</param>
-        /// <param name="m2">right hand side</param>
-        /// <returns>matrix</returns>
+        /// <summary>matrix multiplication.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="m1">left hand side.</param>
+        /// <param name="m2">right hand side.</param>
+        /// <returns>matrix.</returns>
         public static Matrix operator *(Matrix m1, Matrix m2)
         {
             if (m1.Cols != m2.Rows)
@@ -125,13 +144,10 @@ namespace numl.Math.LinearAlgebra
 
             return result;
         }
-
-        /// <summary>
-        /// Scalar matrix multiplication
-        /// </summary>
-        /// <param name="s">scalar</param>
-        /// <param name="m">matrix</param>
-        /// <returns>matrix</returns>
+        /// <summary>Scalar matrix multiplication.</summary>
+        /// <param name="s">scalar.</param>
+        /// <param name="m">matrix.</param>
+        /// <returns>matrix.</returns>
         public static Matrix operator *(double s, Matrix m)
         {
             var result = Matrix.Zeros(m.Rows, m.Cols);
@@ -141,38 +157,40 @@ namespace numl.Math.LinearAlgebra
 
             return result;
         }
-
-        /// <summary>
-        /// reverse
-        /// </summary>
-        /// <param name="m"></param>
-        /// <param name="s"></param>
-        /// <returns></returns>
+        /// <summary>reverse.</summary>
+        /// <param name="m">.</param>
+        /// <param name="s">.</param>
+        /// <returns>The result of the operation.</returns>
         public static Matrix operator *(Matrix m, double s)
         {
             return s * m;
         }
-
+        /// <summary>Multiplication operator.</summary>
+        /// <param name="m">The Matrix to process.</param>
+        /// <param name="v">The Vector to process.</param>
+        /// <returns>The result of the operation.</returns>
         public static Matrix operator *(Matrix m, Vector v)
         {
             Vector ans = Matrix.Dot(m, v);
             return ans.ToMatrix(VectorType.Col);
         }
-
+        /// <summary>Multiplication operator.</summary>
+        /// <param name="v">The Vector to process.</param>
+        /// <param name="m">The Matrix to process.</param>
+        /// <returns>The result of the operation.</returns>
         public static Matrix operator *(Vector v, Matrix m)
         {
             Vector ans = Matrix.Dot(v, m);
             return ans.ToMatrix(VectorType.Row);
         }
-
         /// <summary>
-        /// Solves Ax = b for x
-        /// If A is not square or the system is overdetermined, this operation
-        /// solves the linear least squares A.T * A x = A.T * b
+        /// Solves Ax = b for x If A is not square or the system is overdetermined, this operation solves
+        /// the linear least squares A.T * A x = A.T * b.
         /// </summary>
-        /// <param name="A">Matrix A</param>
-        /// <param name="b">Vector b</param>
-        /// <returns>x</returns>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="A">Matrix A.</param>
+        /// <param name="b">Vector b.</param>
+        /// <returns>x.</returns>
         public static Vector operator /(Matrix A, Vector b)
         {
             if (A.Rows != b.Length)
@@ -198,7 +216,10 @@ namespace numl.Math.LinearAlgebra
 
 
         }
-
+        /// <summary>Division operator.</summary>
+        /// <param name="A">The Matrix to process.</param>
+        /// <param name="b">The double to process.</param>
+        /// <returns>The result of the operation.</returns>
         public static Matrix operator /(Matrix A, double b)
         {
             for (int i = 0; i < A.Rows; i++)
@@ -206,14 +227,13 @@ namespace numl.Math.LinearAlgebra
                     A[i, j] /= b;
             return A;
         }
-
         /// <summary>
         /// Matrix inverse using pivoted Gauss-Jordan elimination with partial pivoting
-        /// See:http://www.cse.illinois.edu/iem/linear_equations/gauss_jordan/
-        /// for python implementaion
+        /// See:http://www.cse.illinois.edu/iem/linear_equations/gauss_jordan/for python implementaion.
         /// </summary>
-        /// <param name="mat">Matrix</param>
-        /// <param name="n">-1</param>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="mat">Matrix.</param>
+        /// <param name="n">-1.</param>
         /// <returns>Inverse (or exception if matrix is singular)</returns>
         public static Matrix operator ^(Matrix mat, int n)
         {
@@ -243,7 +263,10 @@ namespace numl.Math.LinearAlgebra
                 return Inverse(scratch);
             }
         }
-
+        /// <summary>Inverses the given matrix.</summary>
+        /// <exception cref="SingularMatrixException">Thrown when a Singular Matrix error condition occurs.</exception>
+        /// <param name="mat">Matrix.</param>
+        /// <returns>A Matrix.</returns>
         private static Matrix Inverse(Matrix mat)
         {
             // working space

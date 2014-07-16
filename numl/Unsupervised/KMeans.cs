@@ -1,4 +1,7 @@
-﻿using System;
+﻿// file:	Unsupervised\KMeans.cs
+//
+// summary:	Implements the means class
+using System;
 using numl.Model;
 using System.Linq;
 using numl.Math.Metrics;
@@ -9,12 +12,24 @@ using System.Collections.Generic;
 
 namespace numl.Unsupervised
 {
+    /// <summary>A means.</summary>
     public class KMeans
     {
+        /// <summary>Gets or sets the descriptor.</summary>
+        /// <value>The descriptor.</value>
         public Descriptor Descriptor { get; set; }
+        /// <summary>Gets or sets the centers.</summary>
+        /// <value>The centers.</value>
         public Matrix Centers { get; set; }
+        /// <summary>Gets or sets the x coordinate.</summary>
+        /// <value>The x coordinate.</value>
         public Matrix X { get; set; }
-
+        /// <summary>Generates.</summary>
+        /// <param name="descriptor">The descriptor.</param>
+        /// <param name="examples">The examples.</param>
+        /// <param name="k">The int to process.</param>
+        /// <param name="metric">(Optional) the metric.</param>
+        /// <returns>An int[].</returns>
         public Cluster Generate(Descriptor descriptor, IEnumerable<object> examples, int k, IDistance metric = null)
         {
             var data = examples.ToArray();
@@ -53,7 +68,11 @@ namespace numl.Unsupervised
                 Children = clusters.ToArray() 
             };
         }
-
+        /// <summary>Generates.</summary>
+        /// <param name="x">The Matrix to process.</param>
+        /// <param name="k">The int to process.</param>
+        /// <param name="metric">the metric.</param>
+        /// <returns>An int[].</returns>
         public int[] Generate(Matrix x, int k, IDistance metric)
         {
             if (metric == null)
@@ -112,7 +131,12 @@ namespace numl.Unsupervised
 
             return assignments;
         }
-
+        /// <summary>Generates.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="examples">The examples.</param>
+        /// <param name="k">The int to process.</param>
+        /// <param name="metric">(Optional) the metric.</param>
+        /// <returns>An int[].</returns>
         public int[] Generate(IEnumerable<object> examples, int k, IDistance metric = null)
         {
             #region Sanity Checks
@@ -135,7 +159,10 @@ namespace numl.Unsupervised
             var data = Generate(X, k, metric);
             return data;
         }
-
+        /// <summary>Initializes the uniform.</summary>
+        /// <param name="X">The Matrix to process.</param>
+        /// <param name="k">The int to process.</param>
+        /// <returns>A Matrix.</returns>
         private Matrix InitializeUniform(Matrix X, int k)
         {
             int multiple = (int)System.Math.Floor((double)X.Rows / (double)k);
@@ -149,7 +176,10 @@ namespace numl.Unsupervised
             return m;
 
         }
-
+        /// <summary>Initializes the random.</summary>
+        /// <param name="X">The Matrix to process.</param>
+        /// <param name="k">The int to process.</param>
+        /// <returns>A Matrix.</returns>
         private Matrix InitializeRandom(Matrix X, int k)
         {
             // initialize mean variables

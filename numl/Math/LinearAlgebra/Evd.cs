@@ -1,4 +1,7 @@
-﻿using System;
+﻿// file:	Math\LinearAlgebra\Evd.cs
+//
+// summary:	Implements the evd class
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,11 +10,15 @@ using System.Threading;
 
 namespace numl.Math.LinearAlgebra
 {
+    /// <summary>An evd.</summary>
     public class Evd
     {
+        /// <summary>The Matrix to process.</summary>
         private Matrix A;
+        /// <summary>The Matrix to process.</summary>
         private Matrix V;
-
+        /// <summary>Gets the eigenvectors.</summary>
+        /// <value>The eigenvectors.</value>
         public Matrix Eigenvectors
         {
             get
@@ -19,15 +26,19 @@ namespace numl.Math.LinearAlgebra
                 return V;
             }
         }
-
+        /// <summary>Gets or sets the eigenvalues.</summary>
+        /// <value>The eigenvalues.</value>
         public Vector Eigenvalues { get; private set; }
-
+        /// <summary>Constructor.</summary>
+        /// <param name="a">The int to process.</param>
         public Evd(Matrix a)
         {
             A = a.Copy();
             V = Matrix.Identity(A.Rows);
         }
-
+        /// <summary>Offs the given a.</summary>
+        /// <param name="a">The int to process.</param>
+        /// <returns>A double.</returns>
         public double off(Matrix a)
         {
             double sum = 0;
@@ -37,7 +48,11 @@ namespace numl.Math.LinearAlgebra
                         sum += sqr(a[i, j]);
             return sqrt(sum);
         }
-
+        /// <summary>Schurs.</summary>
+        /// <param name="a">The int to process.</param>
+        /// <param name="p">The int to process.</param>
+        /// <param name="q">The int to process.</param>
+        /// <returns>A Tuple&lt;double,double&gt;</returns>
         private Tuple<double, double> schur(Matrix a, int p, int q)
         {
             double c, s = 0;
@@ -61,7 +76,9 @@ namespace numl.Math.LinearAlgebra
 
             return new Tuple<double, double>(c, s);
         }
-
+        /// <summary>Sweeps.</summary>
+        /// <param name="p">The int to process.</param>
+        /// <param name="q">The int to process.</param>
         private void sweep(int p, int q)
         {
             // set jacobi rotation matrix
@@ -110,6 +127,7 @@ namespace numl.Math.LinearAlgebra
             }
         }
 
+        /// <summary>Parallels this object.</summary>
         public void parallel()
         {
             Console.WriteLine("Starting new sweep!");
@@ -152,6 +170,7 @@ namespace numl.Math.LinearAlgebra
 
         }
 
+        /// <summary>Factorizes this object.</summary>
         private void factorize()
         {
             int N = A.Cols;
@@ -159,7 +178,8 @@ namespace numl.Math.LinearAlgebra
                 for (int q = p + 1; q < N; q++)
                     sweep(p, q);
         }
-
+        /// <summary>Computes the given tolerance.</summary>
+        /// <param name="tol">(Optional) the tolerance.</param>
         public void compute(double tol = 1.0e-10)
         {
             int s = 0;
@@ -178,6 +198,7 @@ namespace numl.Math.LinearAlgebra
             sort();
         }
 
+        /// <summary>Sorts this object.</summary>
         private void sort()
         {
             //ordering
@@ -199,21 +220,32 @@ namespace numl.Math.LinearAlgebra
         }
 
         #region for brevity...
+        /// <summary>Sqrts.</summary>
+        /// <param name="x">The x coordinate.</param>
+        /// <returns>A double.</returns>
         private double sqrt(double x)
         {
             return System.Math.Sqrt(x);
         }
-
+        /// <summary>Sqrs.</summary>
+        /// <param name="x">The x coordinate.</param>
+        /// <returns>A double.</returns>
         private double sqr(double x)
         {
             return System.Math.Pow(x, 2);
         }
-
+        /// <summary>Determines the minimum of the given parameters.</summary>
+        /// <param name="a">The int to process.</param>
+        /// <param name="b">The int to process.</param>
+        /// <returns>The minimum value.</returns>
         private int min(int a, int b)
         {
             return System.Math.Min(a, b);
         }
-
+        /// <summary>Determines the maximum of the given parameters.</summary>
+        /// <param name="a">The int to process.</param>
+        /// <param name="b">The int to process.</param>
+        /// <returns>The maximum value.</returns>
         private int max(int a, int b)
         {
             return System.Math.Max(a, b);

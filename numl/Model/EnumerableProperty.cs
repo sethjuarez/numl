@@ -1,4 +1,7 @@
-﻿using System;
+﻿// file:	Model\EnumerableProperty.cs
+//
+// summary:	Implements the enumerable property class
+using System;
 using numl.Utils;
 using System.Linq;
 using System.Collections;
@@ -8,19 +11,22 @@ using System.Xml.Serialization;
 
 namespace numl.Model
 {
-    /// <summary>
-    /// Enumerable property. Expanded feature.
-    /// </summary>
+    /// <summary>Enumerable property. Expanded feature.</summary>
     [XmlRoot("EnumerableProperty"), Serializable]
     public class EnumerableProperty : Property
     {
+        /// <summary>The length.</summary>
         private int _length;
+        /// <summary>Default constructor.</summary>
         internal EnumerableProperty() { }
+        /// <summary>Constructor.</summary>
+        /// <param name="length">The length.</param>
         public EnumerableProperty(int length)
         {
             _length = length;
         }
-
+        /// <summary>Length of property.</summary>
+        /// <value>The length.</value>
         public override int Length
         {
             get
@@ -28,18 +34,30 @@ namespace numl.Model
                 return _length;
             }
         }
-
+        /// <summary>
+        /// Retrieve the list of expanded columns. If there is a one-to-one correspondence between the
+        /// type and its expansion it will return a single value/.
+        /// </summary>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process the columns in this collection.
+        /// </returns>
         public override IEnumerable<string> GetColumns()
         {
             for (int i = 0; i < _length; i++)
                 yield return i.ToString();
         }
-
+        /// <summary>Convert the numeric representation back to the original type.</summary>
+        /// <param name="val">.</param>
+        /// <returns>An object.</returns>
         public override object Convert(double val)
         {
             return val;
         }
-
+        /// <summary>Convert an object to a list of numbers.</summary>
+        /// <exception cref="InvalidCastException">Thrown when an object cannot be cast to a required
+        /// type.</exception>
+        /// <param name="o">Object.</param>
+        /// <returns>Lazy list of doubles.</returns>
         public override IEnumerable<double> Convert(object o)
         {
             // is it some sort of enumeration?
@@ -80,7 +98,9 @@ namespace numl.Model
                 throw new InvalidCastException(
                     string.Format("Cannot cast {0} to an IEnumerable", o.GetType().Name));
         }
-
+        /// <summary>Converts an object into its XML representation.</summary>
+        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
+        /// serialized.</param>
         public override void WriteXml(XmlWriter writer)
         {
             writer.WriteAttributeString("Name", Name);
@@ -90,7 +110,9 @@ namespace numl.Model
 
             writer.WriteAttributeString("Length", _length.ToString());
         }
-
+        /// <summary>Generates an object from its XML representation.</summary>
+        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is
+        /// deserialized.</param>
         public override void ReadXml(XmlReader reader)
         {
             reader.MoveToContent();

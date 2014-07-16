@@ -1,4 +1,7 @@
-﻿using numl.Model;
+﻿// file:	Utils\TypeHelpers.cs
+//
+// summary:	Implements the type helpers class
+using numl.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,8 +10,14 @@ using System.Text;
 
 namespace numl.Utils
 {
+    /// <summary>A type helpers.</summary>
     internal class TypeHelpers
     {
+        /// <summary>Generates a feature.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="type">The type.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>The feature.</returns>
         public static Property GenerateFeature(Type type, string name)
         {
             Property p;
@@ -34,7 +43,10 @@ namespace numl.Utils
 
             return p;
         }
-
+        /// <summary>Generates a label.</summary>
+        /// <param name="type">The type.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>The label.</returns>
         public static Property GenerateLabel(Type type, string name)
         {
             var p = GenerateFeature(type, name);
