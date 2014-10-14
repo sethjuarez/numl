@@ -114,5 +114,6 @@ namespace numl.Supervised
         /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is
         /// deserialized.</param>
         public abstract void ReadXml(XmlReader reader);
+
     }
 }

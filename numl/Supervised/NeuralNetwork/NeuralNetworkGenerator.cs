@@ -41,15 +41,20 @@ namespace numl.Supervised.NeuralNetwork
             if (MaxIterations == -1) MaxIterations = x.Rows * 1000;
 
             var network = Network.Default(Descriptor, x, y, Activation);
+            var model = new NeuralNetworkModel { Descriptor = Descriptor, Network = network };
+            OnModelChanged(this, ModelEventArgs.Make(model, "Initialized"));
 
             for (int i = 0; i < MaxIterations; i++)
             {
                 int idx = i % x.Rows;
                 network.Forward(x[idx, VectorType.Row]);
+                //OnModelChanged(this, ModelEventArgs.Make(model, "Forward"));
                 network.Back(y[idx], LearningRate);
+                var output = String.Format("Run ({0}/{1})", i, MaxIterations);
+                OnModelChanged(this, ModelEventArgs.Make(model, output));
             }
 
-            return new NeuralNetworkModel { Descriptor = Descriptor, Network = network };
+            return model;
         }
     }
 }

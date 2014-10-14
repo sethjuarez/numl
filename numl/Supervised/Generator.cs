@@ -15,6 +15,17 @@ namespace numl.Supervised
     /// <summary>A generator.</summary>
     public abstract class Generator : IGenerator
     {
+        /// <summary>Event queue for all listeners interested in ModelChanged events.</summary>
+        public event EventHandler<ModelEventArgs> ModelChanged;
+        /// <summary>Raises the model event.</summary>
+        /// <param name="sender">Source of the event.</param>
+        /// <param name="e">Event information to send to registered event handlers.</param>
+        protected virtual void OnModelChanged(object sender, ModelEventArgs e)
+        {
+            EventHandler<ModelEventArgs> handler = ModelChanged;
+            if (handler != null)
+                handler(sender, e);
+        }
         /// <summary>Gets or sets the descriptor.</summary>
         /// <value>The descriptor.</value>
         public Descriptor Descriptor { get; set; }
@@ -66,5 +77,32 @@ namespace numl.Supervised
         /// <param name="y">The Vector to process.</param>
         /// <returns>Model.</returns>
         public abstract IModel Generate(Matrix x, Vector y);
+    }
+
+    /// <summary>Additional information for model events.</summary>
+    public class ModelEventArgs : EventArgs
+    {
+        /// <summary>Constructor.</summary>
+        /// <param name="model">The model.</param>
+        /// <param name="message">(Optional) the message.</param>
+        public ModelEventArgs(IModel model, string message = "")
+        {
+            Message = message;
+            Model = model;
+        }
+        /// <summary>Gets or sets the model.</summary>
+        /// <value>The model.</value>
+        public IModel Model { get; private set; }
+        /// <summary>Gets or sets the message.</summary>
+        /// <value>The message.</value>
+        public string Message { get; private set; }
+        /// <summary>Makes.</summary>
+        /// <param name="model">The model.</param>
+        /// <param name="message">(Optional) the message.</param>
+        /// <returns>The ModelEventArgs.</returns>
+        internal static ModelEventArgs Make(IModel model, string message = "")
+        {
+            return new ModelEventArgs(model, message);
+        }
     }
 }
