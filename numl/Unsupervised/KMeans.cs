@@ -100,6 +100,9 @@ namespace numl.Unsupervised
                         }
                     }
 
+                    // bounds?
+                    if (min_index == -1)
+                        min_index = 0;
                     assignments[j] = min_index;
                 });
 
