@@ -11,8 +11,8 @@
         <iconUrl>http://numl.net/Media/Default/images/numl.png</iconUrl>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <description>numl is a machine learning library intended to ease the use of using standard modeling techniques for both prediction and clustering</description>
-        <summary>GPLv2</summary>
-        <copyright>2013</copyright>
+        <summary>MIT</summary>
+        <copyright>2015</copyright>
         <language>en-US</language>
         <tags>machine learning, framework</tags>
     </metadata>
