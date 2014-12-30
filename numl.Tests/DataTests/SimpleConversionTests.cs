@@ -76,6 +76,47 @@ namespace numl.Tests.DataTests
         }
 
         [Test]
+        public void Test_Univariate_Back_Conversions()
+        {
+            // boolean
+            Assert.AreEqual(true, Ject.Convert(1, typeof(bool)));
+            Assert.AreEqual(false, Ject.Convert(-1, typeof(bool)));
+
+            // numeric types
+
+            Assert.AreEqual((Byte)1, Ject.Convert(1d, typeof(Byte)));                               // byte
+            Assert.AreEqual((SByte)1, Ject.Convert(1d, typeof(SByte)));                             // sbyte
+            Assert.AreEqual((Decimal)0.4m, Ject.Convert(0.4d, typeof(Decimal)));                    // decimal
+            Assert.AreEqual((Double)0.1d, Ject.Convert(0.1d, typeof(Double)));                      // double
+            Assert.AreEqual((Single)300f, Ject.Convert(300d, typeof(Single)));                      // single
+            Assert.AreEqual((Int16)1, Ject.Convert(1d, typeof(Int16)));                             // int16
+            Assert.AreEqual((UInt16)2, Ject.Convert(2d, typeof(UInt16)));                           // uint16
+            Assert.AreEqual((Int32)2323432, Ject.Convert(2323432, typeof(Int32)));                  // int32
+            Assert.AreEqual((UInt32)2323432, Ject.Convert(2323432d, typeof(UInt32)));               // uint32
+            Assert.AreEqual((Int64)1232323434345, Ject.Convert(1232323434345d, typeof(Int64)));     // int64
+            Assert.AreEqual((UInt64)1232323434345, Ject.Convert(1232323434345d, typeof(UInt64)));   // uint64
+            Assert.AreEqual((long)1232323434345, Ject.Convert(1232323434345d, typeof(long)));       // long
+
+            // enum
+            Assert.AreEqual(FakeEnum.Item0, Ject.Convert(0d, typeof(FakeEnum)));
+            Assert.AreEqual(FakeEnum.Item1, Ject.Convert(1d, typeof(FakeEnum)));
+            Assert.AreEqual(FakeEnum.Item2, Ject.Convert(2d, typeof(FakeEnum)));
+            Assert.AreEqual(FakeEnum.Item3, Ject.Convert(3d, typeof(FakeEnum)));
+            Assert.AreEqual(FakeEnum.Item4, Ject.Convert(4d, typeof(FakeEnum)));
+            Assert.AreEqual(FakeEnum.Item5, Ject.Convert(5d, typeof(FakeEnum)));
+            Assert.AreEqual(FakeEnum.Item6, Ject.Convert(6d, typeof(FakeEnum)));
+            Assert.AreEqual(FakeEnum.Item7, Ject.Convert(7d, typeof(FakeEnum)));
+            Assert.AreEqual(FakeEnum.Item8, Ject.Convert(8d, typeof(FakeEnum)));
+            Assert.AreEqual(FakeEnum.Item9, Ject.Convert(9d, typeof(FakeEnum)));
+
+            // char
+            Assert.AreEqual('A', Ject.Convert(65d, typeof(char)));
+
+            // timespan
+            Assert.AreEqual(TimeSpan.FromSeconds(300), Ject.Convert(300d, typeof(TimeSpan)));
+        }
+
+        [Test]
         public void Test_Char_Dictionary_Gen()
         {
             var d = StringHelpers.BuildCharDictionary(ShortStrings);

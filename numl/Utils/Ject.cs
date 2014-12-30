@@ -278,6 +278,8 @@ namespace numl.Utils
                 return Enum.ToObject(t, System.Convert.ChangeType(val, System.Enum.GetUnderlyingType(t)));
             else if (t == typeof(TimeSpan)) // get total seconds
                 return new TimeSpan(0, 0, (int)val);
+            else if (t == typeof(decimal))
+                return (decimal)val;
             else
             {
                 TypeConverter converter = TypeDescriptor.GetConverter(typeof(double));
