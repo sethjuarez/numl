@@ -98,5 +98,38 @@ namespace numl.Supervised.NaiveBayes
                 X = Range.Make(val)
             };
         }
+        /// <summary>Tests if this object is considered equal to another.</summary>
+        /// <param name="obj">The object to compare with the current object.</param>
+        /// <returns>true if the objects are considered equal, false if they are not.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj.GetType() != typeof(Statistic)) return false;
+            var statistic = obj as Statistic;
+            if (Label != statistic.Label) return false;
+            if (Discrete != statistic.Discrete) return false;
+            if (Count != statistic.Count) return false;
+            if (X.Max != statistic.X.Max) return false;
+            if (X.Max != statistic.X.Max) return false;
+            if (Probability != statistic.Probability) return false;
+
+            if (Conditionals == null && statistic.Conditionals != null) return false;
+            if (statistic.Conditionals == null && Conditionals != null) return false;
+
+            if (Conditionals != null)
+            {
+                if (Conditionals.Length != statistic.Conditionals.Length)
+                    return false;
+                for (int i = 0; i < Conditionals.Length; i++)
+                    if (!Conditionals[i].Equals(statistic.Conditionals[i]))
+                        return false;
+            }
+            return true;
+        }
+        /// <summary>Calculates a hash code for this object.</summary>
+        /// <returns>A hash code for this object.</returns>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

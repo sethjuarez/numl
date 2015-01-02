@@ -90,5 +90,33 @@ namespace numl.Supervised.NaiveBayes
         {
             return string.Format("{0} [{1}]", Label, Discrete ? "Discrete" : "Continuous");
         }
+        /// <summary>Tests if this object is considered equal to another.</summary>
+        /// <param name="obj">The object to compare with the current object.</param>
+        /// <returns>true if the objects are considered equal, false if they are not.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj.GetType() != typeof(Measure)) return false;
+            var measure = obj as Measure;
+            if (Label != measure.Label) return false;
+            if (Discrete != measure.Discrete) return false;
+
+            if (Probabilities == null && measure.Probabilities != null) return false;
+            if (measure.Probabilities == null && Probabilities != null) return false;
+
+            if (Probabilities != null)
+            {
+                if (Probabilities.Length != measure.Probabilities.Length) return false;
+                for (int i = 0; i < Probabilities.Length; i++)
+                    if (!Probabilities[i].Equals(measure.Probabilities[i]))
+                        return false;
+            }
+            return true;
+        }
+        /// <summary>Calculates a hash code for this object.</summary>
+        /// <returns>A hash code for this object.</returns>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }
