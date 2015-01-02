@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/f2he54f6gq00mtqy/branch/master?svg=true)](https://ci.appveyor.com/project/sethjuarez/numl/branch/master)
+
 # Project Description
 This library is designed to assist in the use of common Machine Learning Algorithms in conjunction with the .NET platform. It is designed to include the most popular supervised and unsupervised learning algorithms while minimizing the friction involved with creating the predictive models.
 

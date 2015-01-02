@@ -43,9 +43,17 @@ assembly_info:
 configuration: Release
 
 build:
+  project: numl.sln
   publish_nuget: true
   publish_nuget_symbols: true
   verbosity: minimal
+
+#---------------------------------#
+#      artifacts configuration    #
+#---------------------------------#
+artifacts:
+  # pushing all *.nupkg files in directory
+  - path: out\*.nupkg
 
 #---------------------------------#
 #       tests configuration       #
@@ -64,14 +72,3 @@ deploy:
   on:
     branch: master
   artifact: /.*\.nupkg/
-
-#---------------------------------#
-#         notifications           #
-#---------------------------------#
-notifications:
-- provider: Email
-  to:
-  - me@sethjuarez.com
-  on_build_success: false
-  on_build_failure: false
-  on_build_status_changed: false
