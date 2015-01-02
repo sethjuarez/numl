@@ -53,19 +53,21 @@ build:
 #---------------------------------#
 artifacts:
   # pushing all *.nupkg files in directory
-  - path: out\*.nupkg
+  - path: '**\*.nupkg'
 
 #---------------------------------#
 #       tests configuration       #
 #---------------------------------#
 test:
-  assemblies: numl.Tests.dll
+  assemblies: 
+    - numl.Tests.dll
 
 #---------------------------------#
 #     deployment configuration    #
 #---------------------------------#
 deploy:
-  provider: NuGet
+    # Deploying to NuGet feed
+  - provider: NuGet
   api_key:
     secure: ifMomHPMwOG0h4iRpfI9AbX5exMCQVJNGPrgMnefaD/QzcHBstXSzfhjPZKW0Cje
   skip_symbols: false
