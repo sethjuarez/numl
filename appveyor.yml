@@ -68,9 +68,9 @@ test:
 deploy:
     # Deploying to NuGet feed
   - provider: NuGet
-  api_key:
-    secure: ifMomHPMwOG0h4iRpfI9AbX5exMCQVJNGPrgMnefaD/QzcHBstXSzfhjPZKW0Cje
-  skip_symbols: false
-  on:
-    branch: master
-  artifact: /.*\.nupkg/
+    api_key:
+      secure: ifMomHPMwOG0h4iRpfI9AbX5exMCQVJNGPrgMnefaD/QzcHBstXSzfhjPZKW0Cje
+    skip_symbols: false
+    on:
+      branch: master
+    artifact: /.*\.nupkg/
