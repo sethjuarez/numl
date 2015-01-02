@@ -10,10 +10,9 @@ namespace numl.Tests.MathTests
     /// <summary>
     /// Summary description for VectorTests
     /// </summary>
-    [TestFixture]
+    [TestFixture, Category("Math")]
     public class VectorTests
     {
-
         [Test]
         public void Vector_Serialize_Test()
         {

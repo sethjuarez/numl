@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace numl.Tests.MathTests
 {
-    [TestFixture]
-    public class PorbabilityTests
+    [TestFixture, Category("Math")]
+    public class ProbabilityTests
     {
         [TestCase(3, 10000)]
         [TestCase(3, 100000)]

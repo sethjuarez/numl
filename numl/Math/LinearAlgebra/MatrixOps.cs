@@ -246,7 +246,7 @@ namespace numl.Math.LinearAlgebra
                 return mat.Copy();
             if (n == -1)
             {
-                #warning This is not the most efficient way to solve a system of Linear Equations. Consider using the \ operator
+                //warning, this is not the most efficient way to solve a system of Linear Equations. Consider using the \ operator
                 return Inverse(mat);
             }
             var negative = n < 0;
@@ -259,7 +259,7 @@ namespace numl.Math.LinearAlgebra
                 return scratch;
             else
             {
-                #warning This is not the most efficient way to solve a system of Linear Equations. Consider using the \ operator
+                //warning, this is not the most efficient way to solve a system of Linear Equations. Consider using the \ operator
                 return Inverse(scratch);
             }
         }

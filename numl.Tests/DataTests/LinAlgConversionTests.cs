@@ -8,7 +8,7 @@ using numl.Math.LinearAlgebra;
 
 namespace numl.Tests.DataTests
 {
-    [TestFixture]
+    [TestFixture, Category("Data")]
     public class LinAlgConversionTests
     {
         [Test]

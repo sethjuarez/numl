@@ -9,7 +9,7 @@ namespace numl.Tests.MathTests
     /// <summary>
     /// Summary description for MatrixTests
     /// </summary>
-    [TestFixture]
+    [TestFixture, Category("Math")]
     public class MatrixTests
     {
         private Matrix _test = new[,]

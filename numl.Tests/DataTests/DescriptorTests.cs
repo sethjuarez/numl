@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace numl.Tests.DataTests
 {
-    [TestFixture]
+    [TestFixture, Category("Data")]
     public class DescriptorTests
     {
         [TestCase(-1, "Nice", typeof(bool), typeof(Property))]

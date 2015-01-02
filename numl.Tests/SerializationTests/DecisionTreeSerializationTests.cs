@@ -8,10 +8,10 @@ using numl.Supervised.DecisionTree;
 
 namespace numl.Tests.SerializationTests
 {
-    [TestFixture]
+    [TestFixture, Category("Serialization")]
     public class DecisionTreeSerializationTests : BaseSerialization
     {
-        private void AreEqual(Node n1, Node n2, bool ignoreParent)
+        private static void AreEqual(Node n1, Node n2, bool ignoreParent)
         {
             Assert.AreEqual(n1.IsLeaf, n2.IsLeaf);
             Assert.AreEqual(n1.Value, n2.Value);

@@ -92,8 +92,6 @@ namespace numl.Math.Information
         /// <param name="y">Target impurity.</param>
         /// <param name="x">Conditioned impurity.</param>
         /// <returns>Conditional impurity measure.</returns>
-        ///
-        /// ### <param name="width">Split of values over x to condition upon.</param>
         public double Conditional(Vector y, Vector x)
         {
             if (x == null && y == null)
@@ -131,8 +129,6 @@ namespace numl.Math.Information
         /// <param name="y">Target impurity.</param>
         /// <param name="x">Conditioned impurity.</param>
         /// <returns>Information gain using appropriate measure.</returns>
-        ///
-        /// ### <param name="width">Split of values over x to condition upon.</param>
         public double Gain(Vector y, Vector x)
         {
             return Calculate(y) - Conditional(y, x);
@@ -159,8 +155,6 @@ namespace numl.Math.Information
         /// <param name="y">Target impurity.</param>
         /// <param name="x">Conditioned impurity.</param>
         /// <returns>Relative information gain using appropriate measure.</returns>
-        ///
-        /// ### <param name="width">Split of values over x to condition upon.</param>
         public double RelativeGain(Vector y, Vector x)
         {
             var h_yx = Conditional(y, x);

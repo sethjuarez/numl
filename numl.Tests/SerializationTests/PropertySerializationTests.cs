@@ -12,7 +12,7 @@ using System.Xml.Serialization;
 
 namespace numl.Tests.SerializationTests
 {
-    [TestFixture]
+    [TestFixture, Category("Serialization")]
     public class PropertySerializationTests : BaseSerialization
     {
         [Test]

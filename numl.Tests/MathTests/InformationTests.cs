@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace numl.Tests.MathTests
 {
-    [TestFixture]
+    [TestFixture, Category("Math")]
     public class InformationTests
     {
         [TestCase(new[] { 3d, 3, 2, 1, 1, 0, 3, 3, 3, 4 }, typeof(Entropy), 1.96096)]

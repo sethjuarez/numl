@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace numl.Tests.UnsupervisedTests
 {
-    [TestFixture]
+    [TestFixture, Category("Unsupervised")]
     public class HierarchicalClusteringTests
     {
         [Test]

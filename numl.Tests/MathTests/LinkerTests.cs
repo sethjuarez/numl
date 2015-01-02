@@ -7,12 +7,13 @@ using System.Collections.Generic;
 
 namespace numl.Tests.MathTests
 {
-    [TestFixture]
+    [TestFixture, Category("Math")]
     public class LinkerTests
     {
         [Test]
         public void Average_Linker_Test()
         {
+            // TODO: Finish linker tests
             var a = new double[] { 1.0, 1.0 };
             var b = new double[] { 1.5, 1.5 };
             var c = new double[] { 5.0, 5.0 };

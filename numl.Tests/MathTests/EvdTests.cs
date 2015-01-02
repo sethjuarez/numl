@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace numl.Tests.MathTests
 {
-    [TestFixture]
+    [TestFixture, Category("Math")]
     public class EvdTests
     {
         [TestCase(1)]

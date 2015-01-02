@@ -8,7 +8,7 @@ using numl.Supervised.NeuralNetwork;
 
 namespace numl.Tests.SupervisedTests
 {
-    [TestFixture]
+    [TestFixture, Category("Supervised")]
     public class NeuralNetworkTests : BaseSupervised
     {
         [Test]

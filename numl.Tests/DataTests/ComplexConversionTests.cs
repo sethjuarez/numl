@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace numl.Tests.DataTests
 {
-    [TestFixture]
+    [TestFixture, Category("Data")]
     public class ComplexConversionTests
     {
         private Descriptor Generate()

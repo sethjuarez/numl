@@ -13,7 +13,6 @@ namespace numl.Tests.SupervisedTests
     [TestFixture]
     public class BaseSupervised
     {
-
         [TestFixtureSetUp]
         public void Setup()
         {

@@ -8,7 +8,7 @@ using numl.Tests.Data;
 
 namespace numl.Tests.SupervisedTests
 {
-    [TestFixture]
+    [TestFixture, Category("Supervised")]
     public class KNNTests : BaseSupervised
     {
         [Test]

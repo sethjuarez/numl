@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace numl.Tests.MathTests
 {
-    [TestFixture]
+    [TestFixture, Category("Math")]
     public class MetricTests
     {
         [TestCase(new[] { 1d, 5, 2, 3, 10 }, new[] { 4d, 15, 20, 5, 5 }, typeof(CosineDistance), 0.40629)]

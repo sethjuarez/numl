@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace numl.Tests.SerializationTests
 {
-    [TestFixture]
+    [TestFixture, Category("Serialization")]
     public class NaiveBayesSerializationTests : BaseSerialization
     {
         [Test]

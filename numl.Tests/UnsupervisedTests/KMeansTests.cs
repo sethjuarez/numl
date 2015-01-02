@@ -25,7 +25,7 @@ namespace numl.Tests.UnsupervisedTests
         }
     }
 
-    [TestFixture]
+    [TestFixture, Category("Unsupervised")]
     public class KMeansTests
     {
         private static Matrix GenerateData(int size)

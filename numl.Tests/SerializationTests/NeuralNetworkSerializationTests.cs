@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace numl.Tests.SerializationTests
 {
-    [TestFixture]
+    [TestFixture, Category("Serialization")]
     public class NeuralNetworkSerializationTests : BaseSerialization
     {
         [Test]

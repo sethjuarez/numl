@@ -9,7 +9,7 @@ using numl.Math.Probability;
 
 namespace numl.Tests.MathTests
 {
-    [TestFixture]
+    [TestFixture, Category("Math")]
     public class HelperTests
     {
         [TestCase(new[] { 1.2d, 2.2, 2.1, 5.2, 0.2, 6.7, 8.8 }, 5, new[] { 1.2d, 2.2, 2.1, 0.2 })]

@@ -56,7 +56,7 @@
     <Compile Include="Data\Student.cs" />
     <Compile Include="Data\Tennis.cs" />
     <Compile Include="Data\ValueObject.cs" />
-    <Compile Include="MathTests\PorbabilityTests.cs" />
+    <Compile Include="MathTests\ProbabilityTests.cs" />
     <Compile Include="SerializationTests\BaseSerialization.cs" />
     <Compile Include="SerializationTests\DecisionTreeSerializationTests.cs" />
     <Compile Include="SerializationTests\DescriptorSerializationTests.cs" />
@@ -64,7 +64,7 @@
     <Compile Include="SerializationTests\NeuralNetworkSerializationTests.cs" />
     <Compile Include="SupervisedTests\BaseSupervised.cs" />
     <Compile Include="SupervisedTests\DecisionTreeTests.cs" />
-    <Compile Include="MathTests\DistanceTests.cs" />
+    <Compile Include="MathTests\MetricTests.cs" />
     <Compile Include="MathTests\EvdTests.cs" />
     <Compile Include="MathTests\HelperTests.cs" />
     <Compile Include="MathTests\InformationTests.cs" />

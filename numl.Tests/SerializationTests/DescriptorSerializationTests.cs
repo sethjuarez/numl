@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace numl.Tests.SerializationTests
 {
-    [TestFixture]
+    [TestFixture, Category("Serialization")]
     public class DescriptorSerializationTests : BaseSerialization
     {
         public static IEnumerable<string> WordStrings

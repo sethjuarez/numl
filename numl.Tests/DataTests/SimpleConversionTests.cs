@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace numl.Tests.DataTests
 {
-    [TestFixture]
+    [TestFixture, Category("Data")]
     public class SimpleConversionTests
     {
         public static IEnumerable<string> ShortStrings
