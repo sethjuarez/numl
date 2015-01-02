@@ -57,11 +57,13 @@ test:
 #     deployment configuration    #
 #---------------------------------#
 deploy:
-- provider: NuGet
+  provider: NuGet
   api_key:
     secure: ifMomHPMwOG0h4iRpfI9AbX5exMCQVJNGPrgMnefaD/QzcHBstXSzfhjPZKW0Cje
+  skip_symbols: false
   on:
     branch: master
+  artifact: /.*\.nupkg/
 
 #---------------------------------#
 #         notifications           #
@@ -70,6 +72,6 @@ notifications:
 - provider: Email
   to:
   - me@sethjuarez.com
-  on_build_success: true
-  on_build_failure: true
+  on_build_success: false
+  on_build_failure: false
   on_build_status_changed: false

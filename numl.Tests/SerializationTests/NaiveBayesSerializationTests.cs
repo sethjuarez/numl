@@ -17,21 +17,12 @@ namespace numl.Tests.SerializationTests
             var data = Tennis.GetData();
             var description = Descriptor.Create<Tennis>();
             var generator = new NaiveBayesGenerator(2);
-            var model = generator.Generate(description, data);
-
-            Assert.IsInstanceOf<NaiveBayesModel>(model);
+            var model = generator.Generate(description, data) as NaiveBayesModel;
 
             Serialize(model);
 
-
             var lmodel = Deserialize<NaiveBayesModel>();
-            Assert.IsInstanceOf<NaiveBayesModel>(lmodel);
-
-            var mroot = ((NaiveBayesModel)model).Root;
-            var lroot = ((NaiveBayesModel)lmodel).Root;
-
-
-            Assert.IsTrue(mroot.Equals(lroot));
+            Assert.AreEqual(model.Root, lmodel.Root);
         }
 
         [Test]
@@ -40,18 +31,12 @@ namespace numl.Tests.SerializationTests
             var data = Iris.Load();
             var description = Descriptor.Create<Iris>();
             var generator = new NaiveBayesGenerator(2);
-            var model = generator.Generate(description, data);
-
-            Assert.IsInstanceOf<NaiveBayesModel>(model);
+            var model = generator.Generate(description, data) as NaiveBayesModel;
 
             Serialize(model);
 
             var lmodel = Deserialize<NaiveBayesModel>();
-            Assert.IsInstanceOf<NaiveBayesModel>(lmodel);
-
-            var mroot = ((NaiveBayesModel)model).Root;
-            var lroot = ((NaiveBayesModel)lmodel).Root;
-            Assert.IsTrue(mroot.Equals(lroot));
+            Assert.AreEqual(model.Root, lmodel.Root);
         }
     }
 }
