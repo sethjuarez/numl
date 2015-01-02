@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>numl</id>
-        <version>$version$-beta</version>
+        <version>$version$</version>
         <title>numl</title>
         <authors>Seth Juarez</authors>
         <owners>Seth Juarez</owners>
