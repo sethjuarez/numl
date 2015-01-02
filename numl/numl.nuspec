@@ -17,7 +17,7 @@
         <tags>machine learning, framework</tags>
     </metadata>
     <files>
-        <file src="numl\bin\Release\numl.dll" target="lib\net40\numl.dll" />
-        <file src="numl\bin\Release\numl.pdb" target="lib\net40\numl.pdb" />
+        <file src="bin\Release\numl.dll" target="lib\net40\numl.dll" />
+        <file src="bin\Release\numl.pdb" target="lib\net40\numl.pdb" />
     </files>
 </package>
