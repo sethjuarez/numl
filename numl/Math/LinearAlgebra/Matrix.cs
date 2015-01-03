@@ -402,6 +402,12 @@ namespace numl.Math.LinearAlgebra
             else
                 return false;
         }
+        /// <summary>Returns a copy of the inner matrix array.</summary>
+        /// <returns></returns>
+        public double[][] ToArray()
+        {
+            return this._matrix.Select(i => i.ToArray()).ToArray();
+        }
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
