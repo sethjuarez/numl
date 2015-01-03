@@ -12,7 +12,7 @@ using System.Xml;
 namespace numl.Model
 {
     /// <summary>Concrete property. Used to convert any given data type to a number.</summary>
-    [XmlRoot("Property")]
+    [XmlRoot("Property"), Serializable]
     public class Property : IXmlSerializable
     {
         /// <summary>Default constructor.</summary>

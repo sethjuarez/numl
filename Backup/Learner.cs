@@ -9,6 +9,7 @@ using numl.Math.Probability;
 using System.Threading.Tasks;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
+using System.Data;
 
 namespace numl
 {
@@ -56,6 +57,29 @@ namespace numl
                 models[i] = Learn(examples, trainingPercentage, repeat, generators[i]);
 
             return models;
+        }
+        /// <summary>
+        /// Trains a single model based on a generator a predefined number of times with the provided
+        /// examples and data split and selects the best (or most accurate) model.
+        /// </summary>
+        /// <param name="examples">Source data (in datatable form)</param>
+        /// <param name="trainingPercentage">Data split percentage.</param>
+        /// <param name="repeat">Number of repetitions per generator.</param>
+        /// <param name="generator">Model generator used.</param>
+        /// <returns>Best model for provided generator.</returns>
+        public static LearningModel Learn(DataTable examples, double trainingPercentage, int repeat, IGenerator generator)
+        {
+            return Learn(GetRows(examples), trainingPercentage, repeat, generator);
+        }
+        /// <summary>Gets the rows in this collection.</summary>
+        /// <param name="table">The table.</param>
+        /// <returns>
+        /// An enumerator that allows foreach to be used to process the rows in this collection.
+        /// </returns>
+        private static IEnumerable<DataRow> GetRows(DataTable table)
+        {
+            foreach (DataRow row in table.Rows)
+                yield return row;
         }
         /// <summary>
         /// Trains a single model based on a generator a predefined number of times with the provided
