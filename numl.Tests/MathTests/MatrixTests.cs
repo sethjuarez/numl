@@ -816,5 +816,33 @@ namespace numl.Tests.MathTests
             // -418
             var qd = q.Det();
         }
+
+        [Test]
+        public void Matrix_ToArray_Test()
+        {
+            Matrix m = new[,] 
+                {{ 1, 2,  2, 1 },
+                 { 1, 2,  4, 2 },
+                 { 2, 7,  5, 2 },
+                 {-1, 4, -6, 3 }};
+
+            var n = m.ToArray();
+
+            double[][] y = new double[m.Rows][];
+            for (int x = 0; x < m.Rows; x++)
+            {
+                y[x] = new double[m.Cols];
+                for (int j = 0; j < y[x].Length; j++)
+                {
+                    y[x][j] = Convert.ToDouble(m[x][j]);
+                }
+            }
+
+            Assert.AreEqual(m, n);
+
+            m[1][2] = m[1][2] + m[1][2];
+
+            Assert.AreNotEqual(m[1][2], y[1][2]);
+        }
     }
 }

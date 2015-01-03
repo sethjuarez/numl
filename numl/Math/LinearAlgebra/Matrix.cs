@@ -1,4 +1,4 @@
-﻿// file:	Math\LinearAlgebra\Matrix.cs
+﻿ // file:	Math\LinearAlgebra\Matrix.cs
 //
 // summary:	Implements the matrix class
 using System;
@@ -402,6 +402,16 @@ namespace numl.Math.LinearAlgebra
             else
                 return false;
         }
+
+        /// <summary>
+        /// Performs a deep copy of the underlying matrix and returns a 2D array.
+        /// </summary>
+        /// <returns></returns>
+        public double[][] ToArray()
+        {
+            return this._matrix.Select(s => s.ToArray()).ToArray();
+        }
+
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
