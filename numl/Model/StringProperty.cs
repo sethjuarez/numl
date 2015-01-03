@@ -26,7 +26,7 @@ namespace numl.Model
     }
 
     /// <summary>Represents a string property.</summary>
-    [XmlRoot("StringProperty"), Serializable]
+    [XmlRoot("StringProperty")]
     public class StringProperty : Property
     {
         /// <summary>Default constructor.</summary>

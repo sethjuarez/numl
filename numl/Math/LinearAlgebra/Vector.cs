@@ -13,7 +13,7 @@ using System.Collections.Generic;
 namespace numl.Math.LinearAlgebra
 {
     /// <summary>A vector.</summary>
-    [XmlRoot("v"), Serializable]
+    [XmlRoot("v")]
     public partial class Vector : IXmlSerializable, IEnumerable<double>
     {
         /// <summary>The vector.</summary>
@@ -302,7 +302,7 @@ namespace numl.Math.LinearAlgebra
                 _asMatrixRef = false;
                 _vector = new double[size];
                 for (int i = 0; i < size; i++)
-                    _vector[i] = double.Parse(reader.ReadElementString("e"));
+                    _vector[i] = double.Parse(reader.ReadElementContentAs("e"));
             }
             else
                 throw new InvalidOperationException("Invalid vector size in XML!");

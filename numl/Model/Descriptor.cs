@@ -23,7 +23,7 @@ namespace numl.Model
     /// will be used to discriminate the <see cref="Label"/>. The <see cref="Label"/> itself is the
     /// target element that the machine learning algorithms learn to predict.
     /// </summary>
-    [XmlRoot("Descriptor"), Serializable]
+    [XmlRoot("Descriptor")]
     public class Descriptor : IXmlSerializable
     {
         /// <summary>Default constructor.</summary>
