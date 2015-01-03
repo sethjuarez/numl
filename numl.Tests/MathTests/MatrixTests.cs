@@ -821,10 +821,10 @@ namespace numl.Tests.MathTests
         public void Matrix_ToArray_Test()
         {
             Matrix m = new[,] 
-                {{ 1, 2,  2, 1 },
-                 { 1, 2,  4, 2 },
-                 { 2, 7,  5, 2 },
-                 {-1, 4, -6, 3 }};
+                {{ 1d, 2d,  2d, 1d },
+                 { 1d, 2d,  4d, 2d },
+                 { 2d, 7d,  5d, 2d },
+                 {-1d, 4d, -6d, 3d }};
 
             var n = m.ToArray();
 
@@ -838,7 +838,7 @@ namespace numl.Tests.MathTests
                 }
             }
 
-            Assert.AreEqual(m, n);
+            Assert.AreEqual(n, y);
 
             m[1][2] = m[1][2] + m[1][2];
 
