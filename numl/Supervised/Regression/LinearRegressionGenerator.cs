@@ -41,7 +41,6 @@ namespace numl.Supervised.Regression
         }
 
         /// <summary>Generate model based on a set of examples.</summary>
-        /// <exception cref="NotImplementedException">Thrown when the requested operation is unimplemented.</exception>
         /// <param name="x">The Matrix to process.</param>
         /// <param name="y">The Vector to process.</param>
         /// <returns>Model.</returns>
