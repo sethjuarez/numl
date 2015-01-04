@@ -175,7 +175,7 @@ namespace numl.Math.LinearAlgebra
 
             return source.Sum() / source.Length;
         }
-        /// <summary>A Vector extension method that standard development.</summary>
+        /// <summary>A Vector extension method that computes the standard deviation.</summary>
         /// <param name="source">The source to act on.</param>
         /// <returns>A double.</returns>
         public static double StdDev(this Vector source)
@@ -261,6 +261,21 @@ namespace numl.Math.LinearAlgebra
                     select new[] { i, q, q / (double)x.Length })
                      .ToMatrix();
         }
+
+        /// <summary>
+        /// Inserts the supplied value into a new Vector at the specified position
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="index">Row or Column index</param>
+        /// <param name="value">Value to insert</param>
+        /// <returns></returns>
+        public static Vector Insert(this Vector source, int index, double value)
+        {
+            var temp = source.ToList();
+            temp.Insert(index, value);
+            return new Vector(temp);
+        }
+
         /// <summary>A Vector extension method that expands.</summary>
         /// <param name="source">The source to act on.</param>
         /// <param name="n">The int to process.</param>
@@ -531,6 +546,17 @@ namespace numl.Math.LinearAlgebra
                 v[++i] = (double)item;
             return v;
         }
+
+        /// <summary>
+        /// Return the result of a 1 x m * m x 1 
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <returns></returns>
+        public static double ToDouble(this Vector vector)
+        {
+            return vector.First();
+        }
+
         /// <summary>A Vector extension method that firsts.</summary>
         /// <param name="v">The v to act on.</param>
         /// <param name="predicate">The predicate.</param>

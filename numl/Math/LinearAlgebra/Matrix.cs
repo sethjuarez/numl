@@ -645,6 +645,35 @@ namespace numl.Math.LinearAlgebra
             this[from, t] = this[to, t];
             this[to, t] = temp;
         }
+
+        /// <summary>
+        /// Returns a new Matrix with the Vector inserted at the specified position
+        /// </summary>
+        /// <param name="v">Vector to insert</param>
+        /// <param name="index">The zero based row / column.</param>
+        /// <param name="t">Vector orientation</param>
+        /// <returns></returns>
+        public Matrix Insert(Vector v, int index, VectorType t)
+        {
+            if (t == VectorType.Col && v.Length != this.Rows) throw new ArgumentException("Column vector does not match matrix height");
+            if (t == VectorType.Row && v.Length != this.Cols) throw new ArgumentException("Row vector does not match matrix width");
+
+            var temp = this.ToArray().ToList();
+            if (t == VectorType.Row)
+                temp.Insert(index, v);
+            else
+            {
+                for (int i = 0; i < temp.Count; i++)
+                {
+                    var copy = temp[i].ToList();
+                    copy.Insert(index, v[i]);
+                    temp[i] = copy.ToArray();
+                }
+            }
+
+            return new Matrix(temp.ToArray());
+        }
+
         /// <summary>Removes this object.</summary>
         /// <param name="index">Zero-based index of the.</param>
         /// <param name="t">.</param>

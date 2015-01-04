@@ -163,6 +163,24 @@ namespace numl.Math.LinearAlgebra
                 result[i] *= two[i];
             return result;
         }
+
+        /// <summary>
+        /// Multiplication reduction operator.  Useful for 1 x m * m x 1 multiplication operations.
+        /// </summary>
+        /// <param name="one"></param>
+        /// <param name="two"></param>
+        /// <returns></returns>
+        public static double operator *(Vector one, double[] two)
+        {
+            if (one.Length != two.Length)
+                throw new InvalidOperationException("Dimensions do not match!");
+
+            double sum = 0;
+            for (int i = 0; i < one.Length; i++)
+                sum += (one[i] *= two[i]);
+            return sum;
+        }
+
         /// <summary>Multiplication operator.</summary>
         /// <param name="one">The one.</param>
         /// <param name="two">The two.</param>

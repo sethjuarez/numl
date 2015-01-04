@@ -36,6 +36,18 @@ namespace numl.Math.LinearAlgebra
         {
             return Matrix.Mean(source, t);
         }
+
+        /// <summary>
+        /// Computes the standard deviation of the given matrix
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="t">Return a Row or Column vector</param>
+        /// <returns></returns>
+        public static Vector StdDev(this Matrix source, VectorType t)
+        {
+            return Matrix.StdDev(source, t);
+        }
+
         /// <summary>
         /// A Matrix extension method that determines the maximum of the given parameters.
         /// </summary>
