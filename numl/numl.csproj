@@ -109,9 +109,11 @@
     <Compile Include="Supervised\NeuralNetwork\Neuron.cs" />
     <Compile Include="Supervised\Perceptron\KernelPerceptronModel.cs" />
     <Compile Include="Supervised\Perceptron\PerceptronModel.cs" />
-    <Compile Include="Supervised\Regression\LinearRegressionGenerator.cs" />
     <Compile Include="Supervised\NaiveBayes\NaiveBayesModel.cs" />
     <Compile Include="Supervised\Perceptron\PerceptronGenerator.cs" />
+    <Compile Include="Supervised\Regression\LinearRegressionGenerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Supervised\Regression\LinearRegressionModel.cs" />
     <Compile Include="Unsupervised\Cluster.cs" />
     <Compile Include="Unsupervised\GMM.cs" />
