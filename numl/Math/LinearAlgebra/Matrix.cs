@@ -1,4 +1,4 @@
-﻿// file:	Math\LinearAlgebra\Matrix.cs
+﻿ // file:	Math\LinearAlgebra\Matrix.cs
 //
 // summary:	Implements the matrix class
 using System;
@@ -143,15 +143,24 @@ namespace numl.Math.LinearAlgebra
                 {
                     if (i >= Rows)
                         throw new IndexOutOfRangeException();
-
-                    return new Vector(_matrix, i, true);
+                    if (!_asTransposeRef)
+                        return new Vector(_matrix[i].ToArray());
+                    else
+                        return new Vector(_matrix, i, true);
                 }
                 else
                 {
                     if (i >= Cols)
                         throw new IndexOutOfRangeException();
+                    if (!_asTransposeRef)
+                    {
+                        double[] cols = new double[Rows];
+                        for (int j = 0; j < Rows; j++) cols[j] = _matrix[j][i];
 
-                    return new Vector(_matrix, i);
+                        return new Vector(cols);
+                    }
+                    else
+                        return new Vector(_matrix, i);
                 }
             }
             set
@@ -402,6 +411,16 @@ namespace numl.Math.LinearAlgebra
             else
                 return false;
         }
+
+        /// <summary>
+        /// Performs a deep copy of the underlying matrix and returns a 2D array.
+        /// </summary>
+        /// <returns></returns>
+        public double[][] ToArray()
+        {
+            return this._matrix.Select(s => s.ToArray()).ToArray();
+        }
+
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
@@ -635,6 +654,57 @@ namespace numl.Math.LinearAlgebra
             this[from, t] = this[to, t];
             this[to, t] = temp;
         }
+
+        /// <summary>
+        /// Returns a new Matrix with the Vector inserted at the specified position
+        /// </summary>
+        /// <param name="v">Vector to insert</param>
+        /// <param name="index">The zero based row / column.</param>
+        /// <param name="t">Vector orientation</param>
+        /// <param name="insertAfter">Insert after or before the last row / column</param>
+        /// <returns></returns>
+        public Matrix Insert(Vector v, int index, VectorType t, bool insertAfter = true)
+        {
+            if (t == VectorType.Col && v.Length != this.Rows) throw new ArgumentException("Column vector does not match matrix height");
+            if (t == VectorType.Row && v.Length != this.Cols) throw new ArgumentException("Row vector does not match matrix width");
+
+            var temp = this.ToArray().ToList();
+            if (t == VectorType.Row)
+            {
+                if (index == temp.Count - 1 && insertAfter)
+                {
+                    temp.Add(v);
+                }
+                else
+                {
+                    temp.Insert(index, v);
+                }
+            }
+            else
+            {
+                if (index == temp[0].Length - 1 && insertAfter)
+                {
+                    for (int i = 0; i < temp.Count; i++)
+                    {
+                        var copy = temp[i].ToList();
+                        copy.Add(v[i]);
+                        temp[i] = copy.ToArray();
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < temp.Count; i++)
+                    {
+                        var copy = temp[i].ToList();
+                        copy.Insert(index, v[i]);
+                        temp[i] = copy.ToArray();
+                    }
+                }
+            }
+
+            return new Matrix(temp.ToArray());
+        }
+
         /// <summary>Removes this object.</summary>
         /// <param name="index">Zero-based index of the.</param>
         /// <param name="t">.</param>

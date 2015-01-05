@@ -816,5 +816,68 @@ namespace numl.Tests.MathTests
             // -418
             var qd = q.Det();
         }
+
+        [Test]
+        public void Matrix_ToArray_Test()
+        {
+            Matrix m = new[,] 
+                {{ 1d, 2d,  2d, 1d },
+                 { 1d, 2d,  4d, 2d },
+                 { 2d, 7d,  5d, 2d },
+                 {-1d, 4d, -6d, 3d }};
+
+            var n = m.ToArray();
+
+            Assert.AreEqual(m, new Matrix(n));
+
+            m[1, 2] = m[1, 2] + m[1, 2];
+
+            Assert.AreNotEqual(m[1, 2], n[1][2]);
+        }
+
+        [Test]
+        public void Matrix_Insertion_Row_Test()
+        {
+            Matrix m = new[,] 
+                {{ 1d, 2d,  2d, 1d },
+                 { 1d, 2d,  4d, 2d },
+                 { 2d, 7d,  5d, 2d },
+                 {-1d, 4d, -6d, 3d }};
+
+            Matrix n = new[,] 
+                {{ 1d, 2d,  2d, 1d },
+                 { 1d, 2d,  4d, 2d },
+                 { 1d, 1d, 1d, 1d },
+                 { 2d, 7d,  5d, 2d },
+                 {-1d, 4d, -6d, 3d },
+                 { 1d, 1d, 1d, 1d }};
+
+            m = m.Insert(Vector.Ones(4), 2, VectorType.Row);
+            m = m.Insert(Vector.Ones(4), 5, VectorType.Row);
+
+            Assert.AreEqual(m, n);
+        }
+
+        [Test]
+        public void Matrix_Insertion_Col_Test()
+        {
+            Matrix m = new[,] 
+                {{ 1d, 2d,  2d, 1d },
+                 { 1d, 2d,  4d, 2d },
+                 { 2d, 7d,  5d, 2d },
+                 {-1d, 4d, -6d, 3d }};
+
+            Matrix n = new[,] 
+                {{ 0d, 1d, 2d, 0d, 2d, 1d, 1d },
+                 { 0d, 1d, 2d, 0d, 4d, 2d, 1d },
+                 { 0d, 2d, 7d, 0d, 5d, 2d, 1d },
+                 { 0d,-1d, 4d, 0d,-6d, 3d, 1d }};
+
+            m = m.Insert(Vector.Zeros(4), 0, VectorType.Col);
+            m = m.Insert(Vector.Zeros(4), 3, VectorType.Col);
+            m = m.Insert(Vector.Ones(4), m.Cols-1, VectorType.Col);
+
+            Assert.AreEqual(n, m);
+        }
     }
 }

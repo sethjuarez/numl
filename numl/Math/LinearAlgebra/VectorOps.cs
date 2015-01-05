@@ -90,10 +90,11 @@ namespace numl.Math.LinearAlgebra
         /// <returns>The result of the operation.</returns>
         public static Vector operator -(Vector v, double s)
         {
-            for (int i = 0; i < v.Length; i++)
-                v[i] -= s;
+            Vector result = v.Copy();
+            for (int i = 0; i < result.Length; i++)
+                result[i] -= s;
 
-            return v;
+            return result;
         }
         /// <summary>Subtraction operator.</summary>
         /// <param name="s">The double to process.</param>
@@ -163,6 +164,7 @@ namespace numl.Math.LinearAlgebra
                 result[i] *= two[i];
             return result;
         }
+
         /// <summary>Multiplication operator.</summary>
         /// <param name="one">The one.</param>
         /// <param name="two">The two.</param>

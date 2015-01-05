@@ -86,6 +86,7 @@ namespace numl.Math.LinearAlgebra
 
             return result;
         }
+
         /// <summary>In memory addition of double to matrix.</summary>
         /// <param name="m">Matrix.</param>
         /// <param name="s">double.</param>
@@ -263,6 +264,16 @@ namespace numl.Math.LinearAlgebra
                 return Inverse(scratch);
             }
         }
+
+        /// <summary>
+        /// Creates an inverse of the current matrix
+        /// </summary>
+        /// <returns></returns>
+        public Matrix Inverse()
+        {
+            return Matrix.Inverse(this);
+        }
+
         /// <summary>Inverses the given matrix.</summary>
         /// <exception cref="SingularMatrixException">Thrown when a Singular Matrix error condition occurs.</exception>
         /// <param name="mat">Matrix.</param>

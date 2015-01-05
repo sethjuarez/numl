@@ -62,6 +62,7 @@
     <Compile Include="SerializationTests\DescriptorSerializationTests.cs" />
     <Compile Include="SerializationTests\NaiveBayesSerializationTests.cs" />
     <Compile Include="SerializationTests\NeuralNetworkSerializationTests.cs" />
+    <Compile Include="SerializationTests\RegressionSerializationTests.cs" />
     <Compile Include="SupervisedTests\BaseSupervised.cs" />
     <Compile Include="SupervisedTests\DecisionTreeTests.cs" />
     <Compile Include="MathTests\MetricTests.cs" />
@@ -72,6 +73,8 @@
     <Compile Include="MathTests\MatrixTests.cs" />
     <Compile Include="MathTests\VectorTests.cs" />
     <Compile Include="SupervisedTests\KNNTests.cs" />
+    <Compile Include="SupervisedTests\LinearRegressionTests.cs" />
+    <Compile Include="SupervisedTests\LogisticRegressionTests.cs" />
     <Compile Include="SupervisedTests\NaiveBayesTests.cs" />
     <Compile Include="SupervisedTests\NeuralNetworkTests.cs" />
     <Compile Include="UnsupervisedTests\HierarchicalClusteringTests.cs" />

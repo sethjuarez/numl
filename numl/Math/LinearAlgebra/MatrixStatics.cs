@@ -318,6 +318,23 @@ namespace numl.Math.LinearAlgebra
 				v[i] = source[i, type].Mean();
 			return v;
 		}
+
+        /// <summary>
+        /// Computes the standard deviation of the given matrix
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="t">Use column or row (default: Col)</param>
+        /// <returns></returns>
+        public static Vector StdDev(Matrix source, VectorType t = VectorType.Col)
+        {
+            int count = t == VectorType.Row ? source.Cols : source.Rows;
+			VectorType type = t == VectorType.Row ? VectorType.Col : VectorType.Row;
+			Vector v = new Vector(count);
+			for (int i = 0; i < count; i++)
+				v[i] = source[i, type].StdDev();
+			return v;
+        }
+
         /// <summary>Determines the maximum of the given parameters.</summary>
         /// <param name="source">Source for the.</param>
         /// <returns>The maximum value.</returns>
