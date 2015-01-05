@@ -828,21 +828,11 @@ namespace numl.Tests.MathTests
 
             var n = m.ToArray();
 
-            double[][] y = new double[m.Rows][];
-            for (int x = 0; x < m.Rows; x++)
-            {
-                y[x] = new double[m.Cols];
-                for (int j = 0; j < y[x].Length; j++)
-                {
-                    y[x][j] = Convert.ToDouble(m[x][j]);
-                }
-            }
+            Assert.AreEqual(m, new Matrix(n));
 
-            Assert.AreEqual(n, y);
+            m[1, 2] = m[1, 2] + m[1, 2];
 
-            m[1][2] = m[1][2] + m[1][2];
-
-            Assert.AreNotEqual(m[1][2], y[1][2]);
+            Assert.AreNotEqual(m[1, 2], n[1][2]);
         }
 
         [Test]
@@ -878,15 +868,16 @@ namespace numl.Tests.MathTests
                  {-1d, 4d, -6d, 3d }};
 
             Matrix n = new[,] 
-                {{ 0d, 1d, 2d, 0d, 2d, 1d },
-                 { 0d, 1d, 2d, 0d, 4d, 2d },
-                 { 0d, 2d, 7d, 0d, 5d, 2d },
-                 { 0d, -1d, 4d, 0d, -6d, 3d }};
+                {{ 0d, 1d, 2d, 0d, 2d, 1d, 1d },
+                 { 0d, 1d, 2d, 0d, 4d, 2d, 1d },
+                 { 0d, 2d, 7d, 0d, 5d, 2d, 1d },
+                 { 0d,-1d, 4d, 0d,-6d, 3d, 1d }};
 
             m = m.Insert(Vector.Zeros(4), 0, VectorType.Col);
             m = m.Insert(Vector.Zeros(4), 3, VectorType.Col);
+            m = m.Insert(Vector.Ones(4), m.Cols-1, VectorType.Col);
 
-            Assert.AreEqual(m, n);
+            Assert.AreEqual(n, m);
         }
     }
 }

@@ -143,15 +143,24 @@ namespace numl.Math.LinearAlgebra
                 {
                     if (i >= Rows)
                         throw new IndexOutOfRangeException();
-
-                    return new Vector(_matrix, i, true);
+                    if (!_asTransposeRef)
+                        return new Vector(_matrix[i].ToArray());
+                    else
+                        return new Vector(_matrix, i, true);
                 }
                 else
                 {
                     if (i >= Cols)
                         throw new IndexOutOfRangeException();
+                    if (!_asTransposeRef)
+                    {
+                        double[] cols = new double[Rows];
+                        for (int j = 0; j < Rows; j++) cols[j] = _matrix[j][i];
 
-                    return new Vector(_matrix, i);
+                        return new Vector(cols);
+                    }
+                    else
+                        return new Vector(_matrix, i);
                 }
             }
             set
@@ -652,22 +661,44 @@ namespace numl.Math.LinearAlgebra
         /// <param name="v">Vector to insert</param>
         /// <param name="index">The zero based row / column.</param>
         /// <param name="t">Vector orientation</param>
+        /// <param name="insertAfter">Insert after or before the last row / column</param>
         /// <returns></returns>
-        public Matrix Insert(Vector v, int index, VectorType t)
+        public Matrix Insert(Vector v, int index, VectorType t, bool insertAfter = true)
         {
             if (t == VectorType.Col && v.Length != this.Rows) throw new ArgumentException("Column vector does not match matrix height");
             if (t == VectorType.Row && v.Length != this.Cols) throw new ArgumentException("Row vector does not match matrix width");
 
             var temp = this.ToArray().ToList();
             if (t == VectorType.Row)
-                temp.Insert(index, v);
+            {
+                if (index == temp.Count - 1 && insertAfter)
+                {
+                    temp.Add(v);
+                }
+                else
+                {
+                    temp.Insert(index, v);
+                }
+            }
             else
             {
-                for (int i = 0; i < temp.Count; i++)
+                if (index == temp[0].Length - 1 && insertAfter)
                 {
-                    var copy = temp[i].ToList();
-                    copy.Insert(index, v[i]);
-                    temp[i] = copy.ToArray();
+                    for (int i = 0; i < temp.Count; i++)
+                    {
+                        var copy = temp[i].ToList();
+                        copy.Add(v[i]);
+                        temp[i] = copy.ToArray();
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < temp.Count; i++)
+                    {
+                        var copy = temp[i].ToList();
+                        copy.Insert(index, v[i]);
+                        temp[i] = copy.ToArray();
+                    }
                 }
             }
 

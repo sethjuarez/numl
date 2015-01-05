@@ -25,6 +25,16 @@ namespace numl.Math.LinearAlgebra
         {
             return Vector.Sum(v);
         }
+
+        /// <summary>
+        /// Returns the Log of the current Vector
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public static Vector Log(this Vector v)
+        {
+            return Vector.Log(v);
+        }
         /// <summary>A Vector extension method that products the given v.</summary>
         /// <param name="v">The v to act on.</param>
         /// <returns>A double.</returns>
@@ -268,11 +278,17 @@ namespace numl.Math.LinearAlgebra
         /// <param name="source"></param>
         /// <param name="index">Row or Column index</param>
         /// <param name="value">Value to insert</param>
+        /// <param name="insertAfter">True to add to the end, if the index matches last column</param>
         /// <returns></returns>
-        public static Vector Insert(this Vector source, int index, double value)
+        public static Vector Insert(this Vector source, int index, double value, bool insertAfter = true)
         {
             var temp = source.ToList();
-            temp.Insert(index, value);
+
+            if (insertAfter && (index == source.Length - 1))
+                temp.Add(value);
+            else
+                temp.Insert(index, value);
+
             return new Vector(temp);
         }
 

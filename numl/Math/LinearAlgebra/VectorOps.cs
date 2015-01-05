@@ -90,10 +90,11 @@ namespace numl.Math.LinearAlgebra
         /// <returns>The result of the operation.</returns>
         public static Vector operator -(Vector v, double s)
         {
-            for (int i = 0; i < v.Length; i++)
-                v[i] -= s;
+            Vector result = v.Copy();
+            for (int i = 0; i < result.Length; i++)
+                result[i] -= s;
 
-            return v;
+            return result;
         }
         /// <summary>Subtraction operator.</summary>
         /// <param name="s">The double to process.</param>
@@ -162,23 +163,6 @@ namespace numl.Math.LinearAlgebra
             for (int i = 0; i < one.Length; i++)
                 result[i] *= two[i];
             return result;
-        }
-
-        /// <summary>
-        /// Multiplication reduction operator.  Useful for 1 x m * m x 1 multiplication operations.
-        /// </summary>
-        /// <param name="one"></param>
-        /// <param name="two"></param>
-        /// <returns></returns>
-        public static double operator *(Vector one, double[] two)
-        {
-            if (one.Length != two.Length)
-                throw new InvalidOperationException("Dimensions do not match!");
-
-            double sum = 0;
-            for (int i = 0; i < one.Length; i++)
-                sum += (one[i] *= two[i]);
-            return sum;
         }
 
         /// <summary>Multiplication operator.</summary>

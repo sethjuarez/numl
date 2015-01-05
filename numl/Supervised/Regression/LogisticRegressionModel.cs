@@ -2,18 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using numl.Math.LinearAlgebra;
+
 using System.Xml;
+
 using numl.Utils;
 using numl.Model;
+using numl.Math.Functions;
+using numl.Math.LinearAlgebra;
 
 namespace numl.Supervised.Regression
 {
     /// <summary>
-    /// Linear Regression model
+    /// A Logistic Regression Model object
     /// </summary>
     [Serializable]
-    public class LinearRegressionModel : Model
+    public class LogisticRegressionModel : Model
     {
         /// <summary>
         /// Theta parameters vector mapping X to y.
@@ -21,38 +24,21 @@ namespace numl.Supervised.Regression
         public Vector Theta { get; set; }
 
         /// <summary>
-        /// A row vector of the feature averages
+        /// Logistic function
         /// </summary>
-        private Vector FeatureAverages { get; set; }
+        public IFunction LogisticFunction { get; set; }
 
         /// <summary>
-        /// A row vector of the standard deviation for each feature
+        /// The additional number of quadratic features to create as used in generating the model
         /// </summary>
-        private Vector FeatureStandardDeviations { get; set; }
+        public int PolynomialFeatures { get; set; }
 
-        private Vector Normalise(Vector y)
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public LogisticRegressionModel()
         {
-            for (int i = 0; i < y.Length; i++)
-            {
-                y[i] = PreProcessing.FeatureNormalizer.FeatureScale(y[i], this.FeatureAverages[i], this.FeatureStandardDeviations[i]);
-            }
-
-            return y.Insert(0, 1.0d);
-        }
-
-        /// <summary>
-        /// Initialises a new LinearRegressionModel object
-        /// </summary>
-        public LinearRegressionModel() { }
-        /// <summary>
-        /// Initialises a new LinearRegressionModel object
-        /// </summary>
-        /// <param name="featureAverages">The feature averages for use in scaling test case features</param>
-        /// <param name="featureSdv">The feature standard deviations for use in scaling test case features</param>
-        public LinearRegressionModel(Vector featureAverages, Vector featureSdv)
-        {
-            this.FeatureAverages = featureAverages;
-            this.FeatureStandardDeviations = featureSdv;
+            PolynomialFeatures = 0;
         }
 
         /// <summary>
@@ -62,9 +48,9 @@ namespace numl.Supervised.Regression
         /// <returns></returns>
         public override double Predict(Vector y)
         {
-            y = this.Normalise(y);
-
-            return y.Dot(Theta);
+            var tempy = PolynomialFeatures > 0 ? PreProcessing.FeatureDimensions.IncreaseDimensions(y, PolynomialFeatures) : y;
+            tempy = tempy.Insert(0, 1.0);
+            return LogisticFunction.Compute((tempy * Theta).ToDouble()) >= 0.5 ? 1d : 0d;
         }
 
         /// <summary>Generates an object from its XML representation.</summary>
@@ -73,22 +59,27 @@ namespace numl.Supervised.Regression
         public override void ReadXml(XmlReader reader)
         {
             reader.MoveToContent();
+
+            var sigmoid = Ject.FindType(reader.GetAttribute("LogisticFunction"));
+            LogisticFunction = (IFunction)Activator.CreateInstance(sigmoid);
+
             reader.ReadStartElement();
 
             Descriptor = Xml.Read<Descriptor>(reader);
             Theta = Xml.Read<Vector>(reader);
-            FeatureAverages = Xml.Read<Vector>(reader);
-            FeatureStandardDeviations = Xml.Read<Vector>(reader);
+            PolynomialFeatures = Xml.Read<int>(reader);
         }
+
         /// <summary>Converts an object into its XML representation.</summary>
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
         /// serialized.</param>
         public override void WriteXml(XmlWriter writer)
         {
+            writer.WriteAttributeString("LogisticFunction", LogisticFunction.GetType().Name);
+
             Xml.Write<Descriptor>(writer, Descriptor);
             Xml.Write<Vector>(writer, Theta);
-            Xml.Write<Vector>(writer, FeatureAverages);
-            Xml.Write<Vector>(writer, FeatureStandardDeviations);
+            Xml.Write<int>(writer, PolynomialFeatures);
         }
     }
 }
