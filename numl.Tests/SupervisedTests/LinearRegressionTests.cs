@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using numl.Supervised.Regression;
 using numl.Math.LinearAlgebra;
-using numl.Functions;
 
 namespace numl.Tests.SupervisedTests
 {
@@ -48,7 +47,7 @@ namespace numl.Tests.SupervisedTests
                         22.7524
             });
 
-            ICostFunction costFunction = new Functions.CostFunctions.LinearCostFunction();
+            numl.Math.Functions.Cost.ICostFunction costFunction = new numl.Math.Functions.Cost.LinearCostFunction();
             double cost = costFunction.ComputeCost(theta, X, y, 0, null);
             Vector grad = costFunction.ComputeGradient(theta, X, y, 0, null);
 
@@ -92,8 +91,8 @@ namespace numl.Tests.SupervisedTests
                         22.7524
             });
 
-            ICostFunction costFunction = new Functions.CostFunctions.LinearCostFunction();
-            IRegularizer regulariser = new Regularization();
+            numl.Math.Functions.Cost.ICostFunction costFunction = new numl.Math.Functions.Cost.LinearCostFunction();
+            numl.Math.Functions.Regularization.IRegularizer regulariser = new numl.Math.Functions.Regularization.Regularization();
 
             double cost = costFunction.ComputeCost(theta, X, y, 1, regulariser);
             Vector grad = costFunction.ComputeGradient(theta, X, y, 1, regulariser);

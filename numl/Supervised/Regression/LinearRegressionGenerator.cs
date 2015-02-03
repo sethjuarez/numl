@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 using numl.Math.LinearAlgebra;
 using numl.PreProcessing;
-using numl.Functions;
+
 
 namespace numl.Supervised.Regression
 {
@@ -62,8 +62,8 @@ namespace numl.Supervised.Regression
             copy = copy.Insert(Vector.Ones(copy.Rows), 0, VectorType.Col);
             
             // run gradient descent
-            var run = GradientDescent.Run(theta, copy, y, this.MaxIterations, this.LearningRate, new Functions.CostFunctions.LinearCostFunction(), 
-                this.Lambda, new Regularization());
+            var run = numl.Math.Optimization.GradientDescent.Run(theta, copy, y, this.MaxIterations, this.LearningRate, new numl.Math.Functions.Cost.LinearCostFunction(), 
+                this.Lambda, new numl.Math.Functions.Regularization.Regularization());
 
             // once converged create model and apply theta
 

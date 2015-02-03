@@ -1,11 +1,9 @@
-﻿using numl.Math.Functions;
-using numl.Math.LinearAlgebra;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
+using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
 
-namespace numl.Functions
+namespace numl.Math.Functions.Regularization
 {
     /// <summary>
     /// Standard regularization
