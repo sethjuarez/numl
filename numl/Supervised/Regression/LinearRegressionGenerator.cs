@@ -7,8 +7,9 @@ using System.Collections.Generic;
 
 using numl.Math.LinearAlgebra;
 using numl.PreProcessing;
-
-
+using numl.Math.Optimization;
+using numl.Math.Functions.Regularization;
+using numl.Math.Functions.Cost;
 namespace numl.Supervised.Regression
 {
     /// <summary>A linear regression generator.</summary>
@@ -34,8 +35,8 @@ namespace numl.Supervised.Regression
         /// </summary>
         public LinearRegressionGenerator()
         {
-            this.MaxIterations = 500;
-            this.LearningRate = 0.01;
+            MaxIterations = 500;
+            LearningRate = 0.01;
         }
 
         /// <summary>Generate Linear Regression model based on a set of examples.</summary>
@@ -60,16 +61,16 @@ namespace numl.Supervised.Regression
 
             // add intercept term
             copy = copy.Insert(Vector.Ones(copy.Rows), 0, VectorType.Col);
-            
+
             // run gradient descent
-            var run = numl.Math.Optimization.GradientDescent.Run(theta, copy, y, this.MaxIterations, this.LearningRate, new numl.Math.Functions.Cost.LinearCostFunction(), 
-                this.Lambda, new numl.Math.Functions.Regularization.Regularization());
+            var run = GradientDescent.Run(theta, copy, y, MaxIterations, LearningRate, new LinearCostFunction(),
+                Lambda, new Regularization());
 
             // once converged create model and apply theta
 
             LinearRegressionModel model = new LinearRegressionModel(x.Mean(VectorType.Row), x.StdDev(VectorType.Row))
-            { 
-                Descriptor = this.Descriptor,
+            {
+                Descriptor = Descriptor,
                 Theta = run.Item2
             };
 

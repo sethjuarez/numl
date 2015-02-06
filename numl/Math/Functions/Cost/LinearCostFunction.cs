@@ -9,7 +9,7 @@ namespace numl.Math.Functions.Cost
     /// <summary>
     /// A Linear Cost Function.
     /// </summary>
-    public class LinearCostFunction : numl.Math.Functions.Cost.ICostFunction
+    public class LinearCostFunction : ICostFunction
     {
                 /// <summary>
         /// Compute the error cost of the given Theta parameter for the training and label sets

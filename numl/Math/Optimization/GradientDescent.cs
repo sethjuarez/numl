@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using numl.Math.LinearAlgebra;
-using numl.Math.Functions;
+using numl.Math.Functions.Cost;
+using System.Collections.Generic;
+using numl.Math.Functions.Regularization;
 
 namespace numl.Math.Optimization
 {
@@ -24,8 +24,8 @@ namespace numl.Math.Optimization
         /// <param name="lambda">The regularization constant to apply</param>
         /// <param name="regularizer">The regularization function to apply</param>
         /// <returns></returns>
-        public static Tuple<double, Vector> Run(Vector theta, Matrix x, Vector y, int maxIterations, double learningRateAlpha, 
-            numl.Math.Functions.Cost.ICostFunction costFunction, double lambda, numl.Math.Functions.Regularization.IRegularizer regularizer)
+        public static Tuple<double, Vector> Run(Vector theta, Matrix x, Vector y, int maxIterations, double learningRateAlpha,
+            ICostFunction costFunction, double lambda, IRegularizer regularizer)
         {
             Vector bestTheta = theta.Copy();
             double bestCost = double.PositiveInfinity;
