@@ -9,12 +9,10 @@ using System.Collections.Generic;
 using System.Xml;
 using numl.Model;
 using numl.Utils;
-using System.Runtime.Serialization;
 
 namespace numl.Supervised.KNN
 {
     /// <summary>A data Model for the knn.</summary>
-    [DataContract]
     public class KNNModel : Model
     {
         /// <summary>Gets or sets the k.</summary>

@@ -3,7 +3,6 @@
 // summary:	Implements the descriptor class
 using System;
 using System.IO;
-using System.Runtime.Serialization;
 using numl.Utils;
 using System.Xml;
 using System.Linq;

@@ -3,7 +3,6 @@
 // summary:	Implements the string property class
 using System;
 using System.IO;
-using System.Runtime.Serialization;
 using numl.Utils;
 using System.Linq;
 using System.Collections.Generic;
@@ -27,7 +26,7 @@ namespace numl.Model
     }
 
     /// <summary>Represents a string property.</summary>
-    [DataContract(Name = "StringProperty")]
+    [XmlRoot("StringProperty")]
     public class StringProperty : Property
     {
         /// <summary>Default constructor.</summary>
@@ -46,27 +45,22 @@ namespace numl.Model
 
         /// <summary>How to separate words (defaults to a space)</summary>
         /// <value>The separator.</value>
-        [DataMember]
         public string Separator { get; set; }
 
         /// <summary>How to split text.</summary>
         /// <value>The type of the split.</value>
-        [DataMember]
         public StringSplitType SplitType { get; set; }
 
         /// <summary>generated dictionary (using bag of words model)</summary>
         /// <value>The dictionary.</value>
-        [DataMember]
         public string[] Dictionary { get; set; }
 
         /// <summary>Exclusion set (stopword removal)</summary>
         /// <value>The exclude.</value>
-        [DataMember]
         public string[] Exclude { get; set; }
 
         /// <summary>Treat as enumeration.</summary>
         /// <value>true if as enum, false if not.</value>
-        [DataMember]
         public bool AsEnum { get; set; }
 
         /// <summary>Expansion length (total distinct words)</summary>

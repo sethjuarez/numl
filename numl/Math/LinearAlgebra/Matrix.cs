@@ -11,7 +11,6 @@ using System.Globalization;
 using numl.Math.Probability;
 using System.Xml.Serialization;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace numl.Math.LinearAlgebra
 {
@@ -27,11 +26,11 @@ namespace numl.Math.LinearAlgebra
 
         /// <summary>Gets or sets the rows.</summary>
         /// <value>The rows.</value>
-        public int Rows { get; protected set; }
+        public int Rows { get; private set; }
 
         /// <summary>Gets or sets the cols.</summary>
         /// <value>The cols.</value>
-        public int Cols { get; protected set; }
+        public int Cols { get; private set; }
 
         //--------------- ctor
 

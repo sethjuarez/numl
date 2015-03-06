@@ -202,7 +202,6 @@ namespace numl.Utils
                     type = o.GetType();
                     accessor = GetAccessor(type, name);
                 }
-                //TODO: Implement below to load as type
                 yield return accessor.Invoke(o);
             }
         }
@@ -264,10 +263,6 @@ namespace numl.Utils
                 }
                 catch (InvalidCastException)
                 {
-                    //TypeConverter converter = TypeDescriptor.GetConverter(t);
-                    //if (converter.CanConvertTo(typeof(double)))
-                    //    return (double)converter.ConvertTo(o, typeof(double));
-                    //else
                     throw new InvalidCastException(string.Format("Cannot convert {0} to double", o));
                 }
             }

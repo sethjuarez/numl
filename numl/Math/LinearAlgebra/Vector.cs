@@ -9,7 +9,6 @@ using System.Xml.Schema;
 using System.Collections;
 using System.Xml.Serialization;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace numl.Math.LinearAlgebra
 {
