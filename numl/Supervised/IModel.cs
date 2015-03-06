@@ -31,14 +31,14 @@ namespace numl.Supervised
         Descriptor Descriptor { get; set; }
         /// <summary>Model persistance.</summary>
         /// <param name="file">The file to load.</param>
-        void Save(string file);
+        //void Save(string file);
         /// <summary>Saves the given stream.</summary>
         /// <param name="stream">The stream to load.</param>
         void Save(Stream stream);
         /// <summary>Loads the given stream.</summary>
         /// <param name="file">The file to load.</param>
         /// <returns>An IModel.</returns>
-        IModel Load(string file);
+        //IModel Load(string file);
         /// <summary>Loads the given stream.</summary>
         /// <param name="stream">The stream to load.</param>
         /// <returns>An IModel.</returns>

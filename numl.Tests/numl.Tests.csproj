@@ -36,6 +36,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -57,6 +58,7 @@
     <Compile Include="Data\Tennis.cs" />
     <Compile Include="Data\ValueObject.cs" />
     <Compile Include="MathTests\ProbabilityTests.cs" />
+    <Compile Include="PlatformWrapper\PlatformWrapperInstance.cs" />
     <Compile Include="SerializationTests\BaseSerialization.cs" />
     <Compile Include="SerializationTests\DecisionTreeSerializationTests.cs" />
     <Compile Include="SerializationTests\DescriptorSerializationTests.cs" />
@@ -72,6 +74,8 @@
     <Compile Include="MathTests\MatrixTests.cs" />
     <Compile Include="MathTests\VectorTests.cs" />
     <Compile Include="SupervisedTests\KNNTests.cs" />
+    <Compile Include="SupervisedTests\LinearRegressionTests.cs" />
+    <Compile Include="SupervisedTests\LogisticRegressionTests.cs" />
     <Compile Include="SupervisedTests\NaiveBayesTests.cs" />
     <Compile Include="SupervisedTests\NeuralNetworkTests.cs" />
     <Compile Include="UnsupervisedTests\HierarchicalClusteringTests.cs" />

@@ -35,10 +35,10 @@ namespace numl.Model
         /// <summary>Specialised constructor for use only by derived classes.</summary>
         /// <param name="info">The information.</param>
         /// <param name="context">The context.</param>
-        protected DescriptorException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
+        //protected DescriptorException(SerializationInfo info, StreamingContext context)
+        //    : base(info, context)
+        //{
             
-        }
+        //}
     }
 }

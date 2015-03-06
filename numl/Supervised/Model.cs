@@ -11,6 +11,7 @@ using System.Xml.Serialization;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Schema;
+using System.Runtime.Serialization;
 
 namespace numl.Supervised
 {
@@ -51,10 +52,10 @@ namespace numl.Supervised
         // ----- saving stuff
         /// <summary>Model persistance.</summary>
         /// <param name="file">The file to load.</param>
-        public virtual void Save(string file)
-        {
-            Xml.Save(file, this, GetType());
-        }
+        //public virtual void Save(string file)
+        //{
+        //    Xml.Save(file, this, GetType());
+        //}
         /// <summary>Saves the given stream.</summary>
         /// <param name="stream">The stream to load.</param>
         public virtual void Save(Stream stream)
@@ -70,10 +71,10 @@ namespace numl.Supervised
         /// <summary>Loads the given stream.</summary>
         /// <param name="file">The file to load.</param>
         /// <returns>An IModel.</returns>
-        public virtual IModel Load(string file)
-        {
-            return (IModel)Xml.Load(file, GetType());
-        }
+        //public virtual IModel Load(string file)
+        //{
+        //    return (IModel)Xml.Load(file, GetType());
+        //}
         /// <summary>Loads the given stream.</summary>
         /// <param name="stream">The stream to load.</param>
         /// <returns>An IModel.</returns>
@@ -108,12 +109,14 @@ namespace numl.Supervised
         }
         /// <summary>Converts an object into its XML representation.</summary>
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
-        /// serialized.</param>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="writer"></param>
         public abstract void WriteXml(XmlWriter writer);
         /// <summary>Generates an object from its XML representation.</summary>
         /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is
-        /// deserialized.</param>
+        // deserialized.</param>
         public abstract void ReadXml(XmlReader reader);
-
     }
 }

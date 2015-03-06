@@ -9,6 +9,7 @@ using System.Xml.Schema;
 using System.Collections;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace numl.Math.LinearAlgebra
 {
@@ -302,7 +303,7 @@ namespace numl.Math.LinearAlgebra
                 _asMatrixRef = false;
                 _vector = new double[size];
                 for (int i = 0; i < size; i++)
-                    _vector[i] = double.Parse(reader.ReadElementContentAs("e"));
+                    _vector[i] = double.Parse(reader.ReadElementContentAsString("e", string.Empty));
             }
             else
                 throw new InvalidOperationException("Invalid vector size in XML!");

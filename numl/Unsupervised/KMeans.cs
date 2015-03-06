@@ -86,7 +86,7 @@ namespace numl.Unsupervised
             for (int i = 0; i < 100; i++)
             {
                 // Assignment step
-                Parallel.For(0, X.Rows, j =>
+                for (int j = 0; j < X.Rows; j++)
                 {
                     var min_index = -1;
                     var min = double.MaxValue;
@@ -104,7 +104,7 @@ namespace numl.Unsupervised
                     if (min_index == -1)
                         min_index = 0;
                     assignments[j] = min_index;
-                });
+                }
 
                 // Update Step
                 Matrix new_means = Matrix.Zeros(k, X.Cols);

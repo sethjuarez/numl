@@ -40,7 +40,7 @@ namespace numl.Supervised.NeuralNetwork
             IFunction ident = new Ident();
 
             // set number of hidden units to (Input + Hidden) * 2/3 as basic best guess. 
-            int hidden = (int)System.Math.Ceiling((decimal)(x.Cols + output) * 2m / 3m);
+            int hidden = (int)System.Math.Ceiling((double)(x.Cols + output) * 2.0 / 3.0);
 
             // creating input nodes
             nn.In = new Node[x.Cols + 1];

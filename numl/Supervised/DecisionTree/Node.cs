@@ -4,22 +4,23 @@
 using System;
 using numl.Math;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace numl.Supervised.DecisionTree
 {
     /// <summary>A node.</summary>
-    [XmlRoot("Node")]
+    [DataContract(Name = "Node"), XmlRoot("Node")]
     public class Node
     {
         /// <summary>Default constructor.</summary>
         public Node() {  }
         /// <summary>if is a leaf.</summary>
         /// <value>true if this object is leaf, false if not.</value>
-        [XmlAttribute("Leaf")]
+        [DataMember, XmlAttribute("Leaf")]
         public bool IsLeaf { get; set; }
         /// <summary>Gets or sets the value.</summary>
         /// <value>The value.</value>
-        [XmlAttribute("Value")]
+        [DataMember, XmlAttribute("Value")]
         public double Value { get; set; }
         /// <summary>Gets or sets the label.</summary>
         /// <value>The label.</value>
@@ -27,43 +28,43 @@ namespace numl.Supervised.DecisionTree
         public object Label { get; set; }
         /// <summary>Gets or sets the column.</summary>
         /// <value>The column.</value>
-        [XmlAttribute("Column")]
+        [DataMember, XmlAttribute("Column")]
         public int Column { get; set; }
         /// <summary>Gets or sets the name.</summary>
         /// <value>The name.</value>
-        [XmlAttribute("Name")]
+        [DataMember, XmlAttribute("Name")]
         public string Name { get; set; }
         /// <summary>Gets or sets the gain.</summary>
         /// <value>The gain.</value>
-        [XmlAttribute("Gain")]
+        [DataMember, XmlAttribute("Gain")]
         public double Gain { get; set; }
         /// <summary>Gets or sets the edges.</summary>
         /// <value>The edges.</value>
-        [XmlArray("Edges")]
+        [DataMember, XmlArray("Edges")]
         public Edge[] Edges { get; set; }
     }
 
     /// <summary>An edge.</summary>
-    [XmlRoot("Edge")]
+    [DataContract(Name = "Edge"), XmlRoot("Edge")]
     public class Edge
     {
         /// <summary>Default constructor.</summary>
         public Edge() { }
         /// <summary>Gets or sets the minimum.</summary>
         /// <value>The minimum value.</value>
-        [XmlAttribute("Min")]
+        [DataMember, XmlAttribute("Min")]
         public double Min { get; set; }
         /// <summary>Gets or sets the maximum.</summary>
         /// <value>The maximum value.</value>
-        [XmlAttribute("Max")]
+        [DataMember, XmlAttribute("Max")]
         public double Max { get; set; }
         /// <summary>Gets or sets a value indicating whether the discrete.</summary>
         /// <value>true if discrete, false if not.</value>
-        [XmlAttribute("Discrete")]
+        [DataMember, XmlAttribute("Discrete")]
         public bool Discrete { get; set; }
         /// <summary>Gets or sets the label.</summary>
         /// <value>The label.</value>
-        [XmlAttribute("Label")]
+        [DataMember, XmlAttribute("Label")]
         public string Label { get; set; }
         /// <summary>Gets or sets the parent.</summary>
         /// <value>The parent.</value>
@@ -71,7 +72,7 @@ namespace numl.Supervised.DecisionTree
         public Node Parent { get; set; }
         /// <summary>Gets or sets the child.</summary>
         /// <value>The child.</value>
-        [XmlElement("Child")]
+        [DataMember, XmlElement("Child")]
         public Node Child { get; set; }
     }
 }

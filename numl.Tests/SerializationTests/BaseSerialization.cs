@@ -5,6 +5,8 @@ using NUnit.Framework;
 using System.Diagnostics;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Xml;
 
 namespace numl.Tests.SerializationTests
 {
@@ -20,6 +22,8 @@ namespace numl.Tests.SerializationTests
             if (!Directory.Exists(_basePath))
                 Directory.CreateDirectory(_basePath);
             _basePath += "\\{0}.xml";
+
+            numl.Platform.AppDomainWrapper.Instance = new PlatformWrapper.PlatformWrapperInstance();
         }
 
         internal void Serialize(object o)

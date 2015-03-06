@@ -2,6 +2,7 @@
 //
 // summary:	Implements the descriptor property class
 using System;
+using System.IO;
 using numl.Utils;
 using System.Linq;
 using System.Reflection;
@@ -76,7 +77,7 @@ namespace numl.Model
         /// <param name="separator">(Optional) Separator to use.</param>
         /// <param name="exclusions">(Optional) file describing strings to exclude.</param>
         /// <returns>descriptor with added property.</returns>
-        public Descriptor AsString(StringSplitType splitType, string separator = " ", string exclusions = null)
+        public Descriptor AsString(StringSplitType splitType, string separator = " ", Stream exclusions = null)
         {
             StringProperty p = new StringProperty();
             p.Name = _name;

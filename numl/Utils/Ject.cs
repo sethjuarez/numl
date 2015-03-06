@@ -9,6 +9,8 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Globalization;
+using numl.Platform;
 
 namespace numl.Utils
 {
@@ -192,7 +194,7 @@ namespace numl.Utils
         {
             Type type = null;
             Func<object, object> accessor = null;
-            TypeConverter converter = new TypeConverter();
+            //TypeConverter converter = new TypeConverter();
             foreach (var o in items)
             {
                 if (type == null)
@@ -200,8 +202,8 @@ namespace numl.Utils
                     type = o.GetType();
                     accessor = GetAccessor(type, name);
                 }
-
-                yield return converter.ConvertTo(accessor.Invoke(o), cast);
+                //TODO: Implement below to load as type
+                yield return accessor.Invoke(o);
             }
         }
         /// <summary>Sets.</summary>
@@ -224,7 +226,10 @@ namespace numl.Utils
                    t == typeof(char) ||
                    t.BaseType == typeof(Enum) ||
                    t == typeof(TimeSpan) ||
-                   TypeDescriptor.GetConverter(t).CanConvertTo(typeof(double));
+                   t == typeof(int) || t == typeof(long) || t == typeof(short) ||
+                   t == typeof(double) || t == typeof(float) || t == typeof(decimal) ||
+                   t == typeof(byte) || t == typeof(sbyte) ||
+                   t == typeof(uint) || t == typeof(ulong) || t == typeof(ushort);
         }
         /// <summary>
         /// Conversion of standard univariate types. Will throw exception on all multivariate types.
@@ -246,18 +251,25 @@ namespace numl.Utils
             if (t == typeof(bool))
                 return (bool)o ? 1d : -1d;
             else if (t == typeof(char)) // ascii number of character
-                return (double)Encoding.ASCII.GetBytes(new char[] { (char)o })[0];
+                return (double)Encoding.UTF8.GetBytes(new char[] { (char)o })[0];
             else if (t.BaseType == typeof(Enum))
                 return (int)o;
             else if (t == typeof(TimeSpan)) // get total seconds
                 return ((TimeSpan)o).TotalSeconds;
             else
             {
-                TypeConverter converter = TypeDescriptor.GetConverter(t);
-                if (converter.CanConvertTo(typeof(double)))
-                    return (double)converter.ConvertTo(o, typeof(double));
-                else
+                try
+                {
+                    return System.Convert.ToDouble(o);
+                }
+                catch (InvalidCastException)
+                {
+                    //TypeConverter converter = TypeDescriptor.GetConverter(t);
+                    //if (converter.CanConvertTo(typeof(double)))
+                    //    return (double)converter.ConvertTo(o, typeof(double));
+                    //else
                     throw new InvalidCastException(string.Format("Cannot convert {0} to double", o));
+                }
             }
         }
         /// <summary>
@@ -275,18 +287,33 @@ namespace numl.Utils
             else if (t == typeof(bool))
                 return val >= 0;
             else if (t.BaseType == typeof(Enum))
-                return Enum.ToObject(t, System.Convert.ChangeType(val, System.Enum.GetUnderlyingType(t)));
+                return Enum.ToObject(t, System.Convert.ChangeType(val, System.Enum.GetUnderlyingType(t), CultureInfo.CurrentCulture));
             else if (t == typeof(TimeSpan)) // get total seconds
                 return new TimeSpan(0, 0, (int)val);
             else if (t == typeof(decimal))
                 return (decimal)val;
             else
             {
-                TypeConverter converter = TypeDescriptor.GetConverter(typeof(double));
-                if (converter.CanConvertTo(t))
-                    return converter.ConvertTo(val, t);
-                else
+                try
+                {
+                    if (t == typeof(double)) return System.Convert.ToDouble(val, CultureInfo.CurrentCulture);
+                    else if (t == typeof(float)) return System.Convert.ToSingle(val, CultureInfo.CurrentCulture);
+                    else if (t == typeof(int)) return System.Convert.ToInt32(val, CultureInfo.CurrentCulture);
+                    else if (t == typeof(byte)) return System.Convert.ToByte(val, CultureInfo.CurrentCulture);
+                    else if (t == typeof(sbyte)) return System.Convert.ToSByte(val, CultureInfo.CurrentCulture);
+                    else if (t == typeof(short)) return System.Convert.ToInt16(val, CultureInfo.CurrentCulture);
+                    else if (t == typeof(long)) return System.Convert.ToInt64(val, CultureInfo.CurrentCulture);
+                    else if (t == typeof(ushort)) return System.Convert.ToUInt16(val, CultureInfo.CurrentCulture);
+                    else if (t == typeof(uint)) return System.Convert.ToUInt32(val, CultureInfo.CurrentCulture);
+                    else if (t == typeof(ulong)) return System.Convert.ToUInt64(val, CultureInfo.CurrentCulture);
+                    else if (t == typeof(DateTime)) return System.Convert.ToDateTime(val, CultureInfo.CurrentCulture);
+                    else
+                        throw new InvalidCastException();
+                }
+                catch (InvalidCastException)
+                {
                     throw new InvalidCastException(string.Format("Cannot convert {0} to {1}", val, t.Name));
+                }
             }
         }
 
@@ -308,9 +335,9 @@ namespace numl.Utils
                 // someones notational laziness causes me to look
                 // everywhere... sorry... I know it's slow...
                 // that's why I am caching things...
-                var q = (from p in AppDomain.CurrentDomain.GetAssemblies()
+                var q = (from p in Platform.AppDomainWrapper.Instance.GetAssemblies()
                          from t in p.GetTypesSafe()
-                         where t.FullName == s || t.Name == s
+                         where (t.FullName == s || t.Name == s)
                          select t).ToArray();
 
                 if (q.Length == 1)
@@ -338,7 +365,7 @@ namespace numl.Utils
             if (!_descendants.ContainsKey(type))
             {
                 // find all descendants of given type
-                _descendants[type] = (from p in AppDomain.CurrentDomain.GetAssemblies()
+                _descendants[type] = (from p in Platform.AppDomainWrapper.Instance.GetAssemblies()
                                       from t in p.GetTypesSafe()
                                       where type.IsAssignableFrom(t)
                                       select t).ToArray();
@@ -351,7 +378,7 @@ namespace numl.Utils
         /// <returns>
         /// An enumerator that allows foreach to be used to process the types safes in this collection.
         /// </returns>
-        private static IEnumerable<Type> GetTypesSafe(this Assembly a)
+        private static IEnumerable<Type> GetTypesSafe(this IAssembly a)
         {
             try
             {

@@ -15,7 +15,6 @@ using numl.Utils;
 namespace numl.Supervised.Perceptron
 {
     /// <summary>A data Model for the kernel perceptron.</summary>
-    [Serializable]
     public class KernelPerceptronModel : Model
     {
         /// <summary>Gets or sets the kernel.</summary>

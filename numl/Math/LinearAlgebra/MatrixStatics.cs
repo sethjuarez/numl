@@ -139,7 +139,7 @@ namespace numl.Math.LinearAlgebra
                         L[i, j] -= U[k, j] * L[i, k];
 
                     if (U[j, j] == 0)
-                        System.Diagnostics.Trace.TraceWarning("Unstable divisor...");
+                        System.Diagnostics.Debug.WriteLine("Unstable divisor...");
 
                     L[i, j] /= U[j, j];
                 }
@@ -318,6 +318,23 @@ namespace numl.Math.LinearAlgebra
 				v[i] = source[i, type].Mean();
 			return v;
 		}
+
+        /// <summary>
+        /// Computes the standard deviation of the given matrix
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="t">Use column or row (default: Col)</param>
+        /// <returns></returns>
+        public static Vector StdDev(Matrix source, VectorType t = VectorType.Col)
+        {
+            int count = t == VectorType.Row ? source.Cols : source.Rows;
+			VectorType type = t == VectorType.Row ? VectorType.Col : VectorType.Row;
+			Vector v = new Vector(count);
+			for (int i = 0; i < count; i++)
+				v[i] = source[i, type].StdDev();
+			return v;
+        }
+
         /// <summary>Determines the maximum of the given parameters.</summary>
         /// <param name="source">Source for the.</param>
         /// <returns>The maximum value.</returns>
@@ -353,10 +370,12 @@ namespace numl.Math.LinearAlgebra
 			int length = t == VectorType.Row ? source.Rows : source.Cols;
 			Matrix m = new Matrix(length);
 			//for (int i = 0; i < length; i++)
-			Parallel.For(0, length, i =>
+			for (int i = 0; i < length; i++)
+            {
 				//for (int j = i; j < length; j++) // symmetric matrix
-				Parallel.For(i, length, j =>
-					m[i, j] = m[j, i] = source[i, t].Covariance(source[j, t])));
+				for (int j = i; j < length; j++)
+					m[i, j] = m[j, i] = source[i, t].Covariance(source[j, t]);
+            }
 			return m;
 		}
         /// <summary>Covariance diagram.</summary>

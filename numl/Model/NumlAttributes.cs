@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using numl.Utils;
+using System.IO;
 
 namespace numl.Model
 {
@@ -50,7 +51,7 @@ namespace numl.Model
         /// <summary>Gets or sets the separator.</summary>
         /// <value>The separator.</value>
         public string Separator { get; set; }
-        /// <summary>Gets or sets the exclusion file.</summary>
+        /// <summary>Gets or sets the exclusion file as a base64 encoded string.</summary>
         /// <value>The exclusion file.</value>
         public string ExclusionFile { get; set; }
         /// <summary>Gets or sets a value indicating whether as enum.</summary>
@@ -98,7 +99,13 @@ namespace numl.Model
                 Discrete = true
             };
 
-            sp.ImportExclusions(ExclusionFile);
+            if (!string.IsNullOrWhiteSpace(this.ExclusionFile))
+            {
+                using (var ms = new MemoryStream(Convert.FromBase64String(ExclusionFile)))
+                {
+                    sp.ImportExclusions(ms);
+                }
+            }
 
             return sp;
         }

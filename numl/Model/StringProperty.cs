@@ -3,6 +3,7 @@
 // summary:	Implements the string property class
 using System;
 using System.IO;
+using System.Runtime.Serialization;
 using numl.Utils;
 using System.Linq;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace numl.Model
     }
 
     /// <summary>Represents a string property.</summary>
-    [XmlRoot("StringProperty")]
+    [DataContract(Name = "StringProperty")]
     public class StringProperty : Property
     {
         /// <summary>Default constructor.</summary>
@@ -42,21 +43,32 @@ namespace numl.Model
             Type = typeof(string);
             Discrete = true;
         }
+
         /// <summary>How to separate words (defaults to a space)</summary>
         /// <value>The separator.</value>
+        [DataMember]
         public string Separator { get; set; }
+
         /// <summary>How to split text.</summary>
         /// <value>The type of the split.</value>
+        [DataMember]
         public StringSplitType SplitType { get; set; }
+
         /// <summary>generated dictionary (using bag of words model)</summary>
         /// <value>The dictionary.</value>
+        [DataMember]
         public string[] Dictionary { get; set; }
+
         /// <summary>Exclusion set (stopword removal)</summary>
         /// <value>The exclude.</value>
+        [DataMember]
         public string[] Exclude { get; set; }
+
         /// <summary>Treat as enumeration.</summary>
         /// <value>true if as enum, false if not.</value>
+        [DataMember]
         public bool AsEnum { get; set; }
+
         /// <summary>Expansion length (total distinct words)</summary>
         /// <value>The length.</value>
         public override int Length
@@ -135,16 +147,18 @@ namespace numl.Model
         }
         /// <summary>import exclusion list from file.</summary>
         /// <param name="file">.</param>
-        public void ImportExclusions(string file)
+        public void ImportExclusions(Stream file)
         {
             // add exclusions
-            if (!string.IsNullOrEmpty(file) && !string.IsNullOrWhiteSpace(file) && File.Exists(file))
+            if (file == null) return;
+
+            if (file.Length > 0)
             {
                 Regex regex;
                 if (SplitType == StringSplitType.Word)
-                    regex = new Regex(@"\w+", RegexOptions.CultureInvariant | RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                    regex = new Regex(@"\w+", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
                 else
-                    regex = new Regex(@"\w", RegexOptions.CultureInvariant | RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                    regex = new Regex(@"\w", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
                 List<string> exclusionList = new List<string>();
                 using (StreamReader sr = new StreamReader(file))
@@ -171,7 +185,7 @@ namespace numl.Model
         {
             base.ReadXml(reader);
             Separator = reader.GetAttribute("Separator");
-            SplitType = (StringSplitType)Enum.Parse(typeof(StringSplitType), reader.GetAttribute("SplitType"));
+            SplitType = (StringSplitType)Enum.Parse(typeof(StringSplitType), reader.GetAttribute("SplitType"), true);
             AsEnum = bool.Parse(reader.GetAttribute("AsEnum"));
 
             reader.ReadStartElement();
@@ -179,13 +193,13 @@ namespace numl.Model
             Dictionary = new string[int.Parse(reader.GetAttribute("Length"))];
             reader.ReadStartElement("Dictionary");
             for (int i = 0; i < Dictionary.Length; i++)
-                Dictionary[i] = reader.ReadElementString("item");
+                Dictionary[i] = reader.ReadElementContentAsString("item", string.Empty);
             reader.ReadEndElement();
 
             Exclude = new string[int.Parse(reader.GetAttribute("Length"))];
             reader.ReadStartElement("Exclude");
             for (int i = 0; i < Exclude.Length; i++)
-                Exclude[i] = reader.ReadElementString("item");
+                Exclude[i] = reader.ReadElementContentAsString("item", string.Empty);
         }
         /// <summary>Converts an object into its XML representation.</summary>
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
