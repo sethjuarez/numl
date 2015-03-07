@@ -28,8 +28,6 @@ namespace numl.Utils
         public static void Save(Stream stream, object o, Type t)
         {
             XmlSerializer serializer = new XmlSerializer(t);
-            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
-            ns.Add("", "");
 
             serializer.Serialize(stream, o);
         }
@@ -48,11 +46,9 @@ namespace numl.Utils
         public static string ToXmlString(object o, Type t)
         {
             XmlSerializer serializer = new XmlSerializer(t);
-            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
             StringWriter textWriter = new StringWriter();
-            ns.Add("", "");
 
-            serializer.Serialize(textWriter, o, ns);
+            serializer.Serialize(textWriter, o);
             return textWriter.ToString();
         }
         /// <summary>Loads the given stream.</summary>
@@ -101,8 +97,6 @@ namespace numl.Utils
         public static void Write<T>(XmlWriter writer, T thing)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(T));
-            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
-            ns.Add("", "");
             serializer.Serialize(writer, thing);
         }
         /// <summary>Reads the given reader.</summary>

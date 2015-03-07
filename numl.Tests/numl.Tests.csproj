@@ -64,6 +64,7 @@
     <Compile Include="SerializationTests\DescriptorSerializationTests.cs" />
     <Compile Include="SerializationTests\NaiveBayesSerializationTests.cs" />
     <Compile Include="SerializationTests\NeuralNetworkSerializationTests.cs" />
+    <Compile Include="SerializationTests\RegressionSerialisationTests.cs" />
     <Compile Include="SupervisedTests\BaseSupervised.cs" />
     <Compile Include="SupervisedTests\DecisionTreeTests.cs" />
     <Compile Include="MathTests\MetricTests.cs" />

@@ -297,12 +297,14 @@ namespace numl.Math.LinearAlgebra
 
             reader.ReadStartElement();
 
+
             if (size > 0)
             {
                 _asMatrixRef = false;
                 _vector = new double[size];
+                string[] arrs = reader.ReadContentAsString().Split(new string[] { "," }, StringSplitOptions.None);
                 for (int i = 0; i < size; i++)
-                    _vector[i] = double.Parse(reader.ReadElementContentAsString("e", string.Empty));
+                    _vector[i] = double.Parse(arrs[i].Trim());
             }
             else
                 throw new InvalidOperationException("Invalid vector size in XML!");
@@ -319,12 +321,7 @@ namespace numl.Math.LinearAlgebra
                 throw new InvalidOperationException("Cannot serialize a vector that is a matrix reference!");
 
             writer.WriteAttributeString("size", _vector.Length.ToString());
-            for (int i = 0; i < _vector.Length; i++)
-            {
-                writer.WriteStartElement("e");
-                writer.WriteValue(_vector[i]);
-                writer.WriteEndElement();
-            }
+            writer.WriteValue(string.Join(", ", _vector.Select(s => string.Format("{0:R}", s))));
         }
 
         /// <summary>The empty.</summary>

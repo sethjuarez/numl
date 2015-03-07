@@ -18,16 +18,19 @@ namespace numl.Supervised.Regression
         /// <summary>
         /// Theta parameters vector mapping X to y.
         /// </summary>
+        [XmlAttribute("Theta")]
         public Vector Theta { get; set; }
 
         /// <summary>
         /// A row vector of the feature averages
         /// </summary>
+        [XmlAttribute("FeatureAverages")]
         private Vector FeatureAverages { get; set; }
 
         /// <summary>
         /// A row vector of the standard deviation for each feature
         /// </summary>
+        [XmlAttribute("FeatureStandardDeviations")]
         private Vector FeatureStandardDeviations { get; set; }
 
         private Vector Normalise(Vector y)

@@ -6,10 +6,13 @@ using System.Text;
 namespace numl.Classification
 {
     /// <summary>
-    /// Multi Class classifier builder
+    /// Multi Class classifier
     /// </summary>
     public class MultiClassClassifier
     {
-
+        public MultiClassClassifier()
+        {
+            throw new NotImplementedException("Multi Class Classifier not yet implemented");
+        }
     }
 }
