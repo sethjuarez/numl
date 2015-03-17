@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using numl.Math.LinearAlgebra;
 using numl.Math.Functions;
-using numl.Functions;
+
 
 namespace numl.Supervised.Regression
 {
@@ -59,8 +59,8 @@ namespace numl.Supervised.Regression
 
             Vector theta = Vector.Ones(copy.Cols);
 
-            var run = GradientDescent.Run(theta, copy, y, this.MaxIterations, this.LearningRate, new Functions.CostFunctions.LogisticCostFunction(), 
-                this.Lambda, new Regularization());
+            var run = numl.Math.Optimization.GradientDescent.Run(theta, copy, y, this.MaxIterations, this.LearningRate, new numl.Math.Functions.Cost.LogisticCostFunction(), 
+                this.Lambda, new numl.Math.Functions.Regularization.Regularization());
 
             LogisticRegressionModel model = new LogisticRegressionModel()
             {

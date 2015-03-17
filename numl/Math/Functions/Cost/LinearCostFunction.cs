@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using numl.Math.LinearAlgebra;
-using numl.Math.Functions;
+using System.Collections.Generic;
+using numl.Math.Functions.Regularization;
 
-namespace numl.Functions.CostFunctions
+namespace numl.Math.Functions.Cost
 {
     /// <summary>
     /// A Linear Cost Function.

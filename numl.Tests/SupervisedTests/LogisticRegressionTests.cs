@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using numl.Supervised.Regression;
-using numl.Functions;
+
 
 namespace numl.Tests.SupervisedTests
 {
@@ -105,8 +105,8 @@ namespace numl.Tests.SupervisedTests
             Vector y = new Vector(new double[] { 1, 0, 1, 0, 1, 0 });
             Vector theta = new Vector(new double[] { 0, 1, 0 });
 
-            ICostFunction logisticCostFunction = new Functions.CostFunctions.LogisticCostFunction();
-            IRegularizer regularizer = new Functions.Regularization();
+            numl.Math.Functions.Cost.ICostFunction logisticCostFunction = new numl.Math.Functions.Cost.LogisticCostFunction();
+            numl.Math.Functions.Regularization.IRegularizer regularizer = new numl.Math.Functions.Regularization.Regularization();
 
             double cost = logisticCostFunction.ComputeCost(theta.Copy(), X, y, 3, regularizer);
             
@@ -130,7 +130,7 @@ namespace numl.Tests.SupervisedTests
             Vector y = new Vector(new double[] { 1, 1, 0 });
             Vector theta = new Vector(new double[] { 0, 1, 0 });
 
-            ICostFunction logisticCostFunction = new Functions.CostFunctions.LogisticCostFunction();
+            numl.Math.Functions.Cost.ICostFunction logisticCostFunction = new numl.Math.Functions.Cost.LogisticCostFunction();
 
             double cost = logisticCostFunction.ComputeCost(theta.Copy(), X, y, 0, null);
             
@@ -154,8 +154,8 @@ namespace numl.Tests.SupervisedTests
             Vector y = new Vector(new double[] { 1, 1, 0 });
             Vector theta = new Vector(new double[] { 0, 1, 0 });
 
-            ICostFunction logisticCostFunction = new Functions.CostFunctions.LogisticCostFunction();
-            IRegularizer regularizer = new Functions.Regularization();
+            numl.Math.Functions.Cost.ICostFunction logisticCostFunction = new numl.Math.Functions.Cost.LogisticCostFunction();
+            numl.Math.Functions.Regularization.IRegularizer regularizer = new numl.Math.Functions.Regularization.Regularization();
 
             double cost = logisticCostFunction.ComputeCost(theta.Copy(), X, y, 3, regularizer);
             

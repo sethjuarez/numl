@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using numl.Math.LinearAlgebra;
-using numl.Math.Functions;
+using numl.Math.Functions.Cost;
+using System.Collections.Generic;
+using numl.Math.Functions.Regularization;
 
-namespace numl.Functions
+namespace numl.Math.Optimization
 {
     /// <summary>
     /// Gradient Descent
@@ -24,7 +24,7 @@ namespace numl.Functions
         /// <param name="lambda">The regularization constant to apply</param>
         /// <param name="regularizer">The regularization function to apply</param>
         /// <returns></returns>
-        public static Tuple<double, Vector> Run(Vector theta, Matrix x, Vector y, int maxIterations, double learningRateAlpha, 
+        public static Tuple<double, Vector> Run(Vector theta, Matrix x, Vector y, int maxIterations, double learningRateAlpha,
             ICostFunction costFunction, double lambda, IRegularizer regularizer)
         {
             Vector bestTheta = theta.Copy();

@@ -46,13 +46,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Functions\GradientDescent.cs" />
-    <Compile Include="Functions\CostFunctions\ICostFunction.cs" />
-    <Compile Include="Functions\IRegularizer.cs" />
-    <Compile Include="Functions\CostFunctions\LinearCostFunction.cs" />
-    <Compile Include="Functions\Regularization.cs" />
+    <Compile Include="Math\Optimization\GradientDescent.cs" />
+    <Compile Include="Math\Functions\Cost\ICostFunction.cs" />
+    <Compile Include="Math\Functions\Regularization\IRegularizer.cs" />
+    <Compile Include="Math\Functions\Cost\LinearCostFunction.cs" />
+    <Compile Include="Math\Functions\Regularization\Regularization.cs" />
     <Compile Include="Learner.cs" />
-    <Compile Include="Functions\CostFunctions\LogisticCostFunction.cs" />
+    <Compile Include="Math\Functions\Cost\LogisticCostFunction.cs" />
     <Compile Include="Math\Functions\Function.cs" />
     <Compile Include="Math\Functions\Ident.cs" />
     <Compile Include="Math\Functions\IFunction.cs" />
