@@ -27,7 +27,12 @@ namespace numl.Model
     public class Descriptor : IXmlSerializable
     {
         /// <summary>Default constructor.</summary>
-        public Descriptor() { Name = ""; }
+        public Descriptor()
+        {
+            Name = "";
+            Features = new Property[] { };
+        }
+
         /// <summary>Descriptor name.</summary>
         /// <value>The name.</value>
         public string Name { get; set; }
@@ -424,20 +429,23 @@ namespace numl.Model
 
             reader.MoveToContent();
             string type = reader.GetAttribute("Type");
-            if (type.ToLowerInvariant() != "none")
+            if (type != null && type.ToLowerInvariant() != "none")
                 Type = Ject.FindType(type);
 
             Name = reader.GetAttribute("Name");
 
             reader.ReadStartElement();
-            Features = new Property[int.Parse(reader.GetAttribute("Length"))];
+            var length = reader.GetAttribute("Length") ?? "0";
+            Features = new Property[int.Parse(length)];
             reader.ReadStartElement("Features");
             for (int i = 0; i < Features.Length; i++)
             {
                 Features[i] = (Property)serializer(reader.LocalName).Deserialize(reader);
                 reader.Read();
             }
+
             reader.ReadEndElement();
+            
             // is there a label?
             if (reader.LocalName == "Label")
             {
@@ -445,8 +453,10 @@ namespace numl.Model
                 Label = (Property)serializer(reader.LocalName).Deserialize(reader);
                 reader.Read();
                 reader.ReadEndElement();
+
+                // move to end Descriptor
+                reader.Read();
             }
-            
         }
         /// <summary>Converts an object into its XML representation.</summary>
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is

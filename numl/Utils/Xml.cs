@@ -138,10 +138,22 @@ namespace numl.Utils
         /// <param name="thing">The thing.</param>
         public static void Write<T>(XmlWriter writer, T thing)
         {
+
             XmlSerializer serializer = new XmlSerializer(typeof(T));
             XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
             ns.Add("", "");
-            serializer.Serialize(writer, thing, ns);
+
+            // check for a null thing
+            if (thing != null)
+                serializer.Serialize(writer, thing, ns);
+            else
+            {
+                var ctor = typeof(T).GetConstructor(new Type[] { });
+                if (ctor != null)
+                    serializer.Serialize(writer, ctor.Invoke(new object[] { }), ns);
+                else
+                    serializer.Serialize(writer, default(T), ns);
+            }
         }
         /// <summary>Reads the given reader.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>
@@ -152,7 +164,7 @@ namespace numl.Utils
             XmlSerializer dserializer = new XmlSerializer(typeof(T));
             T item = (T)dserializer.Deserialize(reader);
             // move to next thing
-            reader.Read();
+            //reader.Read();
             return item;
         }
     }
