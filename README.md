@@ -9,4 +9,4 @@ I would love to take contributions! Please read [this](https://guides.github.com
 # Learn More
 More details can be found at the project website: [http://numl.net](http://numl.net "numl.net").
 
-Documentation can be found at [http://docs.numl.net](http://docs.numl.net "docs.numl.net").
+Documentation can be found at [http://numl.net/docs](http://numl.net/docs "numl.net/docs").
