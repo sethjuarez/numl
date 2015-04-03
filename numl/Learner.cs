@@ -92,6 +92,7 @@ namespace numl
         /// <returns>Best model for provided generator.</returns>
         public static LearningModel Learn(IEnumerable<object> examples, double trainingPercentage, int repeat, IGenerator generator)
         {
+            // count only once
             var total = examples.Count();
             var descriptor = generator.Descriptor;
             var data = descriptor.Convert(examples).ToExamples();
@@ -107,7 +108,7 @@ namespace numl
             // and update indices independently
             Parallel.For(0, models.Length, i =>
             {
-                var t = GenerateModel(generator, x, y, examples, trainingPercentage);
+                var t = GenerateModel(generator, x, y, examples, trainingPercentage, total);
                 models[i] = t.Model;
                 accuracy[i] = t.Accuracy;
             });
@@ -122,11 +123,12 @@ namespace numl
         /// <param name="y">The Vector to process.</param>
         /// <param name="examples">Source data.</param>
         /// <param name="trainingPct">The training pct.</param>
+        /// <param name="total">Number of Examples</param>
         /// <returns>The model.</returns>
-        private static LearningModel GenerateModel(IGenerator generator, Matrix x, Vector y, IEnumerable<object> examples, double trainingPct)
+        private static LearningModel GenerateModel(IGenerator generator, Matrix x, Vector y, IEnumerable<object> examples, double trainingPct, int total)
         {
             var descriptor = generator.Descriptor;
-            var total = examples.Count();
+            //var total = examples.Count();
             var trainingCount = (int)System.Math.Floor(total * trainingPct);
 
             // 100 - trainingPercentage for testing
