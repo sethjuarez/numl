@@ -7,6 +7,7 @@ using System.Linq;
 using numl.Math.Information;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
+using numl.Utils;
 
 namespace numl.Supervised.DecisionTree
 {
@@ -209,7 +210,10 @@ namespace numl.Supervised.DecisionTree
                 if (used.Contains(i)) continue;
 
                 double gain = 0;
-                Impurity measure = (Impurity)Activator.CreateInstance(ImpurityType);
+                //Impurity measure = (Impurity)Activator.CreateInstance(ImpurityType);
+
+                Impurity measure = (Impurity)Ject.Create(ImpurityType);
+
                 // get appropriate column vector
                 var feature = x.Col(i);
                 // get appropriate feature at index i

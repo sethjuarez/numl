@@ -77,6 +77,7 @@
     <Compile Include="SupervisedTests\LogisticRegressionTests.cs" />
     <Compile Include="SupervisedTests\NaiveBayesTests.cs" />
     <Compile Include="SupervisedTests\NeuralNetworkTests.cs" />
+    <Compile Include="UnsupervisedTests\GMMTests.cs" />
     <Compile Include="UnsupervisedTests\HierarchicalClusteringTests.cs" />
     <Compile Include="UnsupervisedTests\KMeansTests.cs" />
     <Compile Include="UnsupervisedTests\PCATests.cs" />
