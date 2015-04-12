@@ -11,6 +11,16 @@ namespace numl.Utils
     public static class EnumerableHelpers
     {
         /// <summary>
+        /// Calculates the slope of the source array and returns True if the values are increasing.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static bool IsAscending(this IEnumerable<double> source)
+        {
+            return (source.ElementAt(0) - source.ElementAt(source.Count() - 1)) < 0;
+        }
+
+        /// <summary>
         /// Calculates the standard deviation on the source collection
         /// </summary>
         /// <typeparam name="TSource"></typeparam>

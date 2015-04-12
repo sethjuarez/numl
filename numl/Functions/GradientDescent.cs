@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using numl.Math.LinearAlgebra;
 using numl.Math.Functions;
+using numl.Utils;
 
 namespace numl.Functions
 {
@@ -12,6 +13,7 @@ namespace numl.Functions
     /// </summary>
     public static class GradientDescent
     {
+        private const double MaxRetryPercentage = 0.02; 
         /// <summary>
         /// Performs gradient descent to optomise theta parameters.
         /// </summary>
@@ -24,7 +26,7 @@ namespace numl.Functions
         /// <param name="lambda">The regularization constant to apply</param>
         /// <param name="regularizer">The regularization function to apply</param>
         /// <returns></returns>
-        public static Tuple<double, Vector> Run(Vector theta, Matrix x, Vector y, int maxIterations, double learningRateAlpha, 
+        public static Tuple<double, Vector> Run(Vector theta, Matrix x, Vector y, int maxIterations, double alpha, 
             ICostFunction costFunction, double lambda, IRegularizer regularizer)
         {
             Vector bestTheta = theta.Copy();
@@ -32,20 +34,64 @@ namespace numl.Functions
 
             double currentCost = 0;
             Vector currentGradient = theta.Copy();
+            Vector currentTheta = bestTheta.Copy();
 
-            for (int i = 0; i <= maxIterations; i++)
+            double tempAlpha = alpha;
+            int resetCount = 0;
+            double[] costHistory = new double[maxIterations];
+
+            for (int i = 0; i < maxIterations; i++)
             {
-                currentCost = costFunction.ComputeCost(bestTheta, x, y, lambda, regularizer);
-                currentGradient = costFunction.ComputeGradient(bestTheta, x, y, lambda, regularizer);
+                costHistory[i] = currentCost;
+
+                currentTheta = currentTheta - tempAlpha * currentGradient;
+                currentCost = costFunction.ComputeCost(currentTheta, x, y, lambda, regularizer);
+                currentGradient = costFunction.ComputeGradient(currentTheta, x, y, lambda, regularizer);
 
                 if (currentCost < bestCost)
                 {
-                    bestTheta = bestTheta - learningRateAlpha * currentGradient;
+                    double t = tempAlpha + (tempAlpha * ((currentCost / bestCost) * alpha));
+                    if (t > tempAlpha)
+                    {
+                        resetCount--;
+
+                        if (resetCount < (maxIterations * GradientDescent.MaxRetryPercentage))
+                        {
+                            var testTheta = currentTheta - t * currentGradient;
+                            var testCost = costFunction.ComputeCost(testTheta, x, y, lambda, regularizer);
+
+                            if (testCost < currentCost)
+                            {
+                                tempAlpha = t;
+                                bestCost = currentCost = testCost;
+                                currentGradient = costFunction.ComputeGradient(testTheta, x, y, lambda, regularizer);
+                                bestTheta = currentTheta = testTheta;
+
+                                continue;
+                            }
+                        }
+                    }
+
                     bestCost = currentCost;
+                    bestTheta = currentTheta;
                 }
                 else
                 {
-                    learningRateAlpha = learningRateAlpha * 0.99;
+                    if (tempAlpha > alpha)
+                    {
+                        tempAlpha = alpha;
+                        resetCount++;
+                    }
+                    else
+                    {
+                        tempAlpha = tempAlpha * 0.99;
+                    }
+
+                    if (resetCount > (maxIterations * GradientDescent.MaxRetryPercentage))
+                    {
+                        currentTheta = bestTheta;
+                        currentCost = bestCost;
+                    }
                 }
             }
 

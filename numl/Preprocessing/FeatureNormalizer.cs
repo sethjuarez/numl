@@ -21,7 +21,8 @@ namespace numl.PreProcessing
         /// <returns></returns>
         public static double FeatureScale(double value, double avg, double std)
         {
-            return (value - avg) / std;
+            double scale = (value - avg) / std;
+            return (double.IsNaN(scale) ? 0.0 : scale);
         }
 
         /// <summary>
@@ -55,7 +56,5 @@ namespace numl.PreProcessing
             double[] temp = column.ToArray();
             return new Vector(FeatureNormalizer.FeatureScale(temp));
         }
-
-        
     }
 }

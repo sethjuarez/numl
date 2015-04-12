@@ -10,7 +10,7 @@ using numl.Model;
 using numl.Math.Functions;
 using numl.Math.LinearAlgebra;
 using numl.Classification;
-using System.Xml.Serialization;
+using numl.PreProcessing;
 
 namespace numl.Supervised.Regression
 {
@@ -49,9 +49,7 @@ namespace numl.Supervised.Regression
         /// <returns></returns>
         public double PredictRaw(Vector x)
         {
-            var tempx = PolynomialFeatures > 0 ? PreProcessing.FeatureDimensions.IncreaseDimensions(x, PolynomialFeatures) : x;
-            tempx = tempx.Insert(0, 1.0);
-            return LogisticFunction.Compute((tempx * Theta).ToDouble());
+            return this.LogisticFunction.Compute(((x.IncreaseDimensions(this.PolynomialFeatures).Insert(0, 1.0, false)) * Theta).ToDouble());
         }
 
         /// <summary>
@@ -61,7 +59,7 @@ namespace numl.Supervised.Regression
         /// <returns></returns>
         public override double Predict(Vector x)
         {
-            return this.PredictRaw(x) > 0.5d ? 1.0d : 0.0d;
+            return this.PredictRaw(x) >= 0.5d ? 1.0d : 0.0d;
         }
 
         /// <summary>Generates an object from its XML representation.</summary>

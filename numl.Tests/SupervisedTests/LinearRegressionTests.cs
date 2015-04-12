@@ -141,7 +141,7 @@ namespace numl.Tests.SupervisedTests
 
             double actualEqns = 278735d;
 
-            Assert.AreEqual(actualEqns, System.Math.Round(priceEqns, 0));
+            Assert.AreEqual(actualEqns, System.Math.Round(priceEqns, 0), 5000);
         }
 
         [Test]
@@ -182,7 +182,7 @@ namespace numl.Tests.SupervisedTests
 
             double actualGrad = 280942d;
 
-            Assert.AreEqual(actualGrad, System.Math.Round(priceGrad, 0));
+            Assert.AreEqual(actualGrad, System.Math.Round(priceGrad, 0), 5000);
         }
     }
 }

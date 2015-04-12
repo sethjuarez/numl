@@ -39,7 +39,7 @@ namespace numl.Supervised.Regression
         {
             Lambda = 1;
             MaxIterations = 500;
-            PolynomialFeatures = 5;
+            PolynomialFeatures = 0;
             LearningRate = 0.3;
         }
 
@@ -52,10 +52,10 @@ namespace numl.Supervised.Regression
             // create initial theta
             Matrix copy = x.Copy();
 
-            copy = PreProcessing.FeatureDimensions.IncreaseDimensions(copy, PolynomialFeatures);
+            copy = PreProcessing.FeatureDimensions.IncreaseDimensions(copy, this.PolynomialFeatures);
 
             // add intercept term
-            copy = copy.Insert(Vector.Ones(copy.Rows), 0, VectorType.Col);
+            copy = copy.Insert(Vector.Ones(copy.Rows), 0, VectorType.Col, false);
 
             Vector theta = Vector.Ones(copy.Cols);
 
