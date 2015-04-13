@@ -22,7 +22,7 @@ namespace numl.PreProcessing
         public static double FeatureScale(double value, double avg, double std)
         {
             double scale = (value - avg) / std;
-            return (double.IsNaN(scale) ? 0.0 : scale);
+            return (double.IsNaN(scale) || double.IsInfinity(scale) ? 0.0 : scale);
         }
 
         /// <summary>

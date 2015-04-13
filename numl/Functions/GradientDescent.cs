@@ -77,18 +77,20 @@ namespace numl.Functions
                 }
                 else
                 {
+                    resetCount++;
+
                     if (tempAlpha > alpha)
                     {
                         tempAlpha = alpha;
-                        resetCount++;
                     }
                     else
                     {
-                        tempAlpha = tempAlpha * 0.99;
+                        tempAlpha = tempAlpha * 0.9;
                     }
 
                     if (resetCount > (maxIterations * GradientDescent.MaxRetryPercentage))
                     {
+                        resetCount = 0;
                         currentTheta = bestTheta;
                         currentCost = bestCost;
                     }
