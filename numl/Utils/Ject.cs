@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Collections.Concurrent;
 
 namespace numl.Utils
 {
@@ -16,16 +17,16 @@ namespace numl.Utils
     public static class Ject
     {
         /// <summary>The accessors.</summary>
-        private static readonly Dictionary<Type, Dictionary<string, Func<object, object>>> accessors =
-            new Dictionary<Type, Dictionary<string, Func<object, object>>>();
+        private static readonly ConcurrentDictionary<Type, Dictionary<string, Func<object, object>>> accessors =
+            new ConcurrentDictionary<Type, Dictionary<string, Func<object, object>>>();
 
         /// <summary>The setters.</summary>
-        private static readonly Dictionary<Type, Dictionary<string, Action<object, object>>> setters =
-            new Dictionary<Type, Dictionary<string, Action<object, object>>>();
+        private static readonly ConcurrentDictionary<Type, Dictionary<string, Action<object, object>>> setters =
+            new ConcurrentDictionary<Type, Dictionary<string, Action<object, object>>>();
 
         /// <summary>Constructors</summary>
-        private readonly static Dictionary<Type, Func<object>> ctors = 
-            new Dictionary<Type, Func<object>>();
+        private readonly static ConcurrentDictionary<Type, Func<object>> ctors =
+            new ConcurrentDictionary<Type, Func<object>>();
 
         /// <summary>Gets an accessor.</summary>
         /// <param name="type">The type.</param>
