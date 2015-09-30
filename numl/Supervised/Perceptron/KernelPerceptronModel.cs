@@ -49,6 +49,9 @@ namespace numl.Supervised.Perceptron
         {
             writer.WriteAttributeString("Kernel", Kernel.GetType().Name);
             Xml.Write<Descriptor>(writer, Descriptor);
+
+            XmlSerializer serializer = new XmlSerializer(Kernel.GetType());
+
             Xml.Write<Vector>(writer, Y);
             Xml.Write<Vector>(writer, A);
             Xml.Write<Matrix>(writer, X);

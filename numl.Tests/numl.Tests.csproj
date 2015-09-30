@@ -60,6 +60,7 @@
     <Compile Include="SerializationTests\BaseSerialization.cs" />
     <Compile Include="SerializationTests\DecisionTreeSerializationTests.cs" />
     <Compile Include="SerializationTests\DescriptorSerializationTests.cs" />
+    <Compile Include="SerializationTests\KernelPerceptronSerializationTests.cs" />
     <Compile Include="SerializationTests\NaiveBayesSerializationTests.cs" />
     <Compile Include="SerializationTests\NeuralNetworkSerializationTests.cs" />
     <Compile Include="SerializationTests\RegressionSerializationTests.cs" />
