@@ -28,17 +28,21 @@ namespace numl.Model
     {
         /// <summary>Default constructor.</summary>
         public Descriptor() { Name = ""; }
+
         /// <summary>Descriptor name.</summary>
         /// <value>The name.</value>
         public string Name { get; set; }
+
         /// <summary>
         /// Set of features used to discriminate or learn about the <see cref="Label"/>.
         /// </summary>
         /// <value>The features.</value>
         public Property[] Features { get; set; }
+
         /// <summary>Target property that is the target of machine learning.</summary>
         /// <value>The label.</value>
         public Property Label { get; set; }
+
         /// <summary>Index into features (for convenience)</summary>
         /// <param name="i">Feature index.</param>
         /// <returns>Feature Property.</returns>
@@ -352,11 +356,11 @@ namespace numl.Model
         /// <summary>Load a descriptor from a file.</summary>
         /// <param name="file">File Location.</param>
         /// <returns>Descriptor.</returns>
-        public static Descriptor Load(string file)
-        {
-            using (var stream = File.OpenRead(file))
-                return Load(stream);
-        }
+        //public static Descriptor Load(string file)
+        //{
+        //    using (var stream = File.OpenRead(file))
+        //        return Load(stream);
+        //}
         /// <summary>Load a descriptor from a stream.</summary>
         /// <param name="stream">Stream.</param>
         /// <returns>Descriptor.</returns>
@@ -380,6 +384,7 @@ namespace numl.Model
         {
             return new DescriptorProperty(this, name, true);
         }
+
         /// <summary>
         /// This method is reserved and should not be used. When implementing the IXmlSerializable
         /// interface, you should return null (Nothing in Visual Basic) from this method, and instead, if
@@ -532,7 +537,7 @@ namespace numl.Model
         /// <param name="splitType">Type of the split.</param>
         /// <param name="separator">(Optional) the separator.</param>
         /// <param name="asEnum">(Optional) true to as enum.</param>
-        /// <param name="exclusions">(Optional) the exclusions.</param>
+        /// <param name="exclusions">(Optional) base 64 content string of the exclusions.</param>
         /// <returns>A Descriptor&lt;T&gt;</returns>
         public Descriptor<T> WithString(Expression<Func<T, string>> property, StringSplitType splitType, string separator = " ", bool asEnum = false, string exclusions = null)
         {
@@ -541,7 +546,10 @@ namespace numl.Model
             p.Name = pi.Name;
             p.SplitType = splitType;
             p.Separator = separator;
-            p.ImportExclusions(exclusions);
+            using (var ms = new System.IO.MemoryStream(System.Convert.FromBase64String(exclusions)))
+            {
+                p.ImportExclusions(ms);
+            }
             p.AsEnum = asEnum;
             AddProperty(p, false);
             return this;

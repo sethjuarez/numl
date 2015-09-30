@@ -31,15 +31,7 @@ namespace numl.Utils
 
             // kill inlined stuff that creates noise
             // (like punctuation etc.)
-            item = item.Aggregate("",
-                (x, a) =>
-                {
-                    if (char.IsSymbol(a) || char.IsPunctuation(a) || char.IsSeparator(a))
-                        return x;
-                    else
-                        return x + a;
-                }
-            );
+            item = new string(item.ToCharArray().Where(c => (!Char.IsSymbol(c) && !Char.IsPunctuation(c) && !Char.IsSeparator(c))).ToArray());
 
             // since we killed everything
             // and it is still empty, it
@@ -202,15 +194,7 @@ namespace numl.Utils
 
                 // kill inlined stuff that creates noise
                 // (like punctuation etc.)
-                s = s.Aggregate("",
-                    (x, a) =>
-                    {
-                        if (char.IsSymbol(a) || char.IsPunctuation(a) || char.IsSeparator(a))
-                            return x;
-                        else
-                            return x + a;
-                    }
-                );
+                s = new string(s.ToCharArray().Where(c => (!Char.IsSymbol(c) && !Char.IsPunctuation(c) && !Char.IsSeparator(c))).ToArray());
 
                 // null or whitespace
                 if (string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s))

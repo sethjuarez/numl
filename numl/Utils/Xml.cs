@@ -15,26 +15,6 @@ namespace numl.Utils
     {
         /// <summary>Save object to file.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>
-        /// <param name="file">file.</param>
-        /// <param name="o">object.</param>
-        ///
-        /// ### <typeparam name="T">Type.</typeparam>
-        public static void Save<T>(string file, T o)
-        {
-            using (var stream = File.OpenWrite(file))
-                Save(stream, o, typeof(T));
-        }
-        /// <summary>Save object to file.</summary>
-        /// <param name="file">file.</param>
-        /// <param name="o">object.</param>
-        /// <param name="t">type.</param>
-        public static void Save(string file, object o, Type t)
-        {
-            using (var stream = File.OpenWrite(file))
-                Save(stream, o, t);
-        }
-        /// <summary>Save object to file.</summary>
-        /// <tparam name="T">Generic type parameter.</tparam>
         /// <param name="stream">The stream.</param>
         /// <param name="o">object.</param>
         public static void Save<T>(Stream stream, T o)
@@ -48,10 +28,8 @@ namespace numl.Utils
         public static void Save(Stream stream, object o, Type t)
         {
             XmlSerializer serializer = new XmlSerializer(t);
-            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
-            ns.Add("", "");
 
-            serializer.Serialize(stream, o, ns);
+            serializer.Serialize(stream, o);
         }
         /// <summary>Converts an o to an XML string.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>
@@ -68,30 +46,10 @@ namespace numl.Utils
         public static string ToXmlString(object o, Type t)
         {
             XmlSerializer serializer = new XmlSerializer(t);
-            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
             StringWriter textWriter = new StringWriter();
-            ns.Add("", "");
 
-            serializer.Serialize(textWriter, o, ns);
+            serializer.Serialize(textWriter, o);
             return textWriter.ToString();
-        }
-        /// <summary>Loads the given stream.</summary>
-        /// <tparam name="T">Generic type parameter.</tparam>
-        /// <param name="file">file.</param>
-        /// <returns>A T.</returns>
-        public static T Load<T>(string file)
-        {
-            using (var stream = File.OpenRead(file))
-                return Load<T>(stream);
-        }
-        /// <summary>Loads.</summary>
-        /// <param name="file">file.</param>
-        /// <param name="t">type.</param>
-        /// <returns>An object.</returns>
-        public static object Load(string file, Type t)
-        {
-            using (var stream = File.OpenRead(file))
-                return Load(stream, t);
         }
         /// <summary>Loads the given stream.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>
@@ -139,9 +97,7 @@ namespace numl.Utils
         public static void Write<T>(XmlWriter writer, T thing)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(T));
-            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
-            ns.Add("", "");
-            serializer.Serialize(writer, thing, ns);
+            serializer.Serialize(writer, thing);
         }
         /// <summary>Reads the given reader.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>

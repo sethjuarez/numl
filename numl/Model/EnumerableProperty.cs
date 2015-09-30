@@ -12,13 +12,15 @@ using System.Xml.Serialization;
 namespace numl.Model
 {
     /// <summary>Enumerable property. Expanded feature.</summary>
-    [XmlRoot("EnumerableProperty"), Serializable]
+    //[XmlRoot("EnumerableProperty"), Serializable]
+    [XmlRoot("EnumerableProperty")]
     public class EnumerableProperty : Property
     {
         /// <summary>The length.</summary>
         private int _length;
+
         /// <summary>Default constructor.</summary>
-        internal EnumerableProperty() { }
+        public EnumerableProperty() { }
         /// <summary>Constructor.</summary>
         /// <param name="length">The length.</param>
         public EnumerableProperty(int length)

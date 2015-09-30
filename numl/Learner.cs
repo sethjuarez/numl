@@ -78,15 +78,15 @@ namespace numl
             var models = new IModel[repeat];
             var accuracy = Vector.Zeros(repeat);
 
-            // run in parallel since they all have 
+            // safe for parallisation
             // read-only references to the data model
             // and update indices independently
-            Parallel.For(0, models.Length, i =>
+            for (int i = 0; i < models.Length; i++)
             {
                 var t = GenerateModel(generator, x, y, examples, trainingPercentage);
                 models[i] = t.Model;
                 accuracy[i] = t.Accuracy;
-            });
+            }
 
             var idx = accuracy.MaxIndex();
 

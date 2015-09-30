@@ -5,7 +5,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Collections.Concurrent;
 using System.Threading;
 
 namespace numl.Math.LinearAlgebra
@@ -130,7 +129,7 @@ namespace numl.Math.LinearAlgebra
         /// <summary>Parallels this object.</summary>
         public void parallel()
         {
-            Console.WriteLine("Starting new sweep!");
+            System.Diagnostics.Debug.WriteLine("Starting new sweep!");
             int N = A.Cols;
             // make even pairings
             int n = N % 2 == 0 ? N : N + 1;
@@ -145,7 +144,7 @@ namespace numl.Math.LinearAlgebra
 
             for (int i = 0; i < n - 1; i++)
             {
-                Parallel.For(0, n / 2, j =>
+                for (int j = 0; j < n / 2; j++)
                 {
                     int p, q, k = n - 1 - j;
 
@@ -159,11 +158,10 @@ namespace numl.Math.LinearAlgebra
                     if (p >= 0)
                         sweep(p, q);
 
-                    Console.WriteLine("({0}, {1}) [{2}] {3}", p, q, Thread.CurrentThread.ManagedThreadId, p < 0 ? "buy" : "");
+                    System.Diagnostics.Debug.WriteLine("({0}, {1}) [{2}] {3}", p, q, Thread.CurrentThread.ManagedThreadId, p < 0 ? "buy" : "");
+                }
 
-                });
-
-                Console.WriteLine("----------[{0}]----------", Thread.CurrentThread.ManagedThreadId);
+                System.Diagnostics.Debug.WriteLine("----------[{0}]----------", Thread.CurrentThread.ManagedThreadId);
                 // move stuff around
                 queue.Enqueue(queue.Dequeue());
             }

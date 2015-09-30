@@ -6,6 +6,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace numl.Model
 {
@@ -74,7 +75,7 @@ namespace numl.Model
     }
 
     /// <summary>DateTime Property. Used as a feature expansion mechanism.</summary>
-    [XmlRoot("DateTimeProperty"), Serializable]
+    [XmlRoot("DateTimeProperty")]
     public class DateTimeProperty : Property
     {
         /// <summary>Gets or sets the features.</summary>
@@ -224,6 +225,7 @@ namespace numl.Model
             }
             else throw new InvalidCastException("Object is not a date");
         }
+
         /// <summary>Converts an object into its XML representation.</summary>
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
         /// serialized.</param>

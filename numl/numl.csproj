@@ -13,7 +13,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <TargetFrameworkProfile>Profile5</TargetFrameworkProfile>
+    <TargetFrameworkProfile>Profile344</TargetFrameworkProfile>
     <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -62,6 +62,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classifiers\IClassifier.cs" />
+    <Compile Include="Classifiers\MultiClassClassifier.cs" />
+    <Compile Include="Functions\CostFunctions\ICostFunction.cs" />
+    <Compile Include="Functions\CostFunctions\LinearCostFunction.cs" />
+    <Compile Include="Functions\CostFunctions\LogisticCostFunction.cs" />
+    <Compile Include="Functions\GradientDescent.cs" />
+    <Compile Include="Functions\IRegularizer.cs" />
+    <Compile Include="Functions\Regularization.cs" />
     <Compile Include="Learner.cs" />
     <Compile Include="Math\Functions\Function.cs" />
     <Compile Include="Math\Functions\Ident.cs" />
@@ -110,6 +118,11 @@
     <Compile Include="Model\DateTimeProperty.cs" />
     <Compile Include="Model\Property.cs" />
     <Compile Include="Model\StringProperty.cs" />
+    <Compile Include="Platform\AppDomain.cs" />
+    <Compile Include="Platform\IAppDomain.cs" />
+    <Compile Include="Platform\IAssembly.cs" />
+    <Compile Include="Preprocessing\FeatureDimensions.cs" />
+    <Compile Include="Preprocessing\FeatureNormalizer.cs" />
     <Compile Include="Supervised\DecisionTree\DecisionTreeGenerator.cs" />
     <Compile Include="Supervised\DecisionTree\DecisionTreeModel.cs" />
     <Compile Include="Supervised\KNN\KNNGenerator.cs" />
@@ -124,9 +137,12 @@
     <Compile Include="Supervised\NeuralNetwork\Neuron.cs" />
     <Compile Include="Supervised\Perceptron\KernelPerceptronModel.cs" />
     <Compile Include="Supervised\Perceptron\PerceptronModel.cs" />
-    <Compile Include="Supervised\Regression\LinearRegression.cs" />
     <Compile Include="Supervised\NaiveBayes\NaiveBayesModel.cs" />
     <Compile Include="Supervised\Perceptron\PerceptronGenerator.cs" />
+    <Compile Include="Supervised\Regression\LinearRegressionGenerator.cs" />
+    <Compile Include="Supervised\Regression\LinearRegressionModel.cs" />
+    <Compile Include="Supervised\Regression\LogisticRegressionGenerator.cs" />
+    <Compile Include="Supervised\Regression\LogisticRegressionModel.cs" />
     <Compile Include="Unsupervised\Cluster.cs" />
     <Compile Include="Unsupervised\GMM.cs" />
     <Compile Include="Unsupervised\HClusterModel.cs" />
@@ -135,6 +151,7 @@
     <Compile Include="Unsupervised\KMeans.cs" />
     <Compile Include="Unsupervised\PCA.cs" />
     <Compile Include="Utils\DictionaryHelpers.cs" />
+    <Compile Include="Utils\EnumerableHelpers.cs" />
     <Compile Include="Utils\Ject.cs" />
     <Compile Include="Model\NumlAttributes.cs" />
     <Compile Include="Utils\StringHelpers.cs" />

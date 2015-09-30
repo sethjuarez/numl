@@ -20,21 +20,27 @@ namespace numl.Model
         {
             Start = -1;
         }
+
         /// <summary>Property Name - Maps to object property or dictionary lookup.</summary>
         /// <value>The name.</value>
         public string Name { get; set; }
+
         /// <summary>Type of property.</summary>
         /// <value>The type.</value>
         public virtual Type Type { get; set; }
+
         /// <summary>Length of property.</summary>
         /// <value>The length.</value>
         public virtual int Length { get { return 1; } }
+
         /// <summary>Start position in array.</summary>
         /// <value>The start.</value>
         public int Start { get; set; }
+
         /// <summary>Discrete or continuous value.</summary>
         /// <value>true if discrete, false if not.</value>
         public bool Discrete { get; set; }
+
         /// <summary>
         /// Used as a preprocessing step when overridden. Can be used to look at the entire data set as a
         /// whole before converting single elements.
@@ -100,6 +106,8 @@ namespace numl.Model
         {
             yield return Name;
         }
+
+        #region IXmlSerializable
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
@@ -112,6 +120,7 @@ namespace numl.Model
         {
             return null;
         }
+
         /// <summary>Generates an object from its XML representation.</summary>
         /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is
         /// deserialized.</param>
@@ -123,6 +132,7 @@ namespace numl.Model
             Discrete = bool.Parse(reader.GetAttribute("Discrete"));
             Start = int.Parse(reader.GetAttribute("Start"));
         }
+
         /// <summary>Converts an object into its XML representation.</summary>
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
         /// serialized.</param>
@@ -133,5 +143,7 @@ namespace numl.Model
             writer.WriteAttributeString("Discrete", Discrete.ToString());
             writer.WriteAttributeString("Start", Start.ToString());
         }
+
+        #endregion
     }
 }

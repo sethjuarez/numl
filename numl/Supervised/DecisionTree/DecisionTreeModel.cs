@@ -9,6 +9,8 @@ using System.Text;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 using numl.Utils;
+using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace numl.Supervised.DecisionTree
 {
@@ -18,6 +20,7 @@ namespace numl.Supervised.DecisionTree
         /// <summary>Gets or sets the tree.</summary>
         /// <value>The tree.</value>
         public Node Tree { get; set; }
+
         /// <summary>Gets or sets the hint.</summary>
         /// <value>The hint.</value>
         public double Hint { get; set; }

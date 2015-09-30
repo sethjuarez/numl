@@ -13,7 +13,6 @@ using numl.Utils;
 namespace numl.Supervised.NeuralNetwork
 {
     /// <summary>A node.</summary>
-    [XmlRoot("Node"), Serializable]
     public class Node : IXmlSerializable
     {
         /// <summary>Default constructor.</summary>

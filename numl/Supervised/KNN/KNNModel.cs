@@ -13,7 +13,6 @@ using numl.Utils;
 namespace numl.Supervised.KNN
 {
     /// <summary>A data Model for the knn.</summary>
-    [Serializable]
     public class KNNModel : Model
     {
         /// <summary>Gets or sets the k.</summary>
@@ -33,7 +32,10 @@ namespace numl.Supervised.KNN
             Tuple<int, double>[] distances = new Tuple<int, double>[X.Rows];
 
             // happens per slot so we are good to parallelize
-            Parallel.For(0, X.Rows, i => distances[i] = new Tuple<int, double>(i, (y - X.Row(i)).Norm(2)));
+            for (int i = 0; i < X.Rows; i++)
+            {
+                distances[i] = new Tuple<int, double>(i, (y - X.Row(i)).Norm(2));
+            }
 
             var slice = distances
                             .OrderBy(t => t.Item2)
@@ -42,9 +44,10 @@ namespace numl.Supervised.KNN
 
             return Y.Slice(slice).Mode();
         }
-        /// <summary>Converts an object into its XML representation.</summary>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
-        /// serialized.</param>
+
+        // <summary>Converts an object into its XML representation.</summary>
+        // <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
+        // serialized.</param>
         public override void WriteXml(XmlWriter writer)
         {
             writer.WriteAttributeString("K", K.ToString("r"));
@@ -66,7 +69,5 @@ namespace numl.Supervised.KNN
             X = Xml.Read<Matrix>(reader);
             Y = Xml.Read<Vector>(reader);
         }
-
-        
     }
 }
