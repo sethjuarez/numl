@@ -5,15 +5,11 @@ using System;
 using numl.Utils;
 using System.Linq;
 using System.Collections.Generic;
-using System.Xml.Serialization;
-using System.Xml.Schema;
-using System.Xml;
 
 namespace numl.Model
 {
     /// <summary>Concrete property. Used to convert any given data type to a number.</summary>
-    [XmlRoot("Property"), Serializable]
-    public class Property : IXmlSerializable
+    public class Property
     {
         /// <summary>Default constructor.</summary>
         public Property()
@@ -105,33 +101,6 @@ namespace numl.Model
         public override string ToString()
         {
             return string.Format("[{0}, {1}, {2}]", Name, Start, Length);
-        }
-        /// <summary>serialization.</summary>
-        /// <returns>The schema.</returns>
-        public XmlSchema GetSchema()
-        {
-            return null;
-        }
-        /// <summary>Generates an object from its XML representation.</summary>
-        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is
-        /// deserialized.</param>
-        public virtual void ReadXml(XmlReader reader)
-        {
-            reader.MoveToContent();
-            Name = reader.GetAttribute("Name");
-            Type = Ject.FindType(reader.GetAttribute("Type"));
-            Discrete = bool.Parse(reader.GetAttribute("Discrete"));
-            Start = int.Parse(reader.GetAttribute("Start"));
-        }
-        /// <summary>Converts an object into its XML representation.</summary>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
-        /// serialized.</param>
-        public virtual void WriteXml(XmlWriter writer)
-        {
-            writer.WriteAttributeString("Name", Name);
-            writer.WriteAttributeString("Type", Type.Name);
-            writer.WriteAttributeString("Discrete", Discrete.ToString());
-            writer.WriteAttributeString("Start", Start.ToString());
         }
     }
 }

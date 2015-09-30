@@ -2,10 +2,8 @@
 //
 // summary:	Implements the date time property class
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Xml;
-using System.Xml.Serialization;
 
 namespace numl.Model
 {
@@ -74,7 +72,6 @@ namespace numl.Model
     }
 
     /// <summary>DateTime Property. Used as a feature expansion mechanism.</summary>
-    [XmlRoot("DateTimeProperty"), Serializable]
     public class DateTimeProperty : Property
     {
         /// <summary>Gets or sets the features.</summary>
@@ -223,22 +220,6 @@ namespace numl.Model
                     yield return d.Millisecond;
             }
             else throw new InvalidCastException("Object is not a date");
-        }
-        /// <summary>Converts an object into its XML representation.</summary>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
-        /// serialized.</param>
-        public override void WriteXml(XmlWriter writer)
-        {
-            base.WriteXml(writer);
-            writer.WriteAttributeString("Features", ((int)Features).ToString());
-        }
-        /// <summary>Generates an object from its XML representation.</summary>
-        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is
-        /// deserialized.</param>
-        public override void ReadXml(XmlReader reader)
-        {
-            base.ReadXml(reader);
-            Features = (DateTimeFeature)int.Parse(reader.GetAttribute("Features"));
         }
     }
 }

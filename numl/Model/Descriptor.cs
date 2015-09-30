@@ -4,15 +4,12 @@
 using System;
 using System.IO;
 using numl.Utils;
-using System.Xml;
 using System.Linq;
 using System.Text;
 using System.Reflection;
-using System.Xml.Schema;
 using System.Collections;
 using numl.Math.LinearAlgebra;
 using System.Linq.Expressions;
-using System.Xml.Serialization;
 using System.Collections.Generic;
 
 namespace numl.Model
@@ -23,8 +20,7 @@ namespace numl.Model
     /// will be used to discriminate the <see cref="Label"/>. The <see cref="Label"/> itself is the
     /// target element that the machine learning algorithms learn to predict.
     /// </summary>
-    [XmlRoot("Descriptor"), Serializable]
-    public class Descriptor : IXmlSerializable
+    public class Descriptor
     {
         /// <summary>Default constructor.</summary>
         public Descriptor()
@@ -252,6 +248,7 @@ namespace numl.Model
         public static Descriptor Create<T>()
             where T : class
         {
+            
             return Create(typeof(T));
         }
         /// <summary>Creates a descriptor based upon a marked up concrete type.</summary>
@@ -260,8 +257,7 @@ namespace numl.Model
         /// <returns>Descriptor.</returns>
         public static Descriptor Create(Type t)
         {
-
-            if (!t.IsClass)
+            if (!t.GetTypeInfo().IsClass)
                 throw new InvalidOperationException("Can only work with class types");
 
             List<Property> features = new List<Property>();
@@ -271,19 +267,19 @@ namespace numl.Model
             {
                 var item = property.GetCustomAttributes(typeof(NumlAttribute), false);
 
-                if (item.Length == 1)
+                if (item.Count() == 1)
                 {
-                    var attrib = (NumlAttribute)item[0];
+                    var attrib = (NumlAttribute)item.First();
 
                     // generate appropriate property from attribute
                     Property p = attrib.GenerateProperty(property);
 
                     // feature
-                    if (attrib.GetType().IsSubclassOf(typeof(FeatureAttribute)) ||
+                    if (attrib.GetType().GetTypeInfo().IsSubclassOf(typeof(FeatureAttribute)) ||
                         attrib is FeatureAttribute)
                         features.Add(p);
                     // label
-                    else if (attrib.GetType().IsSubclassOf(typeof(LabelAttribute)) ||
+                    else if (attrib.GetType().GetTypeInfo().IsSubclassOf(typeof(LabelAttribute)) ||
                         attrib is LabelAttribute)
                     {
                         if (label != null)
@@ -300,6 +296,7 @@ namespace numl.Model
                 Type = t,
             };
         }
+
         /// <summary>
         /// Creates a new descriptor using a fluent approach. This initial descriptor is worthless
         /// without adding features.
@@ -367,9 +364,7 @@ namespace numl.Model
         /// <returns>Descriptor.</returns>
         public static Descriptor Load(Stream stream)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(Descriptor));
-            var o = serializer.Deserialize(stream);
-            return (Descriptor)o;
+            throw new NotImplementedException();
         }
         /// <summary>Adds a new feature to descriptor.</summary>
         /// <param name="name">Name of feature (must match property name or dictionary key)</param>
@@ -385,111 +380,8 @@ namespace numl.Model
         {
             return new DescriptorProperty(this, name, true);
         }
-        /// <summary>
-        /// This method is reserved and should not be used. When implementing the IXmlSerializable
-        /// interface, you should return null (Nothing in Visual Basic) from this method, and instead, if
-        /// specifying a custom schema is required, apply the
-        /// <see cref="T:System.Xml.Serialization.XmlSchemaProviderAttribute" /> to the class.
-        /// </summary>
-        /// <returns>
-        /// An <see cref="T:System.Xml.Schema.XmlSchema" /> that describes the XML representation of the
-        /// object that is produced by the
-        /// <see cref="M:System.Xml.Serialization.IXmlSerializable.WriteXml(System.Xml.XmlWriter)" />
-        /// method and consumed by the
-        /// <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)" />
-        /// method.
-        /// </returns>
-        public XmlSchema GetSchema()
-        {
-            return null;
-        }
-        /// <summary>Generates an object from its XML representation.</summary>
-        /// <exception cref="TypeLoadException">Thrown when a Type Load error condition occurs.</exception>
-        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is
-        /// deserialized.</param>
-        public void ReadXml(XmlReader reader)
-        {
-            Type[] descendants = Ject.FindAllAssignableFrom(typeof(Property));
-            // don't want to leak memory, should reuse serializers
-            Dictionary<string, XmlSerializer> serializers = new Dictionary<string, XmlSerializer>();
-            Func<string, XmlSerializer> serializer = s =>
-            {
-                if (!serializers.ContainsKey(s))
-                {
-                    var t = (from y in descendants
-                             where y.Name == s
-                             select y).FirstOrDefault();
-                    if (t == null) throw new TypeLoadException(string.Format("Could not find type {0}", reader.LocalName));
-
-                    serializers[s] = new XmlSerializer(t);
-                }
-
-                return serializers[reader.LocalName];
-            };
-
-            reader.MoveToContent();
-            string type = reader.GetAttribute("Type");
-            if (type != null && type.ToLowerInvariant() != "none")
-                Type = Ject.FindType(type);
-
-            Name = reader.GetAttribute("Name");
-
-            reader.ReadStartElement();
-            var length = reader.GetAttribute("Length") ?? "0";
-            Features = new Property[int.Parse(length)];
-            reader.ReadStartElement("Features");
-            for (int i = 0; i < Features.Length; i++)
-            {
-                Features[i] = (Property)serializer(reader.LocalName).Deserialize(reader);
-                reader.Read();
-            }
-
-            reader.ReadEndElement();
-            
-            // is there a label?
-            if (reader.LocalName == "Label")
-            {
-                reader.ReadStartElement("Label");
-                Label = (Property)serializer(reader.LocalName).Deserialize(reader);
-                reader.Read();
-                reader.ReadEndElement();
-
-                // move to end Descriptor
-                reader.Read();
-            }
-        }
-        /// <summary>Converts an object into its XML representation.</summary>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
-        /// serialized.</param>
-        public void WriteXml(XmlWriter writer)
-        {
-            // don't want to leak memory, should reuse serializers
-            Dictionary<Type, XmlSerializer> serializers = new Dictionary<Type, XmlSerializer>();
-
-            writer.WriteAttributeString("Type", Type == null ? "None" : Type.Name);
-            writer.WriteAttributeString("Name", Name == null ? "" : Name);
-
-            writer.WriteStartElement("Features");
-            writer.WriteAttributeString("Length", Features.Length.ToString());
-            for (int i = 0; i < Features.Length; i++)
-            {
-                var prop = Features[i];
-                if (!serializers.ContainsKey(prop.GetType()))
-                    serializers[prop.GetType()] = new XmlSerializer(prop.GetType());
-                serializers[prop.GetType()].Serialize(writer, prop);
-            }
-            writer.WriteEndElement();
-
-            if (Label != null)
-            {
-                writer.WriteStartElement("Label");
-                if (!serializers.ContainsKey(Label.GetType()))
-                    serializers[Label.GetType()] = new XmlSerializer(Label.GetType());
-                serializers[Label.GetType()].Serialize(writer, Label);
-                writer.WriteEndElement();
-            }
-        }
     }
+
     /// <summary>A descriptor.</summary>
     /// <tparam name="T">Generic type parameter.</tparam>
     public class Descriptor<T> : Descriptor

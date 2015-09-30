@@ -117,29 +117,5 @@ namespace numl.Supervised.DecisionTree
                 }
             }
         }
-        /// <summary>Generates an object from its XML representation.</summary>
-        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is
-        /// deserialized.</param>
-        public override void ReadXml(XmlReader reader)
-        {
-            reader.MoveToContent();
-            Hint = double.Parse(reader.GetAttribute("Hint"));
-            reader.ReadStartElement();
-
-            Descriptor = Xml.Read<Descriptor>(reader);
-            Tree = Xml.Read<Node>(reader);
-
-            // re-establish tree cycles and values
-            ReLinkNodes(Tree);
-        }
-        /// <summary>Converts an object into its XML representation.</summary>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
-        /// serialized.</param>
-        public override void WriteXml(XmlWriter writer)
-        {
-            writer.WriteAttributeString("Hint", Hint.ToString("r"));
-            Xml.Write<Descriptor>(writer, Descriptor);
-            Xml.Write<Node>(writer, Tree);
-        }
     }
 }

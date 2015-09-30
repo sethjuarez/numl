@@ -13,8 +13,7 @@ using System.Collections.Generic;
 namespace numl.Math.LinearAlgebra
 {
     /// <summary>A vector.</summary>
-    [XmlRoot("v"), Serializable]
-    public partial class Vector : IXmlSerializable, IEnumerable<double>
+    public partial class Vector : IEnumerable<double>
     {
         /// <summary>The vector.</summary>
         private double[] _vector;
@@ -263,68 +262,6 @@ namespace numl.Math.LinearAlgebra
             }
 
             return idx;
-        }
-
-       
-        //----------------- Xml Serialization
-        /// <summary>
-        /// This method is reserved and should not be used. When implementing the IXmlSerializable
-        /// interface, you should return null (Nothing in Visual Basic) from this method, and instead, if
-        /// specifying a custom schema is required, apply the
-        /// <see cref="T:System.Xml.Serialization.XmlSchemaProviderAttribute" /> to the class.
-        /// </summary>
-        /// <returns>
-        /// An <see cref="T:System.Xml.Schema.XmlSchema" /> that describes the XML representation of the
-        /// object that is produced by the
-        /// <see cref="M:System.Xml.Serialization.IXmlSerializable.WriteXml(System.Xml.XmlWriter)" />
-        /// method and consumed by the
-        /// <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)" />
-        /// method.
-        /// </returns>
-        public XmlSchema GetSchema()
-        {
-            return null;
-        }
-        /// <summary>Generates an object from its XML representation.</summary>
-        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
-        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is
-        /// deserialized.</param>
-        public void ReadXml(XmlReader reader)
-        {
-            reader.MoveToContent();
-
-            int size = int.Parse(reader.GetAttribute("size"));
-
-            reader.ReadStartElement();
-
-            if (size > 0)
-            {
-                _asMatrixRef = false;
-                _vector = new double[size];
-                for (int i = 0; i < size; i++)
-                    _vector[i] = double.Parse(reader.ReadElementString("e"));
-            }
-            else
-                throw new InvalidOperationException("Invalid vector size in XML!");
-
-            reader.ReadEndElement();
-        }
-        /// <summary>Converts an object into its XML representation.</summary>
-        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
-        /// serialized.</param>
-        public void WriteXml(XmlWriter writer)
-        {
-            if (_asMatrixRef)
-                throw new InvalidOperationException("Cannot serialize a vector that is a matrix reference!");
-
-            writer.WriteAttributeString("size", _vector.Length.ToString());
-            for (int i = 0; i < _vector.Length; i++)
-            {
-                writer.WriteStartElement("e");
-                writer.WriteValue(_vector[i]);
-                writer.WriteEndElement();
-            }
         }
 
         /// <summary>The empty.</summary>

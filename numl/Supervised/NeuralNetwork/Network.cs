@@ -7,15 +7,11 @@ using System.Linq;
 using numl.Math.Functions;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
-using System.Xml.Serialization;
-using System.Xml.Schema;
-using System.Xml;
 
 namespace numl.Supervised.NeuralNetwork
 {
     /// <summary>A network.</summary>
-    [XmlRoot("Network")]
-    public class Network : IXmlSerializable
+    public class Network
     {
         /// <summary>Gets or sets the in.</summary>
         /// <value>The in.</value>
@@ -78,11 +74,17 @@ namespace numl.Supervised.NeuralNetwork
         /// <returns>The label.</returns>
         private static string GetLabel(int n, Descriptor d)
         {
-            if (d.Label.Type.IsEnum)
-                return Enum.GetName(d.Label.Type, n);
-            else if (d.Label is StringProperty && ((StringProperty)d.Label).AsEnum)
-                return ((StringProperty)d.Label).Dictionary[n];
-            else return d.Label.Name;
+            var label = "";
+            try { label = Enum.GetName(d.Label.Type, n); }
+            // TODO: fix cheesy way of getting around IsEnum
+            catch
+            {
+                if (d.Label is StringProperty && ((StringProperty)d.Label).AsEnum)
+                    label = ((StringProperty)d.Label).Dictionary[n];
+                else label = d.Label.Name;
+            }
+
+            return label;
         }
         /// <summary>Forwards the given x coordinate.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
@@ -112,132 +114,6 @@ namespace numl.Supervised.NeuralNetwork
             for (int i = 0; i < Out.Length; i++)
                 Out[i].Update(learningRate);
         }
-        /// <summary>
-        /// This method is reserved and should not be used. When implementing the IXmlSerializable
-        /// interface, you should return null (Nothing in Visual Basic) from this method, and instead, if
-        /// specifying a custom schema is required, apply the
-        /// <see cref="T:System.Xml.Serialization.XmlSchemaProviderAttribute" /> to the class.
-        /// </summary>
-        /// <returns>
-        /// An <see cref="T:System.Xml.Schema.XmlSchema" /> that describes the XML representation of the
-        /// object that is produced by the
-        /// <see cref="M:System.Xml.Serialization.IXmlSerializable.WriteXml(System.Xml.XmlWriter)" />
-        /// method and consumed by the
-        /// <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)" />
-        /// method.
-        /// </returns>
-        public XmlSchema GetSchema()
-        {
-            return null;
-        }
-        /// <summary>Generates an object from its XML representation.</summary>
-        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is
-        /// deserialized.</param>
-        public void ReadXml(XmlReader reader)
-        {
-            XmlSerializer nSerializer = new XmlSerializer(typeof(Node));
-            XmlSerializer eSerializer = new XmlSerializer(typeof(Edge));
-
-            reader.MoveToContent();
-
-
-            Dictionary<string, Node> nodes = new Dictionary<string, Node>();
-            int length = 0;
-            reader.ReadStartElement();
-            length = int.Parse(reader.GetAttribute("Length"));
-            reader.ReadStartElement("Nodes");
-            for (int i = 0; i < length; i++)
-            {
-                var node = (Node)nSerializer.Deserialize(reader);
-                nodes.Add(node.Id, node);
-                reader.Read();
-            }
-            reader.ReadEndElement();
-
-            length = int.Parse(reader.GetAttribute("Length"));
-            reader.ReadStartElement("Edges");
-            for (int i = 0; i < length; i++)
-            {
-                var edge = (Edge)eSerializer.Deserialize(reader);
-                reader.Read();
-
-                edge.Source = nodes[edge.SourceId];
-                edge.Target = nodes[edge.TargetId];
-
-                edge.Source.Out.Add(edge);
-                edge.Target.In.Add(edge);
-            }
-            reader.ReadEndElement();
-
-            length = int.Parse(reader.GetAttribute("Length"));
-            reader.ReadStartElement("In");
-            In = new Node[length];
-            for (int i = 0; i < length; i++)
-            {
-                reader.MoveToContent();
-                In[i] = nodes[reader.GetAttribute("Id")];
-                reader.Read();
-
-            }
-            reader.ReadEndElement();
-
-            length = int.Parse(reader.GetAttribute("Length"));
-            reader.ReadStartElement("Out");
-            Out = new Node[length];
-            for (int i = 0; i < length; i++)
-            {
-                reader.MoveToContent();
-                Out[i] = nodes[reader.GetAttribute("Id")];
-                reader.Read();
-
-            }
-            reader.ReadEndElement();
-        }
-        /// <summary>Converts an object into its XML representation.</summary>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
-        /// serialized.</param>
-        public void WriteXml(XmlWriter writer)
-        {
-            XmlSerializer nSerializer = new XmlSerializer(typeof(Node));
-            XmlSerializer eSerializer = new XmlSerializer(typeof(Edge));
-
-            var nodes = GetNodes().ToArray();
-            writer.WriteStartElement("Nodes");
-            writer.WriteAttributeString("Length", nodes.Length.ToString());
-            foreach (var node in nodes)
-                nSerializer.Serialize(writer, node);
-
-            writer.WriteEndElement();
-
-            var edges = GetEdges().ToArray();
-            writer.WriteStartElement("Edges");
-            writer.WriteAttributeString("Length", edges.Length.ToString());
-            foreach (var edge in edges)
-                eSerializer.Serialize(writer, edge);
-
-            writer.WriteEndElement();
-
-            writer.WriteStartElement("In");
-            writer.WriteAttributeString("Length", In.Length.ToString());
-            for (int i = 0; i < In.Length; i++)
-            {
-                writer.WriteStartElement("Node");
-                writer.WriteAttributeString("Id", In[i].Id);
-                writer.WriteEndElement();
-            }
-            writer.WriteEndElement();
-
-            writer.WriteStartElement("Out");
-            writer.WriteAttributeString("Length", Out.Length.ToString());
-            for (int i = 0; i < Out.Length; i++)
-            {
-                writer.WriteStartElement("Node");
-                writer.WriteAttributeString("Id", Out[i].Id);
-                writer.WriteEndElement();
-            }
-            writer.WriteEndElement();
-        }
-
 
         /// <summary>The nodes.</summary>
         private HashSet<string> _nodes;

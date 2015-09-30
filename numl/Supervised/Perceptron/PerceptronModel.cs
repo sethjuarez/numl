@@ -2,12 +2,9 @@
 //
 // summary:	Implements the perceptron model class
 using System;
-using System.Xml;
 using System.Linq;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
-using numl.Model;
-using numl.Utils;
 
 namespace numl.Supervised.Perceptron
 {
@@ -32,30 +29,6 @@ namespace numl.Supervised.Perceptron
                 y = y / y.Norm();
 
             return W.Dot(y) + B;
-        }
-        /// <summary>Converts an object into its XML representation.</summary>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
-        /// serialized.</param>
-        public override void WriteXml(XmlWriter writer)
-        {
-            writer.WriteAttributeString("B", B.ToString("r"));
-            writer.WriteAttributeString("Normalized", Normalized.ToString());
-
-            Xml.Write<Descriptor>(writer, Descriptor);
-            Xml.Write<Vector>(writer, W);
-        }
-        /// <summary>Generates an object from its XML representation.</summary>
-        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is
-        /// deserialized.</param>
-        public override void ReadXml(XmlReader reader)
-        {
-            reader.MoveToContent();
-            B = double.Parse(reader.GetAttribute("B"));
-            Normalized = bool.Parse(reader.GetAttribute("Normalized"));
-            reader.ReadStartElement();
-
-            Descriptor = Xml.Read<Descriptor>(reader);
-            W = Xml.Read<Vector>(reader);
         }
     }
 }

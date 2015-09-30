@@ -7,7 +7,6 @@ using System.Xml;
 using System.Linq;
 using System.Xml.Schema;
 using numl.Math.LinearAlgebra;
-using System.Xml.Serialization;
 using System.Collections.Generic;
 using numl.Utils;
 
@@ -43,24 +42,6 @@ namespace numl.Supervised.NaiveBayes
             }
             var idx = lp.MaxIndex();
             return Root.Probabilities[idx].X.Min;
-        }
-        /// <summary>Generates an object from its XML representation.</summary>
-        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is
-        /// deserialized.</param>
-        public override void ReadXml(XmlReader reader)
-        {
-            reader.MoveToContent();
-            reader.ReadStartElement();
-            Descriptor = Xml.Read<Descriptor>(reader);
-            Root = Xml.Read<Measure>(reader);
-        }
-        /// <summary>Converts an object into its XML representation.</summary>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
-        /// serialized.</param>
-        public override void WriteXml(XmlWriter writer)
-        {
-            Xml.Write<Descriptor>(writer, Descriptor);
-            Xml.Write<Measure>(writer, Root);
         }
     }
 }

@@ -1,12 +1,12 @@
 ﻿// file:	Utils\TypeHelpers.cs
 //
 // summary:	Implements the type helpers class
-using numl.Model;
 using System;
+using numl.Model;
+using System.Linq;
+using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace numl.Utils
 {
@@ -25,14 +25,13 @@ namespace numl.Utils
                 p = new StringProperty();
             else if (type == typeof(DateTime))
                 p = new DateTimeProperty();
-            else if (type.GetInterfaces().Contains(typeof(IEnumerable)))
+            else if (type.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IEnumerable)))
                 throw new InvalidOperationException(
                     string.Format("Property {0} needs to be labeled as an EnumerableFeature", name));
             else
                 p = new Property();
 
-
-            p.Discrete = type.BaseType == typeof(Enum) ||
+            p.Discrete = type.GetTypeInfo().BaseType == typeof(Enum) ||
                          type == typeof(bool) ||
                          type == typeof(string) ||
                          type == typeof(char) ||

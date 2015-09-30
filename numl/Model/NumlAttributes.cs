@@ -168,7 +168,9 @@ namespace numl.Model
             Type type = property.PropertyType;
             var ep = new EnumerableProperty(_length);
             // good assumption??
-            ep.Discrete = type.BaseType == typeof(Enum) ||
+            // TODO: Check assumptions on enums
+
+            ep.Discrete = //type.BaseType == typeof(Enum) ||
                           type == typeof(bool) ||
                           type == typeof(char);
             ep.Name = property.Name;

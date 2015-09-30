@@ -3,26 +3,21 @@
 // summary:	Implements the measure class
 using System;
 using System.Linq;
-using System.Xml.Serialization;
 using System.Collections.Generic;
 
 namespace numl.Supervised.NaiveBayes
 {
     /// <summary>A measure.</summary>
-    [XmlRoot("Measure")]
     public class Measure
     {
         /// <summary>Gets or sets the label.</summary>
         /// <value>The label.</value>
-        [XmlAttribute("Label")]
         public string Label { get; set; }
         /// <summary>Gets or sets a value indicating whether the discrete.</summary>
         /// <value>true if discrete, false if not.</value>
-        [XmlAttribute("Discrete")]
         public bool Discrete { get; set; }
         /// <summary>Gets or sets the probabilities.</summary>
         /// <value>The probabilities.</value>
-        [XmlArray("Probabilities")]
         public Statistic[] Probabilities { get; set; }
         /// <summary>Increments.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>

@@ -100,8 +100,8 @@ namespace numl.Unsupervised
 
                     var dn = z_nk[i].Sum();
 
-                    if(dn == 0)
-                        Console.WriteLine("Uh oh....");
+                    if (dn == 0)
+                        System.Diagnostics.Debug.WriteLine("Uh oh!");
 
                     z_nk[i].Each(z => z / dn);
                 }
@@ -147,7 +147,7 @@ namespace numl.Unsupervised
 
                 // log likelihood differences
                 probability_difference = System.Math.Abs(log_probability - new_log_prob);
-                Console.WriteLine("Log Likelihoods (Total Points: {0}, k={1}, d={2})\nO: {3}\nN: {4}\nDifference: {5}\n", n, k, d, log_probability, new_log_prob, probability_difference);
+                System.Diagnostics.Debug.WriteLine("Log Likelihoods (Total Points: {0}, k={1}, d={2})\nO: {3}\nN: {4}\nDifference: {5}\n", n, k, d, log_probability, new_log_prob, probability_difference);
                 log_probability = new_log_prob;
 
 
@@ -156,7 +156,7 @@ namespace numl.Unsupervised
                                 .Zip(mu_k_new.GetRows(), (v1, v2) => new { V1 = v1, V2 = v2 })
                                 .Sum(a => (a.V1 - a.V2).Norm());
 
-                Console.WriteLine("Centers:\nO: {0}\nN: {1}\nDifference: {2}\n", mu_k, mu_k_new, mu_difference);
+                System.Diagnostics.Debug.WriteLine("Centers:\nO: {0}\nN: {1}\nDifference: {2}\n", mu_k, mu_k_new, mu_difference);
                 mu_k = mu_k_new;
 
                 // covariance differences
@@ -164,15 +164,15 @@ namespace numl.Unsupervised
                             .Zip(sg_k_new.GetRows(), (v1, v2) => new { V1 = v1, V2 = v2 })
                             .Sum(a => (a.V1 - a.V2).Norm());
 
-                Console.WriteLine("Covariance:\nO: {0}\nN: {1}\nDifference: {2}\n", sg_k, sg_k_new, diff);
+                System.Diagnostics.Debug.WriteLine("Covariance:\nO: {0}\nN: {1}\nDifference: {2}\n", sg_k, sg_k_new, diff);
                 sg_k = sg_k_new;
 
                 // mixing differences
                 diff = (pi_k - pi_k_new).Each(s => System.Math.Abs(s)).Sum();
-                Console.WriteLine("Mixing Coeffs:\nO: {0}\nN: {1}\nDifference: {2}\n", pi_k, pi_k_new, diff);
+                System.Diagnostics.Debug.WriteLine("Mixing Coeffs:\nO: {0}\nN: {1}\nDifference: {2}\n", pi_k, pi_k_new, diff);
                 pi_k = pi_k_new;
 
-                Console.WriteLine("-------------------------------------------------------------");
+                System.Diagnostics.Debug.WriteLine("-------------------------------------------------------------");
 
             } while (probability_difference > .0000000001 && mu_difference > .0000000001 && --max_iter >= 0);
         }

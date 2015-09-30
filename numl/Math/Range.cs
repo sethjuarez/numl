@@ -4,21 +4,17 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Xml.Serialization;
 
 namespace numl.Math
 {
     /// <summary>A range.</summary>
-    [XmlRoot("Range")]
     public class Range
     {
         /// <summary>Gets or sets the minimum.</summary>
         /// <value>The minimum value.</value>
-        [XmlAttribute("Min")]
         public double Min { get; set; }
         /// <summary>Gets or sets the maximum.</summary>
         /// <value>The maximum value.</value>
-        [XmlAttribute("Max")]
         public double Max { get; set; }
         /// <summary>Tests.</summary>
         /// <param name="d">The double to process.</param>

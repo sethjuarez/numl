@@ -4,11 +4,10 @@
 using System;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 using System.Collections;
-using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Collections.Concurrent;
 
 namespace numl.Utils
@@ -227,7 +226,6 @@ namespace numl.Utils
         {
             Type type = null;
             Func<object, object> accessor = null;
-            TypeConverter converter = new TypeConverter();
             foreach (var o in items)
             {
                 if (type == null)
@@ -236,7 +234,7 @@ namespace numl.Utils
                     accessor = GetAccessor(type, name);
                 }
 
-                yield return converter.ConvertTo(accessor.Invoke(o), cast);
+                yield return System.Convert.ChangeType(accessor.Invoke(o), cast);
             }
         }
         /// <summary>Sets.</summary>
@@ -254,12 +252,14 @@ namespace numl.Utils
         /// <returns>true if we can use simple type, false if not.</returns>
         public static bool CanUseSimpleType(Type t)
         {
+            //TODO: FIX ENUM AND TYPEDESC
             return t == typeof(string) ||
                    t == typeof(bool) ||
                    t == typeof(char) ||
-                   t.BaseType == typeof(Enum) ||
-                   t == typeof(TimeSpan) ||
-                   TypeDescriptor.GetConverter(t).CanConvertTo(typeof(double));
+                   t.GetTypeInfo().BaseType == typeof(Enum) ||
+                   t == typeof(TimeSpan);
+                   //||
+                   //TypeDescriptor.GetConverter(t).CanConvertTo(typeof(double));
         }
         /// <summary>
         /// Conversion of standard univariate types. Will throw exception on all multivariate types.
@@ -282,18 +282,12 @@ namespace numl.Utils
                 return (bool)o ? 1d : -1d;
             else if (t == typeof(char)) // ascii number of character
                 return (double)Encoding.ASCII.GetBytes(new char[] { (char)o })[0];
-            else if (t.BaseType == typeof(Enum))
+            else if (o is Enum)
                 return (int)o;
             else if (t == typeof(TimeSpan)) // get total seconds
                 return ((TimeSpan)o).TotalSeconds;
             else
-            {
-                TypeConverter converter = TypeDescriptor.GetConverter(t);
-                if (converter.CanConvertTo(typeof(double)))
-                    return (double)converter.ConvertTo(o, typeof(double));
-                else
-                    throw new InvalidCastException(string.Format("Cannot convert {0} to double", o));
-            }
+                return System.Convert.ToDouble(o);
         }
         /// <summary>
         /// Conversion of standard univariate types. Will throw exception on all multivariate types.
@@ -309,20 +303,14 @@ namespace numl.Utils
                 return (char)((int)val);
             else if (t == typeof(bool))
                 return val >= 0;
-            else if (t.BaseType == typeof(Enum))
+            else if (t.GetTypeInfo().BaseType == typeof(Enum))
                 return Enum.ToObject(t, System.Convert.ChangeType(val, System.Enum.GetUnderlyingType(t)));
             else if (t == typeof(TimeSpan)) // get total seconds
                 return new TimeSpan(0, 0, (int)val);
             else if (t == typeof(decimal))
                 return (decimal)val;
             else
-            {
-                TypeConverter converter = TypeDescriptor.GetConverter(typeof(double));
-                if (converter.CanConvertTo(t))
-                    return converter.ConvertTo(val, t);
-                else
-                    throw new InvalidCastException(string.Format("Cannot convert {0} to {1}", val, t.Name));
-            }
+                return System.Convert.ChangeType(val, t);
         }
 
         /// <summary>The types.</summary>
@@ -337,21 +325,7 @@ namespace numl.Utils
                 return _types[s];
 
             var type = Type.GetType(s);
-
-            if (type == null) // need to look elsewhere
-            {
-                // someones notational laziness causes me to look
-                // everywhere... sorry... I know it's slow...
-                // that's why I am caching things...
-                var q = (from p in AppDomain.CurrentDomain.GetAssemblies()
-                         from t in p.GetTypesSafe()
-                         where t.FullName == s || t.Name == s
-                         select t).ToArray();
-
-                if (q.Length == 1)
-                    type = q[0];
-            }
-
+            
             if (type != null)
             {
                 // cache
@@ -362,25 +336,7 @@ namespace numl.Utils
                 throw new TypeLoadException(string.Format("Cannot find type {0}", s));
 
         }
-
-        /// <summary>The descendants.</summary>
-        private readonly static Dictionary<Type, Type[]> _descendants = new Dictionary<Type, Type[]>();
-        /// <summary>Searches for all assignable from.</summary>
-        /// <param name="type">The type.</param>
-        /// <returns>The found all assignable from.</returns>
-        internal static Type[] FindAllAssignableFrom(Type type)
-        {
-            if (!_descendants.ContainsKey(type))
-            {
-                // find all descendants of given type
-                _descendants[type] = (from p in AppDomain.CurrentDomain.GetAssemblies()
-                                      from t in p.GetTypesSafe()
-                                      where type.IsAssignableFrom(t)
-                                      select t).ToArray();
-            }
-
-            return _descendants[type];
-        }
+        
         /// <summary>Gets the types safes in this collection.</summary>
         /// <param name="a">a to act on.</param>
         /// <returns>

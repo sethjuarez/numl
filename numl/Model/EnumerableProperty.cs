@@ -6,13 +6,10 @@ using numl.Utils;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using System.Xml;
-using System.Xml.Serialization;
 
 namespace numl.Model
 {
     /// <summary>Enumerable property. Expanded feature.</summary>
-    [XmlRoot("EnumerableProperty"), Serializable]
     public class EnumerableProperty : Property
     {
         /// <summary>The length.</summary>
@@ -61,7 +58,7 @@ namespace numl.Model
         public override IEnumerable<double> Convert(object o)
         {
             // is it some sort of enumeration?
-            if (o.GetType().GetInterfaces().Contains(typeof(IEnumerable)))
+            if (o is IEnumerable)
             {
                 var a = (IEnumerable)o;
                 int i = 0;
@@ -77,7 +74,7 @@ namespace numl.Model
                     if (i == 0)
                     {
                         var type = item.GetType();
-                        Discrete = type.BaseType == typeof(Enum) ||
+                        Discrete = item is Enum ||
                                    type == typeof(bool) ||
                                    type == typeof(string) ||
                                    type == typeof(char);
@@ -97,32 +94,6 @@ namespace numl.Model
             else
                 throw new InvalidCastException(
                     string.Format("Cannot cast {0} to an IEnumerable", o.GetType().Name));
-        }
-        /// <summary>Converts an object into its XML representation.</summary>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
-        /// serialized.</param>
-        public override void WriteXml(XmlWriter writer)
-        {
-            writer.WriteAttributeString("Name", Name);
-            writer.WriteAttributeString("ElementType", Type == null ? "None" : Type.Name);
-            writer.WriteAttributeString("Discrete", Discrete.ToString());
-            writer.WriteAttributeString("Start", Start.ToString());
-
-            writer.WriteAttributeString("Length", _length.ToString());
-        }
-        /// <summary>Generates an object from its XML representation.</summary>
-        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is
-        /// deserialized.</param>
-        public override void ReadXml(XmlReader reader)
-        {
-            reader.MoveToContent();
-            Name = reader.GetAttribute("Name");
-            string elementType = reader.GetAttribute("ElementType");
-            if (elementType != "None")
-                Type = Ject.FindType(elementType);
-            Discrete = bool.Parse(reader.GetAttribute("Discrete"));
-            Start = int.Parse(reader.GetAttribute("Start"));
-            _length = int.Parse(reader.GetAttribute("Length"));
         }
     }
 }

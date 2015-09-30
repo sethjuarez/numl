@@ -130,7 +130,6 @@ namespace numl.Math.LinearAlgebra
         /// <summary>Parallels this object.</summary>
         public void parallel()
         {
-            Console.WriteLine("Starting new sweep!");
             int N = A.Cols;
             // make even pairings
             int n = N % 2 == 0 ? N : N + 1;
@@ -159,11 +158,8 @@ namespace numl.Math.LinearAlgebra
                     if (p >= 0)
                         sweep(p, q);
 
-                    Console.WriteLine("({0}, {1}) [{2}] {3}", p, q, Thread.CurrentThread.ManagedThreadId, p < 0 ? "buy" : "");
-
                 });
 
-                Console.WriteLine("----------[{0}]----------", Thread.CurrentThread.ManagedThreadId);
                 // move stuff around
                 queue.Enqueue(queue.Dequeue());
             }

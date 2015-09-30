@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using numl.Math.LinearAlgebra;
-using System.Xml;
-using numl.Utils;
-using numl.Model;
+using System.Collections.Generic;
 
 namespace numl.Supervised.Regression
 {
     /// <summary>
     /// Linear Regression model
     /// </summary>
-    [Serializable]
     public class LinearRegressionModel : Model
     {
         /// <summary>
@@ -65,30 +60,6 @@ namespace numl.Supervised.Regression
             y = this.Normalise(y);
 
             return y.Dot(Theta);
-        }
-
-        /// <summary>Generates an object from its XML representation.</summary>
-        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is
-        /// deserialized.</param>
-        public override void ReadXml(XmlReader reader)
-        {
-            reader.MoveToContent();
-            reader.ReadStartElement();
-
-            Descriptor = Xml.Read<Descriptor>(reader);
-            Theta = Xml.Read<Vector>(reader);
-            FeatureAverages = Xml.Read<Vector>(reader);
-            FeatureStandardDeviations = Xml.Read<Vector>(reader);
-        }
-        /// <summary>Converts an object into its XML representation.</summary>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
-        /// serialized.</param>
-        public override void WriteXml(XmlWriter writer)
-        {
-            Xml.Write<Descriptor>(writer, Descriptor);
-            Xml.Write<Vector>(writer, Theta);
-            Xml.Write<Vector>(writer, FeatureAverages);
-            Xml.Write<Vector>(writer, FeatureStandardDeviations);
         }
     }
 }

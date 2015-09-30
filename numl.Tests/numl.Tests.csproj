@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>numl.Tests</RootNamespace>
     <AssemblyName>numl.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,6 +49,7 @@
     <Compile Include="DataTests\LinAlgConversionTests.cs" />
     <Compile Include="DataTests\SimpleConversionTests.cs" />
     <Compile Include="Data\ArbitraryPrediction.cs" />
+    <Compile Include="Data\Descriptors.cs" />
     <Compile Include="Data\Fake.cs" />
     <Compile Include="Data\Feed.cs" />
     <Compile Include="Data\Generic.cs" />
@@ -88,7 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\numl\numl.csproj">
-      <Project>{11022b54-2310-42aa-b80f-660733243406}</Project>
+      <Project>{302d59c1-c8fa-4420-8f3e-39ff307bacd9}</Project>
       <Name>numl</Name>
     </ProjectReference>
   </ItemGroup>

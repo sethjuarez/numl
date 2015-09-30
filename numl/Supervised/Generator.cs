@@ -37,8 +37,8 @@ namespace numl.Supervised
         {
             if (examples.Count() == 0) throw new InvalidOperationException("Empty example set.");
 
-            if (Descriptor == null) // try to generate the descriptor
-                Descriptor = Descriptor.Create(examples.First().GetType());
+            if (Descriptor == null)
+                throw new InvalidOperationException("Descriptor is null");
 
             return Generate(Descriptor, examples);
         }
@@ -62,21 +62,19 @@ namespace numl.Supervised
 
             return Generate(tuple.Item1, tuple.Item2);
         }
-        /// <summary>Generates the given examples.</summary>
-        /// <tparam name="T">Generic type parameter.</tparam>
-        /// <param name="examples">Example set.</param>
-        /// <returns>An IModel.</returns>
-        public IModel Generate<T>(IEnumerable<T> examples)
-             where T : class
+
+        public IModel Generate<T>(Descriptor descriptor, IEnumerable<T> examples) where T : class
         {
-            var descriptor = Descriptor.Create<T>();
             return Generate(descriptor, examples);
         }
+
         /// <summary>Generate model based on a set of examples.</summary>
         /// <param name="x">The Matrix to process.</param>
         /// <param name="y">The Vector to process.</param>
         /// <returns>Model.</returns>
         public abstract IModel Generate(Matrix x, Vector y);
+
+        
     }
 
     /// <summary>Additional information for model events.</summary>

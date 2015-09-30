@@ -11,3 +11,4 @@ obj/
 numl.repl/*
 packages/*
 TestResults/*
+.vs/*

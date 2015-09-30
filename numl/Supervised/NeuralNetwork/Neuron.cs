@@ -4,17 +4,13 @@
 using System;
 using System.Linq;
 using numl.Math.Functions;
-using System.Xml.Serialization;
 using System.Collections.Generic;
-using System.Xml.Schema;
-using System.Xml;
 using numl.Utils;
 
 namespace numl.Supervised.NeuralNetwork
 {
     /// <summary>A node.</summary>
-    [XmlRoot("Node"), Serializable]
-    public class Node : IXmlSerializable
+    public class Node 
     {
         /// <summary>Default constructor.</summary>
         public Node()
@@ -98,53 +94,6 @@ namespace numl.Supervised.NeuralNetwork
         public override string ToString()
         {
             return string.Format("{0} ({1} | {2})", Label, Input, Output);
-        }
-        /// <summary>
-        /// This method is reserved and should not be used. When implementing the IXmlSerializable
-        /// interface, you should return null (Nothing in Visual Basic) from this method, and instead, if
-        /// specifying a custom schema is required, apply the
-        /// <see cref="T:System.Xml.Serialization.XmlSchemaProviderAttribute" /> to the class.
-        /// </summary>
-        /// <returns>
-        /// An <see cref="T:System.Xml.Schema.XmlSchema" /> that describes the XML representation of the
-        /// object that is produced by the
-        /// <see cref="M:System.Xml.Serialization.IXmlSerializable.WriteXml(System.Xml.XmlWriter)" />
-        /// method and consumed by the
-        /// <see cref="M:System.Xml.Serialization.IXmlSerializable.ReadXml(System.Xml.XmlReader)" />
-        /// method.
-        /// </returns>
-        public XmlSchema GetSchema()
-        {
-            return null;
-        }
-        /// <summary>Generates an object from its XML representation.</summary>
-        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is
-        /// deserialized.</param>
-        public void ReadXml(XmlReader reader)
-        {
-            reader.MoveToContent();
-            Id = reader.GetAttribute("Id");
-            Label = reader.GetAttribute("Label");
-            Input = double.Parse(reader.GetAttribute("Input"));
-            Output = double.Parse(reader.GetAttribute("Output"));
-            Delta = double.Parse(reader.GetAttribute("Delta"));
-
-            var activation = Ject.FindType(reader.GetAttribute("Activation"));
-            Activation = (IFunction)Activator.CreateInstance(activation);
-            In = new List<Edge>();
-            Out = new List<Edge>();
-        }
-        /// <summary>Converts an object into its XML representation.</summary>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
-        /// serialized.</param>
-        public void WriteXml(XmlWriter writer)
-        {
-            writer.WriteAttributeString("Id", Id);
-            writer.WriteAttributeString("Label", Label);
-            writer.WriteAttributeString("Input", Input.ToString("r"));
-            writer.WriteAttributeString("Output", Output.ToString("r"));
-            writer.WriteAttributeString("Delta", Delta.ToString("r"));
-            writer.WriteAttributeString("Activation", Activation.GetType().Name);
         }
     }
 }

@@ -24,7 +24,7 @@ namespace numl.Supervised
         /// <tparam name="T">Generic type parameter.</tparam>
         /// <param name="examples">The examples.</param>
         /// <returns>An IModel.</returns>
-        IModel Generate<T>(IEnumerable<T> examples) where T : class;
+        IModel Generate<T>(Descriptor descriptor, IEnumerable<T> examples) where T : class;
         /// <summary>Generates.</summary>
         /// <param name="x">The Matrix to process.</param>
         /// <param name="y">The Vector to process.</param>
