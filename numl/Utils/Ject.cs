@@ -252,14 +252,14 @@ namespace numl.Utils
         /// <returns>true if we can use simple type, false if not.</returns>
         public static bool CanUseSimpleType(Type t)
         {
-            //TODO: FIX ENUM AND TYPEDESC
             return t == typeof(string) ||
                    t == typeof(bool) ||
                    t == typeof(char) ||
                    t.GetTypeInfo().BaseType == typeof(Enum) ||
-                   t == typeof(TimeSpan);
-                   //||
-                   //TypeDescriptor.GetConverter(t).CanConvertTo(typeof(double));
+                   t == typeof(TimeSpan) ||
+                   t == typeof(int) ||
+                   t == typeof(double) ||
+                   t == typeof(decimal);
         }
         /// <summary>
         /// Conversion of standard univariate types. Will throw exception on all multivariate types.
@@ -325,7 +325,7 @@ namespace numl.Utils
                 return _types[s];
 
             var type = Type.GetType(s);
-            
+
             if (type != null)
             {
                 // cache
@@ -336,7 +336,7 @@ namespace numl.Utils
                 throw new TypeLoadException(string.Format("Cannot find type {0}", s));
 
         }
-        
+
         /// <summary>Gets the types safes in this collection.</summary>
         /// <param name="a">a to act on.</param>
         /// <returns>

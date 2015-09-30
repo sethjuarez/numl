@@ -12,7 +12,7 @@ namespace numl.Model
 {
     /// <summary>Attribute for numl.</summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public abstract class NumlAttribute : Attribute 
+    public abstract class NumlAttribute : Attribute
     {
         /// <summary>Generates a property.</summary>
         /// <param name="property">The property.</param>
@@ -29,7 +29,7 @@ namespace numl.Model
 
     /// <summary>Attribute for label.</summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class LabelAttribute : NumlAttribute 
+    public class LabelAttribute : NumlAttribute
     {
         /// <summary>Generates a property.</summary>
         /// <param name="property">The property.</param>
@@ -98,7 +98,8 @@ namespace numl.Model
                 Discrete = true
             };
 
-            sp.ImportExclusions(ExclusionFile);
+            if (!string.IsNullOrEmpty(ExclusionFile) && !string.IsNullOrWhiteSpace(ExclusionFile))
+                sp.ImportExclusions(ExclusionFile);
 
             return sp;
         }
@@ -174,7 +175,7 @@ namespace numl.Model
                           type == typeof(bool) ||
                           type == typeof(char);
             ep.Name = property.Name;
-            
+
             ep.Type = type.GetElementType();
             return ep;
         }

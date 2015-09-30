@@ -12,3 +12,4 @@ numl.repl/*
 packages/*
 TestResults/*
 .vs/*
+*.lock.*
