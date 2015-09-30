@@ -181,24 +181,15 @@ namespace numl.Unsupervised
         /// <param name="mu">Mean.</param>
         /// <param name="sigma">diag(covariance)</param>
         /// <returns>Probability.</returns>
-        private double Normal(Vector x, Vector mu, Vector sigma)
+        public double Normal(Vector x, Vector mu, Vector sigma)
         {
-            // 1 / (2pi)^(2/D) where D = length of sigma
-            var one_over_2pi = 1 / System.Math.Pow(2 * System.Math.PI, 2 / sigma.Length);
-
-            // 1 / sqrt(det(sigma)) where det(sigma) is the product of the diagonals
-            
-            var one_over_det_sigma = System.Math.Sqrt(sigma.Aggregate(1d, (a, i) => a *= i));
-
-            // -.5 (x-mu).T sigma^-1 (x-mu) I have taken some liberties ;)
+            var p = 1 / sqrt(pow(2 * System.Math.PI, mu.Length) * sigma.Prod());
             var exp = -0.5d * ((x - mu) * sigma.Each(d => 1 / d, true)).Dot(x - mu);
-
-            // e^(exp)
-            var e_exp = System.Math.Pow(System.Math.E, exp);
-            
-            var result = one_over_2pi * one_over_det_sigma * e_exp;
-
-            return result;
+            var e_exp = pow(System.Math.E, exp);
+            return p * e_exp;
         }
+
+        private static double sqrt(double d) { return System.Math.Sqrt(d); }
+        private static double pow(double a, double d) { return System.Math.Pow(a, d); }
     }
 }

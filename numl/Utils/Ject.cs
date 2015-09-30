@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Collections.Concurrent;
 
 namespace numl.Utils
 {
@@ -16,12 +17,17 @@ namespace numl.Utils
     public static class Ject
     {
         /// <summary>The accessors.</summary>
-        private static readonly Dictionary<Type, Dictionary<string, Func<object, object>>> accessors =
-            new Dictionary<Type, Dictionary<string, Func<object, object>>>();
+        private static readonly ConcurrentDictionary<Type, Dictionary<string, Func<object, object>>> accessors =
+            new ConcurrentDictionary<Type, Dictionary<string, Func<object, object>>>();
 
         /// <summary>The setters.</summary>
-        private static readonly Dictionary<Type, Dictionary<string, Action<object, object>>> setters =
-            new Dictionary<Type, Dictionary<string, Action<object, object>>>();
+        private static readonly ConcurrentDictionary<Type, Dictionary<string, Action<object, object>>> setters =
+            new ConcurrentDictionary<Type, Dictionary<string, Action<object, object>>>();
+
+        /// <summary>Constructors</summary>
+        private readonly static ConcurrentDictionary<Type, Func<object>> ctors =
+            new ConcurrentDictionary<Type, Func<object>>();
+
         /// <summary>Gets an accessor.</summary>
         /// <param name="type">The type.</param>
         /// <param name="valueName">Name of the value.</param>
@@ -160,6 +166,35 @@ namespace numl.Utils
                 type = typeof(IDictionary<string, object>);
             Func<object, object> accessor = GetAccessor(type, name);
             return accessor.Invoke(o);
+        }
+
+        /// <summary>
+        /// Gets (or creates) fast path to an empty
+        /// ctor of a provided type
+        /// </summary>
+        /// <param name="type">provided type</param>
+        /// <returns>constructor</returns>
+        private static Func<object> GetCtor(Type type)
+        {
+            if (!ctors.ContainsKey(type))
+            {
+                var ctor = type.GetConstructor(new Type[] { });
+                var exp = Expression.Lambda<Func<object>>(Expression.New(ctor));
+                ctors[type] = exp.Compile();
+            }
+
+            return ctors[type];
+        }
+        /// <summary>
+        /// Creates a type with an empty ctor. Faster
+        /// than Activator.CreateInstance
+        /// </summary>
+        /// <param name="type">Type to create (must have empty ctor)</param>
+        /// <returns>Created type</returns>
+        public static object Create(Type type)
+        {
+            Func<object> ctor = GetCtor(type);
+            return ctor.Invoke();
         }
         /// <summary>Get a property value dynamically from a set of objects.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>
