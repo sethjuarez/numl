@@ -133,6 +133,7 @@
     <Compile Include="Utils\DictionaryHelpers.cs" />
     <Compile Include="Utils\EnumerableHelpers.cs" />
     <Compile Include="Utils\Ject.cs" />
+    <Compile Include="Utils\JsonHelpers.cs" />
     <Compile Include="Utils\StringHelpers.cs" />
     <Compile Include="Utils\TypeHelpers.cs" />
   </ItemGroup>

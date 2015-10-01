@@ -65,7 +65,7 @@ namespace numl.Supervised
 
         public IModel Generate<T>(Descriptor descriptor, IEnumerable<T> examples) where T : class
         {
-            return Generate(descriptor, examples);
+            return Generate(descriptor, examples as IEnumerable<object>);
         }
 
         /// <summary>Generate model based on a set of examples.</summary>

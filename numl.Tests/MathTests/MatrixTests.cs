@@ -86,7 +86,8 @@ namespace numl.Tests.MathTests
                 { System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2, System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2 }
             };
 
-            XmlSerializer serializer = new XmlSerializer(typeof(Matrix));
+            Assert.Fail("Change serialization method...");
+            //XmlSerializer serializer = new XmlSerializer(typeof(Matrix));
 
             // serialize
             // ensure we delete the file first or we may have extra data
@@ -99,14 +100,14 @@ namespace numl.Tests.MathTests
 
             using (var stream = File.OpenWrite(path))
             {
-                serializer.Serialize(stream, m1);
+                //serializer.Serialize(stream, m1);
             }
 
             // deserialize
             Matrix m2 = null;
             using (var stream = File.OpenRead(path))
             {
-                m2 = (Matrix)serializer.Deserialize(stream);
+                //m2 = (Matrix)serializer.Deserialize(stream);
             }
 
             Assert.AreEqual(m1, m2);

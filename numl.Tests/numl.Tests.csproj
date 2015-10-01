@@ -41,11 +41,9 @@
       <HintPath>..\packages\System.Reflection.TypeExtensions.4.0.0\lib\net46\System.Reflection.TypeExtensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataTests\ComplexConversionTests.cs" />

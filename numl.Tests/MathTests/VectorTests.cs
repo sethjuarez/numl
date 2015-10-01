@@ -21,7 +21,9 @@ namespace numl.Tests.MathTests
             // want to test "ugly" members in the vector
             Vector v1 = new[] { System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2, System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2 };
 
-            XmlSerializer serializer = new XmlSerializer(typeof(Vector));
+            Assert.Fail("Change serialization method");
+            
+            //XmlSerializer serializer = new XmlSerializer(typeof(Vector));
 
             // serialize
             // ensure we delete the file first 
@@ -34,14 +36,14 @@ namespace numl.Tests.MathTests
             }
             using (var stream = File.OpenWrite(path))
             {
-                serializer.Serialize(stream, v1);
+                //serializer.Serialize(stream, v1);
             }
 
             // deserialize
             Vector v2 = null;
             using (var stream = File.OpenRead(path))
             {
-                v2 = (Vector)serializer.Deserialize(stream);
+                //v2 = (Vector)serializer.Deserialize(stream);
             }
 
             Assert.AreEqual(v1, v2);
