@@ -29,11 +29,7 @@ namespace numl
         /// <returns>Best Model.</returns>
         public static LearningModel Best(this IEnumerable<LearningModel> models)
         {
-            var q = from m in models
-                    where m.Accuracy == (models.Select(s => s.Accuracy).Max())
-                    select m;
-
-            return q.FirstOrDefault();
+            return models.OrderByDescending(m => m.Accuracy).FirstOrDefault();
         }
         /// <summary>
         /// Trains an arbitrary number of models on the provided examples by creating a separation of
