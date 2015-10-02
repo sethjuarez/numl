@@ -4,6 +4,7 @@ using System.Linq;
 using NUnit.Framework;
 using numl.Math.LinearAlgebra;
 using System.Xml.Serialization;
+using numl.Utils;
 
 namespace numl.Tests.MathTests
 {
@@ -16,35 +17,20 @@ namespace numl.Tests.MathTests
         [Test]
         public void Vector_Serialize_Test()
         {
-            string path = Directory.GetCurrentDirectory() + @"\vector_serialize_test.xml";
+            string path = Directory.GetCurrentDirectory() + @"\vector_serialize_test.json";
 
             // want to test "ugly" members in the vector
             Vector v1 = new[] { System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2, System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2 };
 
-            Assert.Fail("Change serialization method");
-            
-            //XmlSerializer serializer = new XmlSerializer(typeof(Vector));
-
             // serialize
             // ensure we delete the file first 
             // or we may have extra data
-            if (File.Exists(path))
-            {
-                // this could get an access violation but either way we 
-                // don't want a pointer stuck in the app domain
-                File.Delete(path);
-            }
-            using (var stream = File.OpenWrite(path))
-            {
-                //serializer.Serialize(stream, v1);
-            }
+            if (File.Exists(path)) File.Delete(path);
+
+            JsonHelpers.Save<Vector>(path, v1);
 
             // deserialize
-            Vector v2 = null;
-            using (var stream = File.OpenRead(path))
-            {
-                //v2 = (Vector)serializer.Deserialize(stream);
-            }
+            Vector v2 = JsonHelpers.Load<Vector>(path);
 
             Assert.AreEqual(v1, v2);
         }

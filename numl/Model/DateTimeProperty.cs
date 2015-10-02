@@ -169,25 +169,51 @@ namespace numl.Model
         /// </returns>
         public override IEnumerable<string> GetColumns()
         {
-            if (Features.HasFlag(DateTimeFeature.Year))
+            return GetColumns(Features);
+        }
+
+        /// <summary>
+        /// Retrieve the list of expanded columns. If there is a one-to-one correspondence between the
+        /// type and its expansion it will return a single value/.
+        /// </summary>
+        /// <param name="features">Features</param>
+        /// <returns></returns>
+        public static IEnumerable<string> GetColumns(DateTimeFeature features)
+        {
+            if (features.HasFlag(DateTimeFeature.Year))
                 yield return "Year";
-            if (Features.HasFlag(DateTimeFeature.DayOfYear))
+            if (features.HasFlag(DateTimeFeature.DayOfYear))
                 yield return "DayOfYear";
-            if (Features.HasFlag(DateTimeFeature.Month))
+            if (features.HasFlag(DateTimeFeature.Month))
                 yield return "Month";
-            if (Features.HasFlag(DateTimeFeature.Day))
+            if (features.HasFlag(DateTimeFeature.Day))
                 yield return "Day";
-            if (Features.HasFlag(DateTimeFeature.DayOfWeek))
+            if (features.HasFlag(DateTimeFeature.DayOfWeek))
                 yield return "DayOfWeek";
-            if (Features.HasFlag(DateTimeFeature.Hour))
+            if (features.HasFlag(DateTimeFeature.Hour))
                 yield return "Hour";
-            if (Features.HasFlag(DateTimeFeature.Minute))
+            if (features.HasFlag(DateTimeFeature.Minute))
                 yield return "Minute";
-            if (Features.HasFlag(DateTimeFeature.Second))
+            if (features.HasFlag(DateTimeFeature.Second))
                 yield return "Second";
-            if (Features.HasFlag(DateTimeFeature.Millisecond))
+            if (features.HasFlag(DateTimeFeature.Millisecond))
                 yield return "Millisecond";
         }
+
+        /// <summary>
+        /// Gets DateTimeFeature enum from enumerated
+        /// values
+        /// </summary>
+        /// <param name="features">string collection of enum values</param>
+        /// <returns>DateTimeFeatures</returns>
+        public static DateTimeFeature GetFeatures(string[] features)
+        {
+            DateTimeFeature feature = 0;
+            for (int i = 0; i < features.Length; i++)
+                feature |= (DateTimeFeature)Enum.Parse(typeof(DateTimeFeature), features[i]);
+            return feature;
+        }
+
         /// <summary>Convert an object to a list of numbers.</summary>
         /// <exception cref="InvalidCastException">Thrown when an object cannot be cast to a required
         /// type.</exception>

@@ -259,7 +259,16 @@ namespace numl.Utils
                    t == typeof(TimeSpan) ||
                    t == typeof(int) ||
                    t == typeof(double) ||
-                   t == typeof(decimal);
+                   t == typeof(decimal) ||
+                   t == typeof(byte) ||
+                   t == typeof(sbyte) ||
+                   t == typeof(Single) ||
+                   t == typeof(Int16) ||
+                   t == typeof(UInt16) ||
+                   t == typeof(UInt32) ||
+                   t == typeof(Int64) ||
+                   t == typeof(UInt64);
+
         }
         /// <summary>
         /// Conversion of standard univariate types. Will throw exception on all multivariate types.

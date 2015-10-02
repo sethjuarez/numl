@@ -3,6 +3,7 @@ using System.IO;
 using NUnit.Framework;
 using numl.Math.LinearAlgebra;
 using System.Xml.Serialization;
+using numl.Utils;
 
 namespace numl.Tests.MathTests
 {
@@ -76,7 +77,7 @@ namespace numl.Tests.MathTests
         [Test]
         public void Matrix_Serialize_Test()
         {
-            string path = Directory.GetCurrentDirectory() + @"\matrix_serialize_test.xml";
+            string path = Directory.GetCurrentDirectory() + @"\matrix_serialize_test.json";
 
             Matrix m1 = new[,] {
                 { System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2, System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2 },
@@ -86,30 +87,13 @@ namespace numl.Tests.MathTests
                 { System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2, System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2 }
             };
 
-            Assert.Fail("Change serialization method...");
-            //XmlSerializer serializer = new XmlSerializer(typeof(Matrix));
-
             // serialize
             // ensure we delete the file first or we may have extra data
-            if (File.Exists(path))
-            {
-                // this could get an access violation but either way 
-                // we don't want a pointer stuck in the app domain
-                File.Delete(path);
-            }
-
-            using (var stream = File.OpenWrite(path))
-            {
-                //serializer.Serialize(stream, m1);
-            }
+            if (File.Exists(path)) File.Delete(path);
+            JsonHelpers.Save<Matrix>(path, m1);
 
             // deserialize
-            Matrix m2 = null;
-            using (var stream = File.OpenRead(path))
-            {
-                //m2 = (Matrix)serializer.Deserialize(stream);
-            }
-
+            Matrix m2 = JsonHelpers.Load<Matrix>(path);
             Assert.AreEqual(m1, m2);
         }
 
@@ -799,7 +783,7 @@ namespace numl.Tests.MathTests
 
             Assert.AreEqual(6, x.Det());
 
-            Matrix m = new[,] 
+            Matrix m = new[,]
                 {{ 1, 2,  2, 1 },
                  { 1, 2,  4, 2 },
                  { 2, 7,  5, 2 },
@@ -808,7 +792,7 @@ namespace numl.Tests.MathTests
             // -42 + residual
             var det = m.Det();
 
-            Matrix q = new[,] 
+            Matrix q = new[,]
                  {{ 3,   2,  -1,   4, },
                   { 2,   1,   5,   7, },
                   { 0,   5,   2,  -6, },
@@ -821,7 +805,7 @@ namespace numl.Tests.MathTests
         [Test]
         public void Matrix_ToArray_Test()
         {
-            Matrix m = new[,] 
+            Matrix m = new[,]
                 {{ 1d, 2d,  2d, 1d },
                  { 1d, 2d,  4d, 2d },
                  { 2d, 7d,  5d, 2d },
@@ -839,13 +823,13 @@ namespace numl.Tests.MathTests
         [Test]
         public void Matrix_Insertion_Row_Test()
         {
-            Matrix m = new[,] 
+            Matrix m = new[,]
                 {{ 1d, 2d,  2d, 1d },
                  { 1d, 2d,  4d, 2d },
                  { 2d, 7d,  5d, 2d },
                  {-1d, 4d, -6d, 3d }};
 
-            Matrix n = new[,] 
+            Matrix n = new[,]
                 {{ 1d, 2d,  2d, 1d },
                  { 1d, 2d,  4d, 2d },
                  { 1d, 1d, 1d, 1d },
@@ -862,13 +846,13 @@ namespace numl.Tests.MathTests
         [Test]
         public void Matrix_Insertion_Col_Test()
         {
-            Matrix m = new[,] 
+            Matrix m = new[,]
                 {{ 1d, 2d,  2d, 1d },
                  { 1d, 2d,  4d, 2d },
                  { 2d, 7d,  5d, 2d },
                  {-1d, 4d, -6d, 3d }};
 
-            Matrix n = new[,] 
+            Matrix n = new[,]
                 {{ 0d, 1d, 2d, 0d, 2d, 1d, 1d },
                  { 0d, 1d, 2d, 0d, 4d, 2d, 1d },
                  { 0d, 2d, 7d, 0d, 5d, 2d, 1d },
@@ -876,7 +860,7 @@ namespace numl.Tests.MathTests
 
             m = m.Insert(Vector.Zeros(4), 0, VectorType.Col);
             m = m.Insert(Vector.Zeros(4), 3, VectorType.Col);
-            m = m.Insert(Vector.Ones(4), m.Cols-1, VectorType.Col);
+            m = m.Insert(Vector.Ones(4), m.Cols - 1, VectorType.Col);
 
             Assert.AreEqual(n, m);
         }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
+using numl.Utils;
 using System.Linq;
 using NUnit.Framework;
 using System.Diagnostics;
-using System.Xml.Serialization;
 using System.Collections.Generic;
 
 namespace numl.Tests.SerializationTests
@@ -19,7 +19,7 @@ namespace numl.Tests.SerializationTests
             _basePath = String.Format("{0}\\{1}", Directory.GetCurrentDirectory(), GetType().Name);
             if (!Directory.Exists(_basePath))
                 Directory.CreateDirectory(_basePath);
-            _basePath += "\\{0}.xml";
+            _basePath += "\\{0}.json";
         }
 
         internal void Serialize(object o)
@@ -27,23 +27,14 @@ namespace numl.Tests.SerializationTests
             var caller = new StackFrame(1, true).GetMethod().Name;
             string file = string.Format(_basePath, caller);
             if (File.Exists(file))  File.Delete(file);
-
-            Assert.Fail("Change serialization method");
-            //XmlSerializer serializer = new XmlSerializer(o.GetType());
-            //using (TextWriter tw = new StreamWriter(file))
-            //    serializer.Serialize(tw, o);
+            JsonHelpers.Save(file, o, o.GetType());
         }
 
         internal T Deserialize<T>()
         {
             var caller = new StackFrame(1, true).GetMethod().Name;
             string file = string.Format(_basePath, caller);
-
-            Assert.Fail("Change serialization method");
-            throw new NotImplementedException();
-            //XmlSerializer deserializer = new XmlSerializer(typeof(T));
-            //using(TextReader tr = new StreamReader(file))
-            //   return (T)deserializer.Deserialize(tr);
+            return JsonHelpers.Load<T>(file);
         }
     }
 }

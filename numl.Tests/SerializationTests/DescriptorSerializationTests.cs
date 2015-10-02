@@ -1,11 +1,10 @@
-﻿using numl.Model;
+﻿using System;
+using numl.Model;
 using numl.Utils;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using numl.Tests.Data;
+using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace numl.Tests.SerializationTests
 {
@@ -43,6 +42,12 @@ namespace numl.Tests.SerializationTests
             };
 
             Serialize(d);
+
+            var desc = Deserialize<Descriptor>();
+
+            Assert.AreEqual(d.Features.Length, desc.Features.Length);
+            Assert.AreEqual(d.Features[2].GetType(), typeof(StringProperty));
+
         }
 
         [Test]
@@ -64,6 +69,17 @@ namespace numl.Tests.SerializationTests
             ((StringProperty)d["StringEnumProp"]).Dictionary = dictionary;
 
             Serialize(d);
+            var desc = Deserialize<Descriptor>();
+            Assert.AreEqual(d.Features.Length, desc.Features.Length);
+            Assert.AreEqual(d.Features[2].GetType(), typeof(DateTimeProperty));
+        }
+
+        [Test]
+        public void Descriptor_With_Class_Serialization_Test()
+        {
+            var d = Descriptor.Create<House>();
+            Serialize(d);
+            var desc = Deserialize<Descriptor>();
         }
     }
 }

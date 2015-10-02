@@ -1,4 +1,4 @@
-﻿ // file:	Math\LinearAlgebra\Matrix.cs
+﻿// file:	Math\LinearAlgebra\Matrix.cs
 //
 // summary:	Implements the matrix class
 using System;
@@ -11,6 +11,7 @@ using System.Globalization;
 using numl.Math.Probability;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace numl.Math.LinearAlgebra
 {
@@ -322,6 +323,7 @@ namespace numl.Math.LinearAlgebra
         /// It will throw an exception if there is an attempt to write to the matrix.
         /// </summary>
         /// <value>The t.</value>
+        [JsonIgnore]
         public Matrix T
         {
             get

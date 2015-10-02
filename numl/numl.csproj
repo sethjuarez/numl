@@ -99,6 +99,9 @@
     <Compile Include="PreProcessing\FeatureDimensions.cs" />
     <Compile Include="PreProcessing\FeatureNormalizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serialization\DateTimeFeatureConverter.cs" />
+    <Compile Include="Serialization\MatrixConverter.cs" />
+    <Compile Include="Serialization\TypeConverter.cs" />
     <Compile Include="Supervised\DecisionTree\DecisionTreeGenerator.cs" />
     <Compile Include="Supervised\DecisionTree\DecisionTreeModel.cs" />
     <Compile Include="Supervised\DecisionTree\Node.cs" />

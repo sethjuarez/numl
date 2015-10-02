@@ -4,11 +4,27 @@ using System.Linq;
 using Newtonsoft.Json;
 using System.Reflection;
 using System.Collections.Generic;
+using Newtonsoft.Json.Serialization;
+using numl.Serialization;
 
 namespace numl.Utils
 {
     public static class JsonHelpers
     {
+        private static JsonSerializer _serializer = null;
+        private static JsonSerializer GetSerializer()
+        {
+            if (_serializer == null)
+            {
+                _serializer = new JsonSerializer();
+                _serializer.Converters.Add(new TypeConverter());
+                _serializer.Converters.Add(new MatrixConverter());
+                _serializer.Converters.Add(new DateTimeFeatureConverter());
+                _serializer.Formatting = Formatting.Indented;
+                _serializer.TypeNameHandling = TypeNameHandling.Auto;
+            }
+            return _serializer;
+        }
         /// <summary>Save object to file.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>
         /// <param name="file">file.</param>
@@ -46,7 +62,7 @@ namespace numl.Utils
         /// <param name="t">type.</param>
         public static void Save(TextWriter writer, object o, Type t)
         {
-            JsonSerializer serializer = new JsonSerializer();
+            JsonSerializer serializer = GetSerializer();
             serializer.Serialize(writer, o, t);
         }
 
@@ -67,7 +83,7 @@ namespace numl.Utils
         {
             using (StringWriter textWriter = new StringWriter())
             {
-                JsonSerializer serializer = new JsonSerializer();
+                JsonSerializer serializer = GetSerializer();
                 serializer.Serialize(textWriter, o, t);
                 return textWriter.ToString();
             }
@@ -107,7 +123,7 @@ namespace numl.Utils
         /// <returns>An object.</returns>
         public static object Load(TextReader reader, Type t)
         {
-            JsonSerializer serializer = new JsonSerializer();
+            JsonSerializer serializer = GetSerializer();
             return serializer.Deserialize(reader, t);
         }
 
@@ -128,7 +144,7 @@ namespace numl.Utils
         {
             using (StringReader textReader = new StringReader(json))
             {
-                JsonSerializer serializer = new JsonSerializer();
+                JsonSerializer serializer = GetSerializer();
                 return serializer.Deserialize(textReader, t);
             }
         }
@@ -139,7 +155,7 @@ namespace numl.Utils
         /// <param name="thing">The thing.</param>
         public static void Write<T>(TextWriter writer, T thing)
         {
-            JsonSerializer serializer = new JsonSerializer();
+            JsonSerializer serializer = GetSerializer();
 
             // check for a null thing
             if (thing != null)
@@ -160,7 +176,7 @@ namespace numl.Utils
         /// <returns>A T.</returns>
         public static T Read<T>(TextReader reader)
         {
-            JsonSerializer serializer = new JsonSerializer();
+            JsonSerializer serializer = GetSerializer();
             return (T)serializer.Deserialize(reader, typeof(T));
         }
     }

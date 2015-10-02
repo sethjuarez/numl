@@ -81,7 +81,10 @@ namespace numl.Tests.SerializationTests
         [Test]
         public void DateTime_Property_Save_And_Load()
         {
-            DateTimeProperty p = new DateTimeProperty(DateTimeFeature.DayOfWeek | DateTimeFeature.Second | DateTimeFeature.Minute);
+            DateTimeProperty p = 
+                new DateTimeProperty(DateTimeFeature.DayOfWeek | 
+                                     DateTimeFeature.Second | 
+                                     DateTimeFeature.Minute);
             p.Name = "MyProp";
             p.Discrete = false;
             p.Start = 5;
