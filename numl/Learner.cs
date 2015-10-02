@@ -117,6 +117,19 @@ namespace numl
 
             return new LearningModel { Generator = generator, Model = models[idx], Accuracy = accuracy[idx] };
         }
+        /// <summary>
+        /// Trains a single model based on a generator a predefined number of times with the provided
+        /// examples and data split and selects the best (or most accurate) model.
+        /// </summary>
+        /// <param name="examples">Source data.</param>
+        /// <param name="trainingPercentage">Data split percentage.</param>
+        /// <param name="repeat">Number of repetitions per generator.</param>
+        /// <param name="generator">Model generator used.</param>
+        /// <returns>Best model for provided generator.</returns>
+        public static LearningModel Learn<T>(IEnumerable<T> examples, double trainingPercentage, int repeat, IGenerator generator)
+        {
+            return Learn(examples.Select(e => (object)e), trainingPercentage, repeat, generator);
+        }
         /// <summary>Generates a model.</summary>
         /// <param name="generator">Model generator used.</param>
         /// <param name="x">The Matrix to process.</param>
