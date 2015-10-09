@@ -7,6 +7,7 @@ using numl.Utils;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace numl.Model
 {
@@ -24,6 +25,7 @@ namespace numl.Model
     }
 
     /// <summary>Represents a string property.</summary>
+    [JsonObject(MemberSerialization.OptIn)]
     public class StringProperty : Property
     {
         /// <summary>Default constructor.</summary>
@@ -41,18 +43,23 @@ namespace numl.Model
         }
         /// <summary>How to separate words (defaults to a space)</summary>
         /// <value>The separator.</value>
+        [JsonProperty]
         public string Separator { get; set; }
         /// <summary>How to split text.</summary>
         /// <value>The type of the split.</value>
+        [JsonProperty]
         public StringSplitType SplitType { get; set; }
         /// <summary>generated dictionary (using bag of words model)</summary>
         /// <value>The dictionary.</value>
+        [JsonProperty]
         public string[] Dictionary { get; set; }
         /// <summary>Exclusion set (stopword removal)</summary>
         /// <value>The exclude.</value>
+        [JsonProperty]
         public string[] Exclude { get; set; }
         /// <summary>Treat as enumeration.</summary>
         /// <value>true if as enum, false if not.</value>
+        [JsonProperty]
         public bool AsEnum { get; set; }
         /// <summary>Expansion length (total distinct words)</summary>
         /// <value>The length.</value>

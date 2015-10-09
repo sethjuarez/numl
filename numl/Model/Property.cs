@@ -5,10 +5,13 @@ using System;
 using numl.Utils;
 using System.Linq;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using numl.Serialization;
 
 namespace numl.Model
 {
     /// <summary>Concrete property. Used to convert any given data type to a number.</summary>
+    [JsonObject(MemberSerialization.OptIn)]
     public class Property
     {
         /// <summary>Default constructor.</summary>
@@ -18,18 +21,23 @@ namespace numl.Model
         }
         /// <summary>Property Name - Maps to object property or dictionary lookup.</summary>
         /// <value>The name.</value>
+        [JsonProperty]
         public string Name { get; set; }
         /// <summary>Type of property.</summary>
         /// <value>The type.</value>
+        [JsonProperty]
+        [JsonConverter(typeof(TypeConverter))]
         public virtual Type Type { get; set; }
         /// <summary>Length of property.</summary>
         /// <value>The length.</value>
         public virtual int Length { get { return 1; } }
         /// <summary>Start position in array.</summary>
         /// <value>The start.</value>
+        [JsonProperty]
         public int Start { get; set; }
         /// <summary>Discrete or continuous value.</summary>
         /// <value>true if discrete, false if not.</value>
+        [JsonProperty]
         public bool Discrete { get; set; }
         /// <summary>
         /// Used as a preprocessing step when overridden. Can be used to look at the entire data set as a
@@ -94,13 +102,14 @@ namespace numl.Model
         /// </returns>
         public virtual IEnumerable<string> GetColumns()
         {
-            yield return Name;
+            yield return this.Name;
         }
+
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-            return string.Format("[{0}, {1}, {2}]", Name, Start, Length);
+            return $"[{Name}, {Start}, {Length}]";
         }
     }
 }

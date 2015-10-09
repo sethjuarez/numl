@@ -1,6 +1,7 @@
 ﻿using numl.Model;
 using numl.Supervised;
 using numl.Tests.Data;
+using numl.Utils;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -81,14 +82,14 @@ namespace numl.Tests.SerializationTests
         [Test]
         public void DateTime_Property_Save_And_Load()
         {
-            DateTimeProperty p = 
-                new DateTimeProperty(DateTimeFeature.DayOfWeek | 
-                                     DateTimeFeature.Second | 
+            DateTimeProperty p =
+                new DateTimeProperty(DateTimeFeature.DayOfWeek |
+                                     DateTimeFeature.Second |
                                      DateTimeFeature.Minute);
             p.Name = "MyProp";
             p.Discrete = false;
             p.Start = 5;
-
+            
             Serialize(p);
 
             var po = Deserialize<DateTimeProperty>();
@@ -99,6 +100,20 @@ namespace numl.Tests.SerializationTests
             Assert.AreEqual(p.Start, po.Start);
             Assert.AreEqual(p.Features, po.Features);
             Assert.AreEqual(p.Length, po.Length);
+        }
+
+        [Test]
+        public void DateTime_Feature_Save_And_Load()
+        {
+            DateTimeFeature p = DateTimeFeature.DayOfWeek |
+                                DateTimeFeature.Second |
+                                DateTimeFeature.Minute;
+
+            Serialize(p);
+
+            var po = Deserialize<DateTimeFeature>();
+
+            Assert.AreEqual(p, po);
         }
 
         [Test]

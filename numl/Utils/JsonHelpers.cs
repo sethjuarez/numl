@@ -11,19 +11,23 @@ namespace numl.Utils
 {
     public static class JsonHelpers
     {
-        private static JsonSerializer _serializer = null;
-        private static JsonSerializer GetSerializer()
+        public static JsonSerializer Serializer { get; set; }
+
+        public static void SetSerializer(JsonSerializer serializer) =>
+            Serializer = serializer;
+
+        public static JsonSerializer GetSerializer()
         {
-            if (_serializer == null)
+            if (Serializer == null)
             {
-                _serializer = new JsonSerializer();
-                _serializer.Converters.Add(new TypeConverter());
-                _serializer.Converters.Add(new MatrixConverter());
-                _serializer.Converters.Add(new DateTimeFeatureConverter());
-                _serializer.Formatting = Formatting.Indented;
-                _serializer.TypeNameHandling = TypeNameHandling.Auto;
+                Serializer = new JsonSerializer();
+                Serializer.Converters.Add(new TypeConverter());
+                Serializer.Converters.Add(new MatrixConverter());
+                Serializer.Converters.Add(new DateTimeFeatureConverter());
+                Serializer.Formatting = Formatting.Indented;
+                Serializer.TypeNameHandling = TypeNameHandling.Auto;
             }
-            return _serializer;
+            return Serializer;
         }
         /// <summary>Save object to file.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>
@@ -31,49 +35,41 @@ namespace numl.Utils
         /// <param name="o">object.</param>
         ///
         /// ### <typeparam name="T">Type.</typeparam>
-        public static void Save<T>(string file, T o)
-        {
+        public static void Save<T>(string file, T o) => 
             Save(file, o, typeof(T));
-        }
 
-        /// <summary>Save object to file.</summary>
-        /// <param name="file">file.</param>
-        /// <param name="o">object.</param>
-        /// <param name="t">type.</param>
-        public static void Save(string file, object o, Type t)
+        /// <summary>
+        /// test
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="o"></param>
+        public static void Save(string file, object o, Type t = null)
         {
             using (var stream = File.OpenWrite(file))
             using (var writer = new StreamWriter(stream))
-                Save(writer, o, t);
+                Save(writer, o, t ?? o.GetType());
         }
 
         /// <summary>Save object to file.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>
         /// <param name="stream">The stream.</param>
         /// <param name="o">object.</param>
-        public static void Save<T>(TextWriter writer, T o)
-        {
+        public static void Save<T>(TextWriter writer, T o) => 
             Save(writer, o, typeof(T));
-        }
 
         /// <summary>Save object to file.</summary>
         /// <param name="writer">The stream.</param>
         /// <param name="o">object.</param>
         /// <param name="t">type.</param>
-        public static void Save(TextWriter writer, object o, Type t)
-        {
-            JsonSerializer serializer = GetSerializer();
-            serializer.Serialize(writer, o, t);
-        }
+        public static void Save(TextWriter writer, object o, Type t) =>
+            GetSerializer().Serialize(writer, o, t);
 
         /// <summary>Converts an o to an json string.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>
         /// <param name="o">object.</param>
         /// <returns>o as a string.</returns>
-        public static string ToJsonString<T>(T o)
-        {
-            return ToJsonString(o, typeof(T));
-        }
+        public static string ToJsonString<T>(T o) => 
+            ToJsonString(o, typeof(T));
 
         /// <summary>Converts this object to an json string.</summary>
         /// <param name="o">object.</param>
@@ -93,10 +89,8 @@ namespace numl.Utils
         /// <tparam name="T">Generic type parameter.</tparam>
         /// <param name="file">file.</param>
         /// <returns>A T.</returns>
-        public static T Load<T>(string file)
-        {
-            return (T)Load(file, typeof(T));
-        }
+        public static T Load<T>(string file) => 
+            (T)Load(file, typeof(T));
 
         /// <summary>Loads.</summary>
         /// <param name="file">file.</param>
@@ -113,28 +107,22 @@ namespace numl.Utils
         /// <tparam name="T">Generic type parameter.</tparam>
         /// <param name="stream">The stream.</param>
         /// <returns>A T.</returns>
-        public static T Load<T>(TextReader reader)
-        {
-            return (T)Load(reader, typeof(T));
-        }
+        public static T Load<T>(TextReader reader) => 
+            (T)Load(reader, typeof(T));
+
         /// <summary>Loads.</summary>
         /// <param name="stream">The stream.</param>
         /// <param name="t">type.</param>
         /// <returns>An object.</returns>
-        public static object Load(TextReader reader, Type t)
-        {
-            JsonSerializer serializer = GetSerializer();
-            return serializer.Deserialize(reader, t);
-        }
+        public static object Load(TextReader reader, Type t) => 
+            GetSerializer().Deserialize(reader, t);
 
         /// <summary>Loads json string.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>
         /// <param name="json">The json.</param>
         /// <returns>The json string.</returns>
-        public static T LoadJsonString<T>(string json)
-        {
-            return (T)LoadJsonString(json, typeof(T));
-        }
+        public static T LoadJsonString<T>(string json) => 
+            (T)LoadJsonString(json, typeof(T));
 
         /// <summary>Loads json string.</summary>
         /// <param name="json">The JSONHelpers.</param>
@@ -174,10 +162,8 @@ namespace numl.Utils
         /// <tparam name="T">Generic type parameter.</tparam>
         /// <param name="reader">The reader.</param>
         /// <returns>A T.</returns>
-        public static T Read<T>(TextReader reader)
-        {
-            JsonSerializer serializer = GetSerializer();
-            return (T)serializer.Deserialize(reader, typeof(T));
-        }
+        public static T Read<T>(TextReader reader) =>
+            (T)GetSerializer().Deserialize(reader, typeof(T));
+
     }
 }

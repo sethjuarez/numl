@@ -29,7 +29,7 @@ namespace numl.Supervised.Regression
         {
             for (int i = 0; i < y.Length; i++)
             {
-                y[i] = PreProcessing.FeatureNormalizer.FeatureScale(y[i], this.FeatureAverages[i], this.FeatureStandardDeviations[i]);
+                y[i] = (y[i] - this.FeatureAverages[i]) / this.FeatureStandardDeviations[i];
             }
 
             return y.Insert(0, 1.0d);

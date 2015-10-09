@@ -188,21 +188,21 @@ namespace numl.Math.LinearAlgebra
         /// <summary>A Vector extension method that computes the standard deviation.</summary>
         /// <param name="source">The source to act on.</param>
         /// <returns>A double.</returns>
-        public static double StdDev(this Vector source)
+        public static double StdDev(this Vector source, bool isSamplePop = false)
         {
-            return System.Math.Sqrt(source.Variance());
+            return System.Math.Sqrt(source.Variance(isSamplePop));
         }
         /// <summary>A Vector extension method that variances the given x coordinate.</summary>
         /// <param name="x">The x to act on.</param>
         /// <returns>A double.</returns>
-        public static double Variance(this Vector x)
+        public static double Variance(this Vector x, bool isSamplePop = false)
         {
             var mean = x.Mean();
             var sum = 0d;
             for (int i = 0; i < x.Length; i++)
                 sum += System.Math.Pow(x[i] - mean, 2);
 
-            return sum / (x.Length - 1);
+            return sum / (isSamplePop ? x.Length - 1 : x.Length);
         }
         /// <summary>A Vector extension method that covariances.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>

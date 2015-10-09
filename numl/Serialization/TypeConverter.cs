@@ -13,9 +13,7 @@ namespace numl.Serialization
     {
         public override bool CanConvert(Type objectType)
         {
-            return 
-                objectType == typeof(Type) ||
-                objectType.GetTypeInfo().BaseType == typeof(TypeInfo);
+            return typeof(Type).IsAssignableFrom(objectType);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)

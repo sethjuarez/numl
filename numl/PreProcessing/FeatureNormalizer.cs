@@ -35,7 +35,7 @@ namespace numl.PreProcessing
                 throw new ArgumentNullException("Column was null");
 
             double[] result = new double[column.Length];
-            
+
             double avg = column.Average();
             double sdv = column.StandardDeviation(c => c, false);
             for (int x = 0; x < column.Length; x++)
@@ -56,6 +56,6 @@ namespace numl.PreProcessing
             return new Vector(FeatureNormalizer.FeatureScale(temp));
         }
 
-        
+
     }
 }

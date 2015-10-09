@@ -6,31 +6,28 @@ using numl.Utils;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace numl.Model
 {
     /// <summary>Enumerable property. Expanded feature.</summary>
+    [JsonObject(MemberSerialization.OptIn)]
     public class EnumerableProperty : Property
     {
-        /// <summary>The length.</summary>
-        private int _length;
         /// <summary>Default constructor.</summary>
         internal EnumerableProperty() { }
         /// <summary>Constructor.</summary>
         /// <param name="length">The length.</param>
+        [JsonConstructor]
         public EnumerableProperty(int length)
         {
-            _length = length;
+            Length = length;
         }
         /// <summary>Length of property.</summary>
         /// <value>The length.</value>
-        public override int Length
-        {
-            get
-            {
-                return _length;
-            }
-        }
+        [JsonProperty]
+        public override int Length { get; }
+
         /// <summary>
         /// Retrieve the list of expanded columns. If there is a one-to-one correspondence between the
         /// type and its expansion it will return a single value/.
@@ -40,7 +37,7 @@ namespace numl.Model
         /// </returns>
         public override IEnumerable<string> GetColumns()
         {
-            for (int i = 0; i < _length; i++)
+            for (int i = 0; i < Length; i++)
                 yield return i.ToString();
         }
         /// <summary>Convert the numeric representation back to the original type.</summary>

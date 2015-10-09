@@ -1,6 +1,8 @@
 // file:	Model\DateTimeProperty.cs
 //
 // summary:	Implements the date time property class
+using Newtonsoft.Json;
+using numl.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Xml;
@@ -72,10 +74,13 @@ namespace numl.Model
     }
 
     /// <summary>DateTime Property. Used as a feature expansion mechanism.</summary>
+    [JsonObject(MemberSerialization.OptIn)]
     public class DateTimeProperty : Property
     {
         /// <summary>Gets or sets the features.</summary>
         /// <value>The features.</value>
+        [JsonProperty]
+        [JsonConverter(typeof(DateTimeFeatureConverter))]
         public DateTimeFeature Features { get; private set; }
 
         /// <summary>Default constructor.</summary>
@@ -180,8 +185,9 @@ namespace numl.Model
         /// <returns></returns>
         public static IEnumerable<string> GetColumns(DateTimeFeature features)
         {
+            Func<DateTimeFeature, string> c = d => Enum.GetName(typeof(DateTimeFeature), d);
             if (features.HasFlag(DateTimeFeature.Year))
-                yield return "Year";
+                yield return c(DateTimeFeature.Year);
             if (features.HasFlag(DateTimeFeature.DayOfYear))
                 yield return "DayOfYear";
             if (features.HasFlag(DateTimeFeature.Month))
