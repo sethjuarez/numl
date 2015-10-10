@@ -271,9 +271,9 @@ namespace numl.Math.LinearAlgebra
                     return true;
             return false;
         }
-        /// <summary>Query if 'vector' is na n.</summary>
+        /// <summary>Query if 'vector' is NaN.</summary>
         /// <param name="vector">The vector.</param>
-        /// <returns>true if na n, false if not.</returns>
+        /// <returns>true if NaN, false if not.</returns>
         public static bool IsNaN(Vector vector)
         {
             bool nan = true;

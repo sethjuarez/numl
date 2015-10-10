@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace numl.Math.Functions
 {
-    /// <summary>An identifier.</summary>
+    /// <summary>An identifier / linear function.</summary>
     public class Ident : Function
     {
         /// <summary>Computes the given x coordinate.</summary>

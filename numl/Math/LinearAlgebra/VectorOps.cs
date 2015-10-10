@@ -218,13 +218,48 @@ namespace numl.Math.LinearAlgebra
 
             return result;
         }
-        /// <summary>Bitwise 'exclusive or' operator.</summary>
+        /// <summary>
+        /// Mod operator.
+        /// </summary>
+        /// <param name="one">The one.</param>
+        /// <param name="two">The mod.</param>
+        /// <returns></returns>
+        public static Vector operator %(Vector one, double two)
+        {
+            return one.Each(d => d % two);
+        }
+        /// <summary>Raises each value to the specified power.</summary>
         /// <param name="one">The one.</param>
         /// <param name="power">The power.</param>
         /// <returns>The result of the operation.</returns>
         public static Vector operator ^(Vector one, double power)
         {
             return one.Each(d => System.Math.Pow(d, power));
+        }
+
+        /// <summary>
+        /// Returns an array of matching indices where each value is less than the supplied value.
+        /// </summary>
+        /// <param name="one"></param>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        public static IEnumerable<int> operator <(Vector one, double val)
+        {
+            for (int i = 0; i < one.Length; i++)
+                if (one[i] < val)
+                    yield return i;
+        }
+        /// <summary>
+        /// Returns an array of matching indices where each value is greater than the supplied value.
+        /// </summary>
+        /// <param name="one"></param>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        public static IEnumerable<int> operator >(Vector one, double val)
+        {
+            for (int i = 0; i < one.Length; i++)
+                if (one[i] > val)
+                    yield return i;
         }
     }
 }

@@ -88,11 +88,16 @@ namespace numl.Supervised.DecisionTree
             if (Descriptor == null)
                 throw new InvalidOperationException("Cannot build decision tree without type knowledge!");
 
+            this.Preprocess(x, y);
+
             var n = BuildTree(x, y, Depth, new List<int>(x.Cols));
 
             return new DecisionTreeModel
             {
                 Descriptor = Descriptor,
+                NormalizeFeatures = base.NormalizeFeatures,
+                FeatureNormalizer = base.FeatureNormalizer,
+                FeatureProperties = base.FeatureProperties,
                 Tree = n,
                 Hint = Hint
             };

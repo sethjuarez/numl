@@ -17,12 +17,19 @@ namespace numl.Supervised.NeuralNetwork
         /// <summary>Gets or sets the learning rate.</summary>
         /// <value>The learning rate.</value>
         public double LearningRate { get; set; }
+
         /// <summary>Gets or sets the maximum iterations.</summary>
         /// <value>The maximum iterations.</value>
         public int MaxIterations { get; set; }
+
         /// <summary>Gets or sets the activation.</summary>
         /// <value>The activation.</value>
         public IFunction Activation { get; set; }
+
+        /// <summary>
+        /// Gets or sets the output layer function (i.e. Softmax).
+        /// </summary>
+        public IFunction OutputFunction { get; set; }
 
         /// <summary>Default constructor.</summary>
         public NeuralNetworkGenerator()
@@ -37,11 +44,20 @@ namespace numl.Supervised.NeuralNetwork
         /// <returns>Model.</returns>
         public override IModel Generate(Matrix x, Vector y)
         {
+            this.Preprocess(x, y);
             // because I said so...
             if (MaxIterations == -1) MaxIterations = x.Rows * 1000;
 
             var network = Network.Default(Descriptor, x, y, Activation);
-            var model = new NeuralNetworkModel { Descriptor = Descriptor, Network = network };
+
+            var model = new NeuralNetworkModel {
+                Descriptor = Descriptor,
+                NormalizeFeatures = base.NormalizeFeatures,
+                FeatureNormalizer = base.FeatureNormalizer,
+                FeatureProperties = base.FeatureProperties,
+                Network = network
+            };
+
             OnModelChanged(this, ModelEventArgs.Make(model, "Initialized"));
 
             for (int i = 0; i < MaxIterations; i++)

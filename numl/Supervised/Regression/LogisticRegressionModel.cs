@@ -9,8 +9,9 @@ using numl.Utils;
 using numl.Model;
 using numl.Math.Functions;
 using numl.Math.LinearAlgebra;
-using numl.Classification;
-using numl.PreProcessing;
+using numl.Supervised.Classification;
+using numl.Preprocessing;
+using numl.Features;
 
 namespace numl.Supervised.Regression
 {
@@ -43,13 +44,16 @@ namespace numl.Supervised.Regression
         }
 
         /// <summary>
-        /// Predicts the raw value of the predction
+        /// Computes the probability of the prediction being True.
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
         public double PredictRaw(Vector x)
         {
-            return this.LogisticFunction.Compute(((x.IncreaseDimensions(this.PolynomialFeatures).Insert(0, 1.0, false)) * Theta).ToDouble());
+            Vector xCopy =  (this.NormalizeFeatures ? 
+                                this.FeatureNormalizer.Normalize(x.IncreaseDimensions(this.PolynomialFeatures), this.FeatureProperties) 
+                                : x.IncreaseDimensions(this.PolynomialFeatures));
+            return this.LogisticFunction.Compute(xCopy.Insert(0, 1.0, false).Dot(Theta));
         }
 
         /// <summary>
@@ -69,14 +73,20 @@ namespace numl.Supervised.Regression
         {
             reader.MoveToContent();
 
-            var sigmoid = Ject.FindType(reader.GetAttribute("LogisticFunction"));
+            var sigmoid = Ject.FindType(reader.GetAttribute(nameof(LogisticFunction)));
             LogisticFunction = (IFunction)Activator.CreateInstance(sigmoid);
+
+            this.NormalizeFeatures = bool.Parse(reader.GetAttribute(nameof(NormalizeFeatures)));
+
+            var normalizer = Ject.FindType(reader.GetAttribute(nameof(FeatureNormalizer)));
+            base.FeatureNormalizer = (IFeatureNormalizer)Activator.CreateInstance(normalizer);
 
             reader.ReadStartElement();
 
             Descriptor = Xml.Read<Descriptor>(reader);
-            Theta = Xml.Read<Vector>(reader);
-            PolynomialFeatures = Xml.Read<int>(reader);
+            base.FeatureProperties = Xml.Read<FeatureProperties>(reader, null, false);
+            Theta = Xml.Read<Vector>(reader, nameof(Theta));
+            PolynomialFeatures = Xml.Read<int>(reader, nameof(PolynomialFeatures));
         }
 
         /// <summary>Converts an object into its XML representation.</summary>
@@ -84,11 +94,13 @@ namespace numl.Supervised.Regression
         /// serialized.</param>
         public override void WriteXml(XmlWriter writer)
         {
-            writer.WriteAttributeString("LogisticFunction", LogisticFunction.GetType().Name);
+            writer.WriteAttributeString(nameof(NormalizeFeatures), this.NormalizeFeatures.ToString());
+            writer.WriteAttributeString(nameof(FeatureNormalizer), FeatureNormalizer.GetType().Name);
 
             Xml.Write<Descriptor>(writer, Descriptor);
-            Xml.Write<Vector>(writer, Theta);
-            Xml.Write<int>(writer, PolynomialFeatures);
+            Xml.Write<FeatureProperties>(writer, base.FeatureProperties);
+            Xml.Write<Vector>(writer, Theta, nameof(Theta));
+            Xml.Write<int>(writer, PolynomialFeatures, nameof(PolynomialFeatures));
         }
     }
 }

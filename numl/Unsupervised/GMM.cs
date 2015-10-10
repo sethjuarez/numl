@@ -11,7 +11,7 @@ using numl.Math.Metrics;
 
 namespace numl.Unsupervised
 {
-    /// <summary>A gmm.</summary>
+    /// <summary>A Generative Mixture Model.</summary>
     public class GMM
     {
         /// <summary>Gets or sets the descriptor.</summary>

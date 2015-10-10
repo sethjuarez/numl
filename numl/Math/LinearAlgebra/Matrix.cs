@@ -223,6 +223,19 @@ namespace numl.Math.LinearAlgebra
                             this[i, j] = value;
             }
         }
+        /// <summary>
+        /// Indexer to set items within this collection using an n x 2 array of indices to set.
+        /// </summary>
+        /// <param name="slice">An n x 2 array of indices to set.</param>
+        /// <returns></returns>
+        public double this[IEnumerable<int[]> slice]
+        {
+            set
+            {
+                foreach (int[] i in slice)
+                    this[i[0], i[1]] = value;
+            }
+        }
         /// <summary>Indexer to get items within this collection using array index syntax.</summary>
         /// <param name="f">The Func&lt;Vector,bool&gt; to process.</param>
         /// <param name="t">The VectorType to process.</param>

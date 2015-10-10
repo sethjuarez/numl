@@ -10,6 +10,8 @@ using numl.Math.LinearAlgebra;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using numl.Utils;
+using numl.Features;
+using numl.Preprocessing;
 
 namespace numl.Supervised.NaiveBayes
 {
@@ -50,17 +52,29 @@ namespace numl.Supervised.NaiveBayes
         public override void ReadXml(XmlReader reader)
         {
             reader.MoveToContent();
+
+            this.NormalizeFeatures = bool.Parse(reader.GetAttribute(nameof(NormalizeFeatures)));
+
+            var normalizer = Ject.FindType(reader.GetAttribute(nameof(FeatureNormalizer)));
+            base.FeatureNormalizer = (IFeatureNormalizer)Activator.CreateInstance(normalizer);
+
             reader.ReadStartElement();
+
             Descriptor = Xml.Read<Descriptor>(reader);
-            Root = Xml.Read<Measure>(reader);
+            base.FeatureProperties = Xml.Read<FeatureProperties>(reader, null, false);
+            Root = Xml.Read<Measure>(reader, nameof(Measure));
         }
         /// <summary>Converts an object into its XML representation.</summary>
         /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
         /// serialized.</param>
         public override void WriteXml(XmlWriter writer)
         {
+            writer.WriteAttributeString(nameof(NormalizeFeatures), this.NormalizeFeatures.ToString());
+            writer.WriteAttributeString(nameof(FeatureNormalizer), FeatureNormalizer.GetType().Name);
+
             Xml.Write<Descriptor>(writer, Descriptor);
-            Xml.Write<Measure>(writer, Root);
+            Xml.Write<FeatureProperties>(writer, base.FeatureProperties);
+            Xml.Write<Measure>(writer, Root, nameof(Measure));
         }
     }
 }

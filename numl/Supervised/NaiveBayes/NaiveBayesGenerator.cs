@@ -35,6 +35,8 @@ namespace numl.Supervised.NaiveBayes
             if (!Descriptor.Label.Discrete)
                 throw new InvalidOperationException("Need to use regression for non-discrete labels!");
 
+            this.Preprocess(x, y);
+
             // compute Y probabilities
             Statistic[] statistics = GetLabelStats(y);
 
@@ -71,7 +73,13 @@ namespace numl.Supervised.NaiveBayes
             }
 
 
-            return new NaiveBayesModel { Descriptor = Descriptor, Root = root };
+            return new NaiveBayesModel {
+                Descriptor = Descriptor,
+                NormalizeFeatures = base.NormalizeFeatures,
+                FeatureNormalizer = base.FeatureNormalizer,
+                FeatureProperties = base.FeatureProperties,
+                Root = root
+            };
         }
         /// <summary>Gets label statistics.</summary>
         /// <param name="y">The Vector to process.</param>

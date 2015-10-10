@@ -9,6 +9,7 @@ using numl.Math.Probability;
 using System.Threading.Tasks;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
+using numl.Scoring;
 
 namespace numl
 {
@@ -25,14 +26,21 @@ namespace numl
         }
         /// <summary>Retrieve best model (or model with the highest accuracy)</summary>
         /// <param name="models">List of models.</param>
+        /// <param name="metric">Scoring metric to use for model selection.</param>
         /// <returns>Best Model.</returns>
-        public static LearningModel Best(this IEnumerable<LearningModel> models)
+        public static LearningModel Best(this IEnumerable<LearningModel> models, ScoringMetric metric = ScoringMetric.Accuracy)
         {
-            var q = from m in models
-                    where m.Accuracy == (models.Select(s => s.Accuracy).Max())
-                    select m;
-
-            return q.FirstOrDefault();
+            return models.OrderByDescending(
+                m => {
+                    switch (metric)
+                    {
+                        case ScoringMetric.Accuracy: return m.Accuracy;
+                        case ScoringMetric.FScore: return m.Score.FScore;
+                        case ScoringMetric.Precision: return m.Score.Precision;
+                        case ScoringMetric.Recall: return m.Score.Recall;
+                        default: return m.Accuracy;
+                    }
+                }).FirstOrDefault();
         }
         /// <summary>
         /// Trains an arbitrary number of models on the provided examples by creating a separation of
@@ -76,7 +84,8 @@ namespace numl
             Vector y = data.Item2;
 
             var models = new IModel[repeat];
-            var accuracy = Vector.Zeros(repeat);
+            //var accuracy = Vector.Zeros(repeat);
+            var scores = new Score[repeat];
 
             // safe for parallisation
             // read-only references to the data model
@@ -85,12 +94,16 @@ namespace numl
             {
                 var t = GenerateModel(generator, x, y, examples, trainingPercentage);
                 models[i] = t.Model;
-                accuracy[i] = t.Accuracy;
+                scores[i] = t.Score;
             }
 
-            var idx = accuracy.MaxIndex();
+            int idx = scores.Select(s => s.Accuracy).MaxIndex();
 
-            return new LearningModel { Generator = generator, Model = models[idx], Accuracy = accuracy[idx] };
+            // sanity check, for convergence failures
+            if (idx < 0 && trainingPercentage < 1d) throw new Exception("All models failed to initialize properly");
+            else if (idx < 0) idx = 0;
+
+            return new LearningModel { Generator = generator, Model = models[idx], Score = scores[idx] };
         }
         /// <summary>Generates a model.</summary>
         /// <param name="generator">Model generator used.</param>
@@ -119,43 +132,50 @@ namespace numl
             var model = generator.Generate(x_t, y_t);
             model.Descriptor = descriptor;
 
-            // testing            
-            object[] test = GetTestExamples(testingSlice, examples);
-            double accuracy = 0;
+            Score score = new Score();
 
-            for (int j = 0; j < test.Length; j++)
+            if (testingSlice.Count() > 0)
             {
-                // items under test
-                object o = test[j];
+                // testing            
+                object[] test = GetTestExamples(testingSlice, examples);
+                Vector y_pred = new Vector(test.Length);
+                Vector y_test = descriptor.ToExamples(test).Item2;
 
-                // get truth
-                var truth = Ject.Get(o, descriptor.Label.Name);
+                bool isBinary = y_test.IsBinary();
+                if (isBinary)
+                    y_test = y_test.ToBinary(f => f == 1d, 1.0, 0.0);
 
-                // if truth is a string, sanitize
-                if (descriptor.Label.Type == typeof(string))
-                    truth = StringHelpers.Sanitize(truth.ToString());
+                for (int j = 0; j < test.Length; j++)
+                {
+                    // items under test
+                    object o = test[j];
 
-                // make prediction
-                var features = descriptor.Convert(o, false).ToVector();
+                    // make prediction
+                    var features = descriptor.Convert(o, false).ToVector();
+                    // --- temp changes ---
+                    double val = model.Predict(features);
+                    var pred = descriptor.Label.Convert(val);
 
-                var p = model.Predict(features);
-                var pred = descriptor.Label.Convert(p);
+                    var truth = Ject.Get(o, descriptor.Label.Name);
 
-                // assess accuracy
-                if (truth.Equals(pred))
-                    accuracy += 1;
+                    if (truth.Equals(pred))
+                        y_pred[j] = y_test[j];
+                    else
+                        y_pred[j] = (isBinary ? (y_test[j] >= 1d ? 0d : 1d) : val);
+                }
+
+                // score predictions
+                score = Score.ScorePredictions(y_pred, y_test);
             }
 
-            // get percentage correct
-            accuracy /= test.Length;
-
-            return new LearningModel { Generator = generator, Model = model, Accuracy = accuracy };
+            return new LearningModel { Generator = generator, Model = model, Score = score };
         }
+
         /// <summary>Gets test examples.</summary>
         /// <param name="slice">The slice.</param>
         /// <param name="examples">Source data.</param>
         /// <returns>An array of object.</returns>
-        private static object[] GetTestExamples(IEnumerable<int> slice, IEnumerable<object> examples)
+        internal static object[] GetTestExamples(IEnumerable<int> slice, IEnumerable<object> examples)
         {
             return examples
                     .Where((o, i) => slice.Contains(i))
@@ -167,13 +187,13 @@ namespace numl
         /// <returns>
         /// An enumerator that allows foreach to be used to process the test points in this collection.
         /// </returns>
-        private static IEnumerable<int> GetTestPoints(int testCount, int total)
+        internal static IEnumerable<int> GetTestPoints(int testCount, int total)
         {
             List<int> taken = new List<int>(testCount);
             while (taken.Count < testCount)
             {
                 int i = Sampling.GetUniform(total);
-                if (!taken.Contains(i))
+                if (!taken.Contains(i) && i >= 0 && i < total)
                 {
                     taken.Add(i);
                     yield return i;
@@ -187,34 +207,11 @@ namespace numl
         /// An enumerator that allows foreach to be used to process the training points in this
         /// collection.
         /// </returns>
-        private static IEnumerable<int> GetTrainingPoints(IEnumerable<int> testPoints, int total)
+        internal static IEnumerable<int> GetTrainingPoints(IEnumerable<int> testPoints, int total)
         {
             for (int i = 0; i < total; i++)
                 if (!testPoints.Contains(i))
                     yield return i;
-        }
-    }
-
-    /// <summary>Structure to hold generator, model, and accuracy information.</summary>
-    public class LearningModel
-    {
-        /// <summary>Generator used to create model.</summary>
-        /// <value>The generator.</value>
-        public IGenerator Generator { get; set; }
-        /// <summary>Model created by generator.</summary>
-        /// <value>The model.</value>
-        public IModel Model { get; set; }
-        /// <summary>Accuracy of model on test set.</summary>
-        /// <value>The accuracy.</value>
-        public double Accuracy { get; set; }
-        /// <summary>Textual representation of structure.</summary>
-        /// <returns>string.</returns>
-        public override string ToString()
-        {
-            return string.Format("Learning Model:\n  Generator {0}\n  Model:\n{1}\n  Accuracy: {2:p}\n", 
-                Generator, 
-                Model, 
-                Accuracy);
         }
     }
 }

@@ -27,9 +27,14 @@ namespace numl.Supervised.KNN
         /// <returns>Model.</returns>
         public override IModel Generate(Matrix x, Vector y)
         {
+            this.Preprocess(x, y);
+
             return new KNNModel
             {
                 Descriptor = Descriptor,
+                NormalizeFeatures = base.NormalizeFeatures,
+                FeatureNormalizer = base.FeatureNormalizer,
+                FeatureProperties = base.FeatureProperties,
                 X = x,
                 Y = y,
                 K = K

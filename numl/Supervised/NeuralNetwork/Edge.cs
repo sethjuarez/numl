@@ -49,10 +49,15 @@ namespace numl.Supervised.NeuralNetwork
         /// <summary>Creates a new Edge.</summary>
         /// <param name="source">Source for the.</param>
         /// <param name="target">Target for the.</param>
+        /// <param name="weight">Weight of the connection (Optional).</param>
         /// <returns>An Edge.</returns>
-        public static Edge Create(Node source, Node target)
+        public static Edge Create(Node source, Node target, double? weight = null)
         {
             Edge e = new Edge { Source = source, Target = target };
+
+            if (weight != null && weight.HasValue)
+                e.Weight = weight.Value;
+
             source.Out.Add(e);
             target.In.Add(e);
             return e;

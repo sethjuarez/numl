@@ -3,6 +3,7 @@ using System.IO;
 using NUnit.Framework;
 using numl.Math.LinearAlgebra;
 using System.Xml.Serialization;
+using System.Diagnostics;
 
 namespace numl.Tests.MathTests
 {
@@ -815,6 +816,138 @@ namespace numl.Tests.MathTests
 
             // -418
             var qd = q.Det();
+        }
+
+        [Test]
+        public void Matrix_Reshape_Rows_Test()
+        {
+            Vector v = new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+            Matrix x = v.Reshape(5, VectorType.Row);
+
+            Console.Write(x.ToString());
+
+            Assert.AreEqual(v[7], x[2, 1]);
+            Assert.AreEqual(v[5], x[0, 1]);
+            Assert.AreEqual(v[4], x[4, 0]);
+            Assert.AreEqual(v[9], x[4, 1]);
+        }
+
+        [Test]
+        public void Matrix_Reshape_Cols_Test()
+        {
+            Vector v = new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+            Matrix y = v.Reshape(5, VectorType.Col, VectorType.Col);
+
+            Console.Write(y.ToString());
+
+            Assert.AreEqual(v[2], y[0, 2]);
+            Assert.AreEqual(v[1], y[0, 1]);
+            Assert.AreEqual(v[5], y[1, 0]);
+            Assert.AreEqual(v[9], y[1, 4]);
+        }
+
+        [Test]
+        public void Matrix_Unshape_Test()
+        {
+            Vector v = new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+            Matrix x = v.Reshape(5, VectorType.Row);
+            Matrix y = v.Reshape(5, VectorType.Col);
+
+            Console.Write(x.ToString());
+            Console.Write(y.ToString());
+
+            Vector vx = x.Unshape();
+            Assert.AreEqual(v[1], vx[1]);
+            Assert.AreEqual(v[2], vx[2]);
+            Assert.AreEqual(v[8], vx[8]);
+            Assert.AreEqual(v[9], vx[9]);
+
+            Vector vy = y.Unshape();
+            Assert.AreEqual(v[1], vy[1]);
+            Assert.AreEqual(v[2], vy[2]);
+            Assert.AreEqual(v[8], vy[8]);
+            Assert.AreEqual(v[9], vy[9]);
+        }
+
+        [Test]
+        public void Matrix_Sort_Rows_Test()
+        {
+            Matrix m1 = new[,]
+            {
+                { 1, 3, 6, 5 }, // 0
+                { 3, 6, 4, 4 }, // 2
+                { 4, 7, 5, 3 }, // 3
+                { 2, 9, 3, 2 }, // 1
+                { 4, 8, 8, 8 }, // 4
+            };
+
+            Vector v = new Vector(new double[] { 0, 3, 1, 2, 4 });
+
+            Vector indices;
+
+            Matrix m1s = m1.Sort(k => k[0], VectorType.Row, true, out indices);
+
+            Console.Write(m1s);
+            Console.WriteLine(indices);
+
+            Assert.AreEqual(m1[0, 0], m1s[0, 0]);
+            Assert.AreEqual(m1[3, 0], m1s[1, 0]);
+            Assert.AreEqual(m1[1, 0], m1s[2, 0]);
+            Assert.AreEqual(m1[2, 0], m1s[3, 0]);
+            Assert.AreEqual(m1[4, 0], m1s[4, 0]);
+
+            Assert.AreEqual(m1[0, 1], m1s[0, 1]);
+            Assert.AreEqual(m1[3, 1], m1s[1, 1]);
+            Assert.AreEqual(m1[1, 1], m1s[2, 1]);
+            Assert.AreEqual(m1[2, 1], m1s[3, 1]);
+            Assert.AreEqual(m1[4, 1], m1s[4, 1]);
+
+            Assert.AreEqual(v[0], indices[0]);
+            Assert.AreEqual(v[1], indices[1]);
+            Assert.AreEqual(v[2], indices[2]);
+            Assert.AreEqual(v[3], indices[3]);
+            Assert.AreEqual(v[4], indices[4]);
+        }
+
+        [Test]
+        public void Matrix_Sort_Columns_Test()
+        {
+
+            Vector v = new Vector(new double[] { 1, 3, 2, 0 });
+
+            Matrix m1 = new[,]
+            {
+               // 3  0  2  1
+                { 4, 1, 3, 2 },
+                { 1, 2, 3, 4 },
+                { 7, 9, 8, 6 },
+                { 6, 9, 3, 2 },
+                { 6, 8, 8, 8 },
+            };
+
+            Vector indices;
+            Matrix m1s = m1.Sort(k => k[0], VectorType.Col, true, out indices);
+
+            Console.Write(m1s);
+            Console.WriteLine(indices);
+
+            Assert.AreEqual(m1[0, 3], m1s[0, 1]);
+            Assert.AreEqual(m1[0, 0], m1s[0, 3]);
+            Assert.AreEqual(m1[0, 2], m1s[0, 2]);
+            Assert.AreEqual(m1[0, 1], m1s[0, 0]);
+
+            Assert.AreEqual(m1[1, 3], m1s[1, 1]);
+            Assert.AreEqual(m1[1, 0], m1s[1, 3]);
+            Assert.AreEqual(m1[1, 2], m1s[1, 2]);
+            Assert.AreEqual(m1[1, 1], m1s[1, 0]);
+
+            Assert.AreEqual(v[0], indices[0]);
+            Assert.AreEqual(v[1], indices[1]);
+            Assert.AreEqual(v[2], indices[2]);
+            Assert.AreEqual(v[3], indices[3]);
         }
     }
 }

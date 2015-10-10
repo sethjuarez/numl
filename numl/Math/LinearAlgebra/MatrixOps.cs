@@ -2,6 +2,8 @@
 //
 // summary:	Implements the matrix ops class
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace numl.Math.LinearAlgebra
@@ -52,6 +54,7 @@ namespace numl.Math.LinearAlgebra
         {
             return !m1.Equals(m2);
         }
+
         /// <summary>Addition operator.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
         /// <param name="m1">The first Matrix.</param>
@@ -264,7 +267,6 @@ namespace numl.Math.LinearAlgebra
                 return Inverse(scratch);
             }
         }
-
         /// <summary>
         /// Creates an inverse of the current matrix
         /// </summary>
@@ -273,7 +275,6 @@ namespace numl.Math.LinearAlgebra
         {
             return Matrix.Inverse(this);
         }
-
         /// <summary>Inverses the given matrix.</summary>
         /// <exception cref="SingularMatrixException">Thrown when a Singular Matrix error condition occurs.</exception>
         /// <param name="mat">Matrix.</param>
@@ -333,5 +334,93 @@ namespace numl.Math.LinearAlgebra
 
             return result;
         }
+
+        #region Logical Selectors
+
+        /// <summary>
+        /// Returns an array of index (i, j) pairs matching indices that are equal to the supplied value.
+        /// </summary>
+        /// <param name="mat">Matrix.</param>
+        /// <param name="val">Value.</param>
+        /// <returns></returns>
+        public static IEnumerable<int[]> operator ==(Matrix mat, double val)
+        {
+            for (int i = 0; i < mat.Rows; i++)
+                for (int j = 0; j < mat.Cols; j++)
+                    if (mat[i, j] == val)
+                        yield return new int[] { i, j };
+        }
+
+        /// <summary>
+        /// Returns an array of index (i, j) pairs matching indices that are not equal to the supplied value.
+        /// </summary>
+        /// <param name="mat">Matrix.</param>
+        /// <param name="val">Value.</param>
+        /// <returns></returns>
+        public static IEnumerable<int[]> operator !=(Matrix mat, double val)
+        {
+            for (int i = 0; i < mat.Rows; i++)
+                for (int j = 0; j < mat.Cols; j++)
+                    if (mat[i, j] != val)
+                        yield return new int[] { i, j };
+        }
+
+        /// <summary>
+        /// Returns an array of index (i, j) pairs matching indices that are less than the supplied value.
+        /// </summary>
+        /// <param name="mat">Matrix.</param>
+        /// <param name="val">Value.</param>
+        /// <returns></returns>
+        public static IEnumerable<int[]> operator <(Matrix mat, double val)
+        {
+            for (int i = 0; i < mat.Rows; i++)
+                for (int j = 0; j < mat.Cols; j++)
+                    if (mat[i, j] < val)
+                        yield return new int[] { i, j };
+        }
+
+        /// <summary>
+        /// Returns an array of index (i, j) pairs matching indices that are greater than the supplied value.
+        /// </summary>
+        /// <param name="mat">Matrix.</param>
+        /// <param name="val">Value.</param>
+        /// <returns></returns>
+        public static IEnumerable<int[]> operator >(Matrix mat, double val)
+        {
+            for (int i = 0; i < mat.Rows; i++)
+                for (int j = 0; j < mat.Cols; j++)
+                    if (mat[i, j] > val)
+                        yield return new int[] { i, j };
+        }
+
+        /// <summary>
+        /// Returns an array of index (i, j) pairs matching indices that are less than or equal to the supplied value.
+        /// </summary>
+        /// <param name="mat">Matrix.</param>
+        /// <param name="val">Value.</param>
+        /// <returns></returns>
+        public static IEnumerable<int[]> operator <=(Matrix mat, double val)
+        {
+            for (int i = 0; i < mat.Rows; i++)
+                for (int j = 0; j < mat.Cols; j++)
+                    if (mat[i, j] <= val)
+                        yield return new int[] { i, j };
+        }
+
+        /// <summary>
+        /// Returns an array of index (i, j) pairs matching indices that are greater than or equal to the supplied value.
+        /// </summary>
+        /// <param name="mat">Matrix.</param>
+        /// <param name="val">Value.</param>
+        /// <returns></returns>
+        public static IEnumerable<int[]> operator >=(Matrix mat, double val)
+        {
+            for (int i = 0; i < mat.Rows; i++)
+                for (int j = 0; j < mat.Cols; j++)
+                    if (mat[i, j] >= val)
+                        yield return new int[] { i, j };
+        }
+
+        #endregion
     }
 }

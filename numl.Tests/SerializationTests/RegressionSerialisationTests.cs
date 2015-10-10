@@ -31,7 +31,7 @@ namespace numl.Tests.SerializationTests
             }
             var d = Descriptor.Create<ModelItem>();
             var g = new LinearRegressionGenerator { Descriptor = d };
-            var learningModel = Learner.Learn(data, .80, 1000, g);
+            var learningModel = Learner.Learn(data, .80, 5, g); // changed from 1000
             model = (LinearRegressionModel)learningModel.Model;
 
             Serialize(model);
@@ -40,23 +40,6 @@ namespace numl.Tests.SerializationTests
 
             Assert.AreEqual(model.Theta, loadedModel.Theta);
         }
-
-        //[Test]
-        //public void Logistic_Regression_Save_And_Load()
-        //{
-            
-
-        //    Serialize(p);
-
-        //    var po = Deserialize<LogisticRegressionModel>();
-
-        //    Assert.AreEqual(p.Name, po.Name);
-        //    Assert.AreEqual(p.Type, po.Type);
-        //    Assert.AreEqual(p.Discrete, po.Discrete);
-        //    Assert.AreEqual(p.Start, po.Start);
-        //}
-
-
     }
 
     public class ModelItem

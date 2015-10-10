@@ -32,6 +32,8 @@ namespace numl.Supervised.Perceptron
         /// <returns>Model.</returns>
         public override IModel Generate(Matrix X, Vector Y)
         {
+            this.Preprocess(X, Y);
+
             Vector w = Vector.Zeros(X.Cols);
             Vector a = Vector.Zeros(X.Cols);
 
@@ -69,7 +71,10 @@ namespace numl.Supervised.Perceptron
                 W = w - (a / n), 
                 B = wb - (ab / n), 
                 Normalized = Normalize, 
-                Descriptor = Descriptor 
+                Descriptor = Descriptor,
+                NormalizeFeatures = base.NormalizeFeatures,
+                FeatureNormalizer = base.FeatureNormalizer,
+                FeatureProperties = base.FeatureProperties
             };
         }
     }
