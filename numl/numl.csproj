@@ -65,9 +65,9 @@
     <Compile Include="Features\FeatureProperties.cs" />
     <Compile Include="LearningModel.cs" />
     <Compile Include="Math\Functions\ClippedRectifiedLinear.cs" />
+    <Compile Include="Math\Functions\Softmax.cs" />
     <Compile Include="Math\Functions\SteepLogistic.cs" />
     <Compile Include="Math\Functions\RectifiedLinear.cs" />
-    <Compile Include="Math\Functions\Softmax.cs" />
     <Compile Include="Math\Kernels\LogisticKernel.cs" />
     <Compile Include="Optimization\Functions\CostFunctions\CofiCostFunction.cs" />
     <Compile Include="Optimization\Functions\CostFunctions\CostFunction.cs" />
@@ -174,9 +174,9 @@
     <Compile Include="Supervised\Regression\LogisticRegressionGenerator.cs" />
     <Compile Include="Supervised\Regression\LogisticRegressionModel.cs" />
     <Compile Include="Supervised\SVM\Selection\ISelection.cs" />
+    <Compile Include="Supervised\SVM\Selection\WorkingSetSelection3.cs" />
     <Compile Include="Supervised\SVM\SVMGenerator.cs" />
     <Compile Include="Supervised\SVM\SVMModel.cs" />
-    <Compile Include="Supervised\SVM\Selection\WorkingSetSelection3.cs" />
     <Compile Include="Unsupervised\CKMeans.cs" />
     <Compile Include="Unsupervised\Cluster.cs" />
     <Compile Include="Unsupervised\GMM.cs" />
