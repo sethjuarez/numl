@@ -35,7 +35,7 @@ namespace numl.Supervised.NaiveBayes
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-            return string.Format("P({0}) = {1} [{2}, {3}]", Label, Probability, Count, Discrete ? X.Min.ToString() : X.ToString());
+            return $"P({Label}) = {Probability} [{Count}, {X}]";
         }
         /// <summary>Makes a deep copy of this object.</summary>
         /// <returns>A copy of this object.</returns>

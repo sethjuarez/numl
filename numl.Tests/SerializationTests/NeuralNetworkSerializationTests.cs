@@ -40,5 +40,58 @@ namespace numl.Tests.SerializationTests
             Serialize(node);
             
         }
+
+        [Test]
+        public void Save_Model_Test()
+        {
+
+            Tennis t = new Tennis
+            {
+                Humidity = Humidity.Normal,
+                Outlook = Outlook.Overcast,
+                Temperature = Temperature.Cool,
+                Windy = true
+            };
+
+            var model = (NeuralNetworkModel)BaseSupervised.Prediction<Tennis>(
+                new NeuralNetworkGenerator(),
+                Tennis.GetData(),
+                t,
+                p => p.Play
+            );
+
+            Serialize(model);
+
+
+            var model2 = Deserialize<NeuralNetworkModel>();
+
+        }
+
+        [Test]
+        public void Save_Network_Test()
+        {
+
+            Tennis t = new Tennis
+            {
+                Humidity = Humidity.Normal,
+                Outlook = Outlook.Overcast,
+                Temperature = Temperature.Cool,
+                Windy = true
+            };
+
+            var model = (NeuralNetworkModel)BaseSupervised.Prediction<Tennis>(
+                new NeuralNetworkGenerator(),
+                Tennis.GetData(),
+                t,
+                p => p.Play
+            );
+
+
+            Serialize(model.Network);
+
+
+            var model2 = Deserialize<Network>();
+
+        }
     }
 }

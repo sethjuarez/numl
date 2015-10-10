@@ -6,10 +6,12 @@ using System.Linq;
 using numl.Math.Functions;
 using System.Collections.Generic;
 using numl.Utils;
+using Newtonsoft.Json;
 
 namespace numl.Supervised.NeuralNetwork
 {
     /// <summary>A node.</summary>
+    [JsonObject(MemberSerialization.OptIn)]
     public class Node 
     {
         /// <summary>Default constructor.</summary>
@@ -28,18 +30,23 @@ namespace numl.Supervised.NeuralNetwork
         }
         /// <summary>Gets or sets the output.</summary>
         /// <value>The output.</value>
+        [JsonProperty]
         public double Output { get; set; }
         /// <summary>Gets or sets the input.</summary>
         /// <value>The input.</value>
+        [JsonProperty]
         public double Input { get; set; }
         /// <summary>Gets or sets the delta.</summary>
         /// <value>The delta.</value>
+        [JsonProperty]
         public double Delta { get; set; }
         /// <summary>Gets or sets the label.</summary>
         /// <value>The label.</value>
+        [JsonProperty]
         public string Label { get; set; }
         /// <summary>Gets or sets the identifier.</summary>
         /// <value>The identifier.</value>
+        [JsonProperty]
         public string Id { get; private set; }
         /// <summary>Gets or sets the out.</summary>
         /// <value>The out.</value>
@@ -49,6 +56,7 @@ namespace numl.Supervised.NeuralNetwork
         public List<Edge> In { get; set; }
         /// <summary>Gets or sets the activation.</summary>
         /// <value>The activation.</value>
+        [JsonProperty]
         public IFunction Activation { get; set; }
         /// <summary>Gets the evaluate.</summary>
         /// <returns>A double.</returns>

@@ -75,39 +75,6 @@ namespace numl.Tests.SerializationTests
         }
 
         [Test]
-        public void Load_LinearRegression()
-        {
-            string xml = @"<?xml version=""1.0""?>
-<LinearRegressionModel>
-  <Descriptor Type=""None"" Name="""">
-    <Features Length=""2"">
-      <Property Name=""LeftOperand"" Type=""Double"" Discrete=""False"" Start=""0"" />
-      <Property Name=""RightOperand"" Type=""Double"" Discrete=""False"" Start=""1"" />
-    </Features>
-    <Label>
-      <Property Name=""Result"" Type=""Double"" Discrete=""False"" Start=""-1"" />
-    </Label>
-  </Descriptor>
-  <v size=""3"">
-    <e>73299.802339155649</e>
-    <e>13929.858323609986</e>
-    <e>28235.048808708329</e>
-  </v>
-  <v size=""2"">
-    <e>22155.108339050836</e>
-    <e>25812.304093938921</e>
-  </v>
-  <v size=""2"">
-    <e>14120.242563388447</e>
-    <e>14302.3670376599</e>
-  </v>
-</LinearRegressionModel>";
-
-            LinearRegressionModel model = new LinearRegressionModel();
-            model.LoadXml(xml);
-        }
-
-        [Test]
         public void Save_And_Load_LinearRegression()
         {
             Matrix x = new [,]

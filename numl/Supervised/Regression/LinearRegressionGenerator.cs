@@ -50,24 +50,23 @@ namespace numl.Supervised.Regression
             // create initial theta
             Vector theta = Vector.Ones(x.Cols + 1);
             Matrix copy = x.Copy();
-            
+
+            // normalise features - inline?
+            //for (int i = 0; i < copy.Cols; i++)
+            //    copy[i, VectorType.Col] =
+            //            (copy[i, VectorType.Col] - copy[i, VectorType.Col].Average()) / 
+            //            copy[i, VectorType.Col].StdDev();
+
 
             // normalise features
             for (int i = 0; i < copy.Cols; i++)
-                copy[i, VectorType.Col] =
-                        (copy[i, VectorType.Col] - copy[i, VectorType.Col].Average()) / 
-                        copy[i, VectorType.Col].StdDev();
-
-            // normalise features
-            //for (int i = 0; i < copy.Cols; i++)
-            //{
-            //    var j = FeatureNormalizer.FeatureScale(copy[i, VectorType.Col]);
-            //    for (int k = 0; k < copy.Rows; k++)
-            //    {
-            //        copy[k, i] = j[k];
-            //    }
-            //}
-
+            {
+                var j = FeatureNormalizer.FeatureScale(copy[i, VectorType.Col]);
+                for (int k = 0; k < copy.Rows; k++)
+                {
+                    copy[k, i] = j[k];
+                }
+            }
 
             // add intercept term
             copy = copy.Insert(Vector.Ones(copy.Rows), 0, VectorType.Col);

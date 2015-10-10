@@ -5,10 +5,12 @@ using System;
 using System.Linq;
 using numl.Math.Probability;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace numl.Supervised.NeuralNetwork
 {
     /// <summary>An edge.</summary>
+    [JsonObject(MemberSerialization.OptIn)]
     public class Edge
     {
         /// <summary>Default constructor.</summary>
@@ -28,15 +30,18 @@ namespace numl.Supervised.NeuralNetwork
         public Node Source { get; set; }
         /// <summary>Gets or sets the identifier of the source.</summary>
         /// <value>The identifier of the source.</value>
+        [JsonProperty]
         internal string SourceId { get; set; }
         /// <summary>Gets or sets the Target for the.</summary>
         /// <value>The target.</value>
         public Node Target { get; set; }
         /// <summary>Gets or sets the identifier of the target.</summary>
         /// <value>The identifier of the target.</value>
+        [JsonProperty]
         internal string TargetId { get; set; }
         /// <summary>Gets or sets the weight.</summary>
         /// <value>The weight.</value>
+        [JsonProperty]
         public double Weight { get; set; }
         /// <summary>Creates a new Edge.</summary>
         /// <param name="source">Source for the.</param>
@@ -51,9 +56,8 @@ namespace numl.Supervised.NeuralNetwork
         }
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>
-        public override string ToString()
-        {
-            return string.Format("{0} ---- {1} ----> {2}", Source, Weight, Target);
-        }
+        public override string ToString() =>
+            $"{Source} ---- {Weight} ----> {Target}";
+
     }
 }

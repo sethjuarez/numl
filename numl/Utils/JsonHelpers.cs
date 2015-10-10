@@ -24,6 +24,8 @@ namespace numl.Utils
                 Serializer.Converters.Add(new TypeConverter());
                 Serializer.Converters.Add(new MatrixConverter());
                 Serializer.Converters.Add(new DateTimeFeatureConverter());
+                Serializer.Converters.Add(new VectorConverter());
+                Serializer.Converters.Add(new NetworkConverter());
                 Serializer.Formatting = Formatting.Indented;
                 Serializer.TypeNameHandling = TypeNameHandling.Auto;
             }
