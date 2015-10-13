@@ -57,15 +57,30 @@ namespace numl.Math.LinearAlgebra
         /// <returns>A Vector.</returns>
         public static Vector Each(this Vector v, Func<double, double> transform, bool asCopy = false)
         {
+            Vector vector = (asCopy ? v.Copy() : v);
+
+            for (int i = 0; i < vector.Length; i++)
+                vector[i] = transform(vector[i]);
+
+            return vector;
+        }
+        /// <summary>A Vector extension method that eaches.</summary>
+        /// <param name="v">The v to act on.</param>
+        /// <param name="transform">The transform including value and coordinate.</param>
+        /// <param name="asCopy">(Optional) true to as copy.</param>
+        /// <returns>A Vector.</returns>
+        public static Vector Each(this Vector v, Func<double, int, double> transform, bool asCopy = false)
+        {
             Vector vector = v;
             if (asCopy)
                 vector = v.Copy();
 
             for (int i = 0; i < vector.Length; i++)
-                vector[i] = transform(vector[i]);
+                vector[i] = transform(vector[i], i);
 
             return v;
         }
+
         /// <summary>Enumerates reverse in this collection.</summary>
         /// <param name="v">The v to act on.</param>
         /// <returns>
@@ -86,28 +101,19 @@ namespace numl.Math.LinearAlgebra
             return new Vector(array);
         }
         /// <summary>
-        /// An IEnumerable&lt;double[]&gt; extension method that converts an e to a matrix.
+        /// An IEnumerable&lt;double[]&gt; extension method that converts the source into a matrix.
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
         /// <param name="source">The source to act on.</param>
+        /// <param name="vectorType">The <see cref="VectorType"/> of the input array.</param>
         /// <returns>e as a Matrix.</returns>
-        public static Matrix ToMatrix(this IEnumerable<Vector> source)
+        public static Matrix ToMatrix(this IEnumerable<Vector> source, VectorType vectorType = VectorType.Row)
         {
             var c = source.Count();
             if (c == 0)
                 throw new InvalidOperationException("Cannot create matrix from an empty set.");
 
-            var i = 0;
-            double[][] m = new double[c][];
-            foreach (var v in source)
-            {
-                m[i] = new double[v.Length];
-                for (int j = 0; j < v.Length; j++)
-                    m[i][j] = v[j];
-                i++;
-            }
-
-            return new Matrix(m);
+            return Matrix.Stack(vectorType, source.ToArray());
         }
         /// <summary>
         /// An IEnumerable&lt;double[]&gt; extension method that converts an e to a matrix.
@@ -117,6 +123,19 @@ namespace numl.Math.LinearAlgebra
         public static Matrix ToMatrix(this IEnumerable<double[]> e)
         {
             return new Matrix(e.ToArray());
+        }
+        /// <summary>
+        /// Reshapes the given Vector into a Matrix form given the specified dimension.
+        /// <para>Reads from the source vector and repopulates from left to right when <paramref name="vectorType"/> equals 'Col' otherwise uses top down approach.</para>
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="dimension">If the <paramref name="vectorType"/> equals 'Col' the <paramref name="dimension"/> becomes the column width otherwise it is row height.</param>
+        /// <param name="vectorType">Unit type of the dimension to use when rebuilding the Matrix.</param>
+        /// <param name="fillType">Direction to process, i.e. Row = Fill Down then Right, or Col = Fill Right then Down</param>
+        /// <returns>Matrix.</returns>
+        public static Matrix Reshape(this Vector source, int dimension, VectorType vectorType = VectorType.Col, VectorType fillType = VectorType.Row)
+        {
+            return Matrix.Reshape(source, dimension, vectorType, fillType);
         }
         /// <summary>A Vector extension method that diags.</summary>
         /// <param name="v">The v to act on.</param>
@@ -292,6 +311,25 @@ namespace numl.Math.LinearAlgebra
             return new Vector(temp);
         }
 
+        /// <summary>
+        /// Binds the supplied Vectors with the current vector.
+        /// </summary>
+        /// <param name="source">Source vector.</param>
+        /// <param name="vectors">Array of vectors to bind with.</param>
+        /// <returns></returns>
+        public static Vector Combine(this Vector source, params Vector[] vectors)
+        {
+            List<double> result = source.ToList();
+
+            for (int j = 0; j < vectors.Length; j++)
+            {
+                for (int i = 0; i < vectors[j].Length; i++)
+                    result.Add(vectors[j][i]);
+            }
+
+            return result.ToVector();
+        }
+
         /// <summary>A Vector extension method that expands.</summary>
         /// <param name="source">The source to act on.</param>
         /// <param name="n">The int to process.</param>
@@ -455,6 +493,37 @@ namespace numl.Math.LinearAlgebra
 
             return vector;
         }
+        /// <summary>
+        /// Slices the given Vector while preserving the index ordering in the specified index array.
+        /// </summary>
+        /// <param name="v">Vector to slice.</param>
+        /// <param name="indices">Index array to extract.</param>
+        /// <param name="preserveOrder">If True, the ordering in <paramref name="indices"/> is preserved.</param>
+        /// <returns></returns>
+        public static Vector Slice(this Vector v, IEnumerable<int> indices, bool preserveOrder)
+        {
+            if (preserveOrder)
+            {
+                Vector vector = new Vector(indices.Count());
+                int i = -1;
+                foreach (var j in indices)
+                    vector[++i] = v[j];
+
+                return vector;
+            }
+            else { return v.Slice(indices); }
+        }
+        /// <summary>
+        /// Slices using starting and stopping positions.
+        /// </summary>
+        /// <param name="v">Vector.</param>
+        /// <param name="fromIndex">Minimum index to from.</param>
+        /// <param name="toIndex">Maximum index to.</param>
+        /// <returns></returns>
+        public static Vector Slice(this Vector v, int fromIndex, int toIndex)
+        {
+            return v.Skip(fromIndex).Take((toIndex - fromIndex) + 1).ToVector();
+        }
         /// <summary>Enumerates slice in this collection.</summary>
         /// <param name="x">The x to act on.</param>
         /// <param name="where">The where.</param>
@@ -467,6 +536,30 @@ namespace numl.Math.LinearAlgebra
                 if (where(d))
                     yield return d;
         }
+
+        /// <summary>
+        /// Sorts the given Vector by the specified direction, and returns the original unsorted indices.
+        /// </summary>
+        /// <param name="source">Vector.</param>
+        /// <param name="ascending">True to sort in ascending order, otherwise False.</param>
+        /// <param name="indices">The original index array before sorting.</param>
+        /// <returns></returns>
+        public static Vector Sort(this Vector source, bool ascending, out int[] indices)
+        {
+            indices = new int[source.Length];
+
+            KeyValuePair<double, int>[] sort = (ascending ?
+                                                      source.Select((i, v) => new KeyValuePair<double, int>(i, v))
+                                                            .OrderBy(o => o.Key)
+                                                         :
+                                                      source.Select((i, v) => new KeyValuePair<double, int>(i, v))
+                                                            .OrderByDescending(o => o.Key)).ToArray();
+
+            indices = sort.Select(s => s.Value).ToArray();
+
+            return new Vector(sort.Select(s => s.Key));
+        }
+
         /// <summary>A Vector extension method that dots.</summary>
         /// <param name="v">The v to act on.</param>
         /// <param name="x">The x to act on.</param>
@@ -563,16 +656,6 @@ namespace numl.Math.LinearAlgebra
             return v;
         }
 
-        /// <summary>
-        /// Return the result of a 1 x m * m x 1 
-        /// </summary>
-        /// <param name="vector"></param>
-        /// <returns></returns>
-        public static double ToDouble(this Vector vector)
-        {
-            return vector.First();
-        }
-
         /// <summary>A Vector extension method that firsts.</summary>
         /// <param name="v">The v to act on.</param>
         /// <param name="predicate">The predicate.</param>
@@ -614,6 +697,33 @@ namespace numl.Math.LinearAlgebra
         public static bool IsNaN(this Vector vector)
         {
             return Vector.IsNaN(vector);
+        }
+
+        /// <summary>
+        /// Returns True if the Vector contains only positive and negative values (either 0 or -1).
+        /// </summary>
+        /// <param name="vector">The input vector.</param>
+        /// <returns>Boolean.</returns>
+        public static bool IsBinary(this Vector vector)
+        {
+            var v = vector.Distinct();
+            return ((v.Count() == 2 && (v.Contains(1d) && (v.Contains(0d) || v.Contains(-1d)))) || (v.Count() == 1 && (v.Contains(1d) || v.Contains(0d) || v.Contains(-1d))));
+        }
+
+        /// <summary>
+        /// Converts the Vector to a binary Vector based on a predicate function.
+        /// </summary>
+        /// <param name="v">Vector to process.</param>
+        /// <param name="fnPredicate">Predicate function to test values for.</param>
+        /// <param name="trueValue">True substitution value.</param>
+        /// <param name="falseValue">False substitution value.</param>
+        /// <returns></returns>
+        public static Vector ToBinary(this Vector v, Func<double, bool> fnPredicate, double trueValue = 1.0, double falseValue = 0.0)
+        {
+            Vector result = new Vector(v.Length);
+            for (int i = 0; i < v.Length; i++)
+                    result[i] = (fnPredicate(v[i]) ? trueValue : falseValue);
+            return result;
         }
     }
 }

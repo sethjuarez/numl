@@ -16,10 +16,24 @@ namespace numl.Math.Kernels
     /// </summary>
     public interface IKernel
     {
+        /// <summary>
+        /// Returns a boolean indicating whether this is a linear kernel.
+        /// </summary>
+        bool IsLinear { get; }
+
         /// <summary>Computes the Kernel Matrix using the given input.</summary>
         /// <param name="m">Input Matrix.</param>
         /// <returns>Kernel Matrix.</returns>
         Matrix Compute(Matrix m);
+
+        /// <summary>
+        /// Computes the kernel function between the two input vectors.
+        /// </summary>
+        /// <param name="v1">Vector one.</param>
+        /// <param name="v2">Vector two.</param>
+        /// <returns>Similarity.</returns>
+        double Compute(Vector v1, Vector v2);
+
         /// <summary>Projects the vector <c>x</c> into the correspoding inner product space.</summary>
         /// <param name="m">Kernel Matrix.</param>
         /// <param name="x">Vector in original space.</param>

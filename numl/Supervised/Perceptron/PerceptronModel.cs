@@ -8,6 +8,8 @@ using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 using numl.Model;
 using numl.Utils;
+using numl.Features;
+using numl.Preprocessing;
 
 namespace numl.Supervised.Perceptron
 {
@@ -38,11 +40,15 @@ namespace numl.Supervised.Perceptron
         /// serialized.</param>
         public override void WriteXml(XmlWriter writer)
         {
-            writer.WriteAttributeString("B", B.ToString("r"));
-            writer.WriteAttributeString("Normalized", Normalized.ToString());
+            writer.WriteAttributeString(nameof(B), B.ToString("r"));
+            writer.WriteAttributeString(nameof(Normalized), Normalized.ToString());
+            writer.WriteAttributeString(nameof(NormalizeFeatures), this.NormalizeFeatures.ToString());
+            writer.WriteAttributeString(nameof(FeatureNormalizer), FeatureNormalizer.GetType().Name);
+
 
             Xml.Write<Descriptor>(writer, Descriptor);
-            Xml.Write<Vector>(writer, W);
+            Xml.Write<FeatureProperties>(writer, base.FeatureProperties);
+            Xml.Write<Vector>(writer, W, nameof(W));
         }
         /// <summary>Generates an object from its XML representation.</summary>
         /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is
@@ -50,12 +56,19 @@ namespace numl.Supervised.Perceptron
         public override void ReadXml(XmlReader reader)
         {
             reader.MoveToContent();
-            B = double.Parse(reader.GetAttribute("B"));
-            Normalized = bool.Parse(reader.GetAttribute("Normalized"));
+            B = double.Parse(reader.GetAttribute(nameof(B)));
+            Normalized = bool.Parse(reader.GetAttribute(nameof(Normalized)));
+
+            this.NormalizeFeatures = bool.Parse(reader.GetAttribute(nameof(NormalizeFeatures)));
+
+            var normalizer = Ject.FindType(reader.GetAttribute(nameof(FeatureNormalizer)));
+            base.FeatureNormalizer = (IFeatureNormalizer)Activator.CreateInstance(normalizer);
+
             reader.ReadStartElement();
 
             Descriptor = Xml.Read<Descriptor>(reader);
-            W = Xml.Read<Vector>(reader);
+            base.FeatureProperties = Xml.Read<FeatureProperties>(reader, null, false);
+            W = Xml.Read<Vector>(reader, nameof(W));
         }
     }
 }

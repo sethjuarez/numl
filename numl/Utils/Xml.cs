@@ -13,6 +13,8 @@ namespace numl.Utils
     /// <summary>Xml serialization helper.</summary>
     public static class Xml
     {
+        private static readonly XmlSerializerNamespaces XmlNamespaces = new XmlSerializerNamespaces(new[] { new XmlQualifiedName(string.Empty, string.Empty) });
+
         /// <summary>Save object to file.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>
         /// <param name="stream">The stream.</param>
@@ -94,21 +96,24 @@ namespace numl.Utils
         /// <tparam name="T">Generic type parameter.</tparam>
         /// <param name="writer">The writer.</param>
         /// <param name="thing">The thing.</param>
-        public static void Write<T>(XmlWriter writer, T thing)
+        /// <param name="elementName">(Optional) Element name (i.e. root attribute).</param>
+        public static void Write<T>(XmlWriter writer, T thing, string elementName = null)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(T));
-            serializer.Serialize(writer, thing);
+            XmlSerializer serializer = (!string.IsNullOrWhiteSpace(elementName) ? new XmlSerializer(typeof(T), new XmlRootAttribute(elementName)) : new XmlSerializer(typeof(T)));
+            serializer.Serialize(writer, thing, Xml.XmlNamespaces);
         }
         /// <summary>Reads the given reader.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>
         /// <param name="reader">The reader.</param>
+        /// <param name="elementName">(Optional) Element name (i.e. root attribute).</param>
+        /// <param name="moveNext">(Optional) Indicate whether to move to the next element.</param>
         /// <returns>A T.</returns>
-        public static T Read<T>(XmlReader reader)
+        public static T Read<T>(XmlReader reader, string elementName = null, bool moveNext = true)
         {
-            XmlSerializer dserializer = new XmlSerializer(typeof(T));
+            XmlSerializer dserializer = (!string.IsNullOrWhiteSpace(elementName) ? new XmlSerializer(typeof(T), new XmlRootAttribute(elementName)) : new XmlSerializer(typeof(T)));
             T item = (T)dserializer.Deserialize(reader);
             // move to next thing
-            reader.Read();
+            if (moveNext) reader.Read();
             return item;
         }
     }

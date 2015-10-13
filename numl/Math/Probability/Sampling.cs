@@ -82,6 +82,17 @@ namespace numl.Math.Probability
         /// Produce a uniform random sample from the open interval (min, max). The method will not return
         /// either end point.
         /// </summary>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
+        public static double GetUniform(double min = 0d, double max = 1.0d)
+        {
+            return min + (Sampling.GetUniform() * ((max - min) + 1d));
+        }
+        /// <summary>
+        /// Produce a uniform random sample from the open interval (min, max). The method will not return
+        /// either end point.
+        /// </summary>
         /// <param name="min">Min (exclusive)</param>
         /// <param name="max">Max (exclusive)</param>
         /// <returns>Random Sample.</returns>

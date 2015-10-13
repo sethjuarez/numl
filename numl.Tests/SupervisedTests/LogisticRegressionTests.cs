@@ -6,31 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using numl.Supervised.Regression;
-using numl.Functions;
+using numl.Optimization.Functions;
+using numl.Model;
 
 namespace numl.Tests.SupervisedTests
 {
     [TestFixture, Category("Supervised")]
     public class LogisticRegressionTests : BaseSupervised
     {
-        [Test]
-        public void Logistic_Regression_Test_Prediction()
-        {
-            Matrix m = new[,] 
-            {{ 8, 1, 6 },
-             { 3, 5 ,7 },
-             { 4, 9, 2 }};
-
-            var model = new LogisticRegressionModel() { 
-                LogisticFunction = new Math.Functions.Logistic(), 
-                Theta = new Vector(new double[] { 1, 2, 1, -9 }) 
-            };
-
-            var p = model.Predict(new Vector(new double[] { 8, 1, 6 }));
-
-            Assert.AreEqual(1d, p);
-        }
-
         [Test]
         public void Logistic_Regression_Test_Generator()
         {
@@ -80,10 +63,9 @@ namespace numl.Tests.SupervisedTests
                 0
             });
 
-            Vector test = new Vector(new double[] { 0.1319100, -0.513890
-                 });
+            Vector test = new Vector(new double[] { 0.1319100, -0.513890 });
 
-            var generator = new LogisticRegressionGenerator() { Lambda = 1, LearningRate = 0.01, PolynomialFeatures = 6, MaxIterations = 400 };
+            var generator = new LogisticRegressionGenerator() { Lambda = 1, LearningRate = 0.01, PolynomialFeatures = 6, MaxIterations = 400, NormalizeFeatures = true };
 
             var model2 = generator.Generate(m, y);
             double p = model2.Predict(test);
@@ -94,7 +76,7 @@ namespace numl.Tests.SupervisedTests
         [Test]
         public void Logistic_Regression_Test_CostFunction_1()
         {
-            Matrix X = new[,] 
+            Matrix X = new[,]
             {{ 1, 1, 1 },
              { 1, 1, 1 },
              { 1, 1, 1 },
@@ -105,12 +87,17 @@ namespace numl.Tests.SupervisedTests
             Vector y = new Vector(new double[] { 1, 0, 1, 0, 1, 0 });
             Vector theta = new Vector(new double[] { 0, 1, 0 });
 
-            ICostFunction logisticCostFunction = new Functions.CostFunctions.LogisticCostFunction();
-            IRegularizer regularizer = new Functions.Regularization();
+            ICostFunction logisticCostFunction = new Optimization.Functions.CostFunctions.LogisticCostFunction()
+            {
+                X = X,
+                Y = y,
+                Lambda = 3,
+                Regularizer = new Optimization.Functions.L2Regularizer()
+            };
 
-            double cost = logisticCostFunction.ComputeCost(theta.Copy(), X, y, 3, regularizer);
-            
-            theta = logisticCostFunction.ComputeGradient(theta.Copy(), X, y, 3, regularizer);
+            double cost = logisticCostFunction.ComputeCost(theta.Copy());
+
+            theta = logisticCostFunction.ComputeGradient(theta.Copy());
 
             Assert.AreEqual(2.2933d, System.Math.Round(cost, 4));
 
@@ -130,11 +117,16 @@ namespace numl.Tests.SupervisedTests
             Vector y = new Vector(new double[] { 1, 1, 0 });
             Vector theta = new Vector(new double[] { 0, 1, 0 });
 
-            ICostFunction logisticCostFunction = new Functions.CostFunctions.LogisticCostFunction();
+            ICostFunction logisticCostFunction = new Optimization.Functions.CostFunctions.LogisticCostFunction()
+            {
+                X = X,
+                Y = y,
+                Lambda = 0,
+            };
 
-            double cost = logisticCostFunction.ComputeCost(theta.Copy(), X, y, 0, null);
-            
-            theta = logisticCostFunction.ComputeGradient(theta.Copy(), X, y, 0, null);
+            double cost = logisticCostFunction.ComputeCost(theta.Copy());
+
+            theta = logisticCostFunction.ComputeGradient(theta.Copy());
 
             Assert.AreEqual(3.1067d, System.Math.Round(cost, 4));
 
@@ -154,18 +146,74 @@ namespace numl.Tests.SupervisedTests
             Vector y = new Vector(new double[] { 1, 1, 0 });
             Vector theta = new Vector(new double[] { 0, 1, 0 });
 
-            ICostFunction logisticCostFunction = new Functions.CostFunctions.LogisticCostFunction();
-            IRegularizer regularizer = new Functions.Regularization();
+            ICostFunction logisticCostFunction = new Optimization.Functions.CostFunctions.LogisticCostFunction()
+            {
+                X = X,
+                Y = y,
+                Lambda = 3,
+                Regularizer = new Optimization.Functions.L2Regularizer()
+            };
 
-            double cost = logisticCostFunction.ComputeCost(theta.Copy(), X, y, 3, regularizer);
-            
-            theta = logisticCostFunction.ComputeGradient(theta.Copy(), X, y, 3, regularizer);
+            double cost = logisticCostFunction.ComputeCost(theta.Copy());
+
+            theta = logisticCostFunction.ComputeGradient(theta.Copy());
 
             Assert.AreEqual(3.6067d, System.Math.Round(cost, 4));
 
             Assert.AreEqual(0.6093d, System.Math.Round(theta[0], 4));
             Assert.AreEqual(3.8988d, System.Math.Round(theta[1], 4));
             Assert.AreEqual(0.1131d, System.Math.Round(theta[2], 4));
+        }
+
+        [Test]
+        public void Logistic_Regression_XOR_Learner()
+        {
+            var xor = new[]
+            {
+                new { a = false, b = false, c = false },
+                new { a = false, b = true, c = true },
+                new { a = true, b = false, c = true },
+                new { a = true, b = true, c = false },
+                new { a = false, b = false, c = false },
+                new { a = false, b = true, c = true },
+                new { a = true, b = false, c = true },
+                new { a = true, b = true, c = false },
+                new { a = false, b = false, c = false },
+                new { a = false, b = true, c = true },
+                new { a = true, b = false, c = true },
+                new { a = true, b = true, c = false },
+                new { a = false, b = false, c = false },
+                new { a = false, b = true, c = true },
+                new { a = true, b = false, c = true },
+                new { a = true, b = true, c = false },
+                new { a = false, b = false, c = false },
+                new { a = false, b = true, c = true },
+                new { a = true, b = false, c = true },
+                new { a = true, b = true, c = false },
+            };
+
+            var d = Descriptor.New("XOR")
+                              .With("a").As(typeof(bool))
+                              .With("b").As(typeof(bool))
+                              .Learn("c").As(typeof(bool));
+
+            var generator = new LogisticRegressionGenerator() { Descriptor = d, PolynomialFeatures = 3, LearningRate = 0.01, Lambda = 0 };
+            var model = Learner.Learn(xor, 0.9, 5, generator).Model;
+
+            Matrix x = new[,]
+                {{ -1, -1 },  // false, false -> -
+                 { -1,  1 },  // false, true  -> +
+                 {  1, -1 },  // true, false  -> +
+                 {  1,  1 }}; // true, true   -> -
+
+            Vector y_actual = new Vector(new[] { 0d, 1d, 1d, 0d });
+
+            Vector y = new Vector(x.Rows);
+
+            for (int i = 0; i < x.Rows; i++)
+                y[i] = model.Predict(x[i, VectorType.Row]);
+
+            Assert.AreEqual(y_actual, y);
         }
     }
 }

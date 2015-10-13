@@ -62,14 +62,38 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classifiers\IClassifier.cs" />
-    <Compile Include="Classifiers\MultiClassClassifier.cs" />
-    <Compile Include="Functions\CostFunctions\ICostFunction.cs" />
-    <Compile Include="Functions\CostFunctions\LinearCostFunction.cs" />
-    <Compile Include="Functions\CostFunctions\LogisticCostFunction.cs" />
-    <Compile Include="Functions\GradientDescent.cs" />
-    <Compile Include="Functions\IRegularizer.cs" />
-    <Compile Include="Functions\Regularization.cs" />
+    <Compile Include="Features\FeatureProperties.cs" />
+    <Compile Include="LearningModel.cs" />
+    <Compile Include="Math\Functions\ClippedRectifiedLinear.cs" />
+    <Compile Include="Math\Functions\Softmax.cs" />
+    <Compile Include="Math\Functions\SteepLogistic.cs" />
+    <Compile Include="Math\Functions\RectifiedLinear.cs" />
+    <Compile Include="Math\Kernels\LogisticKernel.cs" />
+    <Compile Include="Optimization\Functions\CostFunctions\CofiCostFunction.cs" />
+    <Compile Include="Optimization\Functions\CostFunctions\CostFunction.cs" />
+    <Compile Include="Optimization\Methods\GradientDescent\NAGDescent.cs" />
+    <Compile Include="Optimization\Methods\IOptimizationMethod.cs" />
+    <Compile Include="Optimization\Methods\OptimizationMethod.cs" />
+    <Compile Include="Optimization\Methods\OptimizationMethods.cs" />
+    <Compile Include="Optimization\Optimizer.cs" />
+    <Compile Include="Optimization\OptimizerProperties.cs" />
+    <Compile Include="Optimization\Methods\GradientDescent\FastGradientDescent.cs" />
+    <Compile Include="Optimization\Methods\GradientDescent\StochasticGradientDescent.cs" />
+    <Compile Include="Preprocessing\Normalization\LogisticFeatureNormalizer.cs" />
+    <Compile Include="Preprocessing\Normalization\TanhFeatureNormalizer.cs" />
+    <Compile Include="Preprocessing\Normalization\MinMaxFeatureNormalizer.cs" />
+    <Compile Include="Preprocessing\Normalization\ZeroMeanFeatureNormalizer.cs" />
+    <Compile Include="Recommendation\CofiRecommenderGenerator.cs" />
+    <Compile Include="Scoring\Score.cs" />
+    <Compile Include="Scoring\ScoringMetric.cs" />
+    <Compile Include="Supervised\Classification\ClassificationModel.cs" />
+    <Compile Include="Supervised\Classification\IClassifier.cs" />
+    <Compile Include="Supervised\Classification\MultiClassLearner.cs" />
+    <Compile Include="Optimization\Functions\CostFunctions\ICostFunction.cs" />
+    <Compile Include="Optimization\Functions\CostFunctions\LinearCostFunction.cs" />
+    <Compile Include="Optimization\Functions\CostFunctions\LogisticCostFunction.cs" />
+    <Compile Include="Optimization\Functions\IRegularizer.cs" />
+    <Compile Include="Optimization\Functions\L2Regularizer.cs" />
     <Compile Include="Learner.cs" />
     <Compile Include="Math\Functions\Function.cs" />
     <Compile Include="Math\Functions\Ident.cs" />
@@ -82,6 +106,7 @@
     <Compile Include="Math\Information\Impurity.cs" />
     <Compile Include="Math\Kernels\IKernel.cs" />
     <Compile Include="Math\Kernels\PolyKernel.cs" />
+    <Compile Include="Math\Kernels\LinearKernel.cs" />
     <Compile Include="Math\Kernels\RBFKernel.cs" />
     <Compile Include="Math\LinearAlgebra\Evd.cs" />
     <Compile Include="Math\LinearAlgebra\Matrix.cs" />
@@ -122,9 +147,11 @@
     <Compile Include="Platform\IAppDomain.cs" />
     <Compile Include="Platform\IAssembly.cs" />
     <Compile Include="Preprocessing\FeatureDimensions.cs" />
-    <Compile Include="Preprocessing\FeatureNormalizer.cs" />
+    <Compile Include="Preprocessing\Normalization\ZScoreFeatureNormalizer.cs" />
+    <Compile Include="Recommendation\CofiRecommenderModel.cs" />
     <Compile Include="Supervised\DecisionTree\DecisionTreeGenerator.cs" />
     <Compile Include="Supervised\DecisionTree\DecisionTreeModel.cs" />
+    <Compile Include="Preprocessing\IFeatureNormalizer.cs" />
     <Compile Include="Supervised\KNN\KNNGenerator.cs" />
     <Compile Include="Supervised\KNN\KNNModel.cs" />
     <Compile Include="Supervised\NaiveBayes\Measure.cs" />
@@ -132,9 +159,12 @@
     <Compile Include="Supervised\NaiveBayes\Statistic.cs" />
     <Compile Include="Supervised\NeuralNetwork\Edge.cs" />
     <Compile Include="Supervised\NeuralNetwork\Network.cs" />
+    <Compile Include="Supervised\NeuralNetwork\NetworkLayer.cs" />
     <Compile Include="Supervised\NeuralNetwork\NeuralNetworkGenerator.cs" />
     <Compile Include="Supervised\NeuralNetwork\NeuralNetworkModel.cs" />
     <Compile Include="Supervised\NeuralNetwork\Neuron.cs" />
+    <Compile Include="Supervised\NeuralNetwork\Recurrent\GatedRNNGenerator.cs" />
+    <Compile Include="Supervised\NeuralNetwork\Recurrent\RecurrentNeuron.cs" />
     <Compile Include="Supervised\Perceptron\KernelPerceptronModel.cs" />
     <Compile Include="Supervised\Perceptron\PerceptronModel.cs" />
     <Compile Include="Supervised\NaiveBayes\NaiveBayesModel.cs" />
@@ -143,6 +173,11 @@
     <Compile Include="Supervised\Regression\LinearRegressionModel.cs" />
     <Compile Include="Supervised\Regression\LogisticRegressionGenerator.cs" />
     <Compile Include="Supervised\Regression\LogisticRegressionModel.cs" />
+    <Compile Include="Supervised\SVM\Selection\ISelection.cs" />
+    <Compile Include="Supervised\SVM\Selection\WorkingSetSelection3.cs" />
+    <Compile Include="Supervised\SVM\SVMGenerator.cs" />
+    <Compile Include="Supervised\SVM\SVMModel.cs" />
+    <Compile Include="Unsupervised\CKMeans.cs" />
     <Compile Include="Unsupervised\Cluster.cs" />
     <Compile Include="Unsupervised\GMM.cs" />
     <Compile Include="Unsupervised\HClusterModel.cs" />
@@ -154,6 +189,7 @@
     <Compile Include="Utils\EnumerableHelpers.cs" />
     <Compile Include="Utils\Ject.cs" />
     <Compile Include="Model\NumlAttributes.cs" />
+    <Compile Include="Utils\MathHelpers.cs" />
     <Compile Include="Utils\StringHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Supervised\Generator.cs" />
@@ -167,9 +203,7 @@
   <ItemGroup>
     <Compile Include="Supervised\Perceptron\KernelPerceptronGenerator.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Supervised\SVM\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>

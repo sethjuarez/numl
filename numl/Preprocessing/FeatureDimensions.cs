@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace numl.PreProcessing
+namespace numl.Preprocessing
 {
     /// <summary>
     /// Feature Dimensions class
@@ -12,7 +12,7 @@ namespace numl.PreProcessing
     public static class FeatureDimensions
     {
         /// <summary>
-        /// Adds a specified number of polynomial features to the training / test Vector.
+        /// Adds a specified number of polynomial features to the given Vector.
         /// </summary>
         /// <param name="x">Training / Testing record</param>
         /// <param name="polynomialFeatures">Number of polynomial features to add</param>
@@ -39,7 +39,7 @@ namespace numl.PreProcessing
         }
 
         /// <summary>
-        /// Adds a specified number of polynomial features to the training set Matrix.
+        /// Adds a specified number of polynomial features to the given Matrix.
         /// </summary>
         /// <param name="x">Training set</param>
         /// <param name="polynomialFeatures">Number of polynomial features to add</param>

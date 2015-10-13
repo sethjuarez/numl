@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using numl.Supervised.Regression;
 using numl.Math.LinearAlgebra;
-using numl.Functions;
+using numl.Optimization.Functions;
 
 namespace numl.Tests.SupervisedTests
 {
@@ -48,9 +48,14 @@ namespace numl.Tests.SupervisedTests
                         22.7524
             });
 
-            ICostFunction costFunction = new Functions.CostFunctions.LinearCostFunction();
-            double cost = costFunction.ComputeCost(theta, X, y, 0, null);
-            Vector grad = costFunction.ComputeGradient(theta, X, y, 0, null);
+            ICostFunction costFunction = new Optimization.Functions.CostFunctions.LinearCostFunction()
+            {
+                 X = X,
+                 Y = y,
+                 Lambda = 0
+            };
+            double cost = costFunction.ComputeCost(theta);
+            Vector grad = costFunction.ComputeGradient(theta);
 
             Assert.AreEqual(303.95d, System.Math.Round(cost, 2));
 
@@ -92,11 +97,16 @@ namespace numl.Tests.SupervisedTests
                         22.7524
             });
 
-            ICostFunction costFunction = new Functions.CostFunctions.LinearCostFunction();
-            IRegularizer regulariser = new Regularization();
+            ICostFunction costFunction = new Optimization.Functions.CostFunctions.LinearCostFunction()
+            {
+                X = X,
+                Y = y,
+                Lambda = 1,
+                Regularizer = new L2Regularizer()
+            };
 
-            double cost = costFunction.ComputeCost(theta, X, y, 1, regulariser);
-            Vector grad = costFunction.ComputeGradient(theta, X, y, 1, regulariser);
+            double cost = costFunction.ComputeCost(theta);
+            Vector grad = costFunction.ComputeGradient(theta);
 
             Assert.AreEqual(303.99, System.Math.Round(cost, 2));
 
@@ -135,12 +145,13 @@ namespace numl.Tests.SupervisedTests
                     242500
                 };
 
-            LinearRegressionGenerator generator = new LinearRegressionGenerator() { LearningRate = 0.01, MaxIterations = 400, Lambda = 0 };
+            LinearRegressionGenerator generator = new LinearRegressionGenerator() { LearningRate = 0.01, MaxIterations = 400, Lambda = 0, NormalizeFeatures = true };
             var model = generator.Generate(x.Copy(), y.Copy());
             var priceEqns = model.Predict(new Vector(new double[] { 1650, 3 }));
 
-            double actualEqns = 278735d;
-
+            // CK 150929: increased due to improvements in optimisation
+            double actualEqns = 295107.0d;
+            
             Assert.AreEqual(actualEqns, System.Math.Round(priceEqns, 0), 5000);
         }
 
@@ -176,11 +187,11 @@ namespace numl.Tests.SupervisedTests
                     242500
                 };
 
-            LinearRegressionGenerator generator = new LinearRegressionGenerator() { LearningRate = 0.01, MaxIterations = 400, Lambda = 1 };
+            LinearRegressionGenerator generator = new LinearRegressionGenerator() { LearningRate = 0.01, MaxIterations = 400, Lambda = 1, NormalizeFeatures = true };
             var model = generator.Generate(x.Copy(), y.Copy());
             var priceGrad = model.Predict(new Vector(new double[] { 1650, 3 }));
 
-            double actualGrad = 280942d;
+            double actualGrad = 296500.0d;
 
             Assert.AreEqual(actualGrad, System.Math.Round(priceGrad, 0), 5000);
         }

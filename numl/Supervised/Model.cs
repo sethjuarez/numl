@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Schema;
 using System.Runtime.Serialization;
+using numl.Features;
+using numl.Preprocessing;
 
 namespace numl.Supervised
 {
@@ -21,10 +23,42 @@ namespace numl.Supervised
         /// <summary>Gets or sets the descriptor.</summary>
         /// <value>The descriptor.</value>
         public Descriptor Descriptor { get; set; }
+
+        /// <summary>
+        /// Gets or Sets whether to perform feature normalisation using the specified Feature Normalizer.
+        /// </summary>
+        public bool NormalizeFeatures { get; set; }
+
+        /// <summary>
+        /// Feature normalizer to use over each item.
+        /// </summary>
+        public IFeatureNormalizer FeatureNormalizer { get; set; }
+
+        /// <summary>
+        /// Feature properties from the original item set.
+        /// </summary>
+        public FeatureProperties FeatureProperties { get; set; }
+
         /// <summary>Predicts the given o.</summary>
         /// <param name="y">The Vector to process.</param>
         /// <returns>An object.</returns>
         public abstract double Predict(Vector y);
+
+        /// <summary>
+        /// Predicts the given examples.
+        /// </summary>
+        /// <param name="x">Matrix of examples to predict.</param>
+        /// <returns>Vector of predictions.</returns>
+        public virtual Vector Predict(Matrix x)
+        {
+            Vector v = Vector.Zeros(x.Rows);
+
+            for (int row = 0; row < x.Rows; row++)
+                v[row] = this.Predict(x[row, VectorType.Row]);
+
+            return v;
+        }
+
         /// <summary>Predicts the given o.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
         /// <param name="o">The object to process.</param>
@@ -40,6 +74,23 @@ namespace numl.Supervised
             Ject.Set(o, Descriptor.Label.Name, result);
             return o;
         }
+
+        /// <summary>
+        /// Predicts all the given objects.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
+        /// <param name="objects">The objects to process.</param>
+        /// <returns>Array of object predictions.</returns>
+        public object[] Predict(object[] objects)
+        {
+            object[] result = new object[objects.Count()];
+            for (int x = 0; x < result.Length; x++)
+            {
+                result[x] = this.Predict(objects[x]);
+            }
+            return result;
+        }
+
         /// <summary>Predicts the given o.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>
         /// <param name="o">The object to process.</param>
@@ -49,13 +100,6 @@ namespace numl.Supervised
             return (T)Predict((object)o);
         }
 
-        // ----- saving stuff
-        /// <summary>Model persistance.</summary>
-        /// <param name="file">The file to load.</param>
-        //public virtual void Save(string file)
-        //{
-        //    Xml.Save(file, this, GetType());
-        //}
         /// <summary>Saves the given stream.</summary>
         /// <param name="stream">The stream to load.</param>
         public virtual void Save(Stream stream)
@@ -68,13 +112,7 @@ namespace numl.Supervised
         {
             return Xml.ToXmlString(this, GetType());
         }
-        /// <summary>Loads the given stream.</summary>
-        /// <param name="file">The file to load.</param>
-        /// <returns>An IModel.</returns>
-        //public virtual IModel Load(string file)
-        //{
-        //    return (IModel)Xml.Load(file, GetType());
-        //}
+
         /// <summary>Loads the given stream.</summary>
         /// <param name="stream">The stream to load.</param>
         /// <returns>An IModel.</returns>
@@ -107,16 +145,13 @@ namespace numl.Supervised
         {
             return null;
         }
+
         /// <summary>Converts an object into its XML representation.</summary>
-        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="writer"></param>
+        /// <param name="writer">The <see cref="T:System.Xml.XmlWriter" /> stream to which the object is being serialized.</param>
         public abstract void WriteXml(XmlWriter writer);
+
         /// <summary>Generates an object from its XML representation.</summary>
-        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is
-        // deserialized.</param>
+        /// <param name="reader">The <see cref="T:System.Xml.XmlReader" /> stream from which the object is deserialized.</param>
         public abstract void ReadXml(XmlReader reader);
     }
 }

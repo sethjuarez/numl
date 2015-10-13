@@ -27,6 +27,8 @@ namespace numl.Supervised.Perceptron
         /// <returns>Model.</returns>
         public override IModel Generate(Matrix x, Vector y)
         {
+            this.Preprocess(x, y);
+
             int N = y.Length;
             Vector a = Vector.Zeros(N);
 
@@ -61,7 +63,11 @@ namespace numl.Supervised.Perceptron
                 Kernel = Kernel,
                 A = a.Slice(indices),
                 Y = y.Slice(indices),
-                X = x.Slice(indices)
+                X = x.Slice(indices),
+                Descriptor = this.Descriptor,
+                NormalizeFeatures = base.NormalizeFeatures,
+                FeatureNormalizer = base.FeatureNormalizer,
+                FeatureProperties = base.FeatureProperties
             };
         }
     }

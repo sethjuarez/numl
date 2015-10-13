@@ -49,13 +49,16 @@
     <Compile Include="DataTests\LinAlgConversionTests.cs" />
     <Compile Include="DataTests\SimpleConversionTests.cs" />
     <Compile Include="Data\ArbitraryPrediction.cs" />
+    <Compile Include="Data\Digit.cs" />
     <Compile Include="Data\Fake.cs" />
     <Compile Include="Data\Feed.cs" />
     <Compile Include="Data\Generic.cs" />
     <Compile Include="Data\House.cs" />
     <Compile Include="Data\Iris.cs" />
+    <Compile Include="Data\Movie.cs" />
     <Compile Include="Data\Student.cs" />
     <Compile Include="Data\Tennis.cs" />
+    <Compile Include="Data\User.cs" />
     <Compile Include="Data\ValueObject.cs" />
     <Compile Include="MathTests\ProbabilityTests.cs" />
     <Compile Include="PlatformWrapper\PlatformWrapperInstance.cs" />
@@ -66,6 +69,7 @@
     <Compile Include="SerializationTests\NeuralNetworkSerializationTests.cs" />
     <Compile Include="SerializationTests\RegressionSerialisationTests.cs" />
     <Compile Include="SupervisedTests\BaseSupervised.cs" />
+    <Compile Include="SupervisedTests\SVMTests.cs" />
     <Compile Include="SupervisedTests\DecisionTreeTests.cs" />
     <Compile Include="MathTests\MetricTests.cs" />
     <Compile Include="MathTests\EvdTests.cs" />
@@ -75,8 +79,10 @@
     <Compile Include="MathTests\MatrixTests.cs" />
     <Compile Include="MathTests\VectorTests.cs" />
     <Compile Include="SupervisedTests\KNNTests.cs" />
+    <Compile Include="SupervisedTests\CofiRecommenderTests.cs" />
     <Compile Include="SupervisedTests\LinearRegressionTests.cs" />
     <Compile Include="SupervisedTests\LogisticRegressionTests.cs" />
+    <Compile Include="SupervisedTests\MultiClassLearnerTests.cs" />
     <Compile Include="SupervisedTests\NaiveBayesTests.cs" />
     <Compile Include="SupervisedTests\NeuralNetworkTests.cs" />
     <Compile Include="UnsupervisedTests\HierarchicalClusteringTests.cs" />

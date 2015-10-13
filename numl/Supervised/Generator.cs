@@ -8,7 +8,8 @@ using System.Collections.Generic;
 using numl.Math;
 using System.Net;
 using numl.Math.LinearAlgebra;
-
+using numl.Features;
+using numl.Preprocessing;
 
 namespace numl.Supervised
 {
@@ -26,9 +27,67 @@ namespace numl.Supervised
             if (handler != null)
                 handler(sender, e);
         }
+
         /// <summary>Gets or sets the descriptor.</summary>
         /// <value>The descriptor.</value>
         public Descriptor Descriptor { get; set; }
+        
+        /// <summary>
+        /// Gets or sets whether to perform feature normalisation using the specified Feature Normalizer.
+        /// </summary>
+        public bool NormalizeFeatures { get; set; }
+        /// <summary>
+        /// Gets or sets the feature normalizer to use for each item.
+        /// </summary>
+        public IFeatureNormalizer FeatureNormalizer { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Feature properties from the original training set.
+        /// </summary>
+        public FeatureProperties FeatureProperties { get; set; }
+
+        /// <summary>
+        /// Initializes a new Generator instance.
+        /// </summary>
+        public Generator()
+        {
+            this.NormalizeFeatures = false;
+            this.FeatureNormalizer = new Preprocessing.Normalization.MinMaxFeatureNormalizer();
+        }
+
+        /// <summary>
+        /// Override to perform custom pre-processing steps on the raw Matrix data.
+        /// </summary>
+        /// <param name="X">Matrix of examples.</param>
+        /// <param name="y">Vector of values.</param>
+        /// <returns></returns>
+        public virtual void Preprocess(Matrix X, Vector y)
+        {
+            this.FeatureProperties = new FeatureProperties()
+            {
+                Average = X.Mean(VectorType.Row),
+                StandardDeviation = X.StdDev(VectorType.Row),
+                Minimum = X.Min(VectorType.Row),
+                Maximum = X.Max(VectorType.Row),
+                Median = X.Median(VectorType.Row)
+            };
+
+            if (this.NormalizeFeatures)
+            {
+                if (this.FeatureNormalizer != null)
+                {
+                    for (int i = 0; i < X.Rows; i++)
+                    {
+                        Vector vectors = this.FeatureNormalizer.Normalize(X[i, VectorType.Row], this.FeatureProperties);
+                        for (int j = 0; j < X.Cols; j++)
+                        {
+                            X[i, j] = vectors[j];
+                        }
+                    }
+                }
+            }
+        }
+
         /// <summary>Generate model based on a set of examples.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
         /// <param name="examples">Example set.</param>
@@ -42,6 +101,7 @@ namespace numl.Supervised
 
             return Generate(Descriptor, examples);
         }
+
         /// <summary>Generate model based on a set of examples.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
         /// <param name="description">The description.</param>
@@ -62,6 +122,7 @@ namespace numl.Supervised
 
             return Generate(tuple.Item1, tuple.Item2);
         }
+
         /// <summary>Generates the given examples.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>
         /// <param name="examples">Example set.</param>
@@ -72,6 +133,7 @@ namespace numl.Supervised
             var descriptor = Descriptor.Create<T>();
             return Generate(descriptor, examples);
         }
+
         /// <summary>Generate model based on a set of examples.</summary>
         /// <param name="x">The Matrix to process.</param>
         /// <param name="y">The Vector to process.</param>

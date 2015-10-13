@@ -104,6 +104,7 @@ namespace numl.Math.LinearAlgebra
                     this[i] = value;
             }
         }
+
         /// <summary>
         /// Indexer to get or set items within this collection using array index syntax.
         /// </summary>
@@ -136,6 +137,7 @@ namespace numl.Math.LinearAlgebra
                 }
             }
         }
+
         /// <summary>Gets the length.</summary>
         /// <value>The length.</value>
         public int Length
@@ -302,7 +304,8 @@ namespace numl.Math.LinearAlgebra
             {
                 _asMatrixRef = false;
                 _vector = new double[size];
-                string[] arrs = reader.ReadContentAsString().Split(new string[] { "," }, StringSplitOptions.None);
+                string content = reader.ReadContentAsString();
+                string[] arrs = content.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                 for (int i = 0; i < size; i++)
                     _vector[i] = double.Parse(arrs[i].Trim());
             }

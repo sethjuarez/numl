@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using numl.Utils;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
+using numl.Features;
+using numl.Preprocessing;
 
 namespace numl.Supervised.DecisionTree
 {
@@ -126,11 +128,19 @@ namespace numl.Supervised.DecisionTree
         public override void ReadXml(XmlReader reader)
         {
             reader.MoveToContent();
-            Hint = double.Parse(reader.GetAttribute("Hint"));
+
+            Hint = double.Parse(reader.GetAttribute(nameof(Hint)));
+
+            this.NormalizeFeatures = bool.Parse(reader.GetAttribute(nameof(NormalizeFeatures)));
+
+            var normalizer = Ject.FindType(reader.GetAttribute(nameof(FeatureNormalizer)));
+            base.FeatureNormalizer = (IFeatureNormalizer)Activator.CreateInstance(normalizer);
+
             reader.ReadStartElement();
 
             Descriptor = Xml.Read<Descriptor>(reader);
-            Tree = Xml.Read<Node>(reader);
+            base.FeatureProperties = Xml.Read<FeatureProperties>(reader, null, false);
+            Tree = Xml.Read<Node>(reader, nameof(Node));
 
             // re-establish tree cycles and values
             ReLinkNodes(Tree);
@@ -140,9 +150,13 @@ namespace numl.Supervised.DecisionTree
         /// serialized.</param>
         public override void WriteXml(XmlWriter writer)
         {
-            writer.WriteAttributeString("Hint", Hint.ToString("r"));
+            writer.WriteAttributeString(nameof(Hint), Hint.ToString("r"));
+            writer.WriteAttributeString(nameof(NormalizeFeatures), this.NormalizeFeatures.ToString());
+            writer.WriteAttributeString(nameof(FeatureNormalizer), FeatureNormalizer.GetType().Name);
+
             Xml.Write<Descriptor>(writer, Descriptor);
-            Xml.Write<Node>(writer, Tree);
+            Xml.Write<FeatureProperties>(writer, base.FeatureProperties);
+            Xml.Write<Node>(writer, Tree, nameof(Node));
         }
     }
 }
