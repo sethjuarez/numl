@@ -10,10 +10,12 @@ using Newtonsoft.Json;
 
 namespace numl.Supervised.NeuralNetwork
 {
+    
     /// <summary>A node.</summary>
     [JsonObject(MemberSerialization.OptIn)]
     public class Node 
     {
+        private static int _id = -1;
         /// <summary>Default constructor.</summary>
         public Node()
         {
@@ -26,7 +28,7 @@ namespace numl.Supervised.NeuralNetwork
             Label = String.Empty;
             Out = new List<Edge>();
             In = new List<Edge>();
-            Id = Guid.NewGuid().ToString();
+            Id = (++_id).ToString();
         }
         /// <summary>Gets or sets the output.</summary>
         /// <value>The output.</value>

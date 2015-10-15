@@ -50,6 +50,8 @@ namespace numl.Supervised.NeuralNetwork
         public static Edge Create(Node source, Node target)
         {
             Edge e = new Edge { Source = source, Target = target };
+            e.SourceId = source.Id;
+            e.TargetId = target.Id;
             source.Out.Add(e);
             target.In.Add(e);
             return e;

@@ -32,18 +32,23 @@ namespace numl.Serialization
                 writer.WriteStartObject();
 
                 // write out nodes
+                writer.WritePropertyName("Nodes");
                 serializer.Serialize(writer, network.GetNodes().ToArray());
-                writer.WriteEnd();
+
+                // write out all edges
+                writer.WritePropertyName("Edges");
+                serializer.Serialize(writer, network.GetEdges().ToArray());
+
 
                 // write out IN edges
                 writer.WritePropertyName("In");
-                serializer.Serialize(writer, network.In.ToArray());
-                writer.WriteEnd();
+                serializer.Serialize(writer, network.In.Select(n=>n.Id).ToArray());
+                
 
                 // write out OUT edges
                 writer.WritePropertyName("Out");
-                serializer.Serialize(writer, network.Out.ToArray());
-                writer.WriteEnd();
+                serializer.Serialize(writer, network.Out.Select(n => n.Id).ToArray());
+                
 
                 writer.WriteEndObject();
             }
