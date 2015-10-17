@@ -65,8 +65,47 @@ namespace numl.Scoring
         public int FalseNegatives { get; set; }
 
         /// <summary>
+        /// Gets or sets the Root Mean Squared Error of the predictions.
+        /// </summary>
+        public double RMSE { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Coefficient of Variation of the RMSE.
+        /// </summary>
+        public double CoefRMSE { get; set; }
+
+        /// <summary>
+        /// Gets or sets the normalised RMSE.
+        /// </summary>
+        public double NormRMSE { get; set; }
+
+        /// <summary>
+        /// Gets the Specificity of the model.
+        /// <para>A higher value indicates the model has scored better at classifying negative examples, otherwise known as the True-Negative-Rate (TNR). </para>
+        /// </summary>
+        public double Specificity
+        {
+            get
+            {
+                return (double)this.TrueNegatives / ((double)this.TrueNegatives + (double)this.FalsePositives);
+            }
+        }
+
+        /// <summary>
+        /// Gets the Fallout value of the model.
+        /// <para>A higher value indicates the model has decreased prediction accuracy, otherwise known as the False-Positive-Rate (FPR).</para>
+        /// </summary>
+        public double Fallout
+        {
+            get
+            {
+                return (double)this.FalsePositives / ((double)this.FalsePositives + (double)this.TrueNegatives);
+            }
+        }
+
+        /// <summary>
         /// Gets the Precision of the model.
-        /// <para>A higher precision indicates the model has a higher prediction confidence.  Also known as the positive predictive value (PPV).</para>
+        /// <para>A higher precision indicates the model has a higher prediction confidence.  Also known as the Positive-Predictive-Value (PPV).</para>
         /// </summary>
         public double Precision
         {
@@ -78,7 +117,7 @@ namespace numl.Scoring
 
         /// <summary>
         /// Gets the Recall of the model.
-        /// <para>A higher recall indicates the model has scored better on reducing false negative predictions.  Also known as the sensitivity.</para>
+        /// <para>A higher recall indicates the model has scored better on reducing false negative predictions.  Also known as the Sensitivity or True-Positive-Rate (TPR).</para>
         /// </summary>
         public double Recall
         {
@@ -101,6 +140,17 @@ namespace numl.Scoring
         }
 
         /// <summary>
+        /// Gets the Area Under the Curve value for the current fixed stationary point of the Precision / Recall curve.
+        /// </summary>
+        public double AUC
+        {
+            get
+            {
+                return 1.0 - (this.Precision * this.Recall);
+            }
+        }
+
+        /// <summary>
         /// Initializes a new Score object.
         /// </summary>
         public Score()
@@ -109,11 +159,48 @@ namespace numl.Scoring
                 this.TotalPositives = this.TruePositives = this.TrueNegatives = 0;
         }
 
+        #region Static Methods
+
+        /// <summary>
+        /// Computes the Root Mean Squared Error for the given inputs.
+        /// </summary>
+        /// <param name="y1">Target values.</param>
+        /// <param name="y2">Actual values.</param>
+        /// <returns>Double.</returns>
+        public static double ComputeRMSE(Vector y1, Vector y2)
+        {
+            return (System.Math.Sqrt(System.Math.Abs(((y1 * y1) - (y2 * y2)).Sum() / (double)y1.Length)));
+        }
+
+        /// <summary>
+        /// Computes the Coefficient of Variation of the Root Mean Squared Error for the given inputs.
+        /// </summary>
+        /// <param name="y1">Target values.</param>
+        /// <param name="y2">Actual values.</param>
+        /// <returns>Double.</returns>
+        public static double ComputeCoefRMSE(Vector y1, Vector y2)
+        {
+            return Score.ComputeRMSE(y1, y2) / y1.Mean();
+        }
+
+        /// <summary>
+        /// Computes the Normalized Root Mean Squared Error for the given inputs.
+        /// </summary>
+        /// <param name="y1">Target values.</param>
+        /// <param name="y2">Actual values.</param>
+        /// <returns>Double.</returns>
+        public static double ComputeNormRMSE(Vector y1, Vector y2)
+        {
+            return Score.ComputeRMSE(y1, y2) / (y1.Max() - y1.Min());
+        }
+
+        #endregion
+
         /// <summary>
         /// Scores a set of predictions against the actual values.
         /// </summary>
-        /// <param name="predictions">Predicted values.</param>
-        /// <param name="actual">Actual values.</param>
+        /// <param name="predictions">Real values.</param>
+        /// <param name="actual">Predicted values.</param>
         /// <returns></returns>
         public static Score ScorePredictions(Vector predictions, Vector actual)
         {
@@ -133,6 +220,10 @@ namespace numl.Scoring
             {
                 score._TotalAccuracy = (predictions.Where((d, idx) => d == actual[idx]).Count() / predictions.Length);
             }
+
+            score.RMSE = Score.ComputeRMSE(predictions, actual);
+            score.CoefRMSE = Score.ComputeCoefRMSE(predictions, actual);
+            score.NormRMSE = Score.ComputeRMSE(predictions, actual);
 
             return score;
         }

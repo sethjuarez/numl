@@ -19,12 +19,32 @@ namespace numl.Scoring
         /// </summary>
         Accuracy,
         /// <summary>
+        /// Root Mean Squared Error
+        /// </summary>
+        RMSE,
+        /// <summary>
+        /// Normalized Root Mean Squared Error
+        /// </summary>
+        NormRMSE,
+        /// <summary>
         /// Precision or PPV (positive predictive value)
         /// </summary>
         Precision,
         /// <summary>
-        /// Recall or sensitivity
+        /// Recall or Sensitivity
         /// </summary>
-        Recall
+        Recall,
+        /// <summary>
+        /// Fallout or FPR (false positive rate)
+        /// </summary>
+        Fallout,
+        /// <summary>
+        /// Specificity or TNR (true negative rate value)
+        /// </summary>
+        Specificity,
+        /// <summary>
+        /// AUC of the PR curve
+        /// </summary>
+        AUC
     }
 }

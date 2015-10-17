@@ -38,6 +38,11 @@ namespace numl
                         case ScoringMetric.FScore: return m.Score.FScore;
                         case ScoringMetric.Precision: return m.Score.Precision;
                         case ScoringMetric.Recall: return m.Score.Recall;
+                        case ScoringMetric.RMSE: return m.Score.RMSE;
+                        case ScoringMetric.NormRMSE: return m.Score.NormRMSE;
+                        case ScoringMetric.AUC: return m.Score.AUC;
+                        case ScoringMetric.Fallout: return m.Score.Fallout;
+                        case ScoringMetric.Specificity: return m.Score.Specificity;
                         default: return m.Accuracy;
                     }
                 }).FirstOrDefault();

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using numl.Supervised.Regression;
 using numl.Math.LinearAlgebra;
 using numl.Optimization.Functions;
+using numl.Model;
 
 namespace numl.Tests.SupervisedTests
 {
@@ -194,6 +195,28 @@ namespace numl.Tests.SupervisedTests
             double actualGrad = 296500.0d;
 
             Assert.AreEqual(actualGrad, System.Math.Round(priceGrad, 0), 5000);
+        }
+
+        [Test]
+        public void Linear_Regression_Learner_Test()
+        {
+            var datum = new[]
+            {
+                new { X = 1.0, Y = 1.0 },
+                new { X = 2.0, Y = 2.0 },
+                new { X = 3.0, Y = 1.3 },
+                new { X = 4.0, Y = 3.75 },
+                new { X = 5.0, Y = 5.25 }
+            };
+
+            var d = Descriptor.New("DATUM")
+                              .With("X").As(typeof(double))
+                              .Learn("Y").As(typeof(double));
+
+            var generator = new LinearRegressionGenerator() { Descriptor = d };
+            var model = Learner.Learn(datum, 0.9, 5, generator);
+
+            Assert.GreaterOrEqual(0.8, model.Accuracy);
         }
     }
 }
