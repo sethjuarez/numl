@@ -121,8 +121,8 @@ namespace numl
         {
             Descriptor descriptor = generator.Descriptor;
 
-            trainingPercentage = (trainingPercentage > 10.0 ? trainingPercentage / 100 : trainingPercentage);
-            mixingPercentage = (mixingPercentage > 10.0 ? mixingPercentage / 100 : mixingPercentage);
+            trainingPercentage = (trainingPercentage > 1.0 ? trainingPercentage / 100 : trainingPercentage);
+            mixingPercentage = (mixingPercentage > 1.0 ? mixingPercentage / 100 : mixingPercentage);
 
             var classGroups = examples.Select(s => new
                                                 {

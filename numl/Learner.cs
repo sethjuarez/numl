@@ -92,6 +92,8 @@ namespace numl
             //var accuracy = Vector.Zeros(repeat);
             var scores = new Score[repeat];
 
+            if (trainingPercentage > 1.0) trainingPercentage /= 100.0;
+
             // safe for parallisation
             // read-only references to the data model
             // and update indices independently
