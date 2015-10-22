@@ -27,6 +27,29 @@ namespace numl.Utils
         }
 
         /// <summary>
+        /// Gets the index of the specified item in the source array.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source">Source array</param>
+        /// <param name="item">Object to test for.</param>
+        /// <returns></returns>
+        public static int IndexOf<T>(this IEnumerable<T> source, T item)
+        {
+            int index = -1;
+
+            for (int i = 0; i < source.Count(); i++)
+            {
+                if (source.ElementAt(i).Equals(item))
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            return index;
+        }
+
+        /// <summary>
         /// Randomly shuffles the indexing of the source array.
         /// </summary>
         /// <typeparam name="T"></typeparam>

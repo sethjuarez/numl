@@ -75,13 +75,7 @@ namespace numl.Recommendation
         /// <summary>
         /// Initializes a new Collaborative Filtering recommender model.
         /// </summary>
-        /// <param name="referenceMap">Vector of references and their corresponding column indexes in the Reference matrix.</param>
-        /// <param name="entityMap">Vector of entities and their corresponding row indexes in the Reference matrix.</param>
-        public CofiRecommenderModel(Vector referenceMap, Vector entityMap)
-        {
-            this.ReferenceFeatureMap = referenceMap;
-            this.EntityFeatureMap = entityMap;
-        }
+        public CofiRecommenderModel() { }
         
         /// <summary>
         /// Not implemnted.
@@ -114,7 +108,7 @@ namespace numl.Recommendation
             var predictions = (this.ThetaX * this.ThetaY.T).Each((v, r, c) => v + this.Mu[r]);
 
             int[] indices = null;
-            var sorted = predictions[(int)this.ReferenceFeatureMap[referenceId], VectorType.Col].Sort(false, out indices);
+            var sorted = predictions[(int)this.ReferenceFeatureMap.IndexOf(referenceId), VectorType.Col].Sort(false, out indices);
 
             return this.Y.Slice(indices, true);
         }
@@ -159,9 +153,17 @@ namespace numl.Recommendation
 
             Descriptor = Xml.Read<Descriptor>(reader);
             base.FeatureProperties = Xml.Read<FeatureProperties>(reader, null, false);
-            Mu = Xml.Read<Vector>(reader, nameof(Mu));
-            ThetaY = Xml.Read<Matrix>(reader, nameof(ThetaY));
-            ThetaX = Xml.Read<Matrix>(reader, nameof(ThetaX));
+
+            Ratings = Xml.Read<Range>(reader, nameof(Ratings), false);
+
+            Mu = Xml.Read<Vector>(reader, nameof(Mu), false);
+            Y = Xml.Read<Vector>(reader, nameof(Y), false);
+            ThetaY = Xml.Read<Matrix>(reader, nameof(ThetaY), false);
+            ThetaX = Xml.Read<Matrix>(reader, nameof(ThetaX), false);
+            Reference = Xml.Read<Matrix>(reader, nameof(Reference), false);
+
+            ReferenceFeatureMap = Xml.Read<Vector>(reader, nameof(ReferenceFeatureMap), false);
+            EntityFeatureMap = Xml.Read<Vector>(reader, nameof(EntityFeatureMap), false);
         }
 
         /// <summary>Converts an object into its XML representation.</summary>
@@ -174,9 +176,17 @@ namespace numl.Recommendation
             
             Xml.Write<Descriptor>(writer, Descriptor);
             Xml.Write<FeatureProperties>(writer, base.FeatureProperties);
+
+            Xml.Write<Range>(writer, this.Ratings, nameof(Ratings));
+
             Xml.Write<Vector>(writer, Mu, nameof(Mu));
+            Xml.Write<Vector>(writer, Y, nameof(Y));
             Xml.Write<Matrix>(writer, ThetaY, nameof(ThetaY));
             Xml.Write<Matrix>(writer, ThetaX, nameof(ThetaX));
+            Xml.Write<Matrix>(writer, Reference, nameof(Reference));
+
+            Xml.Write<Vector>(writer, ReferenceFeatureMap, nameof(ReferenceFeatureMap));
+            Xml.Write<Vector>(writer, EntityFeatureMap, nameof(EntityFeatureMap));
         }
     }
 }

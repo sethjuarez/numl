@@ -800,14 +800,19 @@ namespace numl.Math.LinearAlgebra
             {
                 _asTransposeRef = false;
                 _matrix = new double[Rows][];
+                //for (int i = 0; i < Rows; i++)
+                //{
+                //    reader.ReadStartElement("r");
+                //    _matrix[i] = new double[Cols];
+                //    for (int j = 0; j < Cols; j++)
+                //        _matrix[i][j] = double.Parse(reader.ReadElementContentAsString("e", string.Empty));
+                //    reader.ReadEndElement();
+                //}
+                string content = reader.ReadContentAsString();
+                string[] arrs = content.Split(new char[] { '[', ';', ']' }, StringSplitOptions.RemoveEmptyEntries);
                 for (int i = 0; i < Rows; i++)
-                {
-                    reader.ReadStartElement("r");
-                    _matrix[i] = new double[Cols];
-                    for (int j = 0; j < Cols; j++)
-                        _matrix[i][j] = double.Parse(reader.ReadElementContentAsString("e", string.Empty));
-                    reader.ReadEndElement();
-                }
+                    _matrix[i] = arrs[i].Trim().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                        .Select(s => double.Parse(s.Trim())).ToArray();
             }
             else
                 throw new InvalidOperationException("Invalid matrix size in XML!");
@@ -823,18 +828,23 @@ namespace numl.Math.LinearAlgebra
             writer.WriteAttributeString("cols", Cols.ToString());
             writer.WriteAttributeString("rows", Rows.ToString());
 
-            for (int i = 0; i < Rows; i++)
-            {
-                writer.WriteStartElement("r");
-                for (int j = 0; j < Cols; j++)
-                {
-                    writer.WriteStartElement("e");
-                    writer.WriteValue(_matrix[i][j]);
-                    writer.WriteEndElement();
-                }
+            //for (int i = 0; i < Rows; i++)
+            //{
+            //    writer.WriteStartElement("r");
+            //    for (int j = 0; j < Cols; j++)
+            //    {
+            //        writer.WriteStartElement("e");
+            //        writer.WriteValue(_matrix[i][j]);
+            //        writer.WriteEndElement();
+            //    }
 
-                writer.WriteEndElement();
-            }
+            //    writer.WriteEndElement();
+            //}
+
+            writer.WriteValue(string.Format("[{0}]", string.Join(";",
+                this.GetRows().Select(s =>
+                    $"[{string.Join(", ", s.Select(v => string.Format("{0:R}", v)))}]"))
+                    ));
         }
         /// <summary>Saves the given stream.</summary>
         /// <param name="stream">The stream to load.</param>
