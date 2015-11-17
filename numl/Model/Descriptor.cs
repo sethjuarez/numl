@@ -256,7 +256,7 @@ namespace numl.Model
         public static Descriptor Create<T>()
             where T : class
         {
-            
+
             return Create(typeof(T));
         }
         /// <summary>Creates a descriptor based upon a marked up concrete type.</summary>
@@ -387,6 +387,41 @@ namespace numl.Model
         public DescriptorProperty Learn(string name)
         {
             return new DescriptorProperty(this, name, true);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Descriptor)
+            {
+                var d = obj as Descriptor;
+                if (Features.Length == d.Features.Length)
+                {
+                    for (int i = 0; i < Features.Length; i++)
+                        if (!Features[i].Equals(d.Features[i]))
+                            return false;
+
+                    if ((Label != null &&
+                        d.Label != null))
+                        return Label.Equals(d.Label) &&
+                               Name == d.Name &&
+                               Type == d.Type &&
+                               VectorLength == d.VectorLength &&
+                               Features.Length == d.Features.Length;
+                    else
+                        return Label == null && 
+                               d.Label == null &&
+                               Name == d.Name &&
+                               Type == d.Type &&
+                               VectorLength == d.VectorLength &&
+                               Features.Length == d.Features.Length;
+                }
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 

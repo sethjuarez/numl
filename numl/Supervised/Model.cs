@@ -8,6 +8,7 @@ using numl.Model;
 using System.Linq;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace numl.Supervised
 {

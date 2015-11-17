@@ -11,12 +11,10 @@ using numl.Serialization;
 namespace numl.Supervised.NeuralNetwork
 {
     /// <summary>A data Model for the neural network.</summary>
-    [JsonObject(MemberSerialization.OptIn)]
     public class NeuralNetworkModel : Model
     {
         /// <summary>Gets or sets the network.</summary>
         /// <value>The network.</value>
-        [JsonProperty]
         [JsonConverter(typeof(NetworkConverter))]
         public Network Network { get; set; }
         /// <summary>Predicts the given o.</summary>

@@ -103,13 +103,13 @@
     <Compile Include="SerializationTests\PropertySerializationTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\numl\numl.csproj">
       <Project>{302d59c1-c8fa-4420-8f3e-39ff307bacd9}</Project>
       <Name>numl</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

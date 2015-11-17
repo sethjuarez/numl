@@ -45,9 +45,7 @@ namespace numl.Tests.SerializationTests
 
             var desc = Deserialize<Descriptor>();
 
-            Assert.AreEqual(d.Features.Length, desc.Features.Length);
-            Assert.AreEqual(d.Features[2].GetType(), typeof(StringProperty));
-
+            Assert.AreEqual(d, desc);
         }
 
         [Test]
@@ -70,8 +68,7 @@ namespace numl.Tests.SerializationTests
 
             Serialize(d);
             var desc = Deserialize<Descriptor>();
-            Assert.AreEqual(d.Features.Length, desc.Features.Length);
-            Assert.AreEqual(d.Features[2].GetType(), typeof(DateTimeProperty));
+            Assert.AreEqual(d, desc);
         }
 
         [Test]
@@ -80,6 +77,7 @@ namespace numl.Tests.SerializationTests
             var d = Descriptor.Create<House>();
             Serialize(d);
             var desc = Deserialize<Descriptor>();
+            Assert.AreEqual(d, desc);
         }
     }
 }

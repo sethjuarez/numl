@@ -253,5 +253,17 @@ namespace numl.Model
             }
             else throw new InvalidCastException("Object is not a date");
         }
+
+        public override bool Equals(object obj)
+        {
+            if (base.Equals(obj) && obj is DateTimeProperty)
+                return Features == ((DateTimeProperty)obj).Features;
+            else
+                return false;
+        }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

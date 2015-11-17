@@ -1,15 +1,9 @@
-﻿using numl.Model;
-using numl.Supervised;
-using numl.Tests.Data;
-using numl.Utils;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System;
+using numl.Model;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
+using numl.Tests.Data;
+using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace numl.Tests.SerializationTests
 {
@@ -29,10 +23,8 @@ namespace numl.Tests.SerializationTests
 
             var po = Deserialize<Property>();
 
-            Assert.AreEqual(p.Name, po.Name);
-            Assert.AreEqual(p.Type, po.Type);
-            Assert.AreEqual(p.Discrete, po.Discrete);
-            Assert.AreEqual(p.Start, po.Start);
+
+            Assert.AreEqual(p, po);
         }
 
         [Test]
@@ -49,14 +41,7 @@ namespace numl.Tests.SerializationTests
 
             var po = Deserialize<StringProperty>();
 
-            Assert.AreEqual(p.Name, po.Name);
-            Assert.AreEqual(p.Type, po.Type);
-            Assert.AreEqual(p.Discrete, po.Discrete);
-            Assert.AreEqual(p.Start, po.Start);
-            Assert.AreEqual(p.Dictionary, po.Dictionary);
-            Assert.AreEqual(p.Exclude, po.Exclude);
-            Assert.AreEqual(p.AsEnum, po.AsEnum);
-            Assert.AreEqual(p.SplitType, po.SplitType);
+            Assert.AreEqual(p, po);
         }
 
         [Test]
@@ -72,11 +57,7 @@ namespace numl.Tests.SerializationTests
 
             var po = Deserialize<EnumerableProperty>();
 
-            Assert.AreEqual(p.Name, po.Name);
-            Assert.AreEqual(p.Type, po.Type);
-            Assert.AreEqual(p.Discrete, po.Discrete);
-            Assert.AreEqual(p.Start, po.Start);
-            Assert.AreEqual(p.Length, po.Length);
+            Assert.AreEqual(p, po);
         }
 
         [Test]
@@ -94,12 +75,7 @@ namespace numl.Tests.SerializationTests
 
             var po = Deserialize<DateTimeProperty>();
 
-            Assert.AreEqual(p.Name, po.Name);
-            Assert.AreEqual(p.Type, po.Type);
-            Assert.AreEqual(p.Discrete, po.Discrete);
-            Assert.AreEqual(p.Start, po.Start);
-            Assert.AreEqual(p.Features, po.Features);
-            Assert.AreEqual(p.Length, po.Length);
+            Assert.AreEqual(p, po);
         }
 
         [Test]

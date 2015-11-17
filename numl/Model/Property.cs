@@ -4,6 +4,7 @@
 using System;
 using numl.Utils;
 using System.Linq;
+using System.Reflection;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using numl.Serialization;
@@ -38,7 +39,7 @@ namespace numl.Model
         /// <summary>Discrete or continuous value.</summary>
         /// <value>true if discrete, false if not.</value>
         [JsonProperty]
-        public bool Discrete { get; set; }
+        public virtual bool Discrete { get; set; }
         /// <summary>
         /// Used as a preprocessing step when overridden. Can be used to look at the entire data set as a
         /// whole before converting single elements.
@@ -110,6 +111,25 @@ namespace numl.Model
         public override string ToString()
         {
             return $"[{Name}, {Start}, {Length}]";
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (typeof(Property).IsAssignableFrom(obj.GetType()))
+            {
+                var p = obj as Property;
+                return Start == p.Start &&
+                       Discrete == p.Discrete &&
+                       Length == p.Length &&
+                       Name == p.Name &&
+                       Type == p.Type;
+            }
+            else return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

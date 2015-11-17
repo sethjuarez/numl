@@ -47,13 +47,14 @@ namespace numl.Supervised.NeuralNetwork
         /// <param name="source">Source for the.</param>
         /// <param name="target">Target for the.</param>
         /// <returns>An Edge.</returns>
-        public static Edge Create(Node source, Node target)
+        public static Edge Create(Node source, Node target, double weight = 0)
         {
             Edge e = new Edge { Source = source, Target = target };
             e.SourceId = source.Id;
             e.TargetId = target.Id;
             source.Out.Add(e);
             target.In.Add(e);
+            e.Weight = weight;
             return e;
         }
         /// <summary>Returns a string that represents the current object.</summary>

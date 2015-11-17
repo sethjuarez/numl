@@ -145,7 +145,7 @@ namespace numl.Supervised.NeuralNetwork
         /// <returns>
         /// An enumerator that allows foreach to be used to process the nodes in this collection.
         /// </returns>
-        private IEnumerable<Node> GetNodes(Node n)
+        private static IEnumerable<Node> GetNodes(Node n)
         {
             foreach (var edge in n.In)
             {
@@ -185,7 +185,7 @@ namespace numl.Supervised.NeuralNetwork
         /// <returns>
         /// An enumerator that allows foreach to be used to process the edges in this collection.
         /// </returns>
-        private IEnumerable<Edge> GetEdges(Node n)
+        private static IEnumerable<Edge> GetEdges(Node n)
         {
             foreach (var edge in n.In)
             {

@@ -16,29 +16,40 @@ namespace numl.Tests.SerializationTests
     [TestFixture, Category("Serialization")]
     public class NeuralNetworkSerializationTests : BaseSerialization
     {
-        [Test]
-        public void Save_Node_Test()
+        public static void AreEqual(Network n1, Network n2)
         {
-            
-            Tennis t = new Tennis
+            // recursive test
+            Assert.AreEqual(n1.In.Length, n2.In.Length);
+            Assert.AreEqual(n1.Out.Length, n2.Out.Length);
+            for (int i = 0; i < n1.In.Length; i++)
+                AreEqual(n1.In[i], n2.In[i]);
+
+            for (int i = 0; i < n1.Out.Length; i++)
+                AreEqual(n1.Out[i], n2.Out[i]);
+        }
+
+        public static void AreEqual(Node n1, Node n2)
+        {
+            if (n1 != null && n2 != null)
             {
-                Humidity = Humidity.Normal,
-                Outlook = Outlook.Overcast,
-                Temperature = Temperature.Cool,
-                Windy = true
-            };
+                Assert.AreEqual(n1.Input, n2.Input);
+                Assert.AreEqual(n1.Output, n2.Output);
+                Assert.AreEqual(n1.Label, n2.Label);
+                Assert.AreEqual(n1.Id, n2.Id);
+                Assert.AreEqual(n1.In.Count, n2.In.Count);
+                Assert.AreEqual(n1.Out.Count, n2.Out.Count);
 
-            var model = (NeuralNetworkModel)BaseSupervised.Prediction<Tennis>(
-                new NeuralNetworkGenerator(),
-                Tennis.GetData(),
-                t,
-                p => p.Play
-            );
+                for (int i = 0; i < n1.Out.Count; i++)
+                    AreEqual(n1.Out[i], n2.Out[i]);
+            }
+            else
+                Assert.Fail("Nodes do not match");
+        }
 
-            var node = model.Network.In[0].Out[0].Target;
-
-            Serialize(node);
-            
+        public static void AreEqual(Edge e1, Edge e2)
+        {
+            Assert.AreEqual(e1.Weight, e2.Weight);
+            AreEqual(e1.Target, e2.Target);
         }
 
         [Test]
@@ -61,16 +72,15 @@ namespace numl.Tests.SerializationTests
             );
 
             Serialize(model);
-
-
             var model2 = Deserialize<NeuralNetworkModel>();
 
+            Assert.AreEqual(model.Descriptor, model2.Descriptor);
+            AreEqual(model.Network, model2.Network);
         }
 
         [Test]
         public void Save_Network_Test()
         {
-
             Tennis t = new Tennis
             {
                 Humidity = Humidity.Normal,
@@ -86,12 +96,9 @@ namespace numl.Tests.SerializationTests
                 p => p.Play
             );
 
-
             Serialize(model.Network);
-
-
-            var model2 = Deserialize<Network>();
-
+            var network = Deserialize<Network>();
+            AreEqual(model.Network, network);
         }
     }
 }

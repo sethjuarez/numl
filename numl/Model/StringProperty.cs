@@ -168,5 +168,34 @@ namespace numl.Model
             else
                 Exclude = new string[] { };
         }
+
+        public override bool Equals(object obj)
+        {
+            if(base.Equals(obj) && obj is StringProperty)
+            {
+                var p = obj as StringProperty;
+                if (Dictionary.Length == p.Dictionary.Length &&
+                   Exclude.Length == p.Exclude.Length)
+                {
+                    for (int i = 0; i < Dictionary.Length; i++)
+                        if (Dictionary[i] != p.Dictionary[i])
+                        return false;
+
+                    for (int i = 0; i < Exclude.Length; i++)
+                        if (Exclude[i] != p.Exclude[i])
+                            return false;
+
+                    return AsEnum == p.AsEnum &&
+                           Separator == p.Separator &&
+                           SplitType == p.SplitType;
+                }
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }
