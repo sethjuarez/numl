@@ -1,15 +1,10 @@
-﻿using numl.Math.Functions;
-using numl.Math.LinearAlgebra;
-using numl.Model;
-using numl.Supervised.NeuralNetwork;
-using numl.Tests.Data;
-using numl.Tests.SupervisedTests;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using numl.Tests.Data;
+using NUnit.Framework;
+using numl.Tests.SupervisedTests;
+using System.Collections.Generic;
+using numl.Supervised.NeuralNetwork;
 
 namespace numl.Tests.SerializationTests
 {
