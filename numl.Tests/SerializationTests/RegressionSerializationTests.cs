@@ -11,7 +11,7 @@ using numl.Model;
 namespace numl.Tests.SerializationTests
 {
     [TestFixture, Category("Serialization")]
-    public class RegressionSerialisationTests : BaseSerialization
+    public class RegressionSerializationTests : BaseSerialization
     {
         [Test]
         public void Linear_Regression_Save_And_Load()

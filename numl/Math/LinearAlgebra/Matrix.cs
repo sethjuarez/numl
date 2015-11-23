@@ -645,6 +645,27 @@ namespace numl.Math.LinearAlgebra
             return matrix;
         }
 
+        /// <summary>
+        /// Parses a string containing MATLAB style Matrix syntax, i.e. "[[1, 2, 3]; [3, 4, 5]]"
+        /// </summary>
+        /// <param name="text">Input string to parse.</param>
+        /// <returns>Matrix.</returns>
+        public static Matrix Parse(string text)
+        {
+            string[] arrs = text.Split(new char[] { '[', ';', ']', '\r', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries)
+                                .Where(w => !string.IsNullOrWhiteSpace(w)).ToArray();
+
+            int rows = arrs.Length;
+
+            double[][] result = new double[rows][];
+
+            for (int i = 0; i < rows; i++)
+                result[i] = arrs[i].Trim().Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                                    .Select(s => double.Parse(s.Trim())).ToArray();
+
+            return new Matrix(result);
+        }
+
         //--------------- aggregation/structural
         /// <summary>Swap row.</summary>
         /// <param name="from">Source for the.</param>
@@ -800,14 +821,16 @@ namespace numl.Math.LinearAlgebra
             {
                 _asTransposeRef = false;
                 _matrix = new double[Rows][];
-                for (int i = 0; i < Rows; i++)
-                {
-                    reader.ReadStartElement("r");
-                    _matrix[i] = new double[Cols];
-                    for (int j = 0; j < Cols; j++)
-                        _matrix[i][j] = double.Parse(reader.ReadElementContentAsString("e", string.Empty));
-                    reader.ReadEndElement();
-                }
+                //for (int i = 0; i < Rows; i++)
+                //{
+                //    reader.ReadStartElement("r");
+                //    _matrix[i] = new double[Cols];
+                //    for (int j = 0; j < Cols; j++)
+                //        _matrix[i][j] = double.Parse(reader.ReadElementContentAsString("e", string.Empty));
+                //    reader.ReadEndElement();
+                //}
+                string content = reader.ReadContentAsString();
+                _matrix = Matrix.Parse(content).ToArray();
             }
             else
                 throw new InvalidOperationException("Invalid matrix size in XML!");
@@ -823,18 +846,23 @@ namespace numl.Math.LinearAlgebra
             writer.WriteAttributeString("cols", Cols.ToString());
             writer.WriteAttributeString("rows", Rows.ToString());
 
-            for (int i = 0; i < Rows; i++)
-            {
-                writer.WriteStartElement("r");
-                for (int j = 0; j < Cols; j++)
-                {
-                    writer.WriteStartElement("e");
-                    writer.WriteValue(_matrix[i][j]);
-                    writer.WriteEndElement();
-                }
+            //for (int i = 0; i < Rows; i++)
+            //{
+            //    writer.WriteStartElement("r");
+            //    for (int j = 0; j < Cols; j++)
+            //    {
+            //        writer.WriteStartElement("e");
+            //        writer.WriteValue(_matrix[i][j]);
+            //        writer.WriteEndElement();
+            //    }
 
-                writer.WriteEndElement();
-            }
+            //    writer.WriteEndElement();
+            //}
+
+            writer.WriteValue(string.Format("[{0}]", string.Join(";",
+                this.GetRows().Select(s =>
+                    $"[{string.Join(", ", s.Select(v => string.Format("{0:R}", v)))}]"))
+                    ));
         }
         /// <summary>Saves the given stream.</summary>
         /// <param name="stream">The stream to load.</param>

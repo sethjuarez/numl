@@ -69,6 +69,7 @@
     <Compile Include="Math\Functions\SteepLogistic.cs" />
     <Compile Include="Math\Functions\RectifiedLinear.cs" />
     <Compile Include="Math\Kernels\LogisticKernel.cs" />
+    <Compile Include="Optimization\Methods\CoordinateDescent.cs" />
     <Compile Include="Optimization\Functions\CostFunctions\CofiCostFunction.cs" />
     <Compile Include="Optimization\Functions\CostFunctions\CostFunction.cs" />
     <Compile Include="Optimization\Methods\GradientDescent\NAGDescent.cs" />
