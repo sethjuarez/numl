@@ -1,7 +1,8 @@
-﻿using System;
-using System.Linq;
-using numl.Math.LinearAlgebra;
+﻿using numl.Math.LinearAlgebra;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace numl.PreProcessing
 {
@@ -16,7 +17,7 @@ namespace numl.PreProcessing
         /// <param name="x">Training / Testing record</param>
         /// <param name="polynomialFeatures">Number of polynomial features to add</param>
         /// <returns></returns>
-        public static Vector IncreaseDimensions(this Vector x, int polynomialFeatures)
+        public static Vector IncreaseDimensions(Vector x, int polynomialFeatures)
         {
             Vector xtemp = x.Copy();
             int maxCols = xtemp.Length;
@@ -40,7 +41,7 @@ namespace numl.PreProcessing
         /// <param name="x">Training set</param>
         /// <param name="polynomialFeatures">Number of polynomial features to add</param>
         /// <returns></returns>
-        public static Matrix IncreaseDimensions(this Matrix x, int polynomialFeatures)
+        public static Matrix IncreaseDimensions(Matrix x, int polynomialFeatures)
         {
             Matrix Xtemp = x.Copy();
             int maxCols = Xtemp.Cols;
