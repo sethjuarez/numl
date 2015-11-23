@@ -93,7 +93,7 @@ namespace numl.Tests.SupervisedTests
             );
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void ArbitraryPrediction_Test_With_Feature_Value_Greater_Than_Trained_Instances()
         {
 
@@ -105,13 +105,15 @@ namespace numl.Tests.SupervisedTests
                 ThirdTestFeature = 1.2m
             };
 
-            Prediction<ArbitraryPrediction>(
-                new DecisionTreeGenerator(50),
-                ArbitraryPrediction.GetData(),
-                predictionValue,
-                ap => ap.OutcomeLabel == ArbitraryPrediction.PredictionLabel.Maximum
-            );
-
+            Assert.Throws<InvalidOperationException>(
+                () => { 
+                Prediction<ArbitraryPrediction>(
+                    new DecisionTreeGenerator(50),
+                    ArbitraryPrediction.GetData(),
+                    predictionValue,
+                    ap => ap.OutcomeLabel == ArbitraryPrediction.PredictionLabel.Maximum
+                );
+            });
         }
 
         [Test]

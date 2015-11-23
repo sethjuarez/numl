@@ -252,7 +252,6 @@ namespace numl.Tests.MathTests
         }
 
         [Test]
-        [ExpectedException(typeof(IndexOutOfRangeException))]
         public void Matrix_Assign_Value_Bad_Index_Test()
         {
             Matrix one = new[,]
@@ -260,11 +259,10 @@ namespace numl.Tests.MathTests
                  {4, 5, 6},
                  {7, 8, 9}};
 
-            one[5, 5] = 14.5;
+            Assert.Throws<IndexOutOfRangeException>(() => one[5, 5] = 14.5);
         }
 
         [Test]
-        [ExpectedException(typeof(IndexOutOfRangeException))]
         public void Matrix_Read_Value_Bad_Index_Test()
         {
             Matrix one = new[,]
@@ -272,7 +270,7 @@ namespace numl.Tests.MathTests
                  {4, 5, 6},
                  {7, 8, 9}};
 
-            var d = one[5, 5];
+            Assert.Throws<IndexOutOfRangeException>(() => { var d = one[5, 5]; });
         }
 
         [Test]
@@ -332,7 +330,6 @@ namespace numl.Tests.MathTests
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Matrix_Add_Non_Aligned_Test_1()
         {
             Matrix a = new[,]
@@ -345,11 +342,11 @@ namespace numl.Tests.MathTests
                  {8, 10, 12, 8},
                  {14, 16, 18, 10}};
 
-            var x = a + b;
+            Assert.Throws<InvalidOperationException>(
+                () => { var x = a + b; });
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Matrix_Add_Non_Aligned_Test_2()
         {
             Matrix a = new[,]
@@ -363,7 +360,8 @@ namespace numl.Tests.MathTests
                  {8, 10, 12, 8},
                  {14, 16, 18, 10}};
 
-            var x = a + b;
+            Assert.Throws<InvalidOperationException>(
+                () => { var x = a + b; });
         }
 
         [Test]
@@ -423,7 +421,6 @@ namespace numl.Tests.MathTests
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Matrix_Subtract_Non_Aligned_Test_1()
         {
             Matrix a = new[,]
@@ -436,11 +433,11 @@ namespace numl.Tests.MathTests
                  {8, 10, 12, 8},
                  {14, 16, 18, 10}};
 
-            var x = a - b;
+            Assert.Throws<InvalidOperationException>(
+                () => { var x = a - b; });
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Matrix_Subtract_Non_Aligned_Test_2()
         {
             Matrix a = new[,]
@@ -454,7 +451,8 @@ namespace numl.Tests.MathTests
                  {8, 10, 12, 8},
                  {14, 16, 18, 10}};
 
-            var x = a - b;
+            Assert.Throws<InvalidOperationException>(
+                () => { var x = a - b; });
         }
 
         [Test]
@@ -565,7 +563,6 @@ namespace numl.Tests.MathTests
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void Matrix_Multiply_Non_Aligned_Test()
         {
             Matrix a = new[,]
@@ -579,7 +576,8 @@ namespace numl.Tests.MathTests
                  {14, 16, 18},
                  {4, 4, 4}};
 
-            var x = a * b;
+            Assert.Throws<InvalidOperationException>(
+                () => { var x = a * b; });
         }
 
         [Test]

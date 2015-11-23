@@ -69,10 +69,10 @@ namespace numl.Tests.DataTests
             Assert.AreEqual(new DateTimeProperty(portion).Features, ((DateTimeProperty)d.Features[0]).Features);
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void Test_Bad_Date_Descriptor()
         {
-            Descriptor.Create<FakeDateWithError>();
+            Assert.Throws<InvalidOperationException>(() => Descriptor.Create<FakeDateWithError>());
         }
 
         [TestCase(0, "Numbers1", 20)]
@@ -98,16 +98,18 @@ namespace numl.Tests.DataTests
         }
 
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void Test_Bad_Enumerable_Descriptor()
         {
-            Descriptor.Create<FakEnumerableWithError1>();
+            Assert.Throws<InvalidOperationException>(
+                () => Descriptor.Create<FakEnumerableWithError1>());
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void Test_Bad_Enumerable_0_Descriptor()
         {
-            Descriptor.Create<FakEnumerableWithError2>();
+            Assert.Throws<InvalidOperationException>(
+                () => Descriptor.Create<FakEnumerableWithError2>());
         }
 
         [Test]
@@ -128,7 +130,7 @@ namespace numl.Tests.DataTests
             Assert.AreEqual("Class", d.Label.Name);
         }
 
-      [Test]
+        [Test]
         public void Test_Typed_Fluent_Api()
         {
             var d = Descriptor.For<Iris>()
@@ -137,28 +139,28 @@ namespace numl.Tests.DataTests
                                 .With(i => i.PetalLength)
                                 .With(i => i.PetalWidth)
                                 .Learn(i => i.Class);
-          
+
             Assert.AreEqual(4, d.Features.Length);
             Assert.AreEqual(typeof(decimal), d.Features[0].Type);
             Assert.AreEqual(typeof(decimal), d.Features[1].Type);
             Assert.AreEqual(typeof(decimal), d.Features[2].Type);
             Assert.AreEqual(typeof(decimal), d.Features[3].Type);
-            Assert.AreEqual("Class", d.Label.Name);           
-            Assert.AreEqual(1, d.Label.Length);           
+            Assert.AreEqual("Class", d.Label.Name);
+            Assert.AreEqual(1, d.Label.Length);
         }
 
-      [Test]
-      public void Test_Attributes_Api()
-      {
-          var d = Descriptor.Create<Iris>();
+        [Test]
+        public void Test_Attributes_Api()
+        {
+            var d = Descriptor.Create<Iris>();
 
-          Assert.AreEqual(4, d.Features.Length);
-          Assert.AreEqual(typeof(decimal), d.Features[0].Type);
-          Assert.AreEqual(typeof(decimal), d.Features[1].Type);
-          Assert.AreEqual(typeof(decimal), d.Features[2].Type);
-          Assert.AreEqual(typeof(decimal), d.Features[3].Type);
-          Assert.AreEqual("Class", d.Label.Name);
-          Assert.AreEqual(1, d.Label.Length);           
-      }
+            Assert.AreEqual(4, d.Features.Length);
+            Assert.AreEqual(typeof(decimal), d.Features[0].Type);
+            Assert.AreEqual(typeof(decimal), d.Features[1].Type);
+            Assert.AreEqual(typeof(decimal), d.Features[2].Type);
+            Assert.AreEqual(typeof(decimal), d.Features[3].Type);
+            Assert.AreEqual("Class", d.Label.Name);
+            Assert.AreEqual(1, d.Label.Length);
+        }
     }
 }

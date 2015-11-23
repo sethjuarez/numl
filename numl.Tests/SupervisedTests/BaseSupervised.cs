@@ -5,9 +5,9 @@ using System.Linq;
 using numl.Supervised;
 using numl.Tests.Data;
 using NUnit.Framework;
-using System.Collections.Generic;
 using numl.Math.Probability;
 using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
 
 namespace numl.Tests.SupervisedTests
 {
