@@ -9,6 +9,7 @@ using System.Collections;
 using System.Linq.Expressions;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Globalization;
 
 namespace numl.Utils
 {
@@ -226,6 +227,7 @@ namespace numl.Utils
         {
             Type type = null;
             Func<object, object> accessor = null;
+            //TypeConverter converter = new TypeConverter();
             foreach (var o in items)
             {
                 if (type == null)
@@ -296,7 +298,16 @@ namespace numl.Utils
             else if (t == typeof(TimeSpan)) // get total seconds
                 return ((TimeSpan)o).TotalSeconds;
             else
-                return System.Convert.ToDouble(o);
+            {
+                try
+                {
+                    return System.Convert.ToDouble(o);
+                }
+                catch (InvalidCastException)
+                {
+                    throw new InvalidCastException(string.Format("Cannot convert {0} to double", o));
+                }
+            }
         }
         /// <summary>
         /// Conversion of standard univariate types. Will throw exception on all multivariate types.
@@ -319,7 +330,28 @@ namespace numl.Utils
             else if (t == typeof(decimal))
                 return (decimal)val;
             else
-                return System.Convert.ChangeType(val, t);
+            {
+                try
+                {
+                    if (t == typeof(double)) return System.Convert.ToDouble(val, CultureInfo.CurrentCulture);
+                    else if (t == typeof(float)) return System.Convert.ToSingle(val, CultureInfo.CurrentCulture);
+                    else if (t == typeof(int)) return System.Convert.ToInt32(val, CultureInfo.CurrentCulture);
+                    else if (t == typeof(byte)) return System.Convert.ToByte(val, CultureInfo.CurrentCulture);
+                    else if (t == typeof(sbyte)) return System.Convert.ToSByte(val, CultureInfo.CurrentCulture);
+                    else if (t == typeof(short)) return System.Convert.ToInt16(val, CultureInfo.CurrentCulture);
+                    else if (t == typeof(long)) return System.Convert.ToInt64(val, CultureInfo.CurrentCulture);
+                    else if (t == typeof(ushort)) return System.Convert.ToUInt16(val, CultureInfo.CurrentCulture);
+                    else if (t == typeof(uint)) return System.Convert.ToUInt32(val, CultureInfo.CurrentCulture);
+                    else if (t == typeof(ulong)) return System.Convert.ToUInt64(val, CultureInfo.CurrentCulture);
+                    else if (t == typeof(DateTime)) return System.Convert.ToDateTime(val, CultureInfo.CurrentCulture);
+                    else
+                        throw new InvalidCastException();
+                }
+                catch (InvalidCastException)
+                {
+                    throw new InvalidCastException(string.Format("Cannot convert {0} to {1}", val, t.Name));
+                }
+            }
         }
 
         /// <summary>The types.</summary>

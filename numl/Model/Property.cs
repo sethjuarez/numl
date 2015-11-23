@@ -20,6 +20,7 @@ namespace numl.Model
         {
             Start = -1;
         }
+
         /// <summary>Property Name - Maps to object property or dictionary lookup.</summary>
         /// <value>The name.</value>
         [JsonProperty]
@@ -32,10 +33,12 @@ namespace numl.Model
         /// <summary>Length of property.</summary>
         /// <value>The length.</value>
         public virtual int Length { get { return 1; } }
+
         /// <summary>Start position in array.</summary>
         /// <value>The start.</value>
         [JsonProperty]
         public int Start { get; set; }
+
         /// <summary>Discrete or continuous value.</summary>
         /// <value>true if discrete, false if not.</value>
         [JsonProperty]

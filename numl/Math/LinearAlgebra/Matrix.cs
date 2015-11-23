@@ -1,4 +1,4 @@
-﻿// file:	Math\LinearAlgebra\Matrix.cs
+﻿ // file:	Math\LinearAlgebra\Matrix.cs
 //
 // summary:	Implements the matrix class
 using System;
@@ -20,11 +20,14 @@ namespace numl.Math.LinearAlgebra
     {
         /// <summary>The matrix.</summary>
         private double[][] _matrix;
+
         /// <summary>true to as transpose reference.</summary>
         private bool _asTransposeRef;
+
         /// <summary>Gets or sets the rows.</summary>
         /// <value>The rows.</value>
         public int Rows { get; private set; }
+
         /// <summary>Gets or sets the cols.</summary>
         /// <value>The cols.</value>
         public int Cols { get; private set; }
@@ -218,6 +221,19 @@ namespace numl.Math.LinearAlgebra
                     for (int j = 0; j < Cols; j++)
                         if (f(_matrix[i][j]))
                             this[i, j] = value;
+            }
+        }
+        /// <summary>
+        /// Indexer to set items within this collection using an n x 2 array of indices to set.
+        /// </summary>
+        /// <param name="slice">An n x 2 array of indices to set.</param>
+        /// <returns></returns>
+        public double this[IEnumerable<int[]> slice]
+        {
+            set
+            {
+                foreach (int[] i in slice)
+                    this[i[0], i[1]] = value;
             }
         }
         /// <summary>Indexer to get items within this collection using array index syntax.</summary>

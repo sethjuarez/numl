@@ -7,6 +7,7 @@ using numl.Tests.Data;
 using NUnit.Framework;
 using System.Collections.Generic;
 using numl.Math.Probability;
+using numl.Math.LinearAlgebra;
 
 namespace numl.Tests.SupervisedTests
 {
@@ -20,6 +21,43 @@ namespace numl.Tests.SupervisedTests
             // randomization, need to have a
             // good starting seed
             Sampling.SetSeedFromSystemTime();
+        }
+
+        /// <summary>
+        /// Compute the numerical gradient of a random test problem using the supplied cost function reference.
+        /// </summary>
+        /// <param name="fnCostSelector">A reference to a cost function accepting a Vector.</param>
+        /// <param name="theta">Theta.</param>
+        /// <returns></returns>
+        protected Vector ComputeNumericalGradient(Func<Vector, double> fnCostSelector, Vector theta)
+        {
+            Vector numericalGrad = Vector.Zeros(theta.Length);
+            Vector perturb = Vector.Zeros(theta.Length);
+
+            double e = 1e-4;
+
+            for (int p = 0; p < numericalGrad.Length; p++)
+            {
+                perturb[p] = e;
+                double loss1 = fnCostSelector(theta - perturb);
+                double loss2 = fnCostSelector(theta + perturb);
+
+                numericalGrad[p] = (loss2 - loss1) / (2 * e);
+                perturb[p] = 0;
+            }
+
+            return numericalGrad;
+        }
+
+        /// <summary>
+        /// Compares the two gradients and returns the relative difference.
+        /// </summary>
+        /// <param name="numericalGrad"></param>
+        /// <param name="grad"></param>
+        /// <returns></returns>
+        protected double CheckNumericalGradient(Vector numericalGrad, Vector grad)
+        {
+            return (numericalGrad - grad).Norm() / (numericalGrad + grad).Norm();
         }
 
         public static IModel Prediction<T>(IGenerator generator, IEnumerable<T> data, T item, Func<T, bool> test)

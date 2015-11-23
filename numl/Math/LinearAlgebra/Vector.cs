@@ -103,6 +103,7 @@ namespace numl.Math.LinearAlgebra
                     this[i] = value;
             }
         }
+
         /// <summary>
         /// Indexer to get or set items within this collection using array index syntax.
         /// </summary>
@@ -135,6 +136,7 @@ namespace numl.Math.LinearAlgebra
                 }
             }
         }
+
         /// <summary>Gets the length.</summary>
         /// <value>The length.</value>
         public int Length

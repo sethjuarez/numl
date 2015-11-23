@@ -22,6 +22,7 @@ namespace numl.Supervised.NeuralNetwork
             // assume bias node unless
             // otherwise told through
             // links
+            this.Constrained = false;
             Output = 1d;
             Input = 1d;
             Delta = 0d;
@@ -30,18 +31,25 @@ namespace numl.Supervised.NeuralNetwork
             In = new List<Edge>();
             Id = (++_id).ToString();
         }
-        /// <summary>Gets or sets the output.</summary>
+        
+        /// <summary>
+        /// Gets or sets whether weights into this Node are constrained / preserved.
+        /// </summary>
+        public bool Constrained { get; set; }
+
+        /// <summary>Gets or sets the output value.</summary>
         /// <value>The output.</value>
-        [JsonProperty]
         public double Output { get; set; }
-        /// <summary>Gets or sets the input.</summary>
+
+        /// <summary>Gets or sets the combined input value.</summary>
         /// <value>The input.</value>
-        [JsonProperty]
         public double Input { get; set; }
+
         /// <summary>Gets or sets the delta.</summary>
         /// <value>The delta.</value>
         [JsonProperty]
         public double Delta { get; set; }
+
         /// <summary>Gets or sets the label.</summary>
         /// <value>The label.</value>
         [JsonProperty]
@@ -53,49 +61,64 @@ namespace numl.Supervised.NeuralNetwork
         /// <summary>Gets or sets the out.</summary>
         /// <value>The out.</value>
         public List<Edge> Out { get; set; }
-        /// <summary>Gets or sets the in.</summary>
+
+        /// <summary>Gets or sets the Input <see cref="Node"/> connections.</summary>
         /// <value>The in.</value>
         public List<Edge> In { get; set; }
-        /// <summary>Gets or sets the activation.</summary>
+
+        /// <summary>Gets or sets the activation function.</summary>
         /// <value>The activation.</value>
-        [JsonProperty]
-        public IFunction Activation { get; set; }
-        /// <summary>Gets the evaluate.</summary>
+		[JsonProperty]
+        public IFunction ActivationFunction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the output function (optional).
+        /// </summary>
+		[JsonProperty]
+        public IFunction OutputFunction { get; set; }
+
+        /// <summary>Calculates and returns the Node's <see cref="Output"/> value.</summary>
+        /// <remarks>Input is set to the weights multiplied by the source <see cref="Node"/>'s Input.</remarks>
         /// <returns>A double.</returns>
-        public double Evaluate()
+        public virtual double Evaluate()
         {
             if (In.Count > 0)
             {
                 Input = In.Select(e => e.Weight * e.Source.Evaluate()).Sum();
-                Output = Activation.Compute(Input);
+                Output = ActivationFunction.Compute(Input);
             }
 
             return Output;
         }
-        /// <summary>Errors.</summary>
+
+        /// <summary>Calculates and returns the error derivative (<see cref="Delta"/>) of this node.</summary>
         /// <param name="t">The double to process.</param>
         /// <returns>A double.</returns>
-        public double Error(double t)
+        public virtual double Error(double t)
         {
             // output node
             if (Out.Count == 0)
                 Delta = Output - t;
             else // internal nodes
             {
-                var hp = Activation.Derivative(Input);
+                var hp = ActivationFunction.Derivative(Input);
                 Delta = hp * Out.Select(e => e.Weight * e.Target.Error(t)).Sum();
             }
 
             return Delta;
         }
-        /// <summary>Updates the given learningRate.</summary>
+        /// <summary>Propogates a weight update event upstream through the network using the supplied learning rate.</summary>
         /// <param name="learningRate">The learning rate.</param>
-        public void Update(double learningRate)
+        public virtual void Update(double learningRate)
         {
             foreach (Edge edge in In)
             {
+                // update the weights on the input nodes
                 // for output nodes, the derivative is the Delta
-                edge.Weight = learningRate * Delta * edge.Source.Output;
+                if (!this.Constrained)
+                {
+                    edge.Weight = learningRate * Delta * edge.Source.Output;
+                }
                 edge.Source.Update(learningRate);
             }
         }

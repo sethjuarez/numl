@@ -1,15 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+
+
+using numl.Utils;
+using numl.Model;
 using numl.Math.Functions;
 using numl.Math.LinearAlgebra;
-using System.Collections.Generic;
+using numl.Supervised.Classification;
+using numl.PreProcessing;
+using numl.Features;
 
 namespace numl.Supervised.Regression
 {
     /// <summary>
     /// A Logistic Regression Model object
     /// </summary>
-    public class LogisticRegressionModel : Model
+    public class LogisticRegressionModel : Model, IClassifier
     {
         /// <summary>
         /// Theta parameters vector mapping X to y.
@@ -35,15 +43,26 @@ namespace numl.Supervised.Regression
         }
 
         /// <summary>
+        /// Computes the probability of the prediction being True.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
+        public double PredictRaw(Vector x)
+        {
+            Vector xCopy =  (this.NormalizeFeatures ? 
+                                this.FeatureNormalizer.Normalize(x.IncreaseDimensions(this.PolynomialFeatures), this.FeatureProperties) 
+                                : x.IncreaseDimensions(this.PolynomialFeatures));
+            return this.LogisticFunction.Compute(xCopy.Insert(0, 1.0, false).Dot(Theta));
+        }
+
+        /// <summary>
         /// Create a prediction based on the learned Theta values and the supplied test item.
         /// </summary>
-        /// <param name="y">Training record</param>
+        /// <param name="x">Training record</param>
         /// <returns></returns>
-        public override double Predict(Vector y)
+        public override double Predict(Vector x)
         {
-            var tempy = PolynomialFeatures > 0 ? PreProcessing.FeatureDimensions.IncreaseDimensions(y, PolynomialFeatures) : y;
-            tempy = tempy.Insert(0, 1.0);
-            return LogisticFunction.Compute((tempy * Theta).ToDouble()) >= 0.5 ? 1d : 0d;
+            return this.PredictRaw(x) >= 0.5d ? 1.0d : 0.0d;
         }
     }
 }

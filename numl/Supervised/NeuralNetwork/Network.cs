@@ -16,16 +16,19 @@ namespace numl.Supervised.NeuralNetwork
         /// <summary>Gets or sets the in.</summary>
         /// <value>The in.</value>
         public Node[] In { get; set; }
+
         /// <summary>Gets or sets the out.</summary>
         /// <value>The out.</value>
         public Node[] Out { get; set; }
+
         /// <summary>Defaults.</summary>
         /// <param name="d">The Descriptor to process.</param>
         /// <param name="x">The Vector to process.</param>
         /// <param name="y">The Vector to process.</param>
-        /// <param name="activation">The activation.</param>
+        /// <param name="activationFunction">The activation.</param>
+        /// <param name="outputFunction">The ouput function for hidden nodes (Optional).</param>
         /// <returns>A Network.</returns>
-        public static Network Default(Descriptor d, Matrix x, Vector y, IFunction activation)
+        public static Network Default(Descriptor d, Matrix x, Vector y, IFunction activationFunction, IFunction outputFunction = null)
         {
             Network nn = new Network();
             // set output to number of choices of available
@@ -36,24 +39,24 @@ namespace numl.Supervised.NeuralNetwork
             IFunction ident = new Ident();
 
             // set number of hidden units to (Input + Hidden) * 2/3 as basic best guess. 
-            int hidden = (int)System.Math.Ceiling((decimal)(x.Cols + output) * 2m / 3m);
+            int hidden = (int)System.Math.Ceiling((double)(x.Cols + output) * 2.0 / 3.0);
 
             // creating input nodes
             nn.In = new Node[x.Cols + 1];
-            nn.In[0] = new Node { Label = "B0", Activation = ident };
+            nn.In[0] = new Node { Label = "B0", ActivationFunction = ident };
             for (int i = 1; i < x.Cols + 1; i++)
-                nn.In[i] = new Node { Label = d.ColumnAt(i - 1), Activation = ident };
+                nn.In[i] = new Node { Label = d.ColumnAt(i - 1), ActivationFunction = ident };
 
             // creating hidden nodes
             Node[] h = new Node[hidden + 1];
-            h[0] = new Node { Label = "B1", Activation = ident };
+            h[0] = new Node { Label = "B1", ActivationFunction = ident };
             for (int i = 1; i < hidden + 1; i++)
-                h[i] = new Node { Label = String.Format("H{0}", i), Activation = activation };
+                h[i] = new Node { Label = String.Format("H{0}", i), ActivationFunction = activationFunction, OutputFunction = outputFunction };
 
             // creating output nodes
             nn.Out = new Node[output];
             for (int i = 0; i < output; i++)
-                nn.Out[i] = new Node { Label = GetLabel(i, d), Activation = activation };
+                nn.Out[i] = new Node { Label = GetLabel(i, d), ActivationFunction = activationFunction, OutputFunction = outputFunction };
 
             // link input to hidden. Note: there are
             // no inputs to the hidden bias node
@@ -68,6 +71,64 @@ namespace numl.Supervised.NeuralNetwork
 
             return nn;
         }
+
+        /// <summary>
+        /// Creates a new deep neural network based on the supplied inputs and layers.
+        /// </summary>
+        /// <param name="d">Descriptor object.</param>
+        /// <param name="X">Training examples</param>
+        /// <param name="y">Training labels</param>
+        /// <param name="activationFunction">Activation Function for each output layer.</param>
+        /// <param name="outputFunction">Ouput Function for each output layer.</param>
+        /// <param name="hiddenLayers">The intermediary (hidden) layers / ensembles in the network.</param>
+        /// <returns>A Deep Neural Network</returns>
+        public static Network Create(Descriptor d, Matrix X, Vector y, IFunction activationFunction, IFunction outputFunction = null, params NetworkLayer[] hiddenLayers)
+        {
+            Network nn = new Network();
+            // set output to number of choices of available
+            // 1 if only two choices
+            int distinct = y.Distinct().Count();
+            int output = distinct > 2 ? distinct : 1;
+            // identity function for bias nodes
+            IFunction ident = new Ident();
+
+            // creating input nodes
+            nn.In = new Node[X.Cols + 1];
+            nn.In[0] = new Node { Label = "B0", ActivationFunction = ident };
+            for (int i = 1; i < X.Cols + 1; i++)
+                nn.In[i] = new Node { Label = d.ColumnAt(i - 1), ActivationFunction = ident };
+
+            // creating output nodes
+            nn.Out = new Node[output];
+            for (int i = 0; i < output; i++)
+                nn.Out[i] = new Node { Label = GetLabel(i, d), ActivationFunction = activationFunction, OutputFunction = outputFunction };
+
+            for (int layer = 0; layer < hiddenLayers.Count(); layer++)
+            {
+                if (layer == 0 && hiddenLayers[layer].IsAutoencoder)
+                {
+                    // init and train it.
+                }
+
+                // connect input with previous layer or input layer
+                // connect last layer with output layer
+            }
+
+            // link input to hidden. Note: there are
+            // no inputs to the hidden bias node
+            //for (int i = 1; i < h.Length; i++)
+            //    for (int j = 0; j < nn.In.Length; j++)
+            //        Edge.Create(nn.In[j], h[i]);
+
+            //// link from hidden to output (full)
+            //for (int i = 0; i < nn.Out.Length; i++)
+            //    for (int j = 0; j < h.Length; j++)
+            //        Edge.Create(h[j], nn.Out[i]);
+
+            return nn;
+        }
+
+
         /// <summary>Gets a label.</summary>
         /// <param name="n">The Node to process.</param>
         /// <param name="d">The Descriptor to process.</param>
@@ -94,14 +155,14 @@ namespace numl.Supervised.NeuralNetwork
             if (In.Length != x.Length + 1)
                 throw new InvalidOperationException("Input nodes not aligned to input vector");
 
-            // set input
+            // set input (with bias inputs)
             for (int i = 0; i < In.Length; i++)
-                In[i].Input = In[i].Output = i == 0 ? 1 : x[i - 1];
+                In[i].Input = In[i].Output = (i == 0 ? 1 : x[i - 1]);
             // evaluate
             for (int i = 0; i < Out.Length; i++)
                 Out[i].Evaluate();
         }
-        /// <summary>Backs.</summary>
+        /// <summary>Backpropogates the errors through the network given the supplied label.</summary>
         /// <param name="t">The double to process.</param>
         /// <param name="learningRate">The learning rate.</param>
         public void Back(double t, double learningRate)
@@ -140,7 +201,8 @@ namespace numl.Supervised.NeuralNetwork
                 }
             }
         }
-        /// <summary>Gets the nodes in this collection.</summary>
+
+        /// <summary>Gets all nodes leading into the supplied Node.</summary>
         /// <param name="n">The Node to process.</param>
         /// <returns>
         /// An enumerator that allows foreach to be used to process the nodes in this collection.
@@ -155,9 +217,9 @@ namespace numl.Supervised.NeuralNetwork
             }
         }
 
-
         /// <summary>The edges.</summary>
         private HashSet<Tuple<string, string>> _edges;
+
         /// <summary>Gets the edges in this collection.</summary>
         /// <returns>
         /// An enumerator that allows foreach to be used to process the edges in this collection.
@@ -180,7 +242,8 @@ namespace numl.Supervised.NeuralNetwork
                 }
             }
         }
-        /// <summary>Gets the edges in this collection.</summary>
+
+        /// <summary>Gets all edges leading into the supplied Node.</summary>
         /// <param name="n">The Node to process.</param>
         /// <returns>
         /// An enumerator that allows foreach to be used to process the edges in this collection.

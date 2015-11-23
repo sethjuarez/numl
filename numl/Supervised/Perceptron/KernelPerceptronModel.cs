@@ -6,6 +6,10 @@ using System.Linq;
 using numl.Math.Kernels;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
+using numl.Model;
+using numl.Utils;
+using numl.Features;
+using numl.Preprocessing;
 
 namespace numl.Supervised.Perceptron
 {

@@ -9,8 +9,71 @@ using System.Threading.Tasks;
 namespace numl.Math.LinearAlgebra
 {
     /// <summary>A matrix.</summary>
-    public partial class Matrix
-    {
+	public partial class Matrix
+	{
+        /// <summary>
+        /// Performs an element wise operation on the input Matrix.
+        /// </summary>
+        /// <param name="m">Matrix.</param>
+        /// <param name="fnElementWiseOp">Function to apply.</param>
+        /// <returns>A Matrix.</returns>
+        public static Matrix Each(Matrix m, Func<double, double> fnElementWiseOp)
+        {
+            var copy = m.Copy();
+            for (int i = 0; i < m.Rows; i++)
+            {
+                for (int j = 0; j < m.Cols; j++)
+                {
+                    copy[i, j] = fnElementWiseOp(copy[i, j]);
+                }
+            }
+            return copy;
+        }
+
+        /// <summary>
+        /// Performs an element wise operation on the input Matrix.
+        /// </summary>
+        /// <param name="m">Matrix.</param>
+        /// <param name="fnElementWiseOp">Function to update each cell specified by the value and cell coordinates.</param>
+        /// <returns>A Matrix.</returns>
+        public static Matrix Each(Matrix m, Func<double, int, int, double> fnElementWiseOp)
+        {
+            var copy = m.Copy();
+            for (int i = 0; i < m.Rows; i++)
+            {
+                for (int j = 0; j < m.Cols; j++)
+                {
+                    copy[i, j] = fnElementWiseOp(copy[i, j], i, j);
+                }
+            }
+            return copy;
+        }
+
+        /// <summary>
+        /// Performs an element-wise operation on the input Matrices.
+        /// </summary>
+        /// <param name="m1">First Matrix.</param>
+        /// <param name="m2">Second Matrix.</param>
+        /// <param name="fnElementWiseOp">Operation to perform on the value from the first and second matrices.</param>
+        /// <returns>A Matrix.</returns>
+        public static Matrix Each(Matrix m1, Matrix m2, Func<double, double, double> fnElementWiseOp)
+        {
+            if (m1.Rows != m2.Rows)
+                throw new InvalidOperationException("The row dimensions do not match");
+            if (m1.Cols != m2.Cols)
+                throw new InvalidOperationException("The column dimensions do not match");
+
+            var copy = m1.Copy();
+            for (int i = 0; i < m1.Rows; i++)
+            {
+                for (int j = 0; j < m1.Cols; j++)
+                {
+                    copy[i, j] = fnElementWiseOp(m1[i, j], m2[i, j]);
+                }
+            }
+            return copy;
+        }
+
         /// <summary>Computes the trace of a matrix.</summary>
         /// <param name="m">Input Matrix.</param>
         /// <returns>trace.</returns>
@@ -172,6 +235,7 @@ namespace numl.Math.LinearAlgebra
 
             return P;
         }
+
         /// <summary>Cholesky Factorization of a Matrix.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
         /// <exception cref="SingularMatrixException">Thrown when a Singular Matrix error condition occurs.</exception>
@@ -335,47 +399,108 @@ namespace numl.Math.LinearAlgebra
             return v;
         }
 
+        /// <summary>
+        /// Returns a vector of the maximum values for each row/column.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="t">Use column or row (default: Col)</param>
+        /// <returns></returns>
+        public static Vector Max(Matrix source, VectorType t = VectorType.Col)
+        {
+            int num = (t == VectorType.Row ? source.Cols : source.Rows);
+            VectorType vectorType = (t == VectorType.Row ? VectorType.Col : VectorType.Row);
+            Vector vectors = new Vector(num);
+            for (int i = 0; i < num; i++)
+            {
+                vectors[i] = Enumerable.Max(source[i, vectorType]);
+            }
+            return vectors;
+        }
+
         /// <summary>Determines the maximum of the given parameters.</summary>
         /// <param name="source">Source for the.</param>
         /// <returns>The maximum value.</returns>
-        public static double Max(Matrix source)
-        {
-            double max = double.MinValue;
-            for (int i = 0; i < source.Rows; i++)
-                for (int j = 0; j < source.Cols; j++)
-                    if (source[i, j] > max)
-                        max = source[i, j];
+		public static double Max(Matrix source)
+		{
+			double max = double.MinValue;
+			for (int i = 0; i < source.Rows; i++)
+				for (int j = 0; j < source.Cols; j++)
+					if (source[i, j] > max)
+						max = source[i, j];
 
-            return max;
+			return max;
+		}
+
+        /// <summary>
+        /// Returns a vector of the minimum values for each row/column.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="t">Use column or row (default: Col)</param>
+        /// <returns></returns>
+        public static Vector Min(Matrix source, VectorType t = VectorType.Col)
+        {
+            int num = (t == VectorType.Row ? source.Cols : source.Rows);
+            VectorType vectorType = (t == VectorType.Row ? VectorType.Col : VectorType.Row);
+            Vector vectors = new Vector(num);
+            for (int i = 0; i < num; i++)
+            {
+                vectors[i] = Enumerable.Min(source[i, vectorType]);
+            }
+            return vectors;
         }
+
         /// <summary>Determines the minimum of the given parameters.</summary>
         /// <param name="source">Source for the.</param>
         /// <returns>The minimum value.</returns>
-        public static double Min(Matrix source)
-        {
-            double min = double.MaxValue;
-            for (int i = 0; i < source.Rows; i++)
-                for (int j = 0; j < source.Cols; j++)
-                    if (source[i, j] < min)
-                        min = source[i, j];
+		public static double Min(Matrix source)
+		{
+			double min = double.MaxValue;
+			for (int i = 0; i < source.Rows; i++)
+				for (int j = 0; j < source.Cols; j++)
+					if (source[i, j] < min)
+						min = source[i, j];
 
-            return min;
+			return min;
+		}
+
+        /// <summary>
+        /// Returns a vector of the median values for each row or column.
+        /// </summary>
+        /// <param name="source">Matrix.</param>
+        /// <param name="t">VectorType.</param>
+        /// <returns></returns>
+        public static Vector Median(Matrix source, VectorType t = VectorType.Col)
+        {
+            int num = (t == VectorType.Row ? source.Cols : source.Rows);
+            VectorType vectorType = (t == VectorType.Row ? VectorType.Col : VectorType.Row);
+            Vector vectors = new Vector(num);
+            int even = (num % 2);
+            for (int i = 0; i < num; i++)
+            {
+                var v = source[i, vectorType].OrderBy(o => o).ToArray();
+                vectors[i] = ((v[(int)System.Math.Floor(((double)v.Length - 1.0) / 2.0)] * even) + v[(int)System.Math.Floor((double)v.Length / 2.0)]) / 2.0;
+            }
+            return vectors;
         }
+
         /// <summary>Covariances.</summary>
         /// <param name="source">Source for the.</param>
         /// <param name="t">(Optional) Row or Column sum.</param>
         /// <returns>A Matrix.</returns>
-        public static Matrix Covariance(Matrix source, VectorType t = VectorType.Col)
-        {
-            int length = t == VectorType.Row ? source.Rows : source.Cols;
-            Matrix m = new Matrix(length);
-            //for (int i = 0; i < length; i++)
-            Parallel.For(0, length, i =>
-                //for (int j = i; j < length; j++) // symmetric matrix
-                Parallel.For(i, length, j =>
-                    m[i, j] = m[j, i] = source[i, t].Covariance(source[j, t])));
-            return m;
-        }
+		public static Matrix Covariance(Matrix source, VectorType t = VectorType.Col)
+		{
+			int length = t == VectorType.Row ? source.Rows : source.Cols;
+			Matrix m = new Matrix(length);
+			//for (int i = 0; i < length; i++)
+			for (int i = 0; i < length; i++)
+            {
+				//for (int j = i; j < length; j++) // symmetric matrix
+				for (int j = i; j < length; j++)
+					m[i, j] = m[j, i] = source[i, t].Covariance(source[j, t]);
+            }
+			return m;
+		}
+
         /// <summary>Covariance diagram.</summary>
         /// <param name="source">Source for the.</param>
         /// <param name="t">(Optional) Row or Column sum.</param>
@@ -430,16 +555,59 @@ namespace numl.Math.LinearAlgebra
         /// <returns>
         /// An enumerator that allows foreach to be used to process indices in this collection.
         /// </returns>
-        public static IEnumerable<int> Indices(Matrix source, Func<Vector, bool> f, VectorType t)
+		public static IEnumerable<int> Indices(Matrix source, Func<Vector, bool> f, VectorType t)
+		{
+			int max = t == VectorType.Row ? source.Rows : source.Cols;
+			for (int i = 0; i < max; i++)
+				if (f(source[i, t]))
+					yield return i;
+		}
+
+        /// <summary>
+        /// Sorts the given Matrix by the specified row or column selector and returns the new Matrix
+        /// </summary>
+        /// <param name="source">The Matrix</param>
+        /// <param name="keySelector">Property selector to sort by.</param>
+        /// <param name="t">Specifies whether to sort horizontally or vertically.</param>
+        /// <param name="ascending">Determines whether to sort ascending or descending (Default: True)</param>
+        /// <returns>New Matrix and Vector of original indices.</returns>
+        public static Matrix Sort(Matrix source, Func<Vector, double> keySelector, VectorType t, bool ascending = true)
         {
-            int max = t == VectorType.Row ? source.Rows : source.Cols;
-            for (int i = 0; i < max; i++)
-                if (f(source[i, t]))
-                    yield return i;
+            Vector v;
+            return Matrix.Sort(source, keySelector, t, ascending, out v);
+        }
+        /// <summary>
+        /// Sorts the given Matrix by the specified row or column selector and returns the new Matrix
+        /// along with the original indices.
+        /// </summary>
+        /// <param name="source">The Matrix</param>
+        /// <param name="keySelector">Property selector to sort by.</param>
+        /// <param name="t">Specifies whether to sort horizontally or vertically.</param>
+        /// <param name="ascending">Determines whether to sort ascending or descending (Default: True)</param>
+        /// <param name="indices">Vector of <paramref name="t"/> indices in the original Matrix before the sort operation.</param>
+        /// <returns>New Matrix and Vector of original indices.</returns>
+        public static Matrix Sort(Matrix source, Func<Vector, double> keySelector, VectorType t, bool ascending, out Vector indices)
+        {
+            int max = (t == VectorType.Row ? source.Rows : source.Cols);
+            indices = Vector.Zeros(max);
+
+            List<Vector> vects = new List<Vector>(max);
+
+            IEnumerable<Vector> arrays = (t == VectorType.Row ? source.GetRows() : source.GetCols());
+
+            KeyValuePair<Vector, int>[] sort = (ascending ?
+                                                      arrays.Select((i, v) => new KeyValuePair<Vector, int>(i, v))
+                                                            .OrderBy(o => keySelector(o.Key))
+                                                         :
+                                                      arrays.Select((i, v) => new KeyValuePair<Vector, int>(i, v))
+                                                            .OrderByDescending(o => keySelector(o.Key))).ToArray();
+
+            indices = sort.Select(s => s.Value).ToVector();
+
+            return sort.Select(s => s.Key).ToMatrix(t);
         }
 
-
-        //---------------- structural
+		//---------------- structural
         /// <summary>Stack a set of vectors into a matrix.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
         /// <param name="type">.</param>
@@ -537,20 +705,81 @@ namespace numl.Math.LinearAlgebra
         /// <param name="indices">The indices.</param>
         /// <param name="t">Row or Column sum.</param>
         /// <returns>A Matrix.</returns>
-        public static Matrix Slice(Matrix m, IEnumerable<int> indices, VectorType t)
+		public static Matrix Slice(Matrix m, IEnumerable<int> indices, VectorType t)
+		{
+			var q = indices.Distinct();
+
+			int rows = t == VectorType.Row ? q.Where(j => j < m.Rows).Count() : m.Rows;
+			int cols = t == VectorType.Col ? q.Where(j => j < m.Cols).Count() : m.Cols;
+
+			Matrix n = new Matrix(rows, cols);
+
+			int i = -1;
+			foreach (var j in q.OrderBy(k => k))
+				n[++i, t] = m[j, t];
+
+			return n;
+		}
+        /// <summary>
+        /// Unshapes the given Matrix into a Vector form along the <paramref name="dimensionType"/> axis.
+        /// <para>Reads from the source Matrix and stacks from right to left when <paramref name="dimensionType"/> equals 'Col' otherwise uses a bottom up approach.</para>
+        /// </summary>
+        /// <param name="m">The Matrix to act on.</param>
+        /// <param name="dimensionType">Type of the dimension to use when unrolling the Matrix.</param>
+        /// <returns>Matrix.</returns>
+        public static Vector Unshape(Matrix m, VectorType dimensionType = VectorType.Col)
         {
-            var q = indices.Distinct();
+            return Vector.Combine((dimensionType == VectorType.Col ? m.GetCols().ToArray() : m.GetRows().ToArray()));
+        }
+        /// <summary>
+        /// Reshapes the supplied Vector into a Matrix form.
+        /// </summary>
+        /// <param name="v">Source vector to act on.</param>
+        /// <param name="dimension">Length of the specified dimension.</param>
+        /// <param name="dimensionType">Dimension type to use for creating a <paramref name="dimension"/> by n matrix.</param>
+        /// <param name="byVector">Direction to process, i.e. Row = Fill Down then Right, or Col = Fill Right then Down</param>
+        /// <returns></returns>
+        public static Matrix Reshape(Vector v, int dimension, VectorType dimensionType = VectorType.Col, VectorType byVector = VectorType.Row)
+        {
+            int x = (dimensionType == VectorType.Row ? dimension : v.Length / dimension);
+            int y = (dimensionType == VectorType.Col ? dimension : v.Length / dimension);
+            return Matrix.Reshape(v, x, y, byVector);
+        }
+        /// <summary>
+        /// Reshapes the supplied Vector into a Matrix form.
+        /// </summary>
+        /// <param name="v">Vector to reshape.</param>
+        /// <param name="rows">Height of the matrix to return</param>
+        /// <param name="columns">Width of the matrix to return</param>
+        /// <param name="byVector">Direction to process, i.e. Row = Fill Down then Right, or Col = Fill Right then Down</param>
+        /// <returns></returns>
+        public static Matrix Reshape(Vector v, int rows, int columns, VectorType byVector = VectorType.Row)
+        {
+            if (rows * columns != v.Length)
+                throw new InvalidOperationException(
+                    string.Format("Cannot reshape Vector of length {0} into a {1} x {2} Matrix.", v.Length, rows, columns));
 
-            int rows = t == VectorType.Row ? q.Where(j => j < m.Rows).Count() : m.Rows;
-            int cols = t == VectorType.Col ? q.Where(j => j < m.Cols).Count() : m.Cols;
+            Matrix m = new Matrix(rows, columns);
 
-            Matrix n = new Matrix(rows, cols);
+            int counter = 0;
 
-            int i = -1;
-            foreach (var j in q.OrderBy(k => k))
-                n[++i, t] = m[j, t];
+            switch (byVector)
+            {
+                case VectorType.Row:
+                    {
+                        for (int i = 0; i < columns; i++)
+                            for (int k = 0; k < rows; k++)
+                                m[k, i] = v[counter++];
+                    } break;
+                case VectorType.Col:
+                    {
+                        for (int i = 0; i < rows; i++)
+                            for (int k = 0; k < columns; k++)
+                                m[i, k] = v[counter++];
+                    } break;
+            }
 
-            return n;
+            return m;
         }
         /// <summary>Extracts this object.</summary>
         /// <param name="m">Input Matrix.</param>

@@ -8,6 +8,8 @@ using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 using numl.Model;
 using numl.Utils;
+using numl.Features;
+using numl.Preprocessing;
 
 namespace numl.Supervised.KNN
 {
@@ -31,7 +33,10 @@ namespace numl.Supervised.KNN
             Tuple<int, double>[] distances = new Tuple<int, double>[X.Rows];
 
             // happens per slot so we are good to parallelize
-            Parallel.For(0, X.Rows, i => distances[i] = new Tuple<int, double>(i, (y - X.Row(i)).Norm(2)));
+            for (int i = 0; i < X.Rows; i++)
+            {
+                distances[i] = new Tuple<int, double>(i, (y - X.Row(i)).Norm(2));
+            }
 
             var slice = distances
                             .OrderBy(t => t.Item2)

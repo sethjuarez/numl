@@ -6,6 +6,7 @@ using numl.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using System.Runtime.Serialization;
 
 namespace numl.Model
 {

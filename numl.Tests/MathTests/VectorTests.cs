@@ -205,5 +205,68 @@ namespace numl.Tests.MathTests
             for (int i = 0; i < ans.Length; i++)
                 Assert.AreEqual(ans[i], cmp[i]);
         }
+
+        [Test]
+        public void Vector_Reshape_To_Matrix_1()
+        {
+            Vector v = new Vector(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+
+            Matrix ans = new double[,] 
+            {
+                { 1, 2, 3, 4, 5 },
+                { 6, 7, 8, 9, 10 }
+            };
+
+            Matrix m = v.Reshape(5, VectorType.Col, VectorType.Col);
+
+            Assert.AreEqual(v[0], ans[0, 0]);
+            Assert.AreEqual(v[4], ans[0, 4]);
+            Assert.AreEqual(v[5], ans[1, 0]);
+            Assert.AreEqual(v[9], ans[1, 4]);
+        }
+
+        [Test]
+        public void Vector_Reshape_To_Matrix_2()
+        {
+            Vector v = new Vector(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+
+            Matrix ans = new double[,]
+            {
+                { 1, 2 },
+                { 3, 4 },
+                { 5, 6 },
+                { 7, 8 },
+                { 9, 10 }
+            };
+
+            Matrix m = v.Reshape(2, VectorType.Col, VectorType.Col);
+
+            Assert.AreEqual(v[0], ans[0, 0]);
+            Assert.AreEqual(v[4], ans[2, 0]);
+            Assert.AreEqual(v[5], ans[2, 1]);
+            Assert.AreEqual(v[9], ans[4, 1]);
+        }
+
+        [Test]
+        public void Vector_Reshape_To_Matrix_3()
+        {
+            Vector v = new Vector(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+
+            Matrix ans = new double[,]
+            {
+                { 1, 6 },
+                { 2, 7 },
+                { 3, 8 },
+                { 4, 9 },
+                { 5, 10 }
+            };
+
+            Matrix m = v.Reshape(2, VectorType.Col, VectorType.Row);
+
+            Assert.AreEqual(v[0], ans[0, 0]);
+            Assert.AreEqual(v[4], ans[4, 0]);
+            Assert.AreEqual(v[5], ans[0, 1]);
+            Assert.AreEqual(v[9], ans[4, 1]);
+        }
     }
 }

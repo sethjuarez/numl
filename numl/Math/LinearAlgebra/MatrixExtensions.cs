@@ -10,6 +10,54 @@ namespace numl.Math.LinearAlgebra
     /// <summary>A matrix extensions.</summary>
     public static class MatrixExtensions
     {
+        /// <summary>
+        /// Converts a matrix to a binary indicator matrix based on the specified predicate.
+        /// </summary>
+        /// <param name="m">Matrix.</param>
+        /// <param name="fnPredicate">Function to test each Value.</param>
+        /// <param name="trueValue">(Optional) Value to set when condition (<paramref name="fnPredicate"/>) returns True</param>
+        /// <param name="falseValue">(Optional) Value to set when condition (<paramref name="fnPredicate"/>) returns False</param>
+        /// <returns></returns>
+        public static Matrix ToBinary(this Matrix m, Func<double, bool> fnPredicate, double trueValue = 1.0, double falseValue = 0.0)
+        {
+            Matrix result = new Matrix(m.Rows, m.Cols);
+            for (int i = 0; i < m.Rows; i++)
+                for (int j = 0; j < m.Cols; j++)
+                    result[i, j] = (fnPredicate(m[i, j]) ? trueValue : falseValue);
+            return result;
+        }
+
+        /// <summary>
+        /// Performs an element-wise operation on the input Matrix.
+        /// </summary>
+        /// <param name="m">Matrix.</param>
+        /// <param name="fnElementWiseOp">Function to apply.</param>
+        /// <returns>A Matrix.</returns>
+        public static Matrix Each(this Matrix m, Func<double, double> fnElementWiseOp)
+        {
+            return Matrix.Each(m, fnElementWiseOp);
+        }
+        /// <summary>
+        /// Performs an element wise operation on the input Matrix.
+        /// </summary>
+        /// <param name="m">Matrix.</param>
+        /// <param name="fnElementWiseOp">Function to apply to each cell specified by the value and cell coordinates.</param>
+        /// <returns>A Matrix.</returns>
+        public static Matrix Each(this Matrix m, Func<double, int, int, double> fnElementWiseOp)
+        {
+            return Matrix.Each(m, fnElementWiseOp);
+        }
+        /// <summary>
+        /// Performs an element-wise operation on the input Matrices.
+        /// </summary>
+        /// <param name="m1">First Matrix.</param>
+        /// <param name="m2">Second Matrix.</param>
+        /// <param name="fnElementWiseOp">Operation to perform on the value from the first and second matrices.</param>
+        /// <returns>A Matrix.</returns>
+        public static Matrix Each(this Matrix m1, Matrix m2, Func<double, double, double> fnElementWiseOp)
+        {
+            return Matrix.Each(m1, m2, fnElementWiseOp);
+        }
         /// <summary>A Matrix extension method that stacks.</summary>
         /// <param name="m">Matrix.</param>
         /// <param name="t">Row or Column sum.</param>
@@ -25,6 +73,41 @@ namespace numl.Math.LinearAlgebra
         public static Matrix VStack(this Matrix m, Matrix t)
         {
             return Matrix.VStack(m, t);
+        }
+        /// <summary>
+        /// Unrolls the matrix into an n x 1 vector.
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
+        public static Vector Unshape(this Matrix m)
+        {
+            return Matrix.Unshape(m);
+        }
+        /// <summary>
+        /// Sorts the given Matrix by the specified row or column and returns the new Matrix.
+        /// </summary>
+        /// <param name="m">The Matrix</param>
+        /// <param name="keySelector">Property selector to sort by.</param>
+        /// <param name="t">Specifies whether to sort horizontally (<see cref="VectorType.Col"/>) or vertically (<see cref="VectorType.Row"/>).</param>
+        /// <param name="isAscending">Determines whether to sort ascending or descending (Default: True)</param>
+        /// <returns>New Matrix and Vector of original indices.</returns>
+        public static Matrix Sort(this Matrix m, Func<Vector, double> keySelector, VectorType t, bool isAscending = true)
+        {
+            return Matrix.Sort(m, keySelector, t, isAscending);
+        }
+        /// <summary>
+        /// Sorts the given Matrix by the specified row or column index and returns the new Matrix 
+        /// along with the original indices.
+        /// </summary>
+        /// <param name="m">The Matrix</param>
+        /// <param name="keySelector">Property selector to sort by.</param>
+        /// <param name="t">Specifies whether to sort horizontally (<see cref="VectorType.Col"/>) or vertically (<see cref="VectorType.Row"/>).</param>
+        /// <param name="isAscending">Determines whether to sort ascending or descending (Default: True)</param>
+        /// <param name="indices">Vector of the original (<paramref name="t"/>) indices before the sort operation.</param>
+        /// <returns>New Matrix and Vector of original indices.</returns>
+        public static Matrix Sort(this Matrix m, Func<Vector, double> keySelector, VectorType t, bool isAscending, out Vector indices)
+        {
+            return Matrix.Sort(m, keySelector, t, isAscending, out indices);
         }
         /// <summary>
         /// A Matrix extension method that determines the mean of the given parameters.
@@ -47,7 +130,17 @@ namespace numl.Math.LinearAlgebra
         {
             return Matrix.StdDev(source, t);
         }
-
+        
+        /// <summary>
+        /// Returns a vector of the maximum values for each row/column.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public static Vector Max(this Matrix source, VectorType t)
+        {
+            return Matrix.Max(source, t);
+        }
         /// <summary>
         /// A Matrix extension method that determines the maximum of the given parameters.
         /// </summary>
@@ -65,6 +158,26 @@ namespace numl.Math.LinearAlgebra
         public static double Min(this Matrix source)
         {
             return Matrix.Min(source);
+        }
+        /// <summary>
+        /// Returns a vector of the minimum values for each row/column.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public static Vector Min(this Matrix source, VectorType t)
+        {
+            return Matrix.Min(source, t);
+        }
+        /// <summary>
+        /// Returns a vector of the median values for each row or column.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public static Vector Median(this Matrix source, VectorType t)
+        {
+            return Matrix.Median(source, t);
         }
         /// <summary>A Matrix extension method that covariances.</summary>
         /// <param name="source">The source to act on.</param>
@@ -138,6 +251,39 @@ namespace numl.Math.LinearAlgebra
         {
             return Matrix.Slice(m, indices, t);
         }
+        /// <summary>
+        /// Slices the input matrix using starting and stopping positions.
+        /// </summary>
+        /// <param name="m">Source matrix.</param>
+        /// <param name="minIndex">Minimum index to slice from.</param>
+        /// <param name="maxIndex">Maximum index to slice.</param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public static Matrix Slice(this Matrix m, int minIndex, int maxIndex, VectorType t = VectorType.Row)
+        {
+            IEnumerable<Vector> array = (t == VectorType.Row ? m.GetRows() : m.GetCols());
+            return (array.Skip(minIndex).Take((maxIndex - minIndex) + 1).ToMatrix(t));
+        }
+        /// <summary>
+        /// Slices the Matrix returning only the cells specified by their location.
+        /// </summary>
+        /// <param name="m">Matrix.</param>
+        /// <param name="indices">An 2-D location array of indexes to include.</param>
+        /// <param name="t">Type of the first dimension in the location array.</param>
+        /// <returns></returns>
+        public static Matrix Slice(this Matrix m, IEnumerable<IEnumerable<int>> indices, VectorType t = VectorType.Row)
+        {
+            List<Vector> vectors = new List<Vector>();
+
+            int top = (t == VectorType.Row ? m.Rows : m.Cols);
+
+            for (int i = 0; i < top; i++)
+            {
+                vectors.Add(m[i, t].Slice(indices.ElementAt(i)));
+            }
+
+            return Matrix.Stack(t, vectors.ToArray());
+        }
         /// <summary>A Matrix extension method that extracts this object.</summary>
         /// <param name="m">Matrix.</param>
         /// <param name="x">The x coordinate.</param>
@@ -202,10 +348,10 @@ namespace numl.Math.LinearAlgebra
             return Matrix.Trace(m);
         }
         /// <summary>
-        /// Computes the sum of either the rows or columns of a matrix and returns a vector.
+        /// Computes the entire sum of every element in the Matrix.
         /// </summary>
         /// <param name="m">Matrix.</param>
-        /// <returns>Vector Sum.</returns>
+        /// <returns>Double.</returns>
         public static double Sum(this Matrix m)
         {
             return Matrix.Sum(m);

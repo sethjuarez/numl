@@ -2,6 +2,7 @@
 //
 // summary:	Implements the descriptor property class
 using System;
+using System.IO;
 using numl.Utils;
 using System.Linq;
 using System.Reflection;

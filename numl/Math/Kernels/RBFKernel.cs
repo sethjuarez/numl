@@ -15,15 +15,28 @@ namespace numl.Math.Kernels
     /// </summary>
     public class RBFKernel : IKernel
     {
+        /// <summary>
+        /// Returns False (always) indicating this is a non-linear kernel.
+        /// </summary>
+        public bool IsLinear
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         /// <summary>RBF free parameter.</summary>
         /// <value>The sigma.</value>
         public double Sigma { get; private set; }
+
         /// <summary>ctor.</summary>
         /// <param name="sigma">Input Parameter.</param>
         public RBFKernel(double sigma)
         {
             Sigma = sigma;
         }
+
         /// <summary>Computes RBF Kernel with provided free sigma parameter.</summary>
         /// <param name="m">Input Matrix.</param>
         /// <returns>RBF Kernel Matrix.</returns>
@@ -38,13 +51,27 @@ namespace numl.Math.Kernels
                 for (int j = i; j < m.Rows; j++)
                 {
                     var p = m[i] - m[j];
-                    var xy = -1 * p.Dot(p);
+                    var xy = -1.0 * p.Dot(p);
                     K[i, j] = K[j, i] = System.Math.Exp(xy / (2 * System.Math.Pow(Sigma, 2)));
                 }
             }
 
             return K;
         }
+
+        /// <summary>
+        /// Computes the radial basis kernel function between the two input vectors.
+        /// </summary>
+        /// <param name="v1">Vector one.</param>
+        /// <param name="v2">Vector two.</param>
+        /// <returns>Similarity.</returns>
+        public double Compute(Vector v1, Vector v2)
+        {
+            var p = v1 - v2;
+            var xy = -1.0 * p.Dot(p);
+            return System.Math.Exp(xy / (2 * System.Math.Pow(Sigma, 2)));
+        }
+
         /// <summary>Projects vector into rbf kernel space.</summary>
         /// <param name="m">RBF Kernel Matrix.</param>
         /// <param name="x">Vector in original space.</param>

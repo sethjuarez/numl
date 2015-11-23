@@ -124,6 +124,16 @@ namespace numl.Model
             return q.First();
         }
         /// <summary>
+        /// Returns the raw value from the object for the supplied property.
+        /// </summary>
+        /// <param name="o">Object to process.</param>
+        /// <param name="property">Property value of the object to return.</param>
+        /// <returns></returns>
+        public object GetValue(object o, Property property)
+        {
+            return Ject.Get(o, property.Name);
+        }
+        /// <summary>
         /// Gets related property column name given its offset within the vector representation.
         /// </summary>
         /// <param name="i">Vector Index.</param>
@@ -188,8 +198,9 @@ namespace numl.Model
         }
         /// <summary>Converts a list of examples into a lazy double list of doubles.</summary>
         /// <param name="items">Examples.</param>
+        /// <param name="withLabels">True to include labels, otherwise False</param>
         /// <returns>Lazy double enumerable of doubles.</returns>
-        public IEnumerable<IEnumerable<double>> Convert(IEnumerable<object> items)
+        public IEnumerable<IEnumerable<double>> Convert(IEnumerable<object> items, bool withLabels = true)
         {
             // Pre processing items
             foreach (Property feature in Features)
@@ -200,7 +211,7 @@ namespace numl.Model
 
             // convert items
             foreach (object o in items)
-                yield return Convert(o);
+                yield return Convert(o, withLabels);
 
             // Post processing items
             foreach (Property feature in Features)
@@ -359,14 +370,7 @@ namespace numl.Model
         {
             return new Descriptor<T>() { Name = name, Type = typeof(T), Features = new Property[] { } };
         }
-        /// <summary>Load a descriptor from a file.</summary>
-        /// <param name="file">File Location.</param>
-        /// <returns>Descriptor.</returns>
-        public static Descriptor Load(string file)
-        {
-            using (var stream = File.OpenRead(file))
-                return Load(stream);
-        }
+
         /// <summary>Load a descriptor from a stream.</summary>
         /// <param name="stream">Stream.</param>
         /// <returns>Descriptor.</returns>
@@ -408,7 +412,7 @@ namespace numl.Model
                                VectorLength == d.VectorLength &&
                                Features.Length == d.Features.Length;
                     else
-                        return Label == null && 
+                        return Label == null &&
                                d.Label == null &&
                                Name == d.Name &&
                                Type == d.Type &&
@@ -477,7 +481,7 @@ namespace numl.Model
         /// <param name="splitType">Type of the split.</param>
         /// <param name="separator">(Optional) the separator.</param>
         /// <param name="asEnum">(Optional) true to as enum.</param>
-        /// <param name="exclusions">(Optional) the exclusions.</param>
+        /// <param name="exclusions">(Optional) base 64 content string of the exclusions.</param>
         /// <returns>A Descriptor&lt;T&gt;</returns>
         public Descriptor<T> WithString(Expression<Func<T, string>> property, StringSplitType splitType, string separator = " ", bool asEnum = false, string exclusions = null)
         {

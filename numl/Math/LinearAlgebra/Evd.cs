@@ -5,7 +5,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Collections.Concurrent;
 using System.Threading;
 
 namespace numl.Math.LinearAlgebra
@@ -144,7 +143,7 @@ namespace numl.Math.LinearAlgebra
 
             for (int i = 0; i < n - 1; i++)
             {
-                Parallel.For(0, n / 2, j =>
+                for (int j = 0; j < n / 2; j++)
                 {
                     int p, q, k = n - 1 - j;
 
@@ -158,13 +157,14 @@ namespace numl.Math.LinearAlgebra
                     if (p >= 0)
                         sweep(p, q);
 
-                });
-
-                // move stuff around
-                queue.Enqueue(queue.Dequeue());
+                }
             }
 
+            // move stuff around
+            queue.Enqueue(queue.Dequeue());
         }
+
+
 
         /// <summary>Factorizes this object.</summary>
         private void factorize()
@@ -249,3 +249,4 @@ namespace numl.Math.LinearAlgebra
         #endregion
     }
 }
+

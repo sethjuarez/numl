@@ -35,11 +35,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="project.json" />
-    <!-- A reference to the entire .NET Framework is automatically included -->
-  </ItemGroup>
-  <ItemGroup>
+    <Compile Include="Features\FeatureProperties.cs" />
     <Compile Include="Learner.cs" />
+    <Compile Include="LearningModel.cs" />
+    <Compile Include="Math\Functions\ClippedRectifiedLinear.cs" />
     <Compile Include="Math\Functions\Cost\ICostFunction.cs" />
     <Compile Include="Math\Functions\Cost\LinearCostFunction.cs" />
     <Compile Include="Math\Functions\Cost\LogisticCostFunction.cs" />
@@ -47,14 +46,19 @@
     <Compile Include="Math\Functions\Ident.cs" />
     <Compile Include="Math\Functions\IFunction.cs" />
     <Compile Include="Math\Functions\Logistic.cs" />
+    <Compile Include="Math\Functions\RectifiedLinear.cs" />
     <Compile Include="Math\Functions\Regularization\IRegularizer.cs" />
     <Compile Include="Math\Functions\Regularization\Regularization.cs" />
+    <Compile Include="Math\Functions\Softmax.cs" />
+    <Compile Include="Math\Functions\SteepLogistic.cs" />
     <Compile Include="Math\Functions\Tanh.cs" />
     <Compile Include="Math\Information\Entropy.cs" />
     <Compile Include="Math\Information\Error.cs" />
     <Compile Include="Math\Information\Gini.cs" />
     <Compile Include="Math\Information\Impurity.cs" />
     <Compile Include="Math\Kernels\IKernel.cs" />
+    <Compile Include="Math\Kernels\LinearKernel.cs" />
+    <Compile Include="Math\Kernels\LogisticKernel.cs" />
     <Compile Include="Math\Kernels\PolyKernel.cs" />
     <Compile Include="Math\Kernels\RBFKernel.cs" />
     <Compile Include="Math\LinearAlgebra\Conversions.cs" />
@@ -96,14 +100,42 @@
     <Compile Include="Model\NumlAttributes.cs" />
     <Compile Include="Model\Property.cs" />
     <Compile Include="Model\StringProperty.cs" />
+    <Compile Include="Optimization\Functions\CostFunctions\CofiCostFunction.cs" />
+    <Compile Include="Optimization\Functions\CostFunctions\CostFunction.cs" />
+    <Compile Include="Optimization\Functions\CostFunctions\ICostFunction.cs" />
+    <Compile Include="Optimization\Functions\CostFunctions\LinearCostFunction.cs" />
+    <Compile Include="Optimization\Functions\CostFunctions\LogisticCostFunction.cs" />
+    <Compile Include="Optimization\Functions\IRegularizer.cs" />
+    <Compile Include="Optimization\Functions\L2Regularizer.cs" />
+    <Compile Include="Optimization\Methods\GradientDescent\FastGradientDescent.cs" />
+    <Compile Include="Optimization\Methods\GradientDescent\NAGDescent.cs" />
+    <Compile Include="Optimization\Methods\GradientDescent\StochasticGradientDescent.cs" />
+    <Compile Include="Optimization\Methods\IOptimizationMethod.cs" />
+    <Compile Include="Optimization\Methods\OptimizationMethod.cs" />
+    <Compile Include="Optimization\Methods\OptimizationMethods.cs" />
+    <Compile Include="Optimization\Optimizer.cs" />
+    <Compile Include="Optimization\OptimizerProperties.cs" />
     <Compile Include="PreProcessing\FeatureDimensions.cs" />
     <Compile Include="PreProcessing\FeatureNormalizer.cs" />
+    <Compile Include="PreProcessing\IFeatureNormalizer.cs" />
+    <Compile Include="PreProcessing\Normalization\LogisticFeatureNormalizer.cs" />
+    <Compile Include="PreProcessing\Normalization\MinMaxFeatureNormalizer.cs" />
+    <Compile Include="PreProcessing\Normalization\TanhFeatureNormalizer.cs" />
+    <Compile Include="PreProcessing\Normalization\ZeroMeanFeatureNormalizer.cs" />
+    <Compile Include="PreProcessing\Normalization\ZScoreFeatureNormalizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Recommendation\CofiRecommenderGenerator.cs" />
+    <Compile Include="Recommendation\CofiRecommenderModel.cs" />
+    <Compile Include="Scoring\Score.cs" />
+    <Compile Include="Scoring\ScoringMetric.cs" />
     <Compile Include="Serialization\DateTimeFeatureConverter.cs" />
-    <Compile Include="Serialization\NetworkConverter.cs" />
-    <Compile Include="Serialization\VectorConverter.cs" />
     <Compile Include="Serialization\MatrixConverter.cs" />
+    <Compile Include="Serialization\NetworkConverter.cs" />
     <Compile Include="Serialization\TypeConverter.cs" />
+    <Compile Include="Serialization\VectorConverter.cs" />
+    <Compile Include="Supervised\Classification\ClassificationModel.cs" />
+    <Compile Include="Supervised\Classification\IClassifier.cs" />
+    <Compile Include="Supervised\Classification\MultiClassLearner.cs" />
     <Compile Include="Supervised\DecisionTree\DecisionTreeGenerator.cs" />
     <Compile Include="Supervised\DecisionTree\DecisionTreeModel.cs" />
     <Compile Include="Supervised\DecisionTree\Node.cs" />
@@ -119,9 +151,12 @@
     <Compile Include="Supervised\NaiveBayes\Statistic.cs" />
     <Compile Include="Supervised\NeuralNetwork\Edge.cs" />
     <Compile Include="Supervised\NeuralNetwork\Network.cs" />
+    <Compile Include="Supervised\NeuralNetwork\NetworkLayer.cs" />
     <Compile Include="Supervised\NeuralNetwork\NeuralNetworkGenerator.cs" />
     <Compile Include="Supervised\NeuralNetwork\NeuralNetworkModel.cs" />
     <Compile Include="Supervised\NeuralNetwork\Neuron.cs" />
+    <Compile Include="Supervised\NeuralNetwork\Recurrent\GatedRNNGenerator.cs" />
+    <Compile Include="Supervised\NeuralNetwork\Recurrent\RecurrentNeuron.cs" />
     <Compile Include="Supervised\Perceptron\KernelPerceptronGenerator.cs" />
     <Compile Include="Supervised\Perceptron\KernelPerceptronModel.cs" />
     <Compile Include="Supervised\Perceptron\PerceptronGenerator.cs" />
@@ -130,6 +165,10 @@
     <Compile Include="Supervised\Regression\LinearRegressionModel.cs" />
     <Compile Include="Supervised\Regression\LogisticRegressionGenerator.cs" />
     <Compile Include="Supervised\Regression\LogisticRegressionModel.cs" />
+    <Compile Include="Supervised\SVM\Selection\ISelection.cs" />
+    <Compile Include="Supervised\SVM\Selection\WorkingSetSelection3.cs" />
+    <Compile Include="Supervised\SVM\SVMGenerator.cs" />
+    <Compile Include="Supervised\SVM\SVMModel.cs" />
     <Compile Include="Unsupervised\Cluster.cs" />
     <Compile Include="Unsupervised\GMM.cs" />
     <Compile Include="Unsupervised\HClusterModel.cs" />
@@ -139,11 +178,42 @@
     <Compile Include="Utils\EnumerableHelpers.cs" />
     <Compile Include="Utils\Ject.cs" />
     <Compile Include="Utils\JsonHelpers.cs" />
+    <Compile Include="Utils\MathHelpers.cs" />
     <Compile Include="Utils\StringHelpers.cs" />
     <Compile Include="Utils\TypeHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Supervised\SVM\" />
+    <None Include="Math\LinearAlgebra\Evd.cs.orig" />
+    <None Include="Math\LinearAlgebra\Matrix.cs.orig" />
+    <None Include="Math\LinearAlgebra\MatrixOps.cs.orig" />
+    <None Include="Math\LinearAlgebra\MatrixStatics.cs.orig" />
+    <None Include="Math\LinearAlgebra\Vector.cs.orig" />
+    <None Include="Math\LinearAlgebra\VectorExtensions.cs.orig" />
+    <None Include="Model\DateTimeProperty.cs.orig" />
+    <None Include="Model\Descriptor.cs.orig" />
+    <None Include="Model\EnumerableProperty.cs.orig" />
+    <None Include="Model\NumlAttributes.cs.orig" />
+    <None Include="Model\Property.cs.orig" />
+    <None Include="Model\StringProperty.cs.orig" />
+    <None Include="project.json" />
+    <None Include="Properties\AssemblyInfo.cs.orig" />
+    <None Include="Supervised\DecisionTree\DecisionTreeModel.cs.orig" />
+    <None Include="Supervised\Generator.cs.orig" />
+    <None Include="Supervised\KNN\KNNModel.cs.orig" />
+    <None Include="Supervised\Model.cs.orig" />
+    <None Include="Supervised\NaiveBayes\NaiveBayesModel.cs.orig" />
+    <None Include="Supervised\NeuralNetwork\Edge.cs.orig" />
+    <None Include="Supervised\NeuralNetwork\NeuralNetworkModel.cs.orig" />
+    <None Include="Supervised\NeuralNetwork\Neuron.cs.orig" />
+    <None Include="Supervised\Perceptron\KernelPerceptronModel.cs.orig" />
+    <None Include="Supervised\Perceptron\PerceptronModel.cs.orig" />
+    <None Include="Supervised\Regression\LinearRegressionGenerator.cs.orig" />
+    <None Include="Supervised\Regression\LinearRegressionModel.cs.orig" />
+    <None Include="Supervised\Regression\LogisticRegressionGenerator.cs.orig" />
+    <None Include="Supervised\Regression\LogisticRegressionModel.cs.orig" />
+    <None Include="Unsupervised\GMM.cs.orig" />
+    <None Include="Utils\EnumerableHelpers.cs.orig" />
+    <None Include="Utils\Ject.cs.orig" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

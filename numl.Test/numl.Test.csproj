@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8FB9FDFF-660B-41EB-9CDB-EE97F6DD6234}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>numl.Test</RootNamespace>
+    <AssemblyName>numl.Test</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  <ItemGroup>
+    <Compile Include="DataTests\ComplexConversionTests.cs" />
+    <Compile Include="DataTests\DescriptorTests.cs" />
+    <Compile Include="DataTests\LinAlgConversionTests.cs" />
+    <Compile Include="DataTests\SimpleConversionTests.cs" />
+    <Compile Include="Data\ArbitraryPrediction.cs" />
+    <Compile Include="Data\Fake.cs" />
+    <Compile Include="Data\Feed.cs" />
+    <Compile Include="Data\Generic.cs" />
+    <Compile Include="Data\House.cs" />
+    <Compile Include="Data\Iris.cs" />
+    <Compile Include="Data\Student.cs" />
+    <Compile Include="Data\Tennis.cs" />
+    <Compile Include="Data\ValueObject.cs" />
+    <Compile Include="MathTests\EvdTests.cs" />
+    <Compile Include="MathTests\HelperTests.cs" />
+    <Compile Include="MathTests\InformationTests.cs" />
+    <Compile Include="MathTests\LinkerTests.cs" />
+    <Compile Include="MathTests\MatrixTests.cs" />
+    <Compile Include="MathTests\MetricTests.cs" />
+    <Compile Include="MathTests\ProbabilityTests.cs" />
+    <Compile Include="MathTests\VectorTests.cs" />
+    <Compile Include="PlatformWrapper\PlatformWrapperInstance.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SerializationTests\BaseSerialization.cs" />
+    <Compile Include="SerializationTests\DecisionTreeSerializationTests.cs" />
+    <Compile Include="SerializationTests\DescriptorSerializationTests.cs" />
+    <Compile Include="SerializationTests\NaiveBayesSerializationTests.cs" />
+    <Compile Include="SerializationTests\NeuralNetworkSerializationTests.cs" />
+    <Compile Include="SerializationTests\PropertySerializationTests.cs" />
+    <Compile Include="SerializationTests\RegressionSerialisationTests.cs" />
+    <Compile Include="SupervisedTests\BaseSupervised.cs" />
+    <Compile Include="SupervisedTests\DecisionTreeTests.cs" />
+    <Compile Include="SupervisedTests\KNNTests.cs" />
+    <Compile Include="SupervisedTests\LinearRegressionTests.cs" />
+    <Compile Include="SupervisedTests\LogisticRegressionTests.cs" />
+    <Compile Include="SupervisedTests\NaiveBayesTests.cs" />
+    <Compile Include="SupervisedTests\NeuralNetworkTests.cs" />
+    <Compile Include="SupervisedTests\PerceptronTests.cs" />
+    <Compile Include="UnsupervisedTests\HierarchicalClusteringTests.cs" />
+    <Compile Include="UnsupervisedTests\KMeansTests.cs" />
+    <Compile Include="UnsupervisedTests\PCATests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\numl\numl.csproj">
+      <Project>{11022b54-2310-42aa-b80f-660733243406}</Project>
+      <Name>numl</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

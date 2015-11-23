@@ -12,10 +12,22 @@ namespace numl.Math.Kernels
     public class PolyKernel : IKernel
     {
         /// <summary>
+        /// Returns False (always) indicating this is a non-linear kernel.
+        /// </summary>
+        public bool IsLinear
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Specifies dimensionality of projection based on (1 + x.T y)^d where d is the dimension.
         /// </summary>
         /// <value>The dimension.</value>
-        public double Dimension { get; private set; }
+        public double Dimension { get; private set; } 
+
         /// <summary>ctor.</summary>
         /// <param name="dimension">Polynomial Kernel Dimension.</param>
         public PolyKernel(double dimension)
@@ -36,6 +48,18 @@ namespace numl.Math.Kernels
 
             return K;
         }
+
+        /// <summary>
+        /// Computes the polynomial kernel function between the two input vectors.
+        /// </summary>
+        /// <param name="v1">Vector one.</param>
+        /// <param name="v2">Vector two.</param>
+        /// <returns>Similarity.</returns>
+        public double Compute(Vector v1, Vector v2)
+        {
+            return System.Math.Pow((1d + v1.Dot(v2)), Dimension);
+        }
+
         /// <summary>Projects vector into polynomial kernel space.</summary>
         /// <param name="m">Polynomial Kernel Matrix.</param>
         /// <param name="x">Vector in original space.</param>

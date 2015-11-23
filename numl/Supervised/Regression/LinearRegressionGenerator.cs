@@ -7,10 +7,9 @@ using System.Collections.Generic;
 
 using numl.Math.LinearAlgebra;
 using numl.PreProcessing;
-using numl.Math.Optimization;
-using numl.Math.Functions.Regularization;
-using numl.Math.Functions.Cost;
-
+using numl.Optimization;
+using numl.Optimization.Functions;
+using numl.Optimization.Functions.CostFunctions;
 
 namespace numl.Supervised.Regression
 {
@@ -37,8 +36,10 @@ namespace numl.Supervised.Regression
         /// </summary>
         public LinearRegressionGenerator()
         {
-            MaxIterations = 500;
-            LearningRate = 0.01;
+            this.MaxIterations = 500;
+            this.LearningRate = 0.01;
+
+            this.NormalizeFeatures = true;
         }
 
         /// <summary>Generate Linear Regression model based on a set of examples.</summary>
@@ -47,40 +48,40 @@ namespace numl.Supervised.Regression
         /// <returns>Model.</returns>
         public override IModel Generate(Matrix x, Vector y)
         {
-            // create initial theta
-            Vector theta = Vector.Ones(x.Cols + 1);
+            this.Preprocess(x, y);
+
+            // copy matrix
             Matrix copy = x.Copy();
-
-            // normalise features - inline?
-            //for (int i = 0; i < copy.Cols; i++)
-            //    copy[i, VectorType.Col] =
-            //            (copy[i, VectorType.Col] - copy[i, VectorType.Col].Average()) / 
-            //            copy[i, VectorType.Col].StdDev();
-
-
-            // normalise features
-            for (int i = 0; i < copy.Cols; i++)
-            {
-                var j = FeatureNormalizer.FeatureScale(copy[i, VectorType.Col]);
-                for (int k = 0; k < copy.Rows; k++)
-                {
-                    copy[k, i] = j[k];
-                }
-            }
 
             // add intercept term
             copy = copy.Insert(Vector.Ones(copy.Rows), 0, VectorType.Col);
 
+            // create initial theta
+            Vector theta = Vector.Rand(copy.Cols);
+
             // run gradient descent
-            var run = GradientDescent.Run(theta, copy, y, MaxIterations, LearningRate, new LinearCostFunction(),
-                Lambda, new Regularization());
+            var optimizer = new Optimizer(theta, this.MaxIterations, this.LearningRate)
+            {
+                CostFunction = new LinearCostFunction()
+                {
+                    X = copy,
+                    Y = y,
+                    Lambda = this.Lambda,
+                    Regularizer = new L2Regularizer()
+                }
+            };
+
+            optimizer.Run();
 
             // once converged create model and apply theta
 
-            LinearRegressionModel model = new LinearRegressionModel(x.Mean(VectorType.Row), x.StdDev(VectorType.Row))
-            {
-                Descriptor = Descriptor,
-                Theta = run.Item2
+            LinearRegressionModel model = new LinearRegressionModel()
+            { 
+                Descriptor = this.Descriptor,
+                NormalizeFeatures = base.NormalizeFeatures,
+                FeatureNormalizer = base.FeatureNormalizer,
+                FeatureProperties = base.FeatureProperties,
+                Theta = optimizer.Properties.Theta
             };
 
             return model;

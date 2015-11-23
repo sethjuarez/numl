@@ -41,6 +41,7 @@ namespace numl.Model
             Type = typeof(string);
             Discrete = true;
         }
+
         /// <summary>How to separate words (defaults to a space)</summary>
         /// <value>The separator.</value>
         [JsonProperty]

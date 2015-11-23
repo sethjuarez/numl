@@ -9,6 +9,8 @@ using System.Xml.Schema;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 using numl.Utils;
+using numl.Features;
+using numl.Preprocessing;
 
 namespace numl.Supervised.NaiveBayes
 {

@@ -21,7 +21,7 @@ namespace numl.Math
         /// <returns>true if it succeeds, false if it fails.</returns>
         public bool Test(double d)
         {
-            return d >= Min && d < Max;
+            return d >= Min && d <= Max;
         }
         /// <summary>Makes.</summary>
         /// <param name="min">The minimum.</param>
