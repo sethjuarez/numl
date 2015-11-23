@@ -8,6 +8,7 @@ namespace numl.PreProcessing
 {
     /// <summary>
     /// Feature Dimensions class
+    /// <para>Used to automatically engineer new features and add model complexity for non-linear features.</para>
     /// </summary>
     public static class FeatureDimensions
     {

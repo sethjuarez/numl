@@ -21,6 +21,16 @@ namespace numl.Recommendation
         public Range Ratings { get; set; }
 
         /// <summary>
+        /// Gets the Reference features mapping index of reference items and their corresponding col index.
+        /// </summary>
+        public Vector ReferenceFeatureMap { get; set; }
+
+        /// <summary>
+        /// Gets the Entity features mapping index of entity items and their corresponding row index.
+        /// </summary>
+        public Vector EntityFeatureMap { get; set; }
+
+        /// <summary>
         /// Gets or sets the number of Collaborative Features to learn.
         /// <para>Each learned feature is independently obtained of other learned features.</para>
         /// </summary>
@@ -67,7 +77,7 @@ namespace numl.Recommendation
             // inputs are ratings from each user (X = entities x ratings), y = entity id.
             // create rating range in case we don't have one already
             if (this.Ratings == null)
-                this.Ratings = new Range() { Min = y.Where(w => w > 0d).Min(), Max = y.Max() };
+                this.Ratings = new Range() { Min = X.Min(), Max = X.Max() };
 
             // indicator matrix of 1's where rating was provided otherwise 0's.
             Matrix R = X.ToBinary(f => this.Ratings.Test(f));
@@ -114,15 +124,18 @@ namespace numl.Recommendation
             ThetaY = optimizer.Properties.Theta.Slice(ThetaX.Rows * ThetaX.Cols, Theta.Length - 1).Reshape(references, VectorType.Row);
 
             // create reference mappings, each value is the original index.
-            Vector referenceMap = Vector.Create(references, i => i);
-            Vector entityMap = Vector.Create(entities, i => i);
+            this.ReferenceFeatureMap = (this.ReferenceFeatureMap == null ? Vector.Create(references, i => i) : this.ReferenceFeatureMap);
+            this.EntityFeatureMap = (this.EntityFeatureMap == null ? Vector.Create(entities, i => i) : this.EntityFeatureMap);
 
-            return new CofiRecommenderModel(referenceMap, entityMap)
+            return new CofiRecommenderModel()
             {
                 Descriptor = this.Descriptor,
                 NormalizeFeatures = this.NormalizeFeatures,
                 FeatureNormalizer = this.FeatureNormalizer,
                 FeatureProperties = this.FeatureProperties,
+                Ratings = this.Ratings,
+                ReferenceFeatureMap = this.ReferenceFeatureMap,
+                EntityFeatureMap = this.EntityFeatureMap,
                 Mu = mean,
                 Y = y,
                 Reference = X,

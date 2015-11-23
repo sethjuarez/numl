@@ -325,6 +325,26 @@ namespace numl.Math.LinearAlgebra
                 return v;
             }
         }
+
+        /// <summary>
+        /// Parses a string containing MATLAB style Vector syntax, i.e. "[1, 2, 3];"
+        /// </summary>
+        /// <param name="text">Input string to parse.</param>
+        /// <returns>Matrix.</returns>
+        public static Vector Parse(string text)
+        {
+            Vector result;
+
+            string[] arrs = text.Split(new char[] { '[', ',', ';', ']' }, StringSplitOptions.RemoveEmptyEntries);
+
+            result = new Vector(arrs.Length);
+
+            for (int i = 0; i < result.Length; i++)
+                result[i] = double.Parse(arrs[i].Trim());
+
+            return result;
+        }
+
         /// <summary>Gets the enumerator.</summary>
         /// <returns>The enumerator.</returns>
         public IEnumerator<double> GetEnumerator()

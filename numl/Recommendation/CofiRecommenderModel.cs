@@ -75,13 +75,7 @@ namespace numl.Recommendation
         /// <summary>
         /// Initializes a new Collaborative Filtering recommender model.
         /// </summary>
-        /// <param name="referenceMap">Vector of references and their corresponding column indexes in the Reference matrix.</param>
-        /// <param name="entityMap">Vector of entities and their corresponding row indexes in the Reference matrix.</param>
-        public CofiRecommenderModel(Vector referenceMap, Vector entityMap)
-        {
-            this.ReferenceFeatureMap = referenceMap;
-            this.EntityFeatureMap = entityMap;
-        }
+        public CofiRecommenderModel() { }
         
         /// <summary>
         /// Not implemnted.
@@ -114,7 +108,7 @@ namespace numl.Recommendation
             var predictions = (this.ThetaX * this.ThetaY.T).Each((v, r, c) => v + this.Mu[r]);
 
             int[] indices = null;
-            var sorted = predictions[(int)this.ReferenceFeatureMap[referenceId], VectorType.Col].Sort(false, out indices);
+            var sorted = predictions[(int)this.ReferenceFeatureMap.IndexOf(referenceId), VectorType.Col].Sort(false, out indices);
 
             return this.Y.Slice(indices, true);
         }
