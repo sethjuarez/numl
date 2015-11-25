@@ -19,9 +19,10 @@ branches:
   # whitelist
   only:
   - master
+#  - dev
 
-# Do not build on tags (GitHub only)
-skip_tags: true
+# Skip non tags (GitHub only)
+skip_non_tags: true
 
 #---------------------------------#
 #    environment configuration    #
