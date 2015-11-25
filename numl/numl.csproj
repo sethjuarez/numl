@@ -183,27 +183,7 @@
     <Compile Include="Utils\TypeHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Model\DateTimeProperty.cs.orig" />
-    <None Include="Model\Descriptor.cs.orig" />
-    <None Include="Model\EnumerableProperty.cs.orig" />
-    <None Include="Model\NumlAttributes.cs.orig" />
-    <None Include="Model\Property.cs.orig" />
-    <None Include="Model\StringProperty.cs.orig" />
     <None Include="project.json" />
-    <None Include="Properties\AssemblyInfo.cs.orig" />
-    <None Include="Supervised\DecisionTree\DecisionTreeModel.cs.orig" />
-    <None Include="Supervised\KNN\KNNModel.cs.orig" />
-    <None Include="Supervised\NaiveBayes\NaiveBayesModel.cs.orig" />
-    <None Include="Supervised\NeuralNetwork\Edge.cs.orig" />
-    <None Include="Supervised\NeuralNetwork\NeuralNetworkModel.cs.orig" />
-    <None Include="Supervised\NeuralNetwork\Neuron.cs.orig" />
-    <None Include="Supervised\Perceptron\KernelPerceptronModel.cs.orig" />
-    <None Include="Supervised\Perceptron\PerceptronModel.cs.orig" />
-    <None Include="Supervised\Regression\LinearRegressionGenerator.cs.orig" />
-    <None Include="Supervised\Regression\LinearRegressionModel.cs.orig" />
-    <None Include="Supervised\Regression\LogisticRegressionGenerator.cs.orig" />
-    <None Include="Supervised\Regression\LogisticRegressionModel.cs.orig" />
-    <None Include="Unsupervised\GMM.cs.orig" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
