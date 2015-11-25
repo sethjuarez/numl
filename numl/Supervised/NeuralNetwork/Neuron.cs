@@ -31,18 +31,21 @@ namespace numl.Supervised.NeuralNetwork
             In = new List<Edge>();
             Id = (++_id).ToString();
         }
-        
+
         /// <summary>
         /// Gets or sets whether weights into this Node are constrained / preserved.
         /// </summary>
+        [JsonProperty]
         public bool Constrained { get; set; }
 
         /// <summary>Gets or sets the output value.</summary>
         /// <value>The output.</value>
+        [JsonProperty]
         public double Output { get; set; }
 
         /// <summary>Gets or sets the combined input value.</summary>
         /// <value>The input.</value>
+        [JsonProperty]
         public double Input { get; set; }
 
         /// <summary>Gets or sets the delta.</summary>
