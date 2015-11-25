@@ -183,12 +183,6 @@
     <Compile Include="Utils\TypeHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Math\LinearAlgebra\Evd.cs.orig" />
-    <None Include="Math\LinearAlgebra\Matrix.cs.orig" />
-    <None Include="Math\LinearAlgebra\MatrixOps.cs.orig" />
-    <None Include="Math\LinearAlgebra\MatrixStatics.cs.orig" />
-    <None Include="Math\LinearAlgebra\Vector.cs.orig" />
-    <None Include="Math\LinearAlgebra\VectorExtensions.cs.orig" />
     <None Include="Model\DateTimeProperty.cs.orig" />
     <None Include="Model\Descriptor.cs.orig" />
     <None Include="Model\EnumerableProperty.cs.orig" />
@@ -198,9 +192,7 @@
     <None Include="project.json" />
     <None Include="Properties\AssemblyInfo.cs.orig" />
     <None Include="Supervised\DecisionTree\DecisionTreeModel.cs.orig" />
-    <None Include="Supervised\Generator.cs.orig" />
     <None Include="Supervised\KNN\KNNModel.cs.orig" />
-    <None Include="Supervised\Model.cs.orig" />
     <None Include="Supervised\NaiveBayes\NaiveBayesModel.cs.orig" />
     <None Include="Supervised\NeuralNetwork\Edge.cs.orig" />
     <None Include="Supervised\NeuralNetwork\NeuralNetworkModel.cs.orig" />
@@ -212,8 +204,6 @@
     <None Include="Supervised\Regression\LogisticRegressionGenerator.cs.orig" />
     <None Include="Supervised\Regression\LogisticRegressionModel.cs.orig" />
     <None Include="Unsupervised\GMM.cs.orig" />
-    <None Include="Utils\EnumerableHelpers.cs.orig" />
-    <None Include="Utils\Ject.cs.orig" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
