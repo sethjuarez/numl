@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>numl</id>
-        <version>$version$</version>
+        <version></version>
         <title>numl</title>
         <authors>Seth Juarez</authors>
         <owners>Seth Juarez</owners>
@@ -16,8 +16,4 @@
         <language>en-US</language>
         <tags>machine learning, framework</tags>
     </metadata>
-    <files>
-        <file src="bin\Release\numl.dll" target="lib\net40\numl.dll" />
-        <file src="bin\Release\numl.pdb" target="lib\net40\numl.pdb" />
-    </files>
 </package>

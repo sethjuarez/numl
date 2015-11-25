@@ -1,10 +1,3 @@
-*scc
-*.user
-*.suo
-*.orig
-*.dat
-[Tt]humbs.db
-obj/
 [Bb]in
 [Dd]ebug*/
 [Rr]elease*/
@@ -12,4 +5,14 @@ numl.repl/*
 packages/*
 TestResults/*
 .vs/*
-*.lock.*
+*.suo
+*.user
+*.userprefs
+*.orig
+*.dat
+[Tt]humbs.db
+obj/
+*.lock.json
+*.nuget.props
+*.nuget.targets
+Build/runbuild.txt
