@@ -43,7 +43,7 @@ assembly_info:
 configuration: Release
 
 build:
-  project: numl.sln
+  project: Src\numl.sln
   publish_nuget: true
   publish_nuget_symbols: true
   verbosity: minimal
