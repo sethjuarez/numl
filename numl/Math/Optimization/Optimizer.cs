@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-
 using numl.Math.LinearAlgebra;
-using numl.Optimization.Functions;
-using numl.Optimization.Methods;
-
-namespace numl.Optimization
+using System.Collections.Generic;
+using numl.Math.Optimization.Methods;
+using numl.Math.Functions.Cost;
+namespace numl.Math.Optimization
 {
     /// <summary>
     /// Optimizer.
@@ -44,7 +41,7 @@ namespace numl.Optimization
         /// <param name="optimizationMethod">Type of optimization method to use (Optional).</param>
         /// <param name="optimizer">An external typed optimization method to use (Optional).</param>
         /// </summary>
-        public Optimizer(Vector theta, int maxIterations, double learningRate = 1.0, double momentum = 0.9, 
+        public Optimizer(Vector theta, int maxIterations, double learningRate = 1.0, double momentum = 0.9,
             OptimizationMethods optimizationMethod = OptimizationMethods.StochasticGradientDescent, OptimizationMethod optimizer = null)
         {
             this.Completed = false;
@@ -52,9 +49,9 @@ namespace numl.Optimization
             {
                 switch (optimizationMethod)
                 {
-                    case OptimizationMethods.FastGradientDescent: optimizer = new FastGradientDescent() { Momentum = momentum }; break;
-                    case OptimizationMethods.StochasticGradientDescent: optimizer = new StochasticGradientDescent(); break;
-                    case OptimizationMethods.NAGDescent: optimizer = new NAGDescent() { Momentum = momentum }; break;
+                    case OptimizationMethods.FastGradientDescent: optimizer = new numl.Math.Optimization.Methods.GradientDescent.FastGradientDescent() { Momentum = momentum }; break;
+                    case OptimizationMethods.StochasticGradientDescent: optimizer = new numl.Math.Optimization.Methods.GradientDescent.StochasticGradientDescent(); break;
+                    case OptimizationMethods.NAGDescent: optimizer = new numl.Math.Optimization.Methods.GradientDescent.NAGDescent() { Momentum = momentum }; break;
                 }
             }
 

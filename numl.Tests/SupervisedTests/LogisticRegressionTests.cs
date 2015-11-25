@@ -1,13 +1,12 @@
-﻿using numl.Math.LinearAlgebra;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using numl.Supervised.Regression;
-using numl.Optimization.Functions;
+﻿using System;
 using numl.Model;
+using System.Linq;
+using NUnit.Framework;
+using numl.Math.LinearAlgebra;
+using numl.Math.Functions.Cost;
+using System.Collections.Generic;
+using numl.Supervised.Regression;
+using numl.Math.Functions.Regularization;
 
 namespace numl.Tests.SupervisedTests
 {
@@ -87,12 +86,12 @@ namespace numl.Tests.SupervisedTests
             Vector y = new Vector(new double[] { 1, 0, 1, 0, 1, 0 });
             Vector theta = new Vector(new double[] { 0, 1, 0 });
 
-            ICostFunction logisticCostFunction = new Optimization.Functions.CostFunctions.LogisticCostFunction()
+            ICostFunction logisticCostFunction = new LogisticCostFunction()
             {
                 X = X,
                 Y = y,
                 Lambda = 3,
-                Regularizer = new Optimization.Functions.L2Regularizer()
+                Regularizer = new L2Regularizer()
             };
 
             double cost = logisticCostFunction.ComputeCost(theta.Copy());
@@ -117,7 +116,7 @@ namespace numl.Tests.SupervisedTests
             Vector y = new Vector(new double[] { 1, 1, 0 });
             Vector theta = new Vector(new double[] { 0, 1, 0 });
 
-            ICostFunction logisticCostFunction = new Optimization.Functions.CostFunctions.LogisticCostFunction()
+            ICostFunction logisticCostFunction = new LogisticCostFunction()
             {
                 X = X,
                 Y = y,
@@ -146,12 +145,12 @@ namespace numl.Tests.SupervisedTests
             Vector y = new Vector(new double[] { 1, 1, 0 });
             Vector theta = new Vector(new double[] { 0, 1, 0 });
 
-            ICostFunction logisticCostFunction = new Optimization.Functions.CostFunctions.LogisticCostFunction()
+            ICostFunction logisticCostFunction = new LogisticCostFunction()
             {
                 X = X,
                 Y = y,
                 Lambda = 3,
-                Regularizer = new Optimization.Functions.L2Regularizer()
+                Regularizer = new L2Regularizer()
             };
 
             double cost = logisticCostFunction.ComputeCost(theta.Copy());

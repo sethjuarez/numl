@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using numl.Math.LinearAlgebra;
 using numl.Math.Functions;
-using numl.Optimization;
-using numl.Optimization.Functions;
-using numl.Optimization.Functions.CostFunctions;
+using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
 
 namespace numl.Supervised.Regression
 {
@@ -59,7 +55,7 @@ namespace numl.Supervised.Regression
         /// <returns>Model.</returns>
         public override IModel Generate(Matrix x, Vector y)
         {
-            Matrix copy = PreProcessing.FeatureDimensions.IncreaseDimensions(x.Copy(), this.PolynomialFeatures);
+            Matrix copy = IncreaseDimensions(x.Copy(), this.PolynomialFeatures);
 
             this.Preprocess(copy, y);
 
@@ -72,14 +68,14 @@ namespace numl.Supervised.Regression
             Vector theta = Vector.Rand(copy.Cols);
 
             // run gradient descent
-            var optimizer = new Optimizer(theta, this.MaxIterations, this.LearningRate)
+            var optimizer = new numl.Math.Optimization.Optimizer(theta, this.MaxIterations, this.LearningRate)
             {
-                CostFunction = new LogisticCostFunction()
+                CostFunction = new numl.Math.Functions.Cost.LogisticCostFunction()
                 {
                     X = copy,
                     Y = y,
                     Lambda = this.Lambda,
-                    Regularizer = new L2Regularizer(),
+                    Regularizer = new numl.Math.Functions.Regularization.L2Regularizer(),
                     LogisticFunction = this.LogisticFunction
                 }
             };
@@ -98,6 +94,30 @@ namespace numl.Supervised.Regression
             };
 
             return model;
+        }
+
+        /// <summary>
+        /// Adds a specified number of polynomial features to the training set Matrix.
+        /// </summary>
+        /// <param name="x">Training set</param>
+        /// <param name="polynomialFeatures">Number of polynomial features to add</param>
+        /// <returns></returns>
+        public static Matrix IncreaseDimensions(Matrix x, int polynomialFeatures)
+        {
+            Matrix Xtemp = x.Copy();
+            int maxCols = Xtemp.Cols;
+            for (int j = 0; j < maxCols - 1; j++)
+            {
+                for (int k = 0; k <= polynomialFeatures; k++)
+                {
+                    for (int m = 0; m <= k; m++)
+                    {
+                        Vector v = (Xtemp[j, VectorType.Col].ToVector() ^ (double)(k - m)) * (Xtemp[j + 1, VectorType.Col] ^ (double)m).ToVector();
+                        Xtemp = Xtemp.Insert(v, Xtemp.Cols - 1, VectorType.Col);
+                    }
+                }
+            }
+            return Xtemp;
         }
     }
 }

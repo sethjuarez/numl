@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using numl.Math.LinearAlgebra;
-using numl.Optimization.Functions;
-
-namespace numl.Optimization.Methods
+using numl.Math.Functions.Cost;
+using System.Collections.Generic;
+namespace numl.Math.Optimization.Methods
 {
     /// <summary>
     /// Implements an optimization method when overridden in a derived class.
@@ -19,8 +17,8 @@ namespace numl.Optimization.Methods
         /// <returns>Boolean</returns>
         public virtual bool Update(OptimizerProperties properties)
         {
-            return (properties.Iteration <= properties.MaxIterations || 
-                (properties.Iteration > 1 ? 
+            return (properties.Iteration <= properties.MaxIterations ||
+                (properties.Iteration > 1 ?
                     properties.Cost < (properties.CostHistory[properties.Iteration - 1] - properties.MinimizationConstant)
                     : true));
         }

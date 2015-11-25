@@ -1,13 +1,9 @@
-﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using numl.Model;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using numl.Supervised.Regression;
-using numl.Math.LinearAlgebra;
-using numl.Optimization.Functions;
-using numl.Utils;
+using NUnit.Framework;
+using numl.Math.Kernels;
+using System.Collections.Generic;
 
 namespace numl.Tests.SupervisedTests
 {
@@ -19,15 +15,15 @@ namespace numl.Tests.SupervisedTests
         {
             var students = Data.Student.GetData();
 
-            var descriptor = Model.Descriptor.Create<Data.Student>();
+            var descriptor = Descriptor.Create<Data.Student>();
 
-            var model = MultiClassLearner.Learn(new SVMGenerator()
+            var model = MultiClassLearner.Learn(new numl.Supervised.SVM.SVMGenerator()
             {
                 Descriptor = descriptor,
-                KernelFunction = new Math.Kernels.LinearKernel()
+                KernelFunction = new LinearKernel()
             }, students, 0.9);
 
-            
+
             Assert.GreaterOrEqual(model.Accuracy, 0.55d);
         }
     }

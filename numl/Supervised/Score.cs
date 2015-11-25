@@ -1,17 +1,16 @@
-﻿using numl.Math.LinearAlgebra;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
+using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
 
-namespace numl.Scoring
+namespace numl.Supervised
 {
     /// <summary>
     /// Contains scoring statistics for a given model.
     /// </summary>
     public class Score
     {
-        private double _TotalAccuracy = double.NaN;
+        private double _totalAccuracy = double.NaN;
 
         /// <summary>
         /// Gets or sets the total test accuracy as defined by the normalized distribution over true vs negative cases.
@@ -20,17 +19,17 @@ namespace numl.Scoring
         {
             get
             {
-                if (double.IsNaN(this._TotalAccuracy))
+                if (double.IsNaN(_totalAccuracy))
                 {
-                    this._TotalAccuracy = 
-                        ((double)this.TruePositives + (double)this.TrueNegatives) / 
-                        ((double)this.TruePositives + (double)this.TrueNegatives + (double)this.FalsePositives + (double)this.FalseNegatives);
+                    _totalAccuracy = 
+                        ((double)TruePositives + (double)TrueNegatives) / 
+                        ((double)TruePositives + (double)TrueNegatives + (double)FalsePositives + (double)FalseNegatives);
                 }
-                return this._TotalAccuracy;
+                return _totalAccuracy;
             }
             set
             {
-                this._TotalAccuracy = value;
+                _totalAccuracy = value;
             }
         }
 
@@ -87,7 +86,7 @@ namespace numl.Scoring
         {
             get
             {
-                return (double)this.TrueNegatives / ((double)this.TrueNegatives + (double)this.FalsePositives);
+                return (double)TrueNegatives / ((double)TrueNegatives + (double)FalsePositives);
             }
         }
 
@@ -99,7 +98,7 @@ namespace numl.Scoring
         {
             get
             {
-                return (double)this.FalsePositives / ((double)this.FalsePositives + (double)this.TrueNegatives);
+                return (double)FalsePositives / ((double)FalsePositives + (double)TrueNegatives);
             }
         }
 
@@ -111,7 +110,7 @@ namespace numl.Scoring
         {
             get
             {
-                return (double)this.TruePositives / ((double)this.TruePositives + (double)this.FalsePositives);
+                return (double)TruePositives / ((double)TruePositives + (double)FalsePositives);
             }
         }
 
@@ -123,7 +122,7 @@ namespace numl.Scoring
         {
             get
             {
-                return (double)this.TruePositives / ((double)this.TruePositives + (double)this.FalseNegatives);
+                return (double)TruePositives / ((double)TruePositives + (double)FalseNegatives);
             }
         }
 
@@ -135,7 +134,7 @@ namespace numl.Scoring
         {
             get
             {
-                return 2.0 * ((this.Precision * this.Recall) / (this.Precision + this.Recall));
+                return 2.0 * ((Precision * Recall) / (Precision + Recall));
             }
         }
 
@@ -146,7 +145,7 @@ namespace numl.Scoring
         {
             get
             {
-                return 1.0 - (this.Precision * this.Recall);
+                return 1.0 - (Precision * Recall);
             }
         }
 
@@ -155,8 +154,8 @@ namespace numl.Scoring
         /// </summary>
         public Score()
         {
-            this.FalseNegatives = this.FalsePositives = this.TotalNegatives = 
-                this.TotalPositives = this.TruePositives = this.TrueNegatives = 0;
+            FalseNegatives = FalsePositives = TotalNegatives = 
+                TotalPositives = TruePositives = TrueNegatives = 0;
         }
 
         #region Static Methods
@@ -180,7 +179,7 @@ namespace numl.Scoring
         /// <returns>Double.</returns>
         public static double ComputeCoefRMSE(Vector y1, Vector y2)
         {
-            return Score.ComputeRMSE(y1, y2) / y1.Mean();
+            return numl.Supervised.Score.ComputeRMSE(y1, y2) / y1.Mean();
         }
 
         /// <summary>
@@ -191,7 +190,7 @@ namespace numl.Scoring
         /// <returns>Double.</returns>
         public static double ComputeNormRMSE(Vector y1, Vector y2)
         {
-            return Score.ComputeRMSE(y1, y2) / (y1.Max() - y1.Min());
+            return numl.Supervised.Score.ComputeRMSE(y1, y2) / (y1.Max() - y1.Min());
         }
 
         #endregion
@@ -202,10 +201,10 @@ namespace numl.Scoring
         /// <param name="predictions">Real values.</param>
         /// <param name="actual">Predicted values.</param>
         /// <returns></returns>
-        public static Score ScorePredictions(Vector predictions, Vector actual)
+        public static numl.Supervised.Score ScorePredictions(Vector predictions, Vector actual)
         {
             // TODO: This may not be computing correctly.
-            var score = new numl.Scoring.Score()
+            var score = new numl.Supervised.Score()
             {
                 TotalPositives = actual.Where(w => w == 1d).Count(),
                 TotalNegatives = actual.Where(w => (w == 0d || w == -1d)).Count(),
@@ -218,12 +217,12 @@ namespace numl.Scoring
             // if the labels are continuous values then calculate accuracy manually
             if (!actual.IsBinary())
             {
-                score._TotalAccuracy = (predictions.Where((d, idx) => d == actual[idx]).Count() / predictions.Length);
+                score._totalAccuracy = (predictions.Where((d, idx) => d == actual[idx]).Count() / predictions.Length);
             }
 
-            score.RMSE = Score.ComputeRMSE(predictions, actual);
-            score.CoefRMSE = Score.ComputeCoefRMSE(predictions, actual);
-            score.NormRMSE = Score.ComputeRMSE(predictions, actual);
+            score.RMSE = numl.Supervised.Score.ComputeRMSE(predictions, actual);
+            score.CoefRMSE = numl.Supervised.Score.ComputeCoefRMSE(predictions, actual);
+            score.NormRMSE = numl.Supervised.Score.ComputeRMSE(predictions, actual);
 
             return score;
         }

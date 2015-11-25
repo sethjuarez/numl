@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using numl.Features;
+
 using numl.Math.LinearAlgebra;
 
-namespace numl.Preprocessing.Normalization
+namespace numl.Math.Normalization
 {
     /// <summary>
     /// Standard Min-Max Feature normalizer to scale features to be between -1 and +1.
     /// </summary>
-    public class MinMaxFeatureNormalizer : IFeatureNormalizer
+    public class MinMaxNormalizer : INormalizer
     {
         /// <summary>
         /// Normalize a row vector using Min-Max normalization on the supplied feature properties.
@@ -18,7 +18,7 @@ namespace numl.Preprocessing.Normalization
         /// <param name="row"></param>
         /// <param name="properties"></param>
         /// <returns></returns>
-        public Vector Normalize(Vector row, FeatureProperties properties)
+        public Vector Normalize(Vector row, numl.Math.Summary properties)
         {
             if (row == null)
             {

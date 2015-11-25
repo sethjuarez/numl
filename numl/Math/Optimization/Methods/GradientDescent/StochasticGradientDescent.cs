@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using numl.Math.LinearAlgebra;
-using numl.Optimization.Functions;
+using System.Collections.Generic;
 
-namespace numl.Optimization.Methods
+namespace numl.Math.Optimization.Methods.GradientDescent
 {
     /// <summary>
     /// A Stochastic Gradient Descent method.

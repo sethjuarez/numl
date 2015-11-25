@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using numl.Math.LinearAlgebra;
-using numl.Math.Functions;
-using numl.Optimization.Functions;
 using numl.Math.Kernels;
-using numl.Math.Probability;
-using numl.Utils;
+using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
 
-namespace numl.Supervised.Regression
+namespace numl.Supervised.SVM
 {
     /// <summary>A Support Vector Machine (SVM) generator.</summary>
     public class SVMGenerator : Generator
@@ -43,7 +38,7 @@ namespace numl.Supervised.Regression
         /// <summary>
         /// Gets or sets the Working Set Selection function for selecting new i, j support vectors.
         /// </summary>
-        public ISelection SelectionFunction { get; set; }
+        public numl.Supervised.SVM.Selection.ISelection SelectionFunction { get; set; }
 
         /// <summary>
         /// Initialises a SVMGenerator object
@@ -57,7 +52,7 @@ namespace numl.Supervised.Regression
             this.NormalizeFeatures = true;
 
             if (this.SelectionFunction == null)
-                this.SelectionFunction = new SVM.WorkingSetSelection3();
+                this.SelectionFunction = new numl.Supervised.SVM.Selection.WorkingSetSelection3();
         }
 
         /// <summary>Generates a SVM model based on a set of examples.</summary>
@@ -184,7 +179,7 @@ namespace numl.Supervised.Regression
             int[] fitness = (alpha > 0d).ToArray();
 
             // return initialised model
-            SVMModel model = new SVMModel()
+            numl.Supervised.SVM.SVMModel model = new numl.Supervised.SVM.SVMModel()
             {
                 Descriptor = this.Descriptor,
                 FeatureNormalizer = base.FeatureNormalizer,

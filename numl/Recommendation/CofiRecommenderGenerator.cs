@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using numl.Math.LinearAlgebra;
-using numl.Supervised;
 using numl.Math;
-using numl.Model;
-using numl.Optimization.Functions;
+using System.Linq;
+using numl.Supervised;
+using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
 
 namespace numl.Recommendation
 {
@@ -61,7 +58,7 @@ namespace numl.Recommendation
             this.MaxIterations = 100;
             this.LearningRate = 0.1;
 
-            this.FeatureNormalizer = new Preprocessing.Normalization.ZeroMeanFeatureNormalizer();
+            this.FeatureNormalizer = new numl.Math.Normalization.ZeroMeanNormalizer();
         }
 
         /// <summary>
@@ -99,7 +96,7 @@ namespace numl.Recommendation
             Matrix ThetaX = Matrix.Rand(entities, this.CollaborativeFeatures, -1d);
             Matrix ThetaY = Matrix.Rand(references, this.CollaborativeFeatures, -1d);
 
-            ICostFunction costFunction = new Optimization.Functions.CostFunctions.CofiCostFunction()
+            numl.Math.Functions.Cost.ICostFunction costFunction = new numl.Math.Functions.Cost.CofiCostFunction()
             {
                 CollaborativeFeatures = this.CollaborativeFeatures,
                 Lambda = this.Lambda,
@@ -112,7 +109,7 @@ namespace numl.Recommendation
             // we're optimising two params so combine them
             Vector Theta = Vector.Combine(ThetaX.Unshape(), ThetaY.Unshape());
 
-            Optimization.Optimizer optimizer = new Optimization.Optimizer(Theta, this.MaxIterations, this.LearningRate)
+            numl.Math.Optimization.Optimizer optimizer = new numl.Math.Optimization.Optimizer(Theta, this.MaxIterations, this.LearningRate)
             {
                 CostFunction = costFunction
             };

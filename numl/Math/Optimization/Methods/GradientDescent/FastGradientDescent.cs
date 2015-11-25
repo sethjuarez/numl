@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using numl.Math.LinearAlgebra;
-using numl.Optimization.Functions;
+using System.Collections.Generic;
 
-namespace numl.Optimization.Methods
+namespace numl.Math.Optimization.Methods.GradientDescent
 {
     /// <summary>
-    /// A Nesterov Accelerated Gradient Descent method.
+    /// A Stochastic Gradient Descent with Momentum method.
     /// </summary>
-    public class NAGDescent : OptimizationMethod
+    public class FastGradientDescent : OptimizationMethod
     {
         /// <summary>
         /// Defines the Momentum to use.
@@ -18,14 +16,22 @@ namespace numl.Optimization.Methods
         public double Momentum { get; set; }
 
         /// <summary>
+        /// Initializes a new FastGradientDescent object with a default Momentum of 0.9
+        /// </summary>
+        public FastGradientDescent()
+        {
+            this.Momentum = 0.9;
+        }
+
+        /// <summary>
         /// Update and return the new Theta value.
         /// </summary>
         /// <param name="properties">Properties for the optimization routine.</param>
         /// <returns></returns>
-        public override Vector UpdateTheta(OptimizerProperties properties)
+        public override Vector UpdateTheta(numl.Math.Optimization.OptimizerProperties properties)
         {
             Vector v = (this.Momentum * properties.Theta) - (properties.LearningRate * properties.Gradient);
-            return properties.Theta + this.Momentum * v - properties.LearningRate * properties.Gradient;
+            return properties.Theta + v;
         }
     }
 }

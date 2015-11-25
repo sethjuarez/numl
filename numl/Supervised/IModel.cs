@@ -5,10 +5,9 @@ using System;
 using System.IO;
 using numl.Model;
 using System.Linq;
+
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
-using numl.Features;
-using numl.Preprocessing;
 
 namespace numl.Supervised
 {
@@ -38,12 +37,12 @@ namespace numl.Supervised
         /// <summary>
         /// Feature normalizer to apply
         /// </summary>
-        IFeatureNormalizer FeatureNormalizer { get; set; }
+        numl.Math.Normalization.INormalizer FeatureNormalizer { get; set; }
 
         /// <summary>
         /// Feature properties of the original item set.
         /// </summary>
-        FeatureProperties FeatureProperties { get; set; }
+        numl.Math.Summary FeatureProperties { get; set; }
 
         /// <summary>Saves the given stream.</summary>
         /// <param name="stream">The stream to load.</param>

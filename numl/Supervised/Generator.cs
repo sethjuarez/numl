@@ -4,12 +4,9 @@
 using System;
 using numl.Model;
 using System.Linq;
-using System.Collections.Generic;
-using numl.Math;
-using System.Net;
+
 using numl.Math.LinearAlgebra;
-using numl.Features;
-using numl.Preprocessing;
+using System.Collections.Generic;
 
 namespace numl.Supervised
 {
@@ -39,12 +36,12 @@ namespace numl.Supervised
         /// <summary>
         /// Gets or sets the feature normalizer to use for each item.
         /// </summary>
-        public IFeatureNormalizer FeatureNormalizer { get; set; }
+        public numl.Math.Normalization.INormalizer FeatureNormalizer { get; set; }
 
         /// <summary>
         /// Gets or sets the Feature properties from the original training set.
         /// </summary>
-        public FeatureProperties FeatureProperties { get; set; }
+        public numl.Math.Summary FeatureProperties { get; set; }
 
         /// <summary>
         /// Initializes a new Generator instance.
@@ -52,7 +49,7 @@ namespace numl.Supervised
         public Generator()
         {
             this.NormalizeFeatures = false;
-            this.FeatureNormalizer = new Preprocessing.Normalization.MinMaxFeatureNormalizer();
+            this.FeatureNormalizer = new numl.Math.Normalization.MinMaxNormalizer();
         }
 
         /// <summary>
@@ -63,7 +60,7 @@ namespace numl.Supervised
         /// <returns></returns>
         public virtual void Preprocess(Matrix X, Vector y)
         {
-            this.FeatureProperties = new FeatureProperties()
+            this.FeatureProperties = new numl.Math.Summary()
             {
                 Average = X.Mean(VectorType.Row),
                 StandardDeviation = X.StdDev(VectorType.Row),

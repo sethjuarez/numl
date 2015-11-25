@@ -2,15 +2,9 @@
 //
 // summary:	Implements the naive bayes model class
 using System;
-using numl.Model;
-using System.Xml;
 using System.Linq;
-using System.Xml.Schema;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
-using numl.Utils;
-using numl.Features;
-using numl.Preprocessing;
 
 namespace numl.Supervised.NaiveBayes
 {

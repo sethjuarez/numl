@@ -8,7 +8,7 @@ namespace numl.Math.Functions.Regularization
     /// <summary>
     /// Standard regularization
     /// </summary>
-    public class Regularization : IRegularizer
+    public class L2Regularizer : IRegularizer
     {
         /// <summary>
         /// Applies regularization to the current cost
@@ -22,7 +22,7 @@ namespace numl.Math.Functions.Regularization
         {
             if (lambda != 0)
             {
-                j = ((lambda / (2 * m)) * (new Vector(theta.Skip(1).ToArray()) ^ 2).Sum()) + j;
+                j = ((lambda / (2.0 * m)) * (new Vector(theta.Skip(1).ToArray()) ^ 2.0).Sum()) + j;
             }
             return j;
         }

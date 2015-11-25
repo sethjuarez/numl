@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace numl.Optimization
+namespace numl.Math.Optimization.Methods
 {
     /// <summary>
     /// Lists available builtin optimizers

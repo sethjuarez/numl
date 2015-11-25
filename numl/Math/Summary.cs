@@ -1,16 +1,14 @@
-﻿using numl.Math.LinearAlgebra;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using numl.Utils;
+using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
 
-namespace numl.Features
+namespace numl.Math
 {
     /// <summary>
     /// FeatureProperties class.
     /// </summary>
-    public class FeatureProperties
+    public class Summary
     {
         /// <summary>
         /// Vector of all columns and the average values for each.
@@ -36,12 +34,5 @@ namespace numl.Features
         /// Vector of all columns and the standard deviation for each.
         /// </summary>
         public Vector StandardDeviation { get; set; }
-
-        /// <summary>
-        /// Instantiate new FeatureProperties object.
-        /// </summary>
-        public FeatureProperties()
-        {
-        }
     }
 }

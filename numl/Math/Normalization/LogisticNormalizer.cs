@@ -2,27 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using numl.Features;
-using numl.Math.LinearAlgebra;
 
-namespace numl.Preprocessing.Normalization
+using numl.Math.LinearAlgebra;
+using numl.Math.Functions;
+namespace numl.Math.Normalization
 {
     /// <summary>
     /// Logistic Feature normalizer using sigmoid function to scale features to be between 0 and 1.
     /// </summary>
-    public class LogisticFeatureNormalizer : IFeatureNormalizer
+    public class LogisticNormalizer : INormalizer
     {
         /// <summary>
         /// Gets or sets the logistic function to use for scaling.
         /// </summary>
-        public Math.Functions.IFunction Logistic { get; set; }
+        public IFunction Logistic { get; set; }
 
         /// <summary>
         /// Initializes a new Logistic Feature Normalizer.
         /// </summary>
-        public LogisticFeatureNormalizer()
+        public LogisticNormalizer()
         {
-            this.Logistic = new Math.Functions.Logistic();
+            this.Logistic = new Logistic();
         }
         /// <summary>
         /// Normalize a row vector using Logistic normalization.
@@ -30,7 +30,7 @@ namespace numl.Preprocessing.Normalization
         /// <param name="row"></param>
         /// <param name="properties"></param>
         /// <returns></returns>
-        public Vector Normalize(Vector row, FeatureProperties properties)
+        public Vector Normalize(Vector row, numl.Math.Summary properties)
         {
             if (row == null)
             {

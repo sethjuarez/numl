@@ -6,12 +6,9 @@ using System.IO;
 using numl.Utils;
 using numl.Model;
 using System.Linq;
+
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
-using System.Xml;
-using System.Runtime.Serialization;
-using numl.Features;
-using numl.Preprocessing;
 
 namespace numl.Supervised
 {
@@ -30,12 +27,12 @@ namespace numl.Supervised
         /// <summary>
         /// Feature normalizer to use over each item.
         /// </summary>
-        public IFeatureNormalizer FeatureNormalizer { get; set; }
+        public numl.Math.Normalization.INormalizer FeatureNormalizer { get; set; }
 
         /// <summary>
         /// Feature properties from the original item set.
         /// </summary>
-        public FeatureProperties FeatureProperties { get; set; }
+        public numl.Math.Summary FeatureProperties { get; set; }
 
         /// <summary>Predicts the given o.</summary>
         /// <param name="y">The Vector to process.</param>

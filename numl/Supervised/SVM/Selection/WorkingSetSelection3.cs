@@ -6,7 +6,7 @@ using numl.Math.LinearAlgebra;
 using numl.Math.Probability;
 using numl.Utils;
 
-namespace numl.Supervised.SVM
+namespace numl.Supervised.SVM.Selection
 {
     /// <summary>
     /// Implements Working Set Selection 3 which uses second order information for selecting new pairs.

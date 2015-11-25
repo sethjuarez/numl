@@ -1,11 +1,9 @@
-﻿using numl.Math.LinearAlgebra;
-using numl.Optimization.Functions;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
+using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
 
-namespace numl.Optimization
+namespace numl.Math.Optimization.Methods
 {
     /// <summary>
     /// Implements an optimization method.
@@ -25,7 +23,7 @@ namespace numl.Optimization
         /// <param name="costFunction">The cost function to optimize.</param>
         /// <param name="properties">Properties for the optimization routine.</param>
         /// <returns>Double</returns>
-        double UpdateCost(ICostFunction costFunction, OptimizerProperties properties);
+        double UpdateCost(numl.Math.Functions.Cost.ICostFunction costFunction, OptimizerProperties properties);
 
         /// <summary>
         /// Update and return the Gradient.
@@ -33,7 +31,7 @@ namespace numl.Optimization
         /// <param name="costFunction">The cost function to optimize.</param>
         /// <param name="properties">Properties for the optimization routine.</param>
         /// <returns>Vector</returns>
-        Vector UpdateGradient(ICostFunction costFunction, OptimizerProperties properties);
+        Vector UpdateGradient(numl.Math.Functions.Cost.ICostFunction costFunction, OptimizerProperties properties);
 
         /// <summary>
         /// Update and return the new Theta value.

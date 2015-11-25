@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
+using numl.Math.Functions.Regularization;
 
-namespace numl.Optimization.Functions.CostFunctions
+namespace numl.Math.Functions.Cost
 {
     /// <summary>
     /// Implements a CostFunction when overridden in a derived class.

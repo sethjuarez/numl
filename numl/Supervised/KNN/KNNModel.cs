@@ -3,13 +3,8 @@
 // summary:	Implements the knn model class
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
-using numl.Model;
-using numl.Utils;
-using numl.Features;
-using numl.Preprocessing;
 
 namespace numl.Supervised.KNN
 {

@@ -2,17 +2,10 @@
 //
 // summary:	Implements the decision tree model class
 using System;
-using numl.Model;
-using System.Xml;
 using System.Linq;
 using System.Text;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
-using numl.Utils;
-using System.Xml.Serialization;
-using System.Runtime.Serialization;
-using numl.Features;
-using numl.Preprocessing;
 
 namespace numl.Supervised.DecisionTree
 {

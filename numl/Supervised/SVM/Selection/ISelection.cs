@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using numl.Math.LinearAlgebra;
 
-namespace numl.Supervised
+namespace numl.Supervised.SVM.Selection
 {
     /// <summary>
     /// Interface for working set selection routines for Support Vector Machines.

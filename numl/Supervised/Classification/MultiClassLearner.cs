@@ -10,7 +10,7 @@ using System.Text;
 
 using numl.Supervised.Classification;
 using System.Threading.Tasks;
-using numl.Scoring;
+
 using System.Threading;
 
 namespace numl

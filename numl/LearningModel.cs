@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 using numl.Supervised;
-using numl.Scoring;
+
 
 namespace numl
 {

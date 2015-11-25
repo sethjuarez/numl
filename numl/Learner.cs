@@ -9,7 +9,7 @@ using numl.Math.Probability;
 using System.Threading.Tasks;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
-using numl.Scoring;
+
 
 namespace numl
 {

@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Linq;
-
-using numl.Utils;
-using numl.Model;
-using numl.Math.Functions;
+using numl.Math.Kernels;
 using numl.Math.LinearAlgebra;
 using numl.Supervised.Classification;
-using numl.Preprocessing;
-using numl.Features;
-using numl.Math.Kernels;
 
-namespace numl.Supervised.Regression
+namespace numl.Supervised.SVM
 {
     /// <summary>
     /// A SVM Model object
@@ -61,21 +55,21 @@ namespace numl.Supervised.Regression
         {
             double prediction = 0d;
 
-            x = (this.NormalizeFeatures ?
-                                this.FeatureNormalizer.Normalize(x, this.FeatureProperties)
-                                : x);
+            x = (NormalizeFeatures ?
+                    FeatureNormalizer.Normalize(x, FeatureProperties) :
+                    x);
 
-            if (this.KernelFunction.IsLinear)
+            if (KernelFunction.IsLinear)
             {
-                prediction = this.Theta.Dot(x) + this.Bias;
+                prediction = Theta.Dot(x) + Bias;
             }
             else
             {
-                for (int j = 0; j < this.X.Rows; j++)
+                for (int j = 0; j < X.Rows; j++)
                 {
-                    prediction = prediction + this.Alpha[j] * this.Y[j] * this.KernelFunction.Compute(this.X[j, VectorType.Row], x);
+                    prediction = prediction + Alpha[j] * Y[j] * KernelFunction.Compute(X[j, VectorType.Row], x);
                 }
-                prediction += this.Bias;
+                prediction += Bias;
             }
 
             return prediction;
@@ -88,7 +82,7 @@ namespace numl.Supervised.Regression
         /// <returns></returns>
         public override double Predict(Vector x)
         {
-            return this.PredictRaw(x) >= 0d ? 1.0d : 0.0d;
+            return PredictRaw(x) >= 0d ? 1.0d : 0.0d;
         }
     }
 }

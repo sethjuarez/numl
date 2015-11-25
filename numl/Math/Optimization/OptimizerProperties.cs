@@ -1,10 +1,9 @@
-﻿using numl.Math.LinearAlgebra;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
+using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
 
-namespace numl.Optimization
+namespace numl.Math.Optimization
 {
     /// <summary>
     /// Optimisation Properties for use in Optimization.

@@ -3,13 +3,8 @@
 // summary:	Implements the linear regression class
 using System;
 using System.Linq;
-using System.Collections.Generic;
-
 using numl.Math.LinearAlgebra;
-using numl.PreProcessing;
-using numl.Optimization;
-using numl.Optimization.Functions;
-using numl.Optimization.Functions.CostFunctions;
+using System.Collections.Generic;
 
 namespace numl.Supervised.Regression
 {
@@ -60,14 +55,14 @@ namespace numl.Supervised.Regression
             Vector theta = Vector.Rand(copy.Cols);
 
             // run gradient descent
-            var optimizer = new Optimizer(theta, this.MaxIterations, this.LearningRate)
+            var optimizer = new numl.Math.Optimization.Optimizer(theta, this.MaxIterations, this.LearningRate)
             {
-                CostFunction = new LinearCostFunction()
+                CostFunction = new numl.Math.Functions.Cost.LinearCostFunction()
                 {
                     X = copy,
                     Y = y,
                     Lambda = this.Lambda,
-                    Regularizer = new L2Regularizer()
+                    Regularizer = new numl.Math.Functions.Regularization.L2Regularizer()
                 }
             };
 

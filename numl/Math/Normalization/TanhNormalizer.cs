@@ -2,27 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using numl.Features;
-using numl.Math.LinearAlgebra;
 
-namespace numl.Preprocessing.Normalization
+using numl.Math.LinearAlgebra;
+using numl.Math.Functions;
+namespace numl.Math.Normalization
 {
     /// <summary>
     /// Hyperbolic Tangent Feature normalizer to scale features to be between -1 and +1.
     /// </summary>
-    public class TanhFeatureNormalizer : IFeatureNormalizer
+    public class TanhNormalizer : INormalizer
     {
         /// <summary>
         /// Gets or sets the tangent function to use for scaling.
         /// </summary>
-        public Math.Functions.IFunction Tangent { get; set; }
+        public IFunction Tangent { get; set; }
 
         /// <summary>
         /// Initializes a new Hyperbolic Tangent Feature Normalizer.
         /// </summary>
-        public TanhFeatureNormalizer()
+        public TanhNormalizer()
         {
-            this.Tangent = new Math.Functions.Tanh();
+            this.Tangent = new Tanh();
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace numl.Preprocessing.Normalization
         /// <param name="row"></param>
         /// <param name="properties"></param>
         /// <returns></returns>
-        public Vector Normalize(Vector row, FeatureProperties properties)
+        public Vector Normalize(Vector row, numl.Math.Summary properties)
         {
             if (row == null)
             {

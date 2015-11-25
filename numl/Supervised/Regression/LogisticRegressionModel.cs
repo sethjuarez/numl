@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
-
-using numl.Utils;
-using numl.Model;
 using numl.Math.Functions;
 using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
 using numl.Supervised.Classification;
-using numl.PreProcessing;
-using numl.Features;
 
 namespace numl.Supervised.Regression
 {
@@ -49,10 +42,11 @@ namespace numl.Supervised.Regression
         /// <returns></returns>
         public double PredictRaw(Vector x)
         {
-            Vector xCopy =  (this.NormalizeFeatures ? 
-                                this.FeatureNormalizer.Normalize(x.IncreaseDimensions(this.PolynomialFeatures), this.FeatureProperties) 
-                                : x.IncreaseDimensions(this.PolynomialFeatures));
-            return this.LogisticFunction.Compute(xCopy.Insert(0, 1.0, false).Dot(Theta));
+            Vector xCopy = (NormalizeFeatures ?
+                                FeatureNormalizer.Normalize(IncreaseDimensions(x, PolynomialFeatures), FeatureProperties) :
+                                IncreaseDimensions(x, PolynomialFeatures));
+
+            return LogisticFunction.Compute(xCopy.Insert(0, 1.0, false).Dot(Theta));
         }
 
         /// <summary>
@@ -63,6 +57,30 @@ namespace numl.Supervised.Regression
         public override double Predict(Vector x)
         {
             return this.PredictRaw(x) >= 0.5d ? 1.0d : 0.0d;
+        }
+
+        /// <summary>
+        /// Adds a specified number of polynomial features to the training / test Vector.
+        /// </summary>
+        /// <param name="x">Training / Testing record</param>
+        /// <param name="polynomialFeatures">Number of polynomial features to add</param>
+        /// <returns></returns>
+        public static Vector IncreaseDimensions(Vector x, int polynomialFeatures)
+        {
+            Vector xtemp = x.Copy();
+            int maxCols = xtemp.Length;
+            for (int j = 0; j < maxCols - 1; j++)
+            {
+                for (int k = 0; k <= polynomialFeatures; k++)
+                {
+                    for (int m = 0; m <= k; m++)
+                    {
+                        double v = (System.Math.Pow(xtemp[j], k - m) * System.Math.Pow(xtemp[j + 1], m));
+                        xtemp = xtemp.Insert(xtemp.Length - 1, v);
+                    }
+                }
+            }
+            return xtemp;
         }
     }
 }

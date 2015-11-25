@@ -1,13 +1,10 @@
-﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using numl.Supervised.Regression;
-using numl.Math.LinearAlgebra;
-using numl.Optimization.Functions;
+﻿using System;
 using numl.Model;
+using System.Linq;
+using NUnit.Framework;
+using numl.Math.LinearAlgebra;
+using numl.Math.Functions.Cost;
+using System.Collections.Generic;
 
 namespace numl.Tests.SupervisedTests
 {
@@ -71,15 +68,13 @@ namespace numl.Tests.SupervisedTests
             Matrix X_ts = Matrix.NormRand(X_s.Rows, X_s.Cols);
             Matrix T_ts = Matrix.NormRand(T_s.Rows, T_s.Cols);
 
-            ICostFunction costFunction = new Optimization.Functions.CostFunctions.CofiCostFunction() { R = R_s, X = X_ts, Y = Y_s.Unshape(), Lambda = 0, Regularizer = null, CollaborativeFeatures = 3 };
+            ICostFunction costFunction = new CofiCostFunction() { R = R_s, X = X_ts, Y = Y_s.Unshape(), Lambda = 0, Regularizer = null, CollaborativeFeatures = 3 };
             costFunction.Initialize();
 
             Vector grad = costFunction.ComputeGradient(Vector.Combine(X_ts.Unshape(), T_ts.Unshape()));
 
             Vector numericalGrad = this.ComputeNumericalGradient(
-                f => {
-                        return costFunction.ComputeCost(f);
-                    },
+                f => costFunction.ComputeCost(f),
                 Vector.Combine(X_ts.Unshape(), T_ts.Unshape()));
 
             Assert.IsTrue(this.CheckNumericalGradient(numericalGrad, grad) < 0.0000000001);
@@ -90,7 +85,7 @@ namespace numl.Tests.SupervisedTests
         {
             Matrix rMat = Y.ToBinary(i => i > 0d);
 
-            ICostFunction costFunction = new Optimization.Functions.CostFunctions.CofiCostFunction() { R = rMat, X = X, Y = Y.Unshape(), Lambda = 0, Regularizer = null, CollaborativeFeatures = X.Cols };
+            ICostFunction costFunction = new CofiCostFunction() { R = rMat, X = X, Y = Y.Unshape(), Lambda = 0, Regularizer = null, CollaborativeFeatures = X.Cols };
             costFunction.Initialize();
             double cost = costFunction.ComputeCost(Vector.Combine(X.Unshape(), Theta.Unshape()));
             Vector grad = costFunction.ComputeGradient(Vector.Combine(X.Unshape(), Theta.Unshape()));
@@ -105,7 +100,7 @@ namespace numl.Tests.SupervisedTests
         {
             Matrix rMat = Y.ToBinary(i => i > 0d);
 
-            ICostFunction costFunction = new Optimization.Functions.CostFunctions.CofiCostFunction() { R = rMat, X = X, Y = Y.Unshape(), Lambda = 1.5, Regularizer = null, CollaborativeFeatures = X.Cols };
+            ICostFunction costFunction = new CofiCostFunction() { R = rMat, X = X, Y = Y.Unshape(), Lambda = 1.5, Regularizer = null, CollaborativeFeatures = X.Cols };
             costFunction.Initialize();
             double cost = costFunction.ComputeCost(Vector.Combine(X.Unshape(), Theta.Unshape()));
             Vector grad = costFunction.ComputeGradient(Vector.Combine(X.Unshape(), Theta.Unshape()));

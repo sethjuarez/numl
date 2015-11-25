@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
 
-namespace numl.Optimization.Functions.CostFunctions
+namespace numl.Math.Functions.Cost
 {
     /// <summary>
     /// Default Collaborative Filtering cost function.

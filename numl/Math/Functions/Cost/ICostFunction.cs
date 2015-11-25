@@ -3,7 +3,6 @@ using System.Linq;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 using numl.Math.Functions.Regularization;
-
 namespace numl.Math.Functions.Cost
 {
     /// <summary>
@@ -12,25 +11,40 @@ namespace numl.Math.Functions.Cost
     public interface ICostFunction
     {
         /// <summary>
+        /// Gets or sets te input matrix.
+        /// </summary>
+        Matrix X { get; set; }
+
+        /// <summary>
+        /// Gets or sets the output for each row in X.
+        /// </summary>
+        Vector Y { get; set; }
+
+        /// <summary>
+        /// Gets or sets the weight decay (lambda) parameter.
+        /// </summary>
+        double Lambda { get; set; }
+
+        /// <summary>
+        /// Gets or sets the regularization method.
+        /// </summary>
+        IRegularizer Regularizer { get; set; }
+
+        /// <summary>
+        /// Initialization method for performing custom actions prior to being optimized.
+        /// </summary>
+        void Initialize();
+
+        /// <summary>
         /// Computes the cost of the current theta parameters against the known Y labels
         /// </summary>
-        /// <param name="theta"></param>
-        /// <param name="X"></param>
-        /// <param name="y"></param>
-        /// <param name="lambda">Regaularisation constant</param>
-        /// <param name="regularizationTerm">Regularization method to apply</param>
         /// <returns></returns>
-        double ComputeCost(Vector theta, Matrix X, Vector y, double lambda, IRegularizer regularizationTerm);
+        double ComputeCost(Vector theta);
 
         /// <summary>
         /// Computes the current gradient step direction towards the minima
         /// </summary>
-        /// <param name="theta">Current theta parameters</param>
-        /// <param name="X">Training set</param>
-        /// <param name="y">Training labels</param>
-        /// <param name="lambda">Regularisation constant</param>
-        /// <param name="regularizationTerm">Regularization method to apply</param>
         /// <returns></returns>
-        Vector ComputeGradient(Vector theta, Matrix X, Vector y, double lambda, IRegularizer regularizationTerm);
+        Vector ComputeGradient(Vector theta);
     }
 }

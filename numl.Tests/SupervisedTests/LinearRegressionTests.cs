@@ -1,13 +1,11 @@
-﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using numl.Supervised.Regression;
-using numl.Math.LinearAlgebra;
-using numl.Optimization.Functions;
+﻿using System;
 using numl.Model;
+using System.Linq;
+using NUnit.Framework;
+using numl.Math.LinearAlgebra;
+using numl.Math.Functions.Cost;
+using System.Collections.Generic;
+using numl.Supervised.Regression;
 
 namespace numl.Tests.SupervisedTests
 {
@@ -49,11 +47,11 @@ namespace numl.Tests.SupervisedTests
                         22.7524
             });
 
-            ICostFunction costFunction = new Optimization.Functions.CostFunctions.LinearCostFunction()
+            ICostFunction costFunction = new LinearCostFunction()
             {
-                 X = X,
-                 Y = y,
-                 Lambda = 0
+                X = X,
+                Y = y,
+                Lambda = 0
             };
             double cost = costFunction.ComputeCost(theta);
             Vector grad = costFunction.ComputeGradient(theta);
@@ -98,12 +96,12 @@ namespace numl.Tests.SupervisedTests
                         22.7524
             });
 
-            ICostFunction costFunction = new Optimization.Functions.CostFunctions.LinearCostFunction()
+            ICostFunction costFunction = new LinearCostFunction()
             {
                 X = X,
                 Y = y,
                 Lambda = 1,
-                Regularizer = new L2Regularizer()
+                Regularizer = new numl.Math.Functions.Regularization.L2Regularizer()
             };
 
             double cost = costFunction.ComputeCost(theta);

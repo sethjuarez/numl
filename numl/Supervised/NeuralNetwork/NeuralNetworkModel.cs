@@ -2,16 +2,12 @@
 //
 // summary:	Implements the neural network model class
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using numl.Math.LinearAlgebra;
-using System.Xml;
-using numl.Utils;
-using numl.Preprocessing;
-using numl.Math.Functions;
 using Newtonsoft.Json;
 using numl.Serialization;
+using numl.Math.Functions;
+using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
 
 namespace numl.Supervised.NeuralNetwork
 {

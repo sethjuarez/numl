@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using numl.Math.LinearAlgebra;
-using numl.Utils;
-using numl.Model;
-using numl.Features;
-using numl.Preprocessing;
+using System.Collections.Generic;
 
 namespace numl.Supervised.Regression
 {
