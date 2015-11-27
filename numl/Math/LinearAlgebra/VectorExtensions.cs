@@ -204,6 +204,19 @@ namespace numl.Math.LinearAlgebra
 
             return source.Sum() / source.Length;
         }
+
+        /// <summary>
+        /// Computes the element-wise square-root value for each row / col value.
+        /// </summary>
+        /// <param name="source">The source Vector.</param>
+        /// <returns>Vector.</returns>
+        public static Vector Sqrt(this Vector source)
+        {
+            if (source.Length == 0)
+                throw new InvalidOperationException("Cannot compute square root of an empty vector.");
+            return source.Each(f => System.Math.Sqrt(f), true);
+        }
+
         /// <summary>A Vector extension method that computes the standard deviation.</summary>
         /// <param name="source">The source to act on.</param>
         /// <returns>A double.</returns>

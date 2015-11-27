@@ -79,6 +79,11 @@ namespace numl.Supervised
         public double NormRMSE { get; set; }
 
         /// <summary>
+        /// Gets or sets the mean absolute error.
+        /// </summary>
+        public double MeanAbsError {  get; set; }
+
+        /// <summary>
         /// Gets the Specificity of the model.
         /// <para>A higher value indicates the model has scored better at classifying negative examples, otherwise known as the True-Negative-Rate (TNR). </para>
         /// </summary>
@@ -104,7 +109,7 @@ namespace numl.Supervised
 
         /// <summary>
         /// Gets the Precision of the model.
-        /// <para>A higher precision indicates the model has a higher prediction confidence.  Also known as the Positive-Predictive-Value (PPV).</para>
+        /// <para>A higher precision indicates the model has a higher positive prediction confidence.  Also known as the Positive-Predictive-Value (PPV).</para>
         /// </summary>
         public double Precision
         {
@@ -145,7 +150,7 @@ namespace numl.Supervised
         {
             get
             {
-                return 1.0 - (Precision * Recall);
+                return (Precision * Recall);
             }
         }
 
@@ -168,7 +173,7 @@ namespace numl.Supervised
         /// <returns>Double.</returns>
         public static double ComputeRMSE(Vector y1, Vector y2)
         {
-            return (System.Math.Sqrt(System.Math.Abs(((y1 * y1) - (y2 * y2)).Sum() / (double)y1.Length)));
+            return System.Math.Sqrt(((y1 - y2) * (y1 - y2)).Sum() / (double)y1.Length);
         }
 
         /// <summary>
@@ -193,13 +198,24 @@ namespace numl.Supervised
             return numl.Supervised.Score.ComputeRMSE(y1, y2) / (y1.Max() - y1.Min());
         }
 
+        /// <summary>
+        /// Computes the Mean Absolute Error for the given inputs.
+        /// </summary>
+        /// <param name="y1">Target values.</param>
+        /// <param name="y2">Actual values.</param>
+        /// <returns></returns>
+        public static double ComputeMeanError(Vector y1, Vector y2)
+        {
+            return (((y1 - y2) * (y1 - y2)).Sqrt().Mean());
+        }
+
         #endregion
 
         /// <summary>
         /// Scores a set of predictions against the actual values.
         /// </summary>
-        /// <param name="predictions">Real values.</param>
-        /// <param name="actual">Predicted values.</param>
+        /// <param name="predictions">Predicted values.</param>
+        /// <param name="actual">Actual values.</param>
         /// <returns></returns>
         public static numl.Supervised.Score ScorePredictions(Vector predictions, Vector actual)
         {
@@ -220,9 +236,10 @@ namespace numl.Supervised
                 score._totalAccuracy = (predictions.Where((d, idx) => d == actual[idx]).Count() / predictions.Length);
             }
 
-            score.RMSE = numl.Supervised.Score.ComputeRMSE(predictions, actual);
-            score.CoefRMSE = numl.Supervised.Score.ComputeCoefRMSE(predictions, actual);
-            score.NormRMSE = numl.Supervised.Score.ComputeRMSE(predictions, actual);
+            score.RMSE = Score.ComputeRMSE(predictions, actual);
+            score.CoefRMSE = Score.ComputeCoefRMSE(predictions, actual);
+            score.NormRMSE = Score.ComputeRMSE(predictions, actual);
+            score.MeanAbsError = Score.ComputeMeanError(predictions, actual);
 
             return score;
         }
