@@ -76,6 +76,7 @@
     <Compile Include="Data\User.cs" />
     <Compile Include="Data\ValueObject.cs" />
     <Compile Include="MathTests\ProbabilityTests.cs" />
+    <Compile Include="ScoringTests\ScoreTests.cs" />
     <Compile Include="SerializationTests\BaseSerialization.cs" />
     <Compile Include="SerializationTests\DecisionTreeSerializationTests.cs" />
     <Compile Include="SerializationTests\DescriptorSerializationTests.cs" />
