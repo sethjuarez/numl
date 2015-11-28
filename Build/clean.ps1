@@ -1,6 +1,5 @@
 # Set Path
-$baseDir  = resolve-path ..
-$sourceDir = "$baseDir\Src"
+$sourceDir = resolve-path ..
 
 Write-Host "Searching $sourceDir"
 
@@ -12,7 +11,8 @@ Write-Host -ForegroundColor Green "Clearing $include"
 $exclude = @()
 
 $items = Get-ChildItem $sourceDir -recurse -force -include $include -exclude $exclude
-
+$count = $items.Count
+Write-Host -ForegroundColor Red "Removing $count object(s)"
 if ($items) {
     foreach ($item in $items) {
         Remove-Item $item.FullName -Force -Recurse -ErrorAction SilentlyContinue
