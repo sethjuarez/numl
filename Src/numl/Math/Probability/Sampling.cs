@@ -55,6 +55,12 @@ namespace numl.Math.Probability
             long x = dt.ToFileTime();
             SetSeed((uint)(x >> 16), (uint)(x % 4294967296));
         }
+
+        public static void SetSeedFromTime(DateTime dt)
+        {
+            long x = dt.ToFileTime();
+            SetSeed((uint)(x >> 16), (uint)(x % 4294967296));
+        }
         /// <summary>
         /// Produce a uniform random sample from the open interval (0, 1). The method will not return
         /// either end point.

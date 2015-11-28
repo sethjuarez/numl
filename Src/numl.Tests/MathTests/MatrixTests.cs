@@ -808,8 +808,6 @@ namespace numl.Tests.MathTests
 
             Matrix x = v.Reshape(5, VectorType.Row);
 
-            Console.Write(x.ToString());
-
             Assert.AreEqual(v[7], x[2, 1]);
             Assert.AreEqual(v[5], x[0, 1]);
             Assert.AreEqual(v[4], x[4, 0]);
@@ -822,8 +820,6 @@ namespace numl.Tests.MathTests
             Vector v = new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
             Matrix y = v.Reshape(5, VectorType.Col, VectorType.Col);
-
-            Console.Write(y.ToString());
 
             Assert.AreEqual(v[2], y[0, 2]);
             Assert.AreEqual(v[1], y[0, 1]);
@@ -838,9 +834,6 @@ namespace numl.Tests.MathTests
 
             Matrix x = v.Reshape(5, VectorType.Row);
             Matrix y = v.Reshape(5, VectorType.Col);
-
-            Console.Write(x.ToString());
-            Console.Write(y.ToString());
 
             Vector vx = x.Unshape();
             Assert.AreEqual(v[1], vx[1]);
@@ -872,9 +865,6 @@ namespace numl.Tests.MathTests
             Vector indices;
 
             Matrix m1s = m1.Sort(k => k[0], VectorType.Row, true, out indices);
-
-            Console.Write(m1s);
-            Console.WriteLine(indices);
 
             Assert.AreEqual(m1[0, 0], m1s[0, 0]);
             Assert.AreEqual(m1[3, 0], m1s[1, 0]);
@@ -913,9 +903,6 @@ namespace numl.Tests.MathTests
 
             Vector indices;
             Matrix m1s = m1.Sort(k => k[0], VectorType.Col, true, out indices);
-
-            Console.Write(m1s);
-            Console.WriteLine(indices);
 
             Assert.AreEqual(m1[0, 3], m1s[0, 1]);
             Assert.AreEqual(m1[0, 0], m1s[0, 3]);

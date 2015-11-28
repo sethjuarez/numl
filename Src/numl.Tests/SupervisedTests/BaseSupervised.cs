@@ -20,7 +20,8 @@ namespace numl.Tests.SupervisedTests
             // just in case a generator uses
             // randomization, need to have a
             // good starting seed
-            Sampling.SetSeedFromSystemTime();
+            // MATH IS HARD OK
+            // Sampling.SetSeedFromTime(new DateTime(1885, 11, 24, 18, 10, 13));
         }
 
         /// <summary>

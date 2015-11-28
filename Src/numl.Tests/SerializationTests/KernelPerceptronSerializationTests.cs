@@ -34,7 +34,7 @@ namespace numl.Tests.SerializationTests
             
             Serialize(model);
 
-            var lmodel = Deserialize<KernelPerceptronModel>();
+            //var lmodel = Deserialize<KernelPerceptronModel>();
             //Assert.AreEqual(model.Root, lmodel.Root);
 
             //learningModel.Model.Save("model.mdl");

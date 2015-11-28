@@ -33,8 +33,6 @@ namespace numl.Tests.SupervisedTests
                 count += (test.Label == prediction ? 1 : 0);
             }
 
-            Console.WriteLine($"Predictions: True: {count}, False: {tests.Length - count}");
-
             Assert.GreaterOrEqual(count / tests.Count(), model.Accuracy);
         }
     }

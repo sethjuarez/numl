@@ -1,16 +1,15 @@
 properties {
 	$majorVersion = "1.0"
-	$majorWithReleaseVersion = "1.0.1"
+	$majorWithReleaseVersion = "1.0.0"
 	$nugetPrelease = "alpha"
 	$version = GetVersion $majorWithReleaseVersion
+	$treatWarningsAsErrors = $true
 	$workingName = if ($workingName) {$workingName} else {"Working"}
-	$signAssemblies = $false
 	$baseDir  = resolve-path ..
 	$buildDir = "$baseDir\Build"
 	$sourceDir = "$baseDir\Src"
 	$toolsDir = "$baseDir\Tools"
 	$docDir = "$baseDir\Doc"
-	$releaseDir = "$baseDir\Release"
 	$workingDir = "$baseDir\$workingName"
 	$workingSourceDir = "$workingDir\Src"
 	$builds = @(
@@ -45,7 +44,7 @@ task Build -depends Clean {
 	Write-Host
 	Update-AssemblyInfoFiles $workingSourceDir ($majorVersion + '.0.0') $version
 	
-	Update-Project $workingSourceDir\numl\project.json $signAssemblies
+	Update-Project $workingSourceDir\numl\project.json
 	
 	foreach ($build in $builds)
 	{
@@ -53,9 +52,6 @@ task Build -depends Clean {
 		if ($name -ne $null)
 		{
 			Write-Host -ForegroundColor Green "Building " $name
-			Write-Host -ForegroundColor Green "Signed " $signAssemblies
-			Write-Host -ForegroundColor Green "Key " $signKeyPath
-			
 			& $build.BuildFunction $build
 		}
 	}
@@ -66,7 +62,32 @@ task Package -depends Build {
 }
 
 task Test -depends Build {
-	Write-Host "Test step!"
+	Update-Project $workingSourceDir\numl\project.json $false
+
+	foreach ($build in $builds)
+	{
+		if ($build.TestsFunction -ne $null)
+		{
+			& $build.TestsFunction $build
+		}
+	}
+}
+
+function NUnitTests($build)
+{
+	$name = $build.TestsName
+	$finalDir = $build.FinalDir
+	$framework = $build.Framework
+	
+	Write-Host -ForegroundColor Green "Copying test assembly $name to deployed directory"
+	Write-Host
+	robocopy "$workingSourceDir\numl\bin\Release\$finalDir" $workingDir\Deployed\Bin\$finalDir /MIR /NFL /NDL /NJS /NC /NS /NP /XO | Out-Default
+	
+	Copy-Item -Path "$workingSourceDir\numl.Tests\bin\Release\$finalDir\numl.Tests.dll" -Destination $workingDir\Deployed\Bin\$finalDir\
+	
+	Write-Host -ForegroundColor Green "Running NUnit tests $name" 
+	Write-Host
+	exec { .\Tools\NUnit\nunit-console.exe "$workingDir\Deployed\Bin\$finalDir\numl.Tests.dll" /xml=$workingDir\$name.xml /trace=Verbose | Out-Default } "Error running $name tests"
 }
 
 function Update-AssemblyInfoFiles ([string] $workingSourceDir, [string] $assemblyVersionNumber, [string] $fileVersionNumber)
@@ -90,26 +111,18 @@ function Update-AssemblyInfoFiles ([string] $workingSourceDir, [string] $assembl
 	}
 }
 
-function Update-Project {
-  param (
-    [string] $projectPath,
-    [string] $sign
-  )
-
-  $file = switch($sign) { $true { $signKeyPath } default { $null } }
-
-  $json = (Get-Content $projectPath) -join "`n" | ConvertFrom-Json
-  $options = @{"warningsAsErrors" = $true; "keyFile" = $file; "define" = ((GetConstants "dotnet" $sign) -split ";") }
-  Add-Member -InputObject $json -MemberType NoteProperty -Name "compilationOptions" -Value $options -Force
-
-  ConvertTo-Json $json -Depth 10 | Set-Content $projectPath
+function Update-Project($projectPath) 
+{
+	$json = (Get-Content $projectPath) -join "`n" | ConvertFrom-Json
+	$options = @{"warningsAsErrors" = $true; "define" = ((GetConstants "dotnet") -split ";") }
+	Add-Member -InputObject $json -MemberType NoteProperty -Name "compilationOptions" -Value $options -Force
+	
+	ConvertTo-Json $json -Depth 10 | Set-Content $projectPath
 }
 
-function GetConstants($constants, $includeSigned)
+function GetConstants($constants)
 {
-	$signed = switch($includeSigned) { $true { ";SIGNED" } default { "" } }
-
-	return "CODE_ANALYSIS;TRACE;$constants$signed"
+	return "CODE_ANALYSIS;TRACE;$constants"
 }
 
 function MSBuildBuild($build)
@@ -123,11 +136,11 @@ function MSBuildBuild($build)
 	exec { .\Tools\NuGet\NuGet.exe update -self }
 	exec { .\Tools\NuGet\NuGet.exe restore "$workingSourceDir\$name.sln" -verbosity detailed -configfile $workingSourceDir\nuget.config | Out-Default } "Error restoring $name"
 	
-	$constants = GetConstants $build.Constants $signAssemblies
+	$constants = GetConstants $build.Constants
 	
 	Write-Host
 	Write-Host "Building $workingSourceDir\$name.sln" -ForegroundColor Green
-	exec { msbuild "/t:Clean;Rebuild" /p:Configuration=Release "/p:CopyNuGetImplementations=true" "/p:Platform=Any CPU" "/p:PlatformTarget=AnyCPU" /p:OutputPath=bin\Release\$finalDir\ /p:AssemblyOriginatorKeyFile=$signKeyPath "/p:SignAssembly=$signAssemblies" "/p:TreatWarningsAsErrors=$treatWarningsAsErrors" "/p:VisualStudioVersion=14.0" /p:DefineConstants=`"$constants`" "$workingSourceDir\$name.sln" | Out-Default } "Error building $name"
+	exec { msbuild "/t:Clean;Rebuild" /p:Configuration=Release /p:OutputPath=bin\Release\$finalDir\ "/p:TreatWarningsAsErrors=$treatWarningsAsErrors" "/p:VisualStudioVersion=14.0" /p:DefineConstants=`"$constants`" "$workingSourceDir\$name.sln" | Out-Default } "Error building $name"
 }
 
 function NUnitTests($build)
