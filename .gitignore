@@ -4,6 +4,7 @@
 numl.repl/*
 packages/*
 TestResults/*
+Working/*
 .vs/*
 *.suo
 *.user
