@@ -35,6 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Math\Functions\Softplus.cs" />
     <Compile Include="Math\Summary.cs" />
     <Compile Include="Learner.cs" />
     <Compile Include="LearningModel.cs" />
