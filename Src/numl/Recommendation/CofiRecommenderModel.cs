@@ -9,9 +9,25 @@ using numl.Model;
 using numl.Utils;
 using System.Xml.Serialization;
 using numl.Math;
+using numl.Math.Metrics;
 
 namespace numl.Recommendation
 {
+    /// <summary>
+    /// Type of the Item to be recommended
+    /// </summary>
+    public enum ItemType
+    {
+        /// <summary>
+        /// A reference item (i.e. a User Rating)
+        /// </summary>
+        References,
+        /// <summary>
+        /// An entity item (i.e. a book or movie)
+        /// </summary>
+        Entities
+    }
+
     /// <summary>
     /// Collaborative Filtering Recommender model.
     /// </summary>
@@ -61,6 +77,11 @@ namespace numl.Recommendation
         public Matrix Reference { get; set; }
 
         /// <summary>
+        /// Gets or sets the function to use for minimizing the distance of related items.
+        /// </summary>
+        public IDistance RelatedDistanceFunction { get; set; }
+
+        /// <summary>
         /// Gets the binary indicator matrix of references (i.e. ratings), where 1 indicates a value was provided otherwise 0.
         /// </summary>
         public Matrix R
@@ -74,7 +95,10 @@ namespace numl.Recommendation
         /// <summary>
         /// Initializes a new Collaborative Filtering recommender model.
         /// </summary>
-        public CofiRecommenderModel() { }
+        public CofiRecommenderModel()
+        {
+            this.RelatedDistanceFunction = new EuclidianDistance();
+        }
         
         /// <summary>
         /// Not implemnted.
@@ -110,6 +134,45 @@ namespace numl.Recommendation
             var sorted = predictions[(int)this.ReferenceFeatureMap.IndexOf(referenceId), VectorType.Col].Sort(false, out indices);
 
             return this.Y.Slice(indices, true);
+        }
+
+        /// <summary>
+        /// Predicts the related items, given the item index and the type (either References or Entities).
+        /// </summary>
+        /// <param name="itemIndex">The item index in the corresponding feature map column.</param>
+        /// <param name="itemType">Type of item to return related items (i.e. References = user ratings OR Entities = books or movies)</param>
+        /// <returns>Vector of predictions.</returns>
+        public Vector PredictRelated(int itemId, int count = 5, ItemType itemType = ItemType.References)
+        {
+            var predictions = (this.ThetaX * this.ThetaY.T).Each((v, r, c) => v + this.Mu[r]);
+
+            Vector feature = (itemType == ItemType.Entities ? predictions[this.EntityFeatureMap.IndexOf(itemId), VectorType.Col] : predictions[this.ReferenceFeatureMap.IndexOf(itemId), VectorType.Row]);
+
+            Vector result = Vector.Zeros(count);
+
+            switch (itemType)
+            {
+                case ItemType.Entities:
+                    {
+                        result = predictions.GetCols()
+                                          .Select((s, i) => new { Col = s, Idx = i })
+                                          .OrderBy(v => this.RelatedDistanceFunction.Compute(feature, v.Col))
+                                          .Take(count)
+                                          .Select(s => (double)s.Idx).ToVector();
+                    }
+                    break;
+                case ItemType.References:
+                    {
+                        result = predictions.GetRows()
+                                          .Select((s, i) => new { Row = s, Idx = i })
+                                          .OrderBy(v => this.RelatedDistanceFunction.Compute(feature, v.Row))
+                                          .Take(count)
+                                          .Select(s => (double)s.Idx).ToVector();
+                    }
+                    break;
+            }
+
+            return result;
         }
 
         /// <summary>
