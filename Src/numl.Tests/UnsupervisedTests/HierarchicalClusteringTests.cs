@@ -16,11 +16,11 @@ namespace numl.Tests.UnsupervisedTests
         [Test]
         public void Cluster_Student()
         {
-            Student[] students = Student.GetData();
+            Student[] students = Student.GetData().Take(20).ToArray();
             HClusterModel cluster = new HClusterModel();
             Descriptor descriptor = Descriptor.Create<Student>();
             CentroidLinker linker = new CentroidLinker(new EuclidianDistance());
-            Cluster root = cluster.Generate(descriptor, students, linker);
+             Cluster root = cluster.Generate(descriptor, students, linker);
         }
     }
 }

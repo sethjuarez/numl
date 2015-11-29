@@ -14,15 +14,15 @@ namespace numl.Tests.SupervisedTests
     [SetUpFixture]
     public class BaseSupervised
     {
-        [SetUp]
-        public void Setup()
-        {
-            // just in case a generator uses
-            // randomization, need to have a
-            // good starting seed
-            // MATH IS HARD OK
-            // Sampling.SetSeedFromTime(new DateTime(1885, 11, 24, 18, 10, 13));
-        }
+        //[SetUp]
+        //public void Setup()
+        //{
+        //    // just in case a generator uses
+        //    // randomization, need to have a
+        //    // good starting seed
+        //    // MATH IS HARD OK
+        //    // Sampling.SetSeedFromTime(new DateTime(1885, 11, 24, 18, 10, 13));
+        //}
 
         /// <summary>
         /// Compute the numerical gradient of a random test problem using the supplied cost function reference.

@@ -12,21 +12,19 @@ namespace numl.Tests.SerializationTests
     [SetUpFixture]
     public class BaseSerialization
     {
-        private string _basePath;
-
-        [SetUp]
-        public void Setup()
+        private string GetPath()
         {
-            _basePath = String.Format("{0}\\{1}", Directory.GetCurrentDirectory(), GetType().Name);
-            if (!Directory.Exists(_basePath))
-                Directory.CreateDirectory(_basePath);
-            _basePath += "\\{0}.json";
+            var basePath = String.Format("{0}\\{1}", Directory.GetCurrentDirectory(), GetType().Name);
+            if (!Directory.Exists(basePath))
+                Directory.CreateDirectory(basePath);
+            basePath += "\\{0}.json";
+            return basePath;
         }
 
         internal void Serialize(object o)
         {
             var caller = new StackFrame(1, true).GetMethod().Name;
-            string file = string.Format(_basePath, caller);
+            string file = string.Format(GetPath(), caller);
             if (File.Exists(file))  File.Delete(file);
             JsonHelpers.Save(file, o);
         }
@@ -34,7 +32,7 @@ namespace numl.Tests.SerializationTests
         internal T Deserialize<T>()
         {
             var caller = new StackFrame(1, true).GetMethod().Name;
-            string file = string.Format(_basePath, caller);
+            string file = string.Format(GetPath(), caller);
             return JsonHelpers.Load<T>(file);
         }
     }
