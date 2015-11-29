@@ -157,7 +157,7 @@ function NUnitTests($build)
 	
 	Write-Host -ForegroundColor Green "Running NUnit tests " $name
 	Write-Host
-	exec { .\Tools\NUnit\nunit-console.exe "$workingDir\Deployed\Bin\$finalDir\numl.Tests.dll" /result=$workingDir\$name.xml /trace=Info /framework=net-4.0 /labels | Out-Default } "Error running $name tests"
+	exec { .\Tools\NUnit\nunit-console-x86.exe "$workingDir\Deployed\Bin\$finalDir\numl.Tests.dll" /result=$workingDir\$name.xml /trace=Info /labels | Out-Default } "Error running $name tests"
 }
 
 function GetVersion($majorVersion)

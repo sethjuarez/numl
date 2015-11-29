@@ -1,2 +1,2 @@
 cls
-powershell -Command "& { [Console]::WindowWidth = 150; [Console]::WindowHeight = 40; Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; Start-Transcript %~dp0runbuild.txt; Import-Module %~dp0..\Tools\PSake\psake.psm1; Invoke-psake %~dp0..\Build\build.ps1 %*; Stop-Transcript; }"
+powershell -Command "& { [Console]::WindowWidth = 150; [Console]::WindowHeight = 40; Start-Transcript %~dp0runbuild.txt; Import-Module %~dp0..\Tools\PSake\psake.psm1; Invoke-psake %~dp0..\Build\build.ps1 %*; Stop-Transcript; }"
