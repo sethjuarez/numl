@@ -52,7 +52,7 @@ namespace numl.Math.Probability
         public static void SetSeedFromSystemTime()
         {
             DateTime dt = DateTime.Now;
-            long x = dt.ToFileTime();
+            long x = dt.ToFileTime();            
             SetSeed((uint)(x >> 16), (uint)(x % 4294967296));
         }
 
@@ -61,6 +61,7 @@ namespace numl.Math.Probability
             long x = dt.ToFileTime();
             SetSeed((uint)(x >> 16), (uint)(x % 4294967296));
         }
+
         /// <summary>
         /// Produce a uniform random sample from the open interval (0, 1). The method will not return
         /// either end point.
@@ -74,6 +75,7 @@ namespace numl.Math.Probability
             // The result is strictly between 0 and 1.
             return (u + 1) * 2.328306435454494e-10;
         }
+
         /// <summary>
         /// Produce a uniform random sample from the open interval (0, max). The method will not return
         /// either end point.
@@ -84,6 +86,7 @@ namespace numl.Math.Probability
         {
             return GetUniform(0, max);
         }
+
         /// <summary>
         /// Produce a uniform random sample from the open interval (min, max). The method will not return
         /// either end point.
@@ -93,8 +96,9 @@ namespace numl.Math.Probability
         /// <returns></returns>
         public static double GetUniform(double min = 0d, double max = 1.0d)
         {
-            return min + (Sampling.GetUniform() * ((max - min) + 1d));
+            return (Sampling.GetUniform() * ((max - min) + min));
         }
+
         /// <summary>
         /// Produce a uniform random sample from the open interval (min, max). The method will not return
         /// either end point.
@@ -104,8 +108,9 @@ namespace numl.Math.Probability
         /// <returns>Random Sample.</returns>
         public static int GetUniform(int min, int max)
         {
-            return min + (int)(GetUniform() * ((max - min) + 1));
+            return (int)(GetUniform() * ((max - 1) - (min + 1)) + (min + 1));
         }
+
         /// <summary>
         /// This is the heart of the generator. It uses George Marsaglia's MWC algorithm to produce an
         /// unsigned integer. See http://www.bobwheeler.com/statistics/Password/MarsagliaPost.txt.

@@ -9,12 +9,12 @@ using System.Xml;
 
 namespace numl.Tests.SerializationTests
 {
-    [TestFixture]
+    [SetUpFixture]
     public class BaseSerialization
     {
         private string _basePath;
 
-        [TestFixtureSetUp]
+        [SetUp]
         public void Setup()
         {
             _basePath = String.Format("{0}\\{1}", Directory.GetCurrentDirectory(), GetType().Name);

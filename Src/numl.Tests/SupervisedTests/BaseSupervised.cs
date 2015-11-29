@@ -11,10 +11,10 @@ using System.Collections.Generic;
 
 namespace numl.Tests.SupervisedTests
 {
-    [TestFixture]
+    [SetUpFixture]
     public class BaseSupervised
     {
-        [TestFixtureSetUp]
+        [SetUp]
         public void Setup()
         {
             // just in case a generator uses
