@@ -20,11 +20,13 @@ namespace numl.Tests.SupervisedTests
             var model = MultiClassLearner.Learn(new numl.Supervised.SVM.SVMGenerator()
             {
                 Descriptor = descriptor,
-                KernelFunction = new LinearKernel()
+                KernelFunction = new LogisticKernel(),
+                C = 10,
+                Bias = 1,
+                MaxIterations = 20
             }, students, 0.9);
 
-
-            Assert.GreaterOrEqual(model.Accuracy, 0.55d);
+            Assert.GreaterOrEqual(model.Accuracy, 0.65d);
         }
     }
 }

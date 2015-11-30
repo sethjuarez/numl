@@ -146,8 +146,11 @@ namespace numl.Tests.SupervisedTests
             var predictions = ((Recommendation.CofiRecommenderModel)model.Model).Predict(0);
 
             Assert.AreEqual(1d, predictions[0]);
-            Assert.AreEqual(5d, predictions[1]);
-            Assert.AreEqual(9d, predictions[2]);
+
+            // due to random initialisation one is favoured over the other at certain times
+            Assert.IsTrue(5d == predictions[1] || 9d == predictions[1]);
+            Assert.IsTrue(5d == predictions[2] || 9d == predictions[2]);
+            
             Assert.AreEqual(3d, predictions[3]);
             Assert.AreEqual(8d, predictions[4]);
         }

@@ -212,7 +212,9 @@ namespace numl.Tests.SupervisedTests
             for (int i = 0; i < x.Rows; i++)
                 y[i] = model.Predict(x[i, VectorType.Row]);
 
-            Assert.AreEqual(y_actual, y);
+            var scored = Supervised.Score.ScorePredictions(y, y_actual);
+
+            Assert.GreaterOrEqual(scored.Accuracy, 0.75);
         }
     }
 }
