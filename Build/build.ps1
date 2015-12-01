@@ -1,7 +1,8 @@
 properties {
-	$majorVersion = "1.0"
-	$majorWithReleaseVersion = "1.0.0"
+	$majorVersion = "0.9"
+	$majorWithReleaseVersion = "0.9.2"
 	$nugetPrelease = "alpha"
+	$packageId = "numl"
 	$version = GetVersion $majorWithReleaseVersion
 	$treatWarningsAsErrors = $true
 	$workingName = if ($workingName) {$workingName} else {"Working"}
@@ -13,13 +14,13 @@ properties {
 	$workingDir = "$baseDir\$workingName"
 	$workingSourceDir = "$workingDir\Src"
 	$builds = @(
-		@{Name = "numl"; TestsName = "numl.Tests"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants=""; FinalDir="Net45"; NuGetDir = "net45"; Framework="net-4.0"}
+		@{Name = "numl"; TestsName = "numl.Tests"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; Constants=""; FinalDir="Portable"; NuGetDir = "portable-net45+wp80+win8+wpa81+dnxcore50"; Framework="net-4.0"}
 	)
 }
 
 framework '4.6x86'
 
-task default -depends Test
+task default -depends Nuget
 
 task Clean {
 	Write-Host "Setting location to $baseDir"
@@ -57,10 +58,6 @@ task Build -depends Clean {
 	}
 }
 
-task Package -depends Build {
-	Write-Host "Package step!"
-}
-
 task Test -depends Build {
 	Update-Project $workingSourceDir\numl\project.json $false
 
@@ -73,6 +70,64 @@ task Test -depends Build {
 	}
 }
 
+task Nuget -depends Build {
+	foreach ($build in $builds)
+	{
+		$name = $build.TestsName
+		$finalDir = $build.FinalDir
+		
+		robocopy "$workingSourceDir\numl\bin\Release\$finalDir" $workingDir\Package\Bin\$finalDir *.dll *.pdb *.xml /NFL /NDL /NJS /NC /NS /NP /XO /XF *.CodeAnalysisLog.xml | Out-Default
+	}
+	
+	$nugetVersion = $majorWithReleaseVersion
+	if ($nugetPrelease -ne $null)
+	{
+		$nugetVersion = $nugetVersion + "-" + $nugetPrelease
+	}
+
+	New-Item -Path $workingDir\NuGet -ItemType Directory
+	
+	$nuspecPath = "$workingDir\NuGet\numl.nuspec"
+	Copy-Item -Path "$buildDir\numl.nuspec" -Destination $nuspecPath -recurse
+	
+	Write-Host "Updating nuspec file at $nuspecPath" -ForegroundColor Green
+	Write-Host
+	
+	$xml = [xml](Get-Content $nuspecPath)
+	Edit-XmlNodes -doc $xml -xpath "//*[local-name() = 'id']" -value $packageId
+	Edit-XmlNodes -doc $xml -xpath "//*[local-name() = 'version']" -value $nugetVersion
+	
+	Write-Host $xml.OuterXml
+	
+	$xml.save($nuspecPath)
+	
+	foreach ($build in $builds)
+	{
+		if ($build.NuGetDir)
+		{
+			$name = $build.TestsName
+			$finalDir = $build.FinalDir
+			$frameworkDirs = $build.NuGetDir.Split(",")
+			
+			foreach ($frameworkDir in $frameworkDirs)
+			{
+				robocopy "$workingSourceDir\numl\bin\Release\$finalDir" $workingDir\NuGet\lib\$frameworkDir *.dll *.pdb *.xml /NFL /NDL /NJS /NC /NS /NP /XO /XF *.CodeAnalysisLog.xml | Out-Default
+			}
+		}
+	}
+	
+	robocopy $workingSourceDir $workingDir\NuGet\src *.cs /S /NFL /NDL /NJS /NC /NS /NP /XD numl.Tests obj .vs artifacts | Out-Default
+	
+	Write-Host "Building NuGet package with ID $packageId and version $nugetVersion" -ForegroundColor Green
+	Write-Host
+	
+	exec { .\Tools\NuGet\NuGet.exe pack $nuspecPath -Symbols }
+	
+	Write-Host
+	Write-Host "Moving package to $workingDir\NuGet" -ForegroundColor Green
+	move -Path .\*.nupkg -Destination $workingDir\NuGet
+}
+
 function NUnitTests($build)
 {
 	$name = $build.TestsName
@@ -81,13 +136,13 @@ function NUnitTests($build)
 	
 	Write-Host -ForegroundColor Green "Copying test assembly $name to deployed directory"
 	Write-Host
-	robocopy "$workingSourceDir\numl\bin\Release\$finalDir" $workingDir\Deployed\Bin\$finalDir /MIR /NFL /NDL /NJS /NC /NS /NP /XO | Out-Default
+	robocopy "$workingSourceDir\numl.Tests\bin\Release\$finalDir" $workingDir\Deployed\Bin\$finalDir /MIR /NFL /NDL /NJS /NC /NS /NP /XO | Out-Default
 	
 	Copy-Item -Path "$workingSourceDir\numl.Tests\bin\Release\$finalDir\numl.Tests.dll" -Destination $workingDir\Deployed\Bin\$finalDir\
 	
-	Write-Host -ForegroundColor Green "Running NUnit tests $name" 
+	Write-Host -ForegroundColor Green "Running NUnit tests " $name
 	Write-Host
-	exec { .\Tools\NUnit\nunit-console.exe "$workingDir\Deployed\Bin\$finalDir\numl.Tests.dll" /xml=$workingDir\$name.xml /trace=Info /labels | Out-Default } "Error running $name tests"
+	exec { .\Tools\NUnit\nunit-console.exe "$workingDir\Deployed\Bin\$finalDir\numl.Tests.dll" /result=$workingDir\$name.xml /trace=Info /labels | Out-Default } "Error running $name tests"
 }
 
 function Update-AssemblyInfoFiles ([string] $workingSourceDir, [string] $assemblyVersionNumber, [string] $fileVersionNumber)
@@ -116,7 +171,9 @@ function Update-Project($projectPath)
 	$json = (Get-Content $projectPath) -join "`n" | ConvertFrom-Json
 	$options = @{"warningsAsErrors" = $true; "define" = ((GetConstants "dotnet") -split ";") }
 	Add-Member -InputObject $json -MemberType NoteProperty -Name "compilationOptions" -Value $options -Force
-	
+	Write-Host "============================================================" -ForegroundColor Red
+	Write-Host $projectPath -ForegroundColor Red
+	Write-Host $json -ForegroundColor Red
 	ConvertTo-Json $json -Depth 10 | Set-Content $projectPath
 }
 
@@ -143,23 +200,6 @@ function MSBuildBuild($build)
 	exec { msbuild "/t:Clean;Rebuild" /p:Configuration=Release /p:OutputPath=bin\Release\$finalDir\ "/p:TreatWarningsAsErrors=$treatWarningsAsErrors" "/p:VisualStudioVersion=14.0" /p:DefineConstants=`"$constants`" "$workingSourceDir\$name.sln" | Out-Default } "Error building $name"
 }
 
-function NUnitTests($build)
-{
-	$name = $build.TestsName
-	$finalDir = $build.FinalDir
-	$framework = $build.Framework
-	
-	Write-Host -ForegroundColor Green "Copying test assembly $name to deployed directory"
-	Write-Host
-	robocopy "$workingSourceDir\numl.Tests\bin\Release\$finalDir" $workingDir\Deployed\Bin\$finalDir /MIR /NFL /NDL /NJS /NC /NS /NP /XO | Out-Default
-	
-	Copy-Item -Path "$workingSourceDir\numl.Tests\bin\Release\$finalDir\numl.Tests.dll" -Destination $workingDir\Deployed\Bin\$finalDir\
-	
-	Write-Host -ForegroundColor Green "Running NUnit tests " $name
-	Write-Host
-	exec { .\Tools\NUnit\nunit-console-x86.exe "$workingDir\Deployed\Bin\$finalDir\numl.Tests.dll" /result=$workingDir\$name.xml /trace=Info /labels | Out-Default } "Error running $name tests"
-}
-
 function GetVersion($majorVersion)
 {
 	$now = [DateTime]::Now
@@ -175,6 +215,32 @@ function GetVersion($majorVersion)
 	$revision = "{0:00}{1:00}" -f $hour, $minute
 	
 	return $majorVersion + "." + $minor
+}
+
+function Edit-XmlNodes {
+    param (
+        [xml] $doc,
+        [string] $xpath = $(throw "xpath is a required parameter"),
+        [string] $value = $(throw "value is a required parameter")
+    )
+    
+    $nodes = $doc.SelectNodes($xpath)
+    $count = $nodes.Count
+
+    Write-Host "Found $count nodes with path '$xpath'"
+    
+    foreach ($node in $nodes) {
+        if ($node -ne $null) {
+            if ($node.NodeType -eq "Element")
+            {
+                $node.InnerXml = $value
+            }
+            else
+            {
+                $node.Value = $value
+            }
+        }
+    }
 }
 
 function Execute-Command($command) 
