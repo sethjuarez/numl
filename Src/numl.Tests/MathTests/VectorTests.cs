@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using numl.Math.LinearAlgebra;
-using System.Xml.Serialization;
 using numl.Utils;
 
 namespace numl.Tests.MathTests

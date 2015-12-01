@@ -2,12 +2,9 @@
 //
 // summary:	Implements the vector class
 using System;
-using System.Xml;
 using System.Text;
 using System.Linq;
-using System.Xml.Schema;
 using System.Collections;
-using System.Xml.Serialization;
 using System.Collections.Generic;
 
 namespace numl.Math.LinearAlgebra

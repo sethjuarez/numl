@@ -2,7 +2,6 @@
 using System.IO;
 using NUnit.Framework;
 using numl.Math.LinearAlgebra;
-using System.Xml.Serialization;
 using numl.Utils;
 using System.Diagnostics;
 

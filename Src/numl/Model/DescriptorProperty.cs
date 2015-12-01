@@ -9,9 +9,6 @@ using System.Reflection;
 using System.Collections.Generic;
 using numl.Math.LinearAlgebra;
 using System.Text;
-using System.Xml.Serialization;
-using System.Xml;
-using System.Xml.Schema;
 using System.Linq.Expressions;
 using System.Collections;
 

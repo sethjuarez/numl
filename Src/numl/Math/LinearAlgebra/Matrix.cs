@@ -3,13 +3,10 @@
 // summary:	Implements the matrix class
 using System;
 using System.IO;
-using System.Xml;
 using System.Text;
 using System.Linq;
-using System.Xml.Schema;
 using System.Globalization;
 using numl.Math.Probability;
-using System.Xml.Serialization;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
