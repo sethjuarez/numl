@@ -812,7 +812,7 @@ namespace numl.Math.LinearAlgebra
             }
         }
         /// <summary>Loads the given stream.</summary>
-        /// <exception cref="FileNotFoundException">Thrown when the requested file is not present.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when the requested file is not present.</exception>
         /// <param name="file">The file to load.</param>
         /// <returns>A Matrix.</returns>
         public static Matrix Load(string file)
@@ -820,7 +820,7 @@ namespace numl.Math.LinearAlgebra
             if (File.Exists(file))
                 using (var stream = File.OpenRead(file)) return Load(stream);
             else
-                throw new FileNotFoundException();
+                throw new InvalidOperationException("File not found");
         }
         /// <summary>Loads the given stream.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
