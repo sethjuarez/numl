@@ -781,6 +781,10 @@ namespace numl.Math.LinearAlgebra
             return this;
         }
 
+        /// <summary>
+        /// Save matrix to file
+        /// </summary>
+        /// <param name="file">file to save</param>
         public void Save(string file)
         {
             using (var stream = File.OpenWrite(file))

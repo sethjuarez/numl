@@ -171,9 +171,6 @@ function Update-Project($projectPath)
 	$json = (Get-Content $projectPath) -join "`n" | ConvertFrom-Json
 	$options = @{"warningsAsErrors" = $true; "define" = ((GetConstants "dotnet") -split ";") }
 	Add-Member -InputObject $json -MemberType NoteProperty -Name "compilationOptions" -Value $options -Force
-	Write-Host "============================================================" -ForegroundColor Red
-	Write-Host $projectPath -ForegroundColor Red
-	Write-Host $json -ForegroundColor Red
 	ConvertTo-Json $json -Depth 10 | Set-Content $projectPath
 }
 
@@ -197,7 +194,13 @@ function MSBuildBuild($build)
 	
 	Write-Host
 	Write-Host "Building $workingSourceDir\$name.sln" -ForegroundColor Green
-	exec { msbuild "/t:Clean;Rebuild" /p:Configuration=Release /p:OutputPath=bin\Release\$finalDir\ "/p:TreatWarningsAsErrors=$treatWarningsAsErrors" "/p:VisualStudioVersion=14.0" /p:DefineConstants=`"$constants`" "$workingSourceDir\$name.sln" | Out-Default } "Error building $name"
+	if ($name -match 'Tests') { 
+		Write-Host "NO DOCS $name" -ForegroundColor Red
+		#exec { msbuild "/t:Clean;Rebuild" /p:Configuration=Release /p:OutputPath=bin\Release\$finalDir\ "/p:TreatWarningsAsErrors=$treatWarningsAsErrors" "/p:VisualStudioVersion=14.0" /p:DefineConstants=`"$constants`" "$workingSourceDir\$name.sln" | Out-Default } "Error building $name"
+	} else {
+		Write-Host "YES DOCS $name" -ForegroundColor Red
+		#exec { msbuild "/t:Clean;Rebuild" /p:Configuration=Release /p:OutputPath=bin\Release\$finalDir\ "/p:TreatWarningsAsErrors=$treatWarningsAsErrors" "/p:VisualStudioVersion=14.0" "/p:documentationFile=bin\Release\$finalDir\$name.xml" /p:DefineConstants=`"$constants`" "$workingSourceDir\$name.sln" | Out-Default } "Error building $name"	
+	}
 }
 
 function GetVersion($majorVersion)

@@ -96,7 +96,7 @@ namespace numl.Recommendation
         {
             this.RelatedDistanceFunction = new EuclidianDistance();
         }
-        
+
         /// <summary>
         /// Not implemnted.
         /// </summary>
@@ -132,11 +132,12 @@ namespace numl.Recommendation
 
             return this.Y.Slice(indices, true);
         }
-
+        
         /// <summary>
         /// Predicts the related items, given the item index and the type (either References or Entities).
         /// </summary>
-        /// <param name="itemIndex">The item index in the corresponding feature map column.</param>
+        /// <param name="itemId">The item index in the corresponding feature map column.</param>
+        /// <param name="count">count</param>
         /// <param name="itemType">Type of item to return related items (i.e. References = user ratings OR Entities = books or movies)</param>
         /// <returns>Vector of predictions.</returns>
         public Vector PredictRelated(int itemId, int count = 5, ItemType itemType = ItemType.References)

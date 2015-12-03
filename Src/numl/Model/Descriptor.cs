@@ -393,6 +393,12 @@ namespace numl.Model
             return new DescriptorProperty(this, name, true);
         }
 
+        /// <summary>
+        /// Equality test
+        /// </summary>
+        /// <param name="obj">object to compare</param>
+        /// <returns>equality</returns>
+
         public override bool Equals(object obj)
         {
             if (obj is Descriptor)
@@ -423,6 +429,10 @@ namespace numl.Model
             return false;
         }
 
+        /// <summary>
+        /// Return hash
+        /// </summary>
+        /// <returns>hash</returns>
         public override int GetHashCode()
         {
             return base.GetHashCode();

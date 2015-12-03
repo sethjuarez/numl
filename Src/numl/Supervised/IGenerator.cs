@@ -22,6 +22,7 @@ namespace numl.Supervised
         IModel Generate(Descriptor descriptor, IEnumerable<object> examples);
         /// <summary>Generates the given examples.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>
+        /// <param name="descriptor">Descriptor</param>
         /// <param name="examples">The examples.</param>
         /// <returns>An IModel.</returns>
         IModel Generate<T>(Descriptor descriptor, IEnumerable<T> examples) where T : class;

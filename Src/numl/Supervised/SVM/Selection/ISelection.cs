@@ -42,8 +42,6 @@ namespace numl.Supervised.SVM.Selection
         /// </summary>
         /// <param name="i">Current working set pair i.</param>
         /// <param name="j">Current working set pair j.</param>
-        /// <param name="K">Precomputed Kernel matrix.</param>
-        /// <param name="y">Training labels vector (of +1/-1 values).</param>
         /// <param name="gradient">Current Gradient vector.</param>
         /// <param name="alpha">Current alpha parameter vector.</param>
         /// <returns>New working pairs of i, j.  Returns </returns>
