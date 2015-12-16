@@ -1,0 +1,31 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "ClassLibrary1 Class Library",
+  "authors": [ "sejuare" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "dependencies": {
+    "Newtonsoft.Json": "7.0.1"
+  },
+  "frameworks": {
+    "net46": { },
+    "net451": { },
+    "dnx451": { },
+    "dnxcore50": {
+      "dependencies": {
+        "Microsoft.CSharp": "4.0.1-*",
+        "System.Collections": "4.0.11-*",
+        "System.Collections.Concurrent": "4.0.11-*",
+        "System.Linq": "4.0.1-*",
+        "System.Linq.Queryable": "4.0.1-*",
+        "System.Runtime": "4.0.21-*",
+        "System.Threading": "4.0.11-*",
+        "System.IO": "4.0.10",
+        "System.IO.FileSystem": "4.0.1-*",
+        "System.Text.RegularExpressions": "4.0.11-*",
+        "System.Text.Encoding": "4.0.0-*"
+      }
+    }
+  }
+}

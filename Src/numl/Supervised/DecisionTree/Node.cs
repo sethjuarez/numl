@@ -43,13 +43,13 @@ namespace numl.Supervised.DecisionTree
         [JsonProperty]
         public Edge[] Edges { get; set; }
 
-        [OnDeserialized]
-        internal void OnDeserializedMethod(StreamingContext context)
-        {
-            if (Edges != null)
-                foreach (var e in Edges)
-                    e.Parent = this;
-        }
+        //[OnDeserialized]
+        //internal void OnDeserializedMethod(StreamingContext context)
+        //{
+        //    if (Edges != null)
+        //        foreach (var e in Edges)
+        //            e.Parent = this;
+        //}
     }
 
     /// <summary>An edge.</summary>
