@@ -8,7 +8,7 @@
         <owners>Seth Juarez</owners>
         <licenseUrl>https://github.com/sethjuarez/numl/blob/master/LICENSE.md</licenseUrl>
         <projectUrl>http://numl.net</projectUrl>
-        <iconUrl>http://numl.net/docs/images/numllogo.png</iconUrl>
+        <iconUrl>http://numl.net/Content/images/logo.png</iconUrl>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <description>numl is a machine learning library intended to ease the use of using standard modeling techniques for both prediction and clustering</description>
         <summary>MIT</summary>
