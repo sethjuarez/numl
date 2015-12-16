@@ -1,6 +1,6 @@
 properties {
 	$majorVersion = "0.9"
-	$majorWithReleaseVersion = "0.9.2"
+	$majorWithReleaseVersion = "0.9.3"
 	$nugetPrelease = "alpha"
 	$packageId = "numl"
 	$version = GetVersion $majorWithReleaseVersion
@@ -13,8 +13,11 @@ properties {
 	$docDir = "$baseDir\Doc"
 	$workingDir = "$baseDir\$workingName"
 	$workingSourceDir = "$workingDir\Src"
+	$dnvmVersion = "1.0.0-rc1-update1"
 	$builds = @(
-		@{Name = "numl"; TestsName = "numl.Tests"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; FinalDir="net452"; NuGetDir = "net452"; Framework="net-4.0"}
+		@{Name = "numl.dotnet"; TestsName = $null; BuildFunction = "DnxBuild"; TestsFunction = $null; FinalDir=$null; NuGetDir=$null; Framework=$null }
+		#,
+		#@{Name = "numl"; TestsName = "numl.Tests"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; FinalDir="net452"; NuGetDir = "net452"; Framework="net-4.0"}
 	)
 }
 
@@ -69,13 +72,13 @@ task Test -depends Build {
 }
 
 task Nuget -depends Build {
-	foreach ($build in $builds)
-	{
-		$name = $build.TestsName
-		$finalDir = $build.FinalDir
-		
-		robocopy "$workingSourceDir\numl\bin\Release\$finalDir" $workingDir\Package\Bin\$finalDir *.dll *.pdb *.xml /NFL /NDL /NJS /NC /NS /NP /XO /XF *.CodeAnalysisLog.xml | Out-Default
-	}
+	#foreach ($build in $builds)
+	#{
+	#	$name = $build.TestsName
+	#	$finalDir = $build.FinalDir
+	#	
+	#	robocopy "$workingSourceDir\numl\bin\Release\$finalDir" $workingDir\Package\Bin\$finalDir *.dll *.pdb *.xml /NFL /NDL /NJS /NC /NS /NP /XO /XF *.CodeAnalysisLog.xml | Out-Default
+	#}
 	
 	$nugetVersion = $majorWithReleaseVersion
 	if ($nugetPrelease -ne $null)
@@ -83,7 +86,7 @@ task Nuget -depends Build {
 		$nugetVersion = $nugetVersion + "-" + $nugetPrelease
 	}
 
-	New-Item -Path $workingDir\NuGet -ItemType Directory
+	#New-Item -Path $workingDir\NuGet -ItemType Directory
 	
 	$nuspecPath = "$workingDir\NuGet\numl.nuspec"
 	Copy-Item -Path "$buildDir\numl.nuspec" -Destination $nuspecPath -recurse
@@ -99,20 +102,20 @@ task Nuget -depends Build {
 	
 	$xml.save($nuspecPath)
 	
-	foreach ($build in $builds)
-	{
-		if ($build.NuGetDir)
-		{
-			$name = $build.TestsName
-			$finalDir = $build.FinalDir
-			$frameworkDirs = $build.NuGetDir.Split(",")
-			
-			foreach ($frameworkDir in $frameworkDirs)
-			{
-				robocopy "$workingSourceDir\numl\bin\Release\$finalDir" $workingDir\NuGet\lib\$frameworkDir *.dll *.pdb *.xml /NFL /NDL /NJS /NC /NS /NP /XO /XF *.CodeAnalysisLog.xml | Out-Default
-			}
-		}
-	}
+	#foreach ($build in $builds)
+	#{
+	#	if ($build.NuGetDir)
+	#	{
+	#		$name = $build.TestsName
+	#		$finalDir = $build.FinalDir
+	#		$frameworkDirs = $build.NuGetDir.Split(",")
+	#		
+	#		foreach ($frameworkDir in $frameworkDirs)
+	#		{
+	#			robocopy "$workingSourceDir\numl\bin\Release\$finalDir" $workingDir\NuGet\lib\$frameworkDir *.dll *.pdb *.xml /NFL /NDL /NJS /NC /NS /NP /XO /XF *.CodeAnalysisLog.xml | Out-Default
+	#		}
+	#	}
+	#}
 	
 	robocopy $workingSourceDir $workingDir\NuGet\src *.cs /S /NFL /NDL /NJS /NC /NS /NP /XD numl.Tests obj .vs artifacts | Out-Default
 	

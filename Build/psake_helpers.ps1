@@ -61,6 +61,33 @@ function MSBuildBuild($build, $doc)
 
 }
 
+function DnxBuild($build)
+{
+
+	$p = Get-Location
+	Set-Location -Path $workingSourceDir\numl
+	$name = $build.Name
+	$projectPath = "$workingSourceDir\numl\project.json"
+	
+	exec { dnvm install $dnvmVersion -r clr | Out-Default }
+	exec { dnvm use $dnvmVersion -r clr | Out-Default }
+	
+	Write-Host -ForegroundColor Green "Restoring packages for $name"
+	Write-Host
+	exec { dnu restore $projectPath | Out-Default }
+	
+	Write-Host -ForegroundColor Green "Building $projectPath"
+	exec { dnu build --out $workingDir\DNXBuild --configuration Release  | Out-Default }
+	
+	New-Item -Path $workingDir\NuGet\lib -ItemType Directory
+	robocopy $workingDir\DNXBuild\Release $workingDir\NuGet\lib *.dll *.pdb *.xml /NFL /NDL /NJS /NC /NS /NP /XO /XF /S *.CodeAnalysisLog.xml | Out-Default
+	
+	Execute-Command -command { del  $workingDir\DNXBuild -Recurse -Force }
+
+	
+	Set-Location -Path $p
+}
+
 function GetVersion($majorVersion)
 {
 	$now = [DateTime]::Now

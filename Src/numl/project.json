@@ -8,9 +8,12 @@
   "dependencies": {
     "Newtonsoft.Json": "7.0.1"
   },
+  "runtimes": {
+    "win": { }
+  },
   "frameworks": {
     "net46": { },
-    "net451": { },
+    "net452": { },
     "dnx451": { },
     "dnxcore50": {
       "dependencies": {
