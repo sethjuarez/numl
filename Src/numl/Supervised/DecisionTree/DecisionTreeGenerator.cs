@@ -161,7 +161,7 @@ namespace numl.Supervised.DecisionTree
                 else
                 {
                     // get range label
-                    edge.Label = string.Format("{0} ≤ x < {1}", segment.Min, segment.Max);
+                    edge.Label = string.Format("{0} <= x < {1}", segment.Min, segment.Max);
                     // do range check for matrix slicing
                     slice = x.Indices(v => v[col] >= segment.Min && v[col] < segment.Max);
                 }
