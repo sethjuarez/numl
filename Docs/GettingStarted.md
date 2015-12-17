@@ -36,7 +36,7 @@ There are several links for installing the bits depending on your OS.
         "System.Linq": "4.0.1-*",
         "System.Collections.Concurrent": "4.0.11-*",
         "System.Linq.Expressions": "4.0.11-*",
-        "numl": "0.9.5-beta"
+        "numl": "0.9.6-beta"
     },
 
     "frameworks": {
