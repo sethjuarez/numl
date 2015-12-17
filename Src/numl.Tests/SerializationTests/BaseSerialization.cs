@@ -5,6 +5,7 @@ using System.Linq;
 using NUnit.Framework;
 using System.Diagnostics;
 using System.Collections.Generic;
+using numl.Supervised;
 
 namespace numl.Tests.SerializationTests
 {

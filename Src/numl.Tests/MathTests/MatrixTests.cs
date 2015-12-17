@@ -90,10 +90,10 @@ namespace numl.Tests.MathTests
             // serialize
             // ensure we delete the file first or we may have extra data
             if (File.Exists(path)) File.Delete(path);
-            JsonHelpers.Save<Matrix>(path, m1);
-
+            m1.Save(path);
+            
             // deserialize
-            Matrix m2 = JsonHelpers.Load<Matrix>(path);
+            Matrix m2 = Matrix.Load(path);
             Assert.AreEqual(m1, m2);
         }
 

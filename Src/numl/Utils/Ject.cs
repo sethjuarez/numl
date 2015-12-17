@@ -292,7 +292,7 @@ namespace numl.Utils
             if (t == typeof(bool))
                 return (bool)o ? 1d : -1d;
             else if (t == typeof(char)) // ascii number of character
-                return char.GetNumericValue((char)o);
+                return (int)((char)o);
             else if (o is Enum)
                 return (int)o;
             else if (t == typeof(TimeSpan)) // get total seconds

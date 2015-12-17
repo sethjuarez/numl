@@ -9,7 +9,8 @@ using System.Linq;
 
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
-
+using numl.Math.Normalization;
+using numl.Math;
 namespace numl.Supervised
 {
     /// <summary>A model.</summary>
@@ -27,12 +28,12 @@ namespace numl.Supervised
         /// <summary>
         /// Feature normalizer to use over each item.
         /// </summary>
-        public numl.Math.Normalization.INormalizer FeatureNormalizer { get; set; }
+        public INormalizer FeatureNormalizer { get; set; }
 
         /// <summary>
         /// Feature properties from the original item set.
         /// </summary>
-        public numl.Math.Summary FeatureProperties { get; set; }
+        public Summary FeatureProperties { get; set; }
 
         /// <summary>Predicts the given o.</summary>
         /// <param name="y">The Vector to process.</param>
@@ -100,38 +101,20 @@ namespace numl.Supervised
         /// <param name="file">The file to load.</param>
         public virtual void Save(string file)
         {
-            throw new NotImplementedException();
+            JsonHelpers.Save(file, this);
         }
-        /// <summary>Saves the given stream.</summary>
-        /// <param name="stream">The stream to load.</param>
-        public virtual void Save(Stream stream)
-        {
-            throw new NotImplementedException();
-        }
-        /// <summary>Converts this object to an XML.</summary>
+        
+        /// <summary>Converts this object to json.</summary>
         /// <returns>This object as a string.</returns>
-        public virtual string ToXml()
+        public virtual string ToJson()
         {
             throw new NotImplementedException();
         }
-        /// <summary>Loads the given stream.</summary>
-        /// <param name="file">The file to load.</param>
-        /// <returns>An IModel.</returns>
-        public virtual IModel Load(string file)
-        {
-            throw new NotImplementedException();
-        }
-        /// <summary>Loads the given stream.</summary>
-        /// <param name="stream">The stream to load.</param>
-        /// <returns>An IModel.</returns>
-        public virtual IModel Load(Stream stream)
-        {
-            throw new NotImplementedException();
-        }
-        /// <summary>Loads an XML.</summary>
-        /// <param name="xml">The XML.</param>
-        /// <returns>The XML.</returns>
-        public virtual IModel LoadXml(string xml)
+        
+        /// <summary>Loads a json string.</summary>
+        /// <param name="json">The json string.</param>
+        /// <returns>The Model.</returns>
+        public virtual IModel LoadJson(string json)
         {
             throw new NotImplementedException();
         }

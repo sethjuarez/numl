@@ -1,7 +1,7 @@
 properties {
 	$majorVersion = "0.9"
-	$majorWithReleaseVersion = "0.9.5"
-	$nugetPrelease = "alpha"
+	$majorWithReleaseVersion = "0.9.6"
+	$nugetPrelease = "beta"
 	$packageId = "numl"
 	$version = GetVersion $majorWithReleaseVersion
 	$treatWarningsAsErrors = $true
@@ -14,21 +14,35 @@ properties {
 	$workingDir = "$baseDir\$workingName"
 	$workingSourceDir = "$workingDir\Src"
 	$dnvmVersion = "1.0.0-rc1-update1"
-	$builds = @(
-		@{Name = "numl.dotnet"; TestsName = $null; BuildFunction = "DnxBuild"; TestsFunction = $null; FinalDir=$null; NuGetDir=$null; Framework=$null }
-		#,
-		#@{Name = "numl"; TestsName = "numl.Tests"; BuildFunction = "MSBuildBuild"; TestsFunction = "NUnitTests"; FinalDir="net452"; NuGetDir = "net452"; Framework="net-4.0"}
-	)
 }
 
 framework '4.6x86'
-include .\psake_helpers.ps1
+include .\helpers.ps1
 
 task default -depends Nuget
 
 task Clean {
 	Write-Host "Setting location to $baseDir"
 	Set-Location $baseDir
+	
+	Write-Host "Clearing all project artifacts."
+	
+	# Define files and directories to delete
+	$include = @("artifacts", "bin", "obj", "Working", "packages", "TestResults", ".vs", "*.suo", "*.user", "*.orig", "*.dat", "*.lock.json", "*.nuget.props", "*.nuget.targets")
+	Write-Host -ForegroundColor Green "Clearing $include"
+	
+	# Define files and directories to exclude
+	$exclude = @()
+	
+	$items = Get-ChildItem $sourceDir -recurse -force -include $include -exclude $exclude
+	$count = $items.Count
+	Write-Host -ForegroundColor Green "Removing $count object(s)"
+	if ($items) {
+		foreach ($item in $items) {
+			Remove-Item $item.FullName -Force -Recurse -ErrorAction SilentlyContinue
+			Write-Host -ForegroundColor Green "Deleted" $item.FullName
+		}
+	}
 	
 	if (Test-Path -path $workingDir)
 	{
@@ -48,37 +62,64 @@ task Build -depends Clean {
 	Write-Host
 	Update-AssemblyInfoFiles $workingSourceDir ($majorVersion + '.0.0') $version
 	
+	Write-Host
+	Write-Host "Restoring $workingSourceDir\$packageId.sln" -ForegroundColor Green
+	[Environment]::SetEnvironmentVariable("EnableNuGetPackageRestore", "true", "Process")
+	exec { .\Tools\NuGet\NuGet.exe update -self }
+	exec { .\Tools\NuGet\NuGet.exe restore "$workingSourceDir\$packageId.sln" -verbosity detailed -configfile $workingSourceDir\nuget.config | Out-Default } "Error restoring $packageId"
+		
+	Write-Host
+	Write-Host "Building $workingSourceDir\$packageId.sln with docs=$doc" -ForegroundColor Green
+	
+	exec { msbuild "/t:Clean;Rebuild" /p:Configuration=Release /p:OutputPath=bin\Release "/p:TreatWarningsAsErrors=$treatWarningsAsErrors" "/p:VisualStudioVersion=14.0" "$workingSourceDir\$packageId.sln" | Out-Default } "Error building $packageId"
 
-	foreach ($build in $builds)
-	{
-		$name = $build.Name
-		if ($name -ne $null)
-		{
-			Write-Host -ForegroundColor Green "Building " $name
-			& $build.BuildFunction $build $true
-		}
-	}
 }
 
 task Test -depends Build {
 	
-	foreach ($build in $builds)
-	{
-		if ($build.TestsFunction -ne $null)
-		{
-			& $build.TestsFunction $build $false
-		}
-	}
+	$name = "$packageId.Tests"
+	$finalDir = $build.FinalDir
+	$framework = "net-4.0"
+	
+	Write-Host -ForegroundColor Green "Copying test assembly $name to deployed directory"
+	Write-Host
+	robocopy "$workingSourceDir\numl.Tests\bin\Release" $workingDir\Deployed\Bin /MIR /NFL /NDL /NJS /NC /NS /NP /XO | Out-Default
+	
+	Copy-Item -Path "$workingSourceDir\numl.Tests\bin\Release\numl.Tests.dll" -Destination $workingDir\Deployed\Bin\$finalDir\
+	
+	Write-Host -ForegroundColor Green "Running NUnit tests " $name
+	Write-Host
+	exec { .\Tools\NUnit\nunit-console.exe "$workingDir\Deployed\Bin\numl.Tests.dll" /result=$workingDir\$name.xml /trace=Info /labels | Out-Default } "Error running $name tests"
 }
 
-task Nuget -depends Build {
-	#foreach ($build in $builds)
-	#{
-	#	$name = $build.TestsName
-	#	$finalDir = $build.FinalDir
-	#	
-	#	robocopy "$workingSourceDir\numl\bin\Release\$finalDir" $workingDir\Package\Bin\$finalDir *.dll *.pdb *.xml /NFL /NDL /NJS /NC /NS /NP /XO /XF *.CodeAnalysisLog.xml | Out-Default
-	#}
+task DnxBuild -depends Test {
+	
+	$p = Get-Location
+	Set-Location -Path $workingSourceDir\numl
+	$name = "$packageId.dotnet"
+	rename-item -path "$workingSourceDir\numl\numl.dotnet.project.json" -newname "$workingSourceDir\numl\project.json"
+	$projectPath = "$workingSourceDir\numl\project.json"
+	
+	exec { dnvm install $dnvmVersion -r clr | Out-Default }
+	exec { dnvm use $dnvmVersion -r clr | Out-Default }
+	
+	Write-Host -ForegroundColor Green "Restoring packages for $name"
+	Write-Host
+	exec { dnu restore $projectPath | Out-Default }
+	
+	Write-Host -ForegroundColor Green "Building $projectPath"
+	exec { dnu build --out $workingDir\DNXBuild --configuration Release  | Out-Default }
+	
+	New-Item -Path $workingDir\NuGet\lib -ItemType Directory
+	robocopy $workingDir\DNXBuild\Release $workingDir\NuGet\lib *.dll *.pdb *.xml /NFL /NDL /NJS /NC /NS /NP /XO /XF /S *.CodeAnalysisLog.xml | Out-Default
+	
+	Execute-Command -command { del  $workingDir\DNXBuild -Recurse -Force }
+
+	
+	Set-Location -Path $p
+}
+
+task Nuget -depends DnxBuild {
 	
 	$nugetVersion = $majorWithReleaseVersion
 	if ($nugetPrelease -ne $null)
@@ -86,7 +127,9 @@ task Nuget -depends Build {
 		$nugetVersion = $nugetVersion + "-" + $nugetPrelease
 	}
 
-	#New-Item -Path $workingDir\NuGet -ItemType Directory
+	If (!(Test-Path $workingDir\NuGet)) {
+		New-Item -Path $workingDir\NuGet -ItemType Directory
+	}
 	
 	$nuspecPath = "$workingDir\NuGet\numl.nuspec"
 	Copy-Item -Path "$buildDir\numl.nuspec" -Destination $nuspecPath -recurse
@@ -101,30 +144,21 @@ task Nuget -depends Build {
 	Write-Host $xml.OuterXml
 	
 	$xml.save($nuspecPath)
-	
-	#foreach ($build in $builds)
-	#{
-	#	if ($build.NuGetDir)
-	#	{
-	#		$name = $build.TestsName
-	#		$finalDir = $build.FinalDir
-	#		$frameworkDirs = $build.NuGetDir.Split(",")
-	#		
-	#		foreach ($frameworkDir in $frameworkDirs)
-	#		{
-	#			robocopy "$workingSourceDir\numl\bin\Release\$finalDir" $workingDir\NuGet\lib\$frameworkDir *.dll *.pdb *.xml /NFL /NDL /NJS /NC /NS /NP /XO /XF *.CodeAnalysisLog.xml | Out-Default
-	#		}
-	#	}
-	#}
-	
+		
 	robocopy $workingSourceDir $workingDir\NuGet\src *.cs /S /NFL /NDL /NJS /NC /NS /NP /XD numl.Tests obj .vs artifacts | Out-Default
 	
 	Write-Host "Building NuGet package with ID $packageId and version $nugetVersion" -ForegroundColor Green
+	$p = Get-Location
+	
+	Set-Location -Path $toolsDir
+	
 	Write-Host
 	
-	exec { .\Tools\NuGet\NuGet.exe pack $nuspecPath -Symbols }
+	exec { .\NuGet\NuGet.exe pack $nuspecPath -Symbols }
 	
 	Write-Host
 	Write-Host "Moving package to $workingDir\NuGet" -ForegroundColor Green
 	move -Path .\*.nupkg -Destination $workingDir\NuGet
+	
+	Set-Location -Path $p
 }

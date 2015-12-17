@@ -62,7 +62,7 @@ namespace numl.Tests.SupervisedTests
                               .Learn("c").As(typeof(bool));
 
             var generator = new NeuralNetworkGenerator { Descriptor = d };
-            var model = Learner.Learn(xor, .75, 1000, generator).Model;
+            var model = Learner.Learn(xor, .75, 10, generator).Model;
                         
             Matrix x = new[,]
                 {{ -1, -1 },  // false, false -> -

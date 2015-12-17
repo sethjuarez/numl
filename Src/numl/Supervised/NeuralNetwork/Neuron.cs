@@ -71,13 +71,13 @@ namespace numl.Supervised.NeuralNetwork
 
         /// <summary>Gets or sets the activation function.</summary>
         /// <value>The activation.</value>
-		[JsonProperty]
+        [JsonProperty]
         public IFunction ActivationFunction { get; set; }
 
         /// <summary>
         /// Gets or sets the output function (optional).
         /// </summary>
-		[JsonProperty]
+        [JsonProperty]
         public IFunction OutputFunction { get; set; }
 
         /// <summary>Calculates and returns the Node's <see cref="Output"/> value.</summary>

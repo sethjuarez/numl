@@ -1,4 +1,4 @@
-﻿ // file:	Math\LinearAlgebra\Matrix.cs
+﻿// file:	Math\LinearAlgebra\Matrix.cs
 //
 // summary:	Implements the matrix class
 using System;
@@ -9,6 +9,7 @@ using System.Globalization;
 using numl.Math.Probability;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using numl.Utils;
 
 namespace numl.Math.LinearAlgebra
 {
@@ -787,33 +788,7 @@ namespace numl.Math.LinearAlgebra
         /// <param name="file">file to save</param>
         public void Save(string file)
         {
-            using (var stream = File.OpenWrite(file))
-                Save(stream);
-        }
-        /// <summary>Saves the given stream.</summary>
-        /// <param name="stream">The stream to load.</param>
-        public void Save(Stream stream)
-        {
-            using (var writer = new StreamWriter(stream))
-            {
-                writer.Write(Environment.NewLine);
-                // header
-                writer.Write(Rows);
-                writer.Write(",");
-                writer.Write(Cols);
-                writer.Write(Environment.NewLine);
-
-                // contents
-                for (int i = 0; i < Rows; i++)
-                {
-                    for (int j = 0; j < Cols; j++)
-                    {
-                        if (j > 0) writer.Write(",");
-                        writer.Write(this[i, j].ToString("r"));
-                    }
-                    writer.Write(Environment.NewLine);
-                }
-            }
+            JsonHelpers.Save<Matrix>(file, this);
         }
         /// <summary>Loads the given stream.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested file is not present.</exception>
@@ -822,45 +797,9 @@ namespace numl.Math.LinearAlgebra
         public static Matrix Load(string file)
         {
             if (File.Exists(file))
-                using (var stream = File.OpenRead(file)) return Load(stream);
+                return JsonHelpers.Load<Matrix>(file);
             else
                 throw new InvalidOperationException("File not found");
-        }
-        /// <summary>Loads the given stream.</summary>
-        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
-        /// <param name="stream">The stream to load.</param>
-        /// <returns>A Matrix.</returns>
-        public static Matrix Load(Stream stream)
-        {
-            Matrix matrix = null;
-            using (var reader = new StreamReader(stream))
-            {
-                int i = 0;
-                while (!reader.EndOfStream)
-                {
-                    var line = reader.ReadLine().Trim();
-                    if (!line.StartsWith("--"))
-                    {
-                        var numbers = line.Split(',');
-                        // need to create new matrix
-                        if (matrix == null)
-                        {
-                            if (numbers.Length >= 2)
-                                matrix = new Matrix(int.Parse(numbers[0].Trim()), int.Parse(numbers[1].Trim()));
-                            else
-                                throw new InvalidOperationException("Invalid matrix format");
-                        }
-                        else
-                        {
-                            for (int j = 0; j < numbers.Length; j++)
-                                matrix[i, j] = double.Parse(numbers[j]);
-                            i++;
-                        }
-                    }
-                }
-            }
-
-            return matrix;
         }
     }
 }

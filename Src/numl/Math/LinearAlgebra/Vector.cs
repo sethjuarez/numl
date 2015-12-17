@@ -6,6 +6,8 @@ using System.Text;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using numl.Utils;
+using System.IO;
 
 namespace numl.Math.LinearAlgebra
 {
@@ -340,6 +342,26 @@ namespace numl.Math.LinearAlgebra
                 result[i] = double.Parse(arrs[i].Trim());
 
             return result;
+        }
+
+        /// <summary>
+        /// Save vector to file
+        /// </summary>
+        /// <param name="file">file to save</param>
+        public void Save(string file)
+        {
+            JsonHelpers.Save<Vector>(file, this);
+        }
+        /// <summary>Loads the given vector file.</summary>
+        /// <exception cref="InvalidOperationException">Thrown when the requested file is not present.</exception>
+        /// <param name="file">The file to load.</param>
+        /// <returns>A Vector.</returns>
+        public static Vector Load(string file)
+        {
+            if (File.Exists(file))
+                return JsonHelpers.Load<Vector>(file);
+            else
+                throw new InvalidOperationException("File not found");
         }
 
         /// <summary>Gets the enumerator.</summary>

@@ -8,7 +8,8 @@ using System.Linq;
 
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
-
+using numl.Math.Normalization;
+using numl.Math;
 namespace numl.Supervised
 {
     /// <summary>Interface for model.</summary>
@@ -37,20 +38,15 @@ namespace numl.Supervised
         /// <summary>
         /// Feature normalizer to apply
         /// </summary>
-        numl.Math.Normalization.INormalizer FeatureNormalizer { get; set; }
+        INormalizer FeatureNormalizer { get; set; }
 
         /// <summary>
         /// Feature properties of the original item set.
         /// </summary>
-        numl.Math.Summary FeatureProperties { get; set; }
+        Summary FeatureProperties { get; set; }
 
-        /// <summary>Saves the given stream.</summary>
-        /// <param name="stream">The stream to load.</param>
-        void Save(Stream stream);
-        
-        /// <summary>Loads the given stream.</summary>
-        /// <param name="stream">The stream to load.</param>
-        /// <returns>An IModel.</returns>
-        IModel Load(Stream stream);
+        /// <summary>Saves the given IModel to a file.</summary>
+        /// <param name="file">The file to load.</param>
+        void Save(string file);
     }
 }

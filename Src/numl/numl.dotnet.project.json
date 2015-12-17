@@ -27,7 +27,10 @@
         "System.Threading": "4.0.11-*",
         "System.IO": "4.0.10",
         "System.IO.FileSystem": "4.0.1-*",
+        "System.Reflection": "4.0.10",
+        "System.Reflection.TypeExtensions": "4.0.0",
         "System.Text.RegularExpressions": "4.0.11-*",
+        "System.Runtime.Serialization.Primitives": "4.0.10",
         "System.Text.Encoding": "4.0.0-*"
       }
     },
@@ -37,6 +40,7 @@
         "Microsoft.NETCore": "5.0.0",
         "Microsoft.NETCore.Portable.Compatibility": "1.0.0",
         "System.IO.FileSystem": "4.0.0",
+        "System.Reflection": "4.0.10",
         "System.Reflection.TypeExtensions": "4.0.0",
         "System.Runtime.Serialization.Primitives": "4.0.10"
       }
