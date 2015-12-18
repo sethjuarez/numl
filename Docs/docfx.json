@@ -1,0 +1,38 @@
+{
+  "build": {
+    "force": false,
+    "content": [
+      {
+        "files": [
+          "articles/**/*.md"
+        ],
+        "case": false,
+        "noNegate": false,
+        "noExpand": false,
+        "noEscape": false,
+        "noGlobStar": false,
+        "dot": false
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "images/**",
+          "data/**"
+        ],
+        "case": false,
+        "noNegate": false,
+        "noExpand": false,
+        "noEscape": false,
+        "noGlobStar": false,
+        "dot": false
+      }
+    ],
+    "externalReference": [],
+    "dest": "_site",
+    "template": [
+      "\t"
+    ],
+    "serve": false
+  }
+}

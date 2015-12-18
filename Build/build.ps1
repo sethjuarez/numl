@@ -10,7 +10,7 @@ properties {
 	$buildDir = "$baseDir\Build"
 	$sourceDir = "$baseDir\Src"
 	$toolsDir = "$baseDir\Tools"
-	$docDir = "$baseDir\Doc"
+	$docDir = "$baseDir\Docs"
 	$workingDir = "$baseDir\$workingName"
 	$workingSourceDir = "$workingDir\Src"
 	$dnvmVersion = "1.0.0-rc1-update1"
@@ -19,7 +19,7 @@ properties {
 framework '4.6x86'
 include .\helpers.ps1
 
-task default -depends Nuget
+task default -depends Docs
 
 task Clean {
 	Write-Host "Setting location to $baseDir"
@@ -161,4 +161,14 @@ task Nuget -depends DnxBuild {
 	move -Path .\*.nupkg -Destination $workingDir\NuGet
 	
 	Set-Location -Path $p
+}
+
+task Docs -depends DnxBuild {
+	
+	Set-Location $docDir
+	
+	exec { dnvm upgrade }
+	exec { dnu commands install docfx }
+	exec { docfx metadata $workingDir\Src\numl\numl.csproj }
+	exec { docfx build --logLevel Verbose }
 }

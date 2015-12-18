@@ -14,3 +14,4 @@ _ReSharper.*
 *.lock.json
 *.nuget.props
 *.nuget.targets
+Docs/_api/

@@ -60,7 +60,7 @@ If you are using Visual Studio Code, as soon as you make the changes to the
    
 # Writing Some Code
 
-Add the sample [Iris.cs](Iris.zip) code to your project folder. I added some
+Add the sample  code to your project folder. I added some
 code  to my `Program.cs` code (it ended up like this):
 
 ```csharp
@@ -92,5 +92,5 @@ namespace ConsoleApplication
 1. From the comand line run `dotnet restore`
 2. Once the process is complete run `dotnet run`
 
-![numl running](firstrun.png)
+
 
