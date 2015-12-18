@@ -16,7 +16,7 @@ There are several links for installing the bits depending on your OS.
 1. Create a folder for your project
 2. cd into it and `dotnet new` - this will create a basic
    console application
-3. Next we will edit the `project.json` to the required
+3. Next we will edit the `project.json` file
    in order to get `numl` (and its dependencies) referenced
    in the project. Here is the what the file should look like:
 
@@ -56,12 +56,12 @@ These were lines added:
 ```
 
 If you are using Visual Studio Code, as soon as you make the changes to the
-`project.json` file it will ask for you to update the dependencies.
+`project.json` file it will ask you to update the dependencies.
    
 # Writing Some Code
 
 Add the sample  code to your project folder. I added some
-code  to my `Program.cs` code (it ended up like this):
+code to my `Program.cs` file to test things out (it ended up looking like this):
 
 ```csharp
 using System;
