@@ -4,9 +4,9 @@
       "src": [
         {
           "files": [
-            "num1/**.csproj"
+            "numl/numl.csproj"
           ],
-          "cwd" : "Src",
+          "cwd" : "../Working/Src",
           "exclude": [
             "**/bin/**",
             "**/obj/**"

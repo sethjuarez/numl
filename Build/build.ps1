@@ -28,7 +28,7 @@ task Clean {
 	Write-Host "Clearing all project artifacts."
 	
 	# Define files and directories to delete
-	$include = @("artifacts", "bin", "obj", "Working", "packages", "TestResults", ".vs", "*.suo", "*.user", "*.orig", "*.dat", "*.lock.json", "*.nuget.props", "*.nuget.targets")
+	$include = @("_site", "artifacts", "bin", "obj", "Working", "packages", "TestResults", ".vs", "*.suo", "*.user", "*.orig", "*.dat", "*.lock.json", "*.nuget.props", "*.nuget.targets")
 	Write-Host -ForegroundColor Green "Clearing $include"
 	
 	# Define files and directories to exclude
@@ -166,8 +166,6 @@ task Nuget -depends DnxBuild {
 task Docs -depends DnxBuild {
 	
 	Set-Location $docDir
-	
-	exec { dnvm upgrade }
 	exec { dnu commands install docfx }
 	exec { docfx --logLevel Verbose }
 }
