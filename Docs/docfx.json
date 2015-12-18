@@ -1,17 +1,33 @@
 {
+  "metadata" : [
+    {
+      "src": [
+        {
+          "files": [
+            "num1/**.csproj"
+          ],
+          "cwd" : "Src",
+          "exclude": [
+            "**/bin/**",
+            "**/obj/**"
+          ]
+        }
+      ],
+      "dest": "obj/api"
+    }
+  ],
   "build": {
-    "force": false,
     "content": [
       {
         "files": [
-          "articles/**/*.md"
+          "api/**.yml"
         ],
-        "case": false,
-        "noNegate": false,
-        "noExpand": false,
-        "noEscape": false,
-        "noGlobStar": false,
-        "dot": false
+        "cwd": "obj"
+      },
+      {
+        "files": [
+          "articles/**/*.md"
+        ]
       }
     ],
     "resource": [
@@ -19,18 +35,13 @@
         "files": [
           "images/**",
           "data/**"
-        ],
-        "case": false,
-        "noNegate": false,
-        "noExpand": false,
-        "noEscape": false,
-        "noGlobStar": false,
-        "dot": false
+        ]
       }
     ],
     "externalReference": [],
     "dest": "_site",
-    "template": ["default"],
-    "serve": false
+    "template": [
+      "default"
+    ]
   }
 }
