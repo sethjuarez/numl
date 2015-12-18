@@ -169,6 +169,5 @@ task Docs -depends DnxBuild {
 	
 	exec { dnvm upgrade }
 	exec { dnu commands install docfx }
-	exec { docfx metadata $workingDir\Src\numl\numl.csproj }
-	exec { docfx build --logLevel Verbose }
+	exec { docfx --logLevel Verbose }
 }
