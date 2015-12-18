@@ -30,9 +30,7 @@
     ],
     "externalReference": [],
     "dest": "_site",
-    "template": [
-      "\t"
-    ],
+    "template": ["default"],
     "serve": false
   }
 }
