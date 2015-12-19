@@ -1,3 +1,10 @@
+---
+_tocPath: docs/toc.html
+_tocRel: toc.html
+_navPath: toc.html
+_navRel: ../toc.html
+---
+
 # Getting Started
 
 The newest version of numl is designed to work on the .NET platform 

@@ -4,31 +4,29 @@
       "src": [
         {
           "files": [
-            "numl/numl.csproj"
+            "Src/numl/numl.csproj"
           ],
-          "cwd" : "../Working/Src",
-          "exclude": [
-            "**/bin/**",
-            "**/obj/**"
-          ]
+          "exclude": [ "**/bin/**", "**/obj/**" ],
+          "cwd" : ".."
         }
       ],
-      "dest": "obj/api"
+      "dest": "api"
     }
   ],
   "build": {
     "content": [
-      {
-        "files": [
-          "api/**.yml"
-        ],
-        "cwd": "obj"
-      },
-      {
-        "files": [
-          "articles/**/*.md"
-        ]
-      }
+        {
+          "files": ["api/**/*.yml"]
+        },
+        {
+          "files": [
+            "docs/*.md",
+            "api/*.md"
+          ]
+        },
+        {
+          "files": ["toc.yml"]
+        }
     ],
     "resource": [
       {
@@ -39,9 +37,10 @@
       }
     ],
     "externalReference": [],
+    "globalMetadata" : {
+        "_appTitle": "numl"
+    },
     "dest": "_site",
-    "template": [
-      "default"
-    ]
+    "template": [ "default", "template"]
   }
 }

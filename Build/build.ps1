@@ -10,7 +10,7 @@ properties {
 	$buildDir = "$baseDir\Build"
 	$sourceDir = "$baseDir\Src"
 	$toolsDir = "$baseDir\Tools"
-	$docDir = "$baseDir\Docs"
+	$docsDir = "$baseDir\Docs"
 	$workingDir = "$baseDir\$workingName"
 	$workingSourceDir = "$workingDir\Src"
 	$dnvmVersion = "1.0.0-rc1-update1"
@@ -154,7 +154,7 @@ task Nuget -depends DnxBuild {
 	
 	Write-Host
 	
-	exec { .\NuGet\NuGet.exe pack $nuspecPath -Symbols }
+	exec { .\NuGet\NuGet.exe pack $nuspecPath -Symbols } | Out-Default
 	
 	Write-Host
 	Write-Host "Moving package to $workingDir\NuGet" -ForegroundColor Green
@@ -165,7 +165,24 @@ task Nuget -depends DnxBuild {
 
 task Docs -depends DnxBuild {
 	
-	Set-Location $docDir
-	exec { dnu commands install docfx }
-	exec { docfx --logLevel Verbose }
+    $workingDocs = "$workingDir\Docs"
+    
+    if (Test-Path -path $workingDocs)
+    {
+        Write-Host "Deleting existing docs directory $workingDocs"
+        Remove-Item $workingDocs -Force -Recurse -ErrorAction SilentlyContinue
+    }
+    
+    Write-Host "Creating $workingDocs"
+    New-Item -Path $workingDocs -ItemType Directory
+    
+    robocopy $docsDir $workingDocs /MIR /NP /XD obj | Out-Default
+
+    Set-Location $workingDocs
+    
+    exec { dnu commands install docfx } | Out-Default
+	exec { docfx --logLevel Verbose } | Out-Default
+
+    # maybe finalize site here...
+    
 }

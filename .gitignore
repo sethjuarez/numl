@@ -17,3 +17,5 @@ _ReSharper.*
 _api/
 _site/
 *.orig
+Docs/api/.manifest
+Docs/api/*.yml
