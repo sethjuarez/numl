@@ -24,12 +24,6 @@ h1, h2, h3, h4, h5 {
 }
 
 
-footer {
-  text-align: center;
-  width: 100%;
-  margin-top: 50px;
-  color: #c0c0c0;
-}
 footer > .inner-footer a {
   color: #c0c0c0;
   text-decoration: none;
