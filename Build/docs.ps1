@@ -16,3 +16,7 @@ robocopy $docsDir $workingDocs /MIR /NP /XD obj
 
 Set-Location $workingDocs
 docfx --logLevel Verbose
+
+Write-Host "Copying index.html over..."
+
+cp $docsDir\index.html $workingDocs\_site\index.html

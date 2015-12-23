@@ -1,9 +1,13 @@
 body {
   font-family: "Open Sans", "Segoe UI", sans-serif;
   padding-top: 0px;
+  background: #000;
+  color: #ccc;
 }
 footer {
-  z-index: 0;
+  bottom: 0;
+  z-index: 1000;
+  position: absolute;
 }
 .navbar-brand {
   font-size: 18px;
@@ -33,4 +37,84 @@ footer {
   .toc .level3 > li:after {
     display: none;
   }
+}
+
+.navbar-inverse {
+    background: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAICAgICAgICAgICAgICAwQDAgIDBAUEBAQEBAUGBQUFBQUFBgYHBwgHBwYJCQoKCQkMDAwMDAwMDAwMDAwMDAz/2wBDAQMDAwUEBQkGBgkNCwkLDQ8ODg4ODw8MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCAACBLADAREAAhEBAxEB/8QAGgABAQEAAwEAAAAAAAAAAAAAAAUEAQIDCf/EAB0QAQEBAQEAAgMAAAAAAAAAAAADQTEBQnECBMH/xAAXAQEBAQEAAAAAAAAAAAAAAAAAAwIB/8QAFhEBAQEAAAAAAAAAAAAAAAAAAAEC/9oADAMBAAIRAxEAPwD4Xg5874CpLEqtFWaVWinPE6tlUj3xKrxVl1KqxSliVXyqRS0tFSSdVypyxKr5VY59I1bKlHE9LZUpJVaKk8Sq0U5YnVsqUEqtFOWJVaKM06vlUlzxKrRSn3xKqxTl1KrZVI4jV8qck9LRSliWloozxKrRRn3xOrZUZo6WjfNOrR7joAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADp+fAYKtxKsFVYjpMt/FYhU6qsR0m1ViOkyysRqVbVYhpMr1WIVMr8lYnUuuqxDSbVWI1MtqsQqZXVYjpLrqsRqXVWI1MqrENJlvkpEalVViOkuuqxCpd1YjUuuqxHSZXVcoVJtqsSqXbnqsQ0l256rEdI/7HPPtXKGmRtgB//9k=') no-repeat bottom #000;
+
+}
+
+.body-content {
+    background: url(../images/bg.jpg) repeat-y #000;
+    height: 100%;
+}
+
+.navbar-inverse 
+.navbar-nav>.active>a, 
+.navbar-inverse .navbar-nav>.active>a:focus, 
+.navbar-inverse .navbar-nav>.active>a:hover {
+    background-color: transparent;
+}
+
+.affix > ul > li.active > a,
+.affix ul > li.active > a,
+.affix ul > li.active > a, 
+.affix ul > li.active > a:before {
+    color: #f0854d;
+}
+
+code {
+    color:#C25F2E;
+    background-color: #444;
+    border-radius:4px
+}
+footer > .inner-footer a:hover {
+    color: #f0854d;
+}
+
+.btn-primary {
+    background-color: #f0854d;
+    border-color: #C25F2E;
+    color: #fff;
+}
+
+a.btn, a.btn-primary {
+    color: #fff;
+} 
+
+.btn-primary:hover {
+    background-color: #f0854d;
+    border-color: #C25F2E;
+    color: #fff;
+}
+
+.sidetoc {
+  position: fixed;
+  width: 260px;
+  top: 100px;
+  bottom: 0;
+  overflow: hidden;
+  /*background-color: #f1f1f1;*/
+  /* border-left: 1px solid #e7e7e7; */
+  /* border-right: 1px solid #e7e7e7; */
+  z-index: 1;
+}
+.sidetoc iframe{
+  height: 100%;
+  width: 100%;
+  border: none;
+}
+
+body .toc{
+  background-color: #f1f1f1;
+  overflow-x: hidden;
+}
+
+.hero {
+    background:  url('../images/home-graphic.png') no-repeat center;
+    margin-top: 50px;
+}
+
+.lead {
+    text-shadow: 7px 7px #000;
 }

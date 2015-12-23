@@ -1,0 +1,176 @@
+
+
+  
+
+<!DOCTYPE html>
+<html lang="en">
+  <!-- include head here -->
+  <head>
+ <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <title>numl</title>
+
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="styles/main.css">
+<link rel="stylesheet" href="styles/style.css">
+
+<!-- Custom styles for this template -->
+<link rel="shortcut icon" href="images/ico.png" type="image/x-icon">
+
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+  <!-- include navigation here -->
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+     <div class="container">
+       <img src="images/ico.png" style="float:right;"/>
+       <div class="navbar-header ">
+         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+           <span class="sr-only">Toggle navigation</span>
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+         </button>
+         <a class="navbar-brand" href="/"><span class="dotnet"><img src="images/icotext.png" /></span></a>
+       </div>
+       <div id="navbar" class="collapse navbar-collapse">
+         <ul class="nav navbar-nav">
+           <li><a href="/getting-started/">Getting started</a></li>
+           <li><a href="/about/">About</a></li>
+           <li><a href="/docs/">Documentation</a></li>
+           <li><a href="/api/index.html">API reference</a></li>
+           <li><a href="/support/">Support</a></li>
+         </ul>
+       </div><!--/.nav-collapse -->
+     </div>
+   </nav>
+
+  <!-- include hero here if the page is index -->
+  <div class="container body-content">
+    <div class="container hero">
+        <div class="starter-template">
+        <h1 class="numl">numl</h1>
+        <p class="lead">a general purpose machine learning framework</p>
+        <!-- Standard button -->
+        <a href="/getting-started/" class="btn-hero-core">Getting started</a>
+        <a href="/about/" class="btn-hero-core">About numl</a>
+        </div>
+    </div><!-- /.container -->
+
+
+<div class="container content">
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Machine Learning</h2>
+            <p>
+                <img src="images/main/learning.png" alt="Learning" style="float: left; margin-right: 1em;" width="150" height="150">
+                The purpose of machine learning is to find (and exploit) patterns in data. Traditionally developers,
+                when faced with a problem, develop and algorithm and write code. Certain classes of problems, however,
+                do not lend themselves to this approach. With machine learning, the developer instead supplies relevant
+                data to the machine and allows the computer to create the appropriate algorithm.
+            </p>
+            
+        </div>
+        <div class="col-md-4">
+            <h2>Supervised Learning</h2>
+            <p>
+                <img src="images/main/supervised.png" alt="Learning" style="float: left; margin-right: 1em;" width="150" height="150">
+                Supervised learning is the branch of machine learning that deals primarily with prediction. Given examples,
+                supervised learning algorithms create models that generalize the decision making process. In essence, the
+                machine learns from the past in order to accurately predict the future.
+            </p>
+            
+        </div>
+        <div class="col-md-4">
+            <h2>Unsupervised Learning</h2>
+            <p>
+                <img src="images/main/unsupervised.png" alt="Learning" style="float: left; margin-right: 1em;" width="150" height="150">
+                Unsupervised learning is the branch of machine learning that strives to understand the structure of data.
+                This data, unlike supervised learning, does not have a predefined outcome that requires prediction but is
+                vast enough to require a principled approach to either visual or physical compression.
+            </p>
+            
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 intro-image">
+            <h2>A simple way to start</h2>
+            <p>Refer to our <a href="/getting-started/">getting started page</a> for a more detailed look on how to get going on various platforms. You can then read <a href="/about/">about the project</a>, try out <a href="/docs/">the documentation</a> or get <a href="/support/">in touch</a>.</p>
+        </div>
+    </div>
+
+
+
+</div>
+
+</div>
+
+<!-- FOOTER -->
+<!-- include footer here -->
+<footer>
+  <div class="inner-footer">
+    <p>&copy; Seth Juarez</p>
+    <p>
+      <a href="https://www.github.com/dotnet" target="_blank"><span class="fa fa-stack fa-lg">
+        <span class="fa fa-square-o fa-stack-2x"></span>
+        <span class="fa fa-github fa-stack-1x"></span>
+      </span></a>
+      <a href="https://twitter.com/dotnet" target="_blank"><span class="fa fa-stack fa-lg">
+        <span class="fa fa-square-o fa-stack-2x"></span>
+        <span class="fa fa-twitter fa-stack-1x"></span>
+      </span></a>
+      <a href="https://www.facebook.com/dotnet" target="_blank"><span class="fa fa-stack fa-lg">
+        <span class="fa fa-square-o fa-stack-2x"></span>
+        <span class="fa fa-facebook fa-stack-1x"></span>
+      </span></a>
+
+    </p>
+    </div>
+</footer>
+
+<script type="text/javascript">
+(function ($, window){
+	function CoreCode() {
+		$(".show-value-props").click(this.showValueProps);
+		this.detectActive(window.location.pathname);
+	}
+
+	CoreCode.prototype.showValueProps = function(e){
+		// console.log(e);
+		e.preventDefault();
+		if ($("#rest-vps").css("display") === "none"){
+			$("#rest-vps").addClass("animated fadeIn");
+			$("#rest-vps").toggle();
+			$(e.currentTarget).children("span").removeClass("fa-chevron-down").addClass("fa-chevron-up");
+			//console.log($(e.target).children("span").attr("class"));
+		} else {
+			$("#rest-vps").toggle();
+			$(e.currentTarget).children("span").removeClass("fa-chevron-up").addClass("fa-chevron-down");
+		}
+	};
+
+	CoreCode.prototype.detectActive = function(currentPath){
+		// console.log(currentPath);
+		// var page = currentPath.split("/").pop();
+		var page = currentPath;
+		$("ul.navbar-nav").children("li").each(function(index, element){
+			var link = $(element).children("a")[0];
+			// console.log(link);
+			if ($(link).attr("href") === page){
+				$(link).addClass("nav-active");
+			}
+		});
+	};
+
+	new CoreCode();
+
+})($, window, undefined);
+</script>
+  </body>
+</html>

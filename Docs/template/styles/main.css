@@ -14,8 +14,8 @@ nav {
   font-size: 14px;
 }
 .navbar-nav > li > a.nav-active, .navbar-nav > li > a.nav-active:hover {
-  background-color: #333;
-  color: #fff;
+  background-color: #000;
+  color: #f0854d;
 }
 
 h1, h2, h3, h4, h5 {
@@ -39,15 +39,14 @@ footer > .inner-footer a:hover {
   text-decoration: none;
 }
 .content a {
-  /*color: #A979B3;*/
-    color: #A356B3;
+    color: #f0854d;
   text-decoration: none;
   outline: 0;
 }
 .content a:hover {
   /*transition: color .15s cubic-bezier(.33, .66, .66, 1);*/
   text-decoration: none;
-  color: #682079;
+  color: #C25F2E;
 }
 
 
@@ -56,23 +55,25 @@ footer > .inner-footer a:hover {
 /* Index page styles */
 .btn-hero-core {
   padding: 15px 25px;
-  background-color: #32145a;
-  color: #d89ae4;
+  background-color: #c0c0c0;
+  color: #000;
   display: inline-block;
   font-family: "Open Sans", sans-serif;
   font-size: 20px;
   font-weight: bold;
+  border-radius: 8px;
   margin-left: 20px;
   -webkit-box-shadow: 2px 2px 3px 0px #2C0D33;  /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
   -moz-box-shadow:    2px 2px 3px 0px #2C0D33;  /* Firefox 3.5 - 3.6 */
   box-shadow:         2px 2px 3px 0px #2C0D33;  /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
 }
 .btn-hero-core:hover {
-  color: #d89ae4;
+  background-color: #f0854d;
   text-decoration: none;
+  color: #fff;
 }
 .hero {
-  background-color: #682079;
+  background-color: #C25F2E;
   width: inherit;
   color: #fff;
 }
@@ -80,8 +81,9 @@ footer > .inner-footer a:hover {
   padding: 40px 15px;
   text-align: center;
 }
-.dotnet {
+.numl {
   color: #fff;
+  text-shadow: 5px 5px #000;
 }
 #rest-vps {
   display: none;
@@ -266,3 +268,5 @@ footer > .inner-footer a:hover {
     padding: 5px;
   }
 }
+
+
