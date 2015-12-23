@@ -20,8 +20,11 @@
         },
         {
           "files": [
+            "getting-started/*.md",
+            "about/*.md",
             "docs/*.md",
-            "api/*.md"
+            "api/*.md",
+            "support/*.md"
           ]
         },
         {

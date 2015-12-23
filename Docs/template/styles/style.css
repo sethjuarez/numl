@@ -83,7 +83,7 @@ a.btn, a.btn-primary {
   position: fixed;
   width: 260px;
   top: 100px;
-  bottom: 57px;
+  bottom: 65px;
   overflow: hidden;
   z-index: 1;
   border: none;
@@ -97,9 +97,41 @@ a.btn, a.btn-primary {
   background: transparent;
 }
 
+.sidenav, .fixed_header, .toc {
+    background: #000;
+}
+
 body .toc{
-  background: transparent;
-  overflow-x: hidden;
+    background: #000;
+    overflow-x: hidden;
+}
+
+
+/** this doesn't work because
+    css is dumb.... **/    
+@media (min-width: 768px) {
+    #sidetoggle.collapse {
+        display: block;
+    }
+    
+    .sidenav, .fixed_header, .toc {
+        background: transparent;
+    }
+
+    body .toc{
+        background: transparent;
+        overflow-x: hidden;
+    }
+    
+}
+
+.sidenav, .fixed_header, .toc {
+    background: transparent;
+}
+
+body .toc{
+    background: transparent;
+    overflow-x: hidden;
 }
 
 .hero {
@@ -113,12 +145,11 @@ body .toc{
 }
 
 .inner-footer {
-  border-top: solid 1px #666; 
-  padding-top: 25px;
+  border-top: solid 1px #666;
+  padding-top: 12px;
+  padding-bottom: 10px;
 }
-.sidenav, .fixed_header, .toc {
-    background: transparent;
-}
+
 
 .btn.focus, .btn:focus, .btn:hover {
     color: #c0c0c0;
@@ -169,7 +200,6 @@ header {
 }
 
 footer {
-    text-align: center;
     width: 100%;
     color: #c0c0c0;
     position: fixed;
@@ -209,3 +239,11 @@ footer {
 .toc .nav > li > a {
     color: rgb(204, 204, 204);
 }
+
+.cta a {
+    margin: 5px;
+}
+
+::-webkit-scrollbar {
+      width: 10px;
+} /* this targets the default scrollbar (compulsory) */
