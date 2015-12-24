@@ -58,6 +58,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AITests\Square.cs" />
+    <Compile Include="AITests\SquareTests.cs" />
+    <Compile Include="AITests\TicTacToe.cs" />
+    <Compile Include="AITests\TicTacToeTests.cs" />
     <Compile Include="DataTests\ComplexConversionTests.cs" />
     <Compile Include="DataTests\DescriptorTests.cs" />
     <Compile Include="DataTests\LinAlgConversionTests.cs" />
