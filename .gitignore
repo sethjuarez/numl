@@ -19,3 +19,4 @@ _site/
 *.orig
 Docs/api/.manifest
 Docs/api/*.yml
+*.GhostDoc.xml

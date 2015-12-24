@@ -48,6 +48,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AI\AdversarialSearch.cs" />
+    <Compile Include="AI\AlphaBeta.cs" />
+    <Compile Include="AI\AStarSearch.cs" />
+    <Compile Include="AI\BestFirstSearch.cs" />
+    <Compile Include="AI\BreadthFirstSearch.cs" />
+    <Compile Include="AI\DepthFirstSearch.cs" />
+    <Compile Include="AI\DepthLimitedSearch.cs" />
+    <Compile Include="AI\EnumerableExtensions.cs" />
+    <Compile Include="AI\HeuristicSearch.cs" />
+    <Compile Include="AI\IAdversarialState.cs" />
+    <Compile Include="AI\ISearchStrategy.cs" />
+    <Compile Include="AI\IState.cs" />
+    <Compile Include="AI\ISuccessor.cs" />
+    <Compile Include="AI\Minimax.cs" />
+    <Compile Include="AI\Node.cs" />
+    <Compile Include="AI\PriorityQueue.cs" />
+    <Compile Include="AI\Search.cs" />
+    <Compile Include="AI\SimpleSearch.cs" />
+    <Compile Include="AI\StateComparer.cs" />
+    <Compile Include="AI\StateExpansionEventArgs.cs" />
     <Compile Include="Learner.cs" />
     <Compile Include="LearningModel.cs" />
     <Compile Include="Math\Functions\ClippedRectifiedLinear.cs" />
@@ -191,6 +211,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
