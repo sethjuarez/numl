@@ -1,6 +1,6 @@
 properties {
 	$majorVersion = "0.9"
-	$majorWithReleaseVersion = "0.9.6"
+	$majorWithReleaseVersion = "0.9.7"
 	$nugetPrelease = "beta"
 	$packageId = "numl"
 	$version = GetVersion $majorWithReleaseVersion
@@ -163,7 +163,7 @@ task Nuget -depends DnxBuild {
 	Set-Location -Path $p
 }
 
-task Docs -depends DnxBuild {
+task Docs -depends Nuget {
 	
     $workingDocs = "$workingDir\Docs"
     
