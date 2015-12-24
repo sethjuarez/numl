@@ -13,15 +13,15 @@ namespace numl.Tests.AITests
         {
             foreach (var successor in solution)
             {
-                //Console.WriteLine(successor.Action);
-                //Console.WriteLine(successor.State);
+                Console.WriteLine(successor.Action);
+                Console.WriteLine(successor.State);
             }
         }
 
         private static void PrintSuccessor(ISuccessor successor)
         {
-            //Console.WriteLine("{0}\n{1}", successor.Action, successor.State);
-            //Console.WriteLine("{0} {1}\n--------\n", successor.State.IsTerminal, (successor.State as IAdversarialState).Utility);
+            Console.WriteLine("{0}\n{1}", successor.Action, successor.State);
+            Console.WriteLine("{0} {1}\n--------\n", successor.State.IsTerminal, (successor.State as IAdversarialState).Utility);
         }
 
         [Test]

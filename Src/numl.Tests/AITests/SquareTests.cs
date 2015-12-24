@@ -27,8 +27,8 @@ namespace numl.Tests.AITests
         {
             foreach (var successor in solution)
             {
-                //Console.WriteLine(successor.Action);
-                //Console.WriteLine(successor.State);
+                Console.WriteLine(successor.Action);
+                Console.WriteLine(successor.State);
             }
         }
 
