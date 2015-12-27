@@ -99,7 +99,10 @@
                 <h2>A simple way to start</h2>
                 <p>Refer to our <a href="/getting-started/">getting started page</a> for a more detailed look on how to get going on various platforms. 
                 You can then read <a href="/about/">about the project</a>, try out <a href="/docs/">the documentation</a> or get <a href="/support/">in 
-                touch</a>.<br/><br/><br/><br/></p>
+                touch</a>.</p>
+            </div>
+            <div class="col-md-12 intro-image"><!-- don't judge me...-->
+                <p>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;</p>
             </div>
         </div>
     </div>
@@ -112,7 +115,7 @@
         <div class="row inner-footer">
             <div class="col-md-10">
                 ©2015 — <a href="http://sethjuarez.com">Seth Juarez</a><br/>
-                <a href="https://www.nuget.org/packages/numl/">numl v0.8.22</a>
+                <a href="https://www.nuget.org/packages/numl/">numl v0.9.7-beta</a>
             </div>
             <div class="col-md-2">
                 <a href="http://opensource.org/licenses/MIT">MIT License</a><br/>
@@ -121,44 +124,18 @@
         </div>
     </div>
 </footer>
-</div>
-<script type="text/javascript">
-(function ($, window){
-	function CoreCode() {
-		$(".show-value-props").click(this.showValueProps);
-		this.detectActive(window.location.pathname);
-	}
+<script>
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date(); a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-	CoreCode.prototype.showValueProps = function(e){
-		// console.log(e);
-		e.preventDefault();
-		if ($("#rest-vps").css("display") === "none"){
-			$("#rest-vps").addClass("animated fadeIn");
-			$("#rest-vps").toggle();
-			$(e.currentTarget).children("span").removeClass("fa-chevron-down").addClass("fa-chevron-up");
-			//console.log($(e.target).children("span").attr("class"));
-		} else {
-			$("#rest-vps").toggle();
-			$(e.currentTarget).children("span").removeClass("fa-chevron-up").addClass("fa-chevron-down");
-		}
-	};
+    ga('create', 'UA-47793904-2', 'auto');
+    ga('send', 'pageview');
 
-	CoreCode.prototype.detectActive = function(currentPath){
-		// console.log(currentPath);
-		// var page = currentPath.split("/").pop();
-		var page = currentPath;
-		$("ul.navbar-nav").children("li").each(function(index, element){
-			var link = $(element).children("a")[0];
-			// console.log(link);
-			if ($(link).attr("href") === page){
-				$(link).addClass("nav-active");
-			}
-		});
-	};
-
-	new CoreCode();
-
-})($, window, undefined);
 </script>
+</div>
   </body>
 </html>

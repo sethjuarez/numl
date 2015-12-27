@@ -184,5 +184,7 @@ task Docs -depends Nuget {
 	exec { docfx --logLevel Verbose } | Out-Default
 
     # maybe finalize site here...
-    
+    Write-Host "Copying index.html over..."
+
+    exec { cp $docsDir\index.html $workingDocs\_site\index.html } | Out-Default
 }
