@@ -2,6 +2,7 @@
 [Oo]bj/
 [Ww]orking*/
 Build/runbuild.txt
+Build/rundocs.txt
 TestResults/
 packages/
 *.suo

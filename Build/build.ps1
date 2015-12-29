@@ -180,8 +180,7 @@ task Docs -depends Nuget {
 
     Set-Location $workingDocs
     
-    exec { dnu commands install docfx } | Out-Default
-	exec { docfx --logLevel Verbose } | Out-Default
+	exec { .\..\..\Tools\docfx\docfx.exe --logLevel Verbose } | Out-Default
 
     # maybe finalize site here...
     Write-Host "Copying index.html over..."

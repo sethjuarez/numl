@@ -1,31 +1,40 @@
-# Set Path
-$sourceDir = resolve-path ..
-$workingDir ="$sourceDir\Working" 
-$docsDir = "$sourceDir\Docs"
-$workingDocs = "$workingDir\Docs"
-$webPath = 'C:\numl\numl.web'
-
-if (Test-Path -path $workingDocs)
-{
-    Write-Host "Deleting existing docs directory $workingDocs"
-    Remove-Item $workingDocs -Force -Recurse -ErrorAction SilentlyContinue
+properties {
+    $baseDir = resolve-path ..
+    $workingDir ="$baseDir\Working" 
+    $docsDir = "$baseDir\Docs"
+    $workingDocs = "$workingDir\Docs"
+    $webPath = resolve-path ..\..\numl.web
 }
 
-New-Item -Path $workingDocs -ItemType Directory
 
-robocopy $docsDir $workingDocs /MIR /NP /XD obj
+task default -depends Docs
 
-Set-Location $workingDocs
-docfx --logLevel Verbose
+task Docs {
+    
+    if (Test-Path -path $workingDocs)
+    {
+        Write-Host "Deleting existing docs directory $workingDocs"
+        Remove-Item $workingDocs -Force -Recurse -ErrorAction SilentlyContinue
+    }
+    
+    Write-Host "Creating $workingDocs"
+    New-Item -Path $workingDocs -ItemType Directory
+    
+    robocopy $docsDir $workingDocs /MIR /NP /XD obj | Out-Default
 
-Write-Host "Copying index.html over..."
+    Set-Location $workingDocs
+    
+	exec { .\..\..\Tools\docfx\docfx --logLevel Verbose } | Out-Default
 
-cp $docsDir\index.html $workingDocs\_site\index.html
+    # maybe finalize site here...
+    Write-Host "Copying index.html over..."
 
-Write-Host "clearning out website"
+    exec { cp $docsDir\index.html $workingDocs\_site\index.html } | Out-Default
+    
+    Write-Host "clearning out website"
 
-Remove-Item $webPath\* -recurse -exclude *.git*,*.md
+    Remove-Item $webPath\* -recurse -exclude *.git*,*.md
 
-Write-Host "moving over to numl.web"
-robocopy $workingDocs\_site  $webPath /E /NP /XF .manifest favicon.ico logo.svg
-
+    Write-Host "moving over to numl.web"
+    robocopy $workingDocs\_site  $webPath /E /NP /XF .manifest favicon.ico logo.svg
+}
