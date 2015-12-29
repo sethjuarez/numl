@@ -24,12 +24,14 @@ task Docs {
 
     Set-Location $workingDocs
     
-	exec { .\..\..\Tools\docfx\docfx --logLevel Verbose } | Out-Default
+	exec { .\..\..\Tools\docfx\docfx.exe --logLevel Verbose } | Out-Default
 
     # maybe finalize site here...
     Write-Host "Copying index.html over..."
 
     exec { cp $docsDir\index.html $workingDocs\_site\index.html } | Out-Default
+    
+    ## End of standard build
     
     Write-Host "clearning out website"
 
