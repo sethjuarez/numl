@@ -28,7 +28,14 @@
           ]
         },
         {
-          "files": ["toc.yml"]
+          "files": [
+              "toc.yml",
+              "getting-started/toc.yml",
+              "about/toc.yml",
+              "docs/toc.yml",
+              "api/toc.yml",
+              "support/toc.yml"
+            ]
         }
     ],
     "resource": [
