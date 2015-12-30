@@ -36,14 +36,14 @@ There are several links for installing the bits depending on your OS.
 
     "dependencies": {
         "Microsoft.NETCore.Runtime": "1.0.1-beta-*",
-        "System.IO": "4.0.11-*",
+        "System.IO": "4.0.11-beta-*",
         "System.Console": "4.0.0-*",
         "System.Runtime": "4.0.21-beta-*",
         "System.Reflection.TypeExtensions": "4.1.0-*",
         "System.Linq": "4.0.1-*",
         "System.Collections.Concurrent": "4.0.11-*",
         "System.Linq.Expressions": "4.0.11-*",
-        "numl": "0.9.7-beta"
+        "numl": "0.9.8-*"
     },
 
     "frameworks": {
@@ -59,7 +59,7 @@ These were lines added:
         "System.Linq": "4.0.1-*",
         "System.Collections.Concurrent": "4.0.11-*",
         "System.Linq.Expressions": "4.0.11-*",
-        "numl": "0.9.7-beta"
+        "numl": "0.9.8-*"
 ```
 
 If you are using Visual Studio Code, as soon as you make the changes to the

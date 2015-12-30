@@ -254,16 +254,17 @@ namespace numl.Model
             if (Label != null)
                 sb.AppendLine($"  *{Label}");
 
-            sb.AppendLine("}}");
+            sb.AppendLine("}");
             return sb.ToString();
         }
 
         //---- Creational
-        /// <summary>Creates a descriptor based upon a marked up concrete class.</summary>
-        /// <tparam name="T">Generic type parameter.</tparam>
+
+        /// <summary>
+        /// Creates a descriptor based upon a marked up concrete class.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <returns>Descriptor.</returns>
-        ///
-        /// ### <typeparam name="T">Class Type.</typeparam>
         public static Descriptor Create<T>()
             where T : class
         {
@@ -345,35 +346,38 @@ namespace numl.Model
         {
             return new Descriptor() { Type = type, Features = new Property[] { } };
         }
+
         /// <summary>
         /// Creates a new descriptor using a strongly typed fluent approach. This initial descriptor is
         /// worthless without adding features.
         /// </summary>
-        /// <tparam name="T">Generic type parameter.</tparam>
-        /// <returns>Empty Descriptor.</returns>
-        ///
-        /// ### <typeparam name="T">Source Object Type.</typeparam>
+        /// <typeparam name="T">Source Object Type</typeparam>
+        /// <returns>Empty descriptor</returns>
         public static Descriptor<T> For<T>()
         {
             return new Descriptor<T>() { Type = typeof(T), Features = new Property[] { } };
         }
+
+
+
         /// <summary>
         /// Creates a new descriptor using a strongly typed fluent approach. This initial descriptor is
         /// worthless without adding features.
         /// </summary>
-        /// <tparam name="T">Generic type parameter.</tparam>
+        /// <typeparam name="T">Source Object Type</typeparam>
         /// <param name="name">Desired Descriptor Name.</param>
-        /// <returns>Empty Descriptor.</returns>
-        ///
-        /// ### <typeparam name="T">Source Object Type.</typeparam>
+        /// <returns>Empty descriptor</returns>
         public static Descriptor<T> For<T>(string name)
         {
             return new Descriptor<T>() { Name = name, Type = typeof(T), Features = new Property[] { } };
         }
 
-        /// <summary>Load a descriptor from a stream.</summary>
+        /// <summary>
+        /// Load a descriptor from a stream.
+        /// </summary>
         /// <param name="stream">Stream.</param>
         /// <returns>Descriptor.</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
         public static Descriptor Load(Stream stream)
         {
             throw new NotImplementedException();
@@ -398,7 +402,6 @@ namespace numl.Model
         /// </summary>
         /// <param name="obj">object to compare</param>
         /// <returns>equality</returns>
-
         public override bool Equals(object obj)
         {
             if (obj is Descriptor)
@@ -439,8 +442,11 @@ namespace numl.Model
         }
     }
 
-    /// <summary>A descriptor.</summary>
-    /// <tparam name="T">Generic type parameter.</tparam>
+
+    /// <summary>
+    /// Class Descriptor.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class Descriptor<T> : Descriptor
     {
         /// <summary>Initializes a new instance of the Descriptor class.</summary>
