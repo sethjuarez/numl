@@ -7,15 +7,13 @@ body {
   font-size: 15px;
   padding-top: 50px;
 }
-ul {
-  list-style-image: url("../../images/core/list-bullet.png");
-}
+
 nav {
   font-size: 14px;
 }
 .navbar-nav > li > a.nav-active, .navbar-nav > li > a.nav-active:hover {
-  background-color: #000;
-  color: #f0854d;
+  background-color: transparent;
+  color: #ffffff;
 }
 
 h1, h2, h3, h4, h5 {
@@ -29,18 +27,20 @@ footer > .inner-footer a {
   text-decoration: none;
 }
 footer > .inner-footer a:hover {
-  color: #32145a;
+  color: transparent;
   text-decoration: none;
 }
 .content a {
     color: #f0854d;
-  text-decoration: none;
-  outline: 0;
+    text-decoration: none;
+    outline: 0;
 }
 .content a:hover {
   /*transition: color .15s cubic-bezier(.33, .66, .66, 1);*/
+  background: transparent;
   text-decoration: none;
-  color: #C25F2E;
+  color: #ffffff;
+  border-color: #000000;
 }
 
 
@@ -113,7 +113,7 @@ footer > .inner-footer a:hover {
 }
 .btn-gs:hover, .btn-gs:active, .btn-gs:focus, .jquery-active {
   color: #fff;
-  background-color: #682079;
+  background-color: #c0c0c0;
   outline: 0 !important;
 }
 
@@ -213,6 +213,46 @@ footer > .inner-footer a:hover {
   content: '~$ ';
 }
 
+
+.sidenav, .fixed_header, .toc {
+    
+    background: transparent;
+}
+
+body .toc{
+    background: transparent;
+    overflow-x: hidden;
+}
+
+footer {
+    width: 100%;
+    color: #c0c0c0;
+    position: fixed;
+    bottom: 0;
+    background: #000;
+}
+
+.sidetoc {
+  position: fixed;
+  width: 260px;
+  top: 100px;
+  bottom: 65px;
+  overflow: hidden;
+  z-index: 1;
+  border: none;
+  background: transparent;
+}
+
+.sidetoc iframe{
+  height: 100%;
+  width: 100%;
+  border: none;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd){
+    background-color:transparent;
+}
+
 @media (max-device-width: 480px) and (orientation: portrait), (max-device-width: 700px) and (orientation: landscape){
   /* Index page overrides */
   .btn-hero-core {
@@ -260,6 +300,25 @@ footer > .inner-footer a:hover {
   .terminal-body {
     font-size: 12px;
     padding: 5px;
+  }
+  .sidetoc {
+    background: black;
+    bottom: 0px;
+  }
+  .sidetoc iframe{
+    background: black;
+  }
+  .sidenav, .fixed_header, .toc {
+    background: black;
+  }
+
+  body .toc {
+        background: black;
+        overflow-x: hidden;
+  }
+  
+  footer {
+    position: static;
   }
 }
 

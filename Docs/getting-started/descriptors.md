@@ -33,17 +33,17 @@ public class Iris
 This class can then be used as a means to create a Descriptor:
 
 ```csharp
-var description = Descriptor.Create<Tennis>();
+var description = Descriptor.Create<Iris>();
 ```
 
 There are several feature and label attributes that can be applied to a class:
 
-- Feature
-- StringFeature
-- DateFeature
-- EnumerableFeature
-- Label
-- StringLabel
+- @numl.Model.FeatureAttribute
+- @numl.Model.StringFeatureAttribute
+- @numl.Model.DateFeatureAttribute
+- @numl.Model.EnumerableFeatureAttribute
+- @numl.Model.LabelAttribute
+- @numl.Model.StringLabelAttribute
 
 While this approach is the simplest, it creates a very strong dependency on this library.
 
@@ -53,7 +53,7 @@ While the second approach is type dependent, it dispenses with the attribute req
 instead uses a tpye-safe fluent API to delare features and labels:
 
 ```csharp
-var d = Descriptor.For() 
+var d = Descriptor.For<Iris>() 
                     .With(i => i.SepalLength) 
                     .With(i => i.SepalWidth) 
                     .With(i => i.PetalLength) 
@@ -64,10 +64,10 @@ var d = Descriptor.For()
 This example creates a descriptor with 4 features and one label. There are several 
 variants of the With method that allow further customization:
 
-- With - Standard approach infers property name and type
-- WithString - Assumes properties of type string and allows additional settings for expansion
-- WithDateTime - Assumes properties of type DateTime and allows additional settings for expansion
-- WithEnumerable - Assumes list properties and allows additional settings for expansion
+- @numl.Model.Descriptor`1.With(System.Linq.Expressions.Expression{System.Func{`0,System.Object}}) - Standard approach infers property name and type
+- @numl.Model.Descriptor`1.WithString(System.Linq.Expressions.Expression{System.Func{`0,System.String}},numl.Model.StringSplitType,System.String,System.Boolean,System.String) - Assumes properties of type string and allows additional settings for expansion
+- @numl.Model.Descriptor`1.WithDateTime(System.Linq.Expressions.Expression{System.Func{`0,System.DateTime}},numl.Model.DatePortion) - Assumes properties of type DateTime and allows additional settings for expansion
+- @numl.Model.Descriptor`1.WithEnumerable(System.Linq.Expressions.Expression{System.Func{`0,System.Collections.IEnumerable}},System.Int32) - Assumes list properties and allows additional settings for expansion
 
 This approach is less intrusive as it only relies on the structure of your already existing data types.
 
@@ -97,10 +97,10 @@ Label of the descriptor.
 This style of declaration creates an empty descriptor [New( )] and adds 4 features and a label. The general style of this fluent interface is the use of the With or Learn method (which describes the name of the property that will be accessed) and the As_ method (which describes the property type along with any additional information). The With method adds a Feature to the descriptor while the Learn method overwrites the Label of the descriptor.
 
 There are sevaral As methods available:
-- As
-- AsString
-- AsDateTime
-- AsEnumerable
+- @numl.Model.DescriptorProperty.As(System.Type)
+- @numl.Model.DescriptorProperty.AsString
+- @numl.Model.DescriptorProperty.AsDateTime(numl.Model.DatePortion)
+- @numl.Model.DescriptorProperty.AsEnumerable(System.Int32)
 
 ## Properties
 
@@ -113,8 +113,8 @@ available properties:
 
 - @numl.Model.Property (base)
 - @numl.Model.StringProperty (multi- or single-valued depending on use)
-- /api/@numl.Model.DateTimeProperty (multi- or single-valued depending on use)
-- <a href="/api/@numl.Model.EnumerableProperty">EnumerableProperty</a> (multi-valued)
+- @numl.Model.DateTimeProperty (multi- or single-valued depending on use)
+- @numl.Model.EnumerableProperty (multi-valued)
 
 One could also create their own property by deriving from the Property class and 
 appending it as a feature of the desciptor.

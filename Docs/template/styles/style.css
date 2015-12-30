@@ -79,61 +79,6 @@ a.btn, a.btn-primary {
     color: #fff;
 }
 
-.sidetoc {
-  position: fixed;
-  width: 260px;
-  top: 100px;
-  bottom: 65px;
-  overflow: hidden;
-  z-index: 1;
-  border: none;
-  background: transparent;
-}
-
-.sidetoc iframe{
-  height: 100%;
-  width: 100%;
-  border: none;
-  background: transparent;
-}
-
-.sidenav, .fixed_header, .toc {
-    background: #000;
-}
-
-body .toc{
-    background: #000;
-    overflow-x: hidden;
-}
-
-
-/** this doesn't work because
-    css is dumb.... **/    
-@media (min-width: 768px) {
-    #sidetoggle.collapse {
-        display: block;
-    }
-    
-    .sidenav, .fixed_header, .toc {
-        background: transparent;
-    }
-
-    body .toc{
-        background: transparent;
-        overflow-x: hidden;
-    }
-    
-}
-
-.sidenav, .fixed_header, .toc {
-    background: transparent;
-}
-
-body .toc{
-    background: transparent;
-    overflow-x: hidden;
-}
-
 .hero {
     background:  url('../images/home-graphic.png') no-repeat center;
     margin-top: 50px;
@@ -197,14 +142,6 @@ html,body,#wrapper {
 
 header {
     position: relative;
-}
-
-footer {
-    width: 100%;
-    color: #c0c0c0;
-    position: fixed;
-    bottom: 0;
-    background: #000;
 }
 
 .navbar-collapse.in {

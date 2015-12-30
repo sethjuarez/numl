@@ -57,6 +57,20 @@ namespace numl.Model
             AddProperty(p);
             return _descriptor;
         }
+
+        /// <summary>
+        /// Adds the specified property to the descriptor with the chained name
+        /// </summary>
+        /// <param name="property">The property.</param>
+        /// <returns>descriptor with added property</returns>
+        public Descriptor As(Property property)
+        {
+            property.Name = _name;
+            AddProperty(property);
+            return _descriptor;
+        }
+
+
         /// <summary>
         /// Adds the default string property to descriptor with previously chained name.
         /// </summary>

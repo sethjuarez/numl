@@ -7,7 +7,7 @@
             "Src/numl/numl.csproj"
           ],
           "exclude": [ "**/bin/**", "**/obj/**" ],
-          "cwd" : ".."
+          "cwd" : "../.."
         }
       ],
       "dest": "api"
