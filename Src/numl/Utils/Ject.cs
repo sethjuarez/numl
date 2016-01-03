@@ -10,12 +10,16 @@ using System.Linq.Expressions;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Globalization;
+using numl.Model;
 
 namespace numl.Utils
 {
     /// <summary>This class is used for fast reflection over types.</summary>
     public static class Ject
     {
+        public const double DefaultTruthValue = 1.0;
+        public const double DefaultFalseValue = -1.0;
+
         /// <summary>The accessors.</summary>
         private static readonly ConcurrentDictionary<Type, Dictionary<string, Func<object, object>>> accessors =
             new ConcurrentDictionary<Type, Dictionary<string, Func<object, object>>>();
@@ -290,7 +294,7 @@ namespace numl.Utils
             var t = o.GetType();
 
             if (t == typeof(bool))
-                return (bool)o ? 1d : -1d;
+                return (bool)o ? Ject.DefaultTruthValue : Ject.DefaultFalseValue;
             else if (t == typeof(char)) // ascii number of character
                 return (double)Encoding.ASCII.GetBytes(new char[] { (char)o })[0];
             else if (o is Enum)
@@ -322,7 +326,7 @@ namespace numl.Utils
             if (t == typeof(char))
                 return (char)((int)val);
             else if (t == typeof(bool))
-                return val >= 0;
+                return val > ((Ject.DefaultTruthValue + Ject.DefaultFalseValue) / 2.0);
             else if (t.GetTypeInfo().BaseType == typeof(Enum))
                 return Enum.ToObject(t, System.Convert.ChangeType(val, System.Enum.GetUnderlyingType(t)));
             else if (t == typeof(TimeSpan)) // get total seconds

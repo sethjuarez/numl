@@ -291,6 +291,18 @@ namespace numl.Math.LinearAlgebra
 
             return mode;
         }
+
+        /// <summary>
+        /// Returns the median value of the Vector.
+        /// </summary>
+        /// <param name="source">Vector.</param>
+        /// <returns>Double.</returns>
+        public static double Median(this Vector source)
+        {
+            var v = source.OrderBy(o => o).ToArray();
+            return ((v[(int)System.Math.Floor(((double)v.Length - 1.0) / 2.0)] * (source.Length % 2)) + v[(int)System.Math.Floor((double)v.Length / 2.0)]) / 2.0;
+        }
+
         /// <summary>A Vector extension method that statistics the given x coordinate.</summary>
         /// <param name="x">The x to act on.</param>
         /// <returns>A Matrix.</returns>
@@ -364,7 +376,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>An int.</returns>
         public static int MinIndex(this IEnumerable<double> source)
         {
-            double minValue = double.MaxValue;
+            double minValue = double.PositiveInfinity;
             int minIndex = -1;
             int index = -1;
             foreach (double x in source)

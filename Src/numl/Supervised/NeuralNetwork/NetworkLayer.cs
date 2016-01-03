@@ -38,7 +38,7 @@ namespace numl.Supervised.NeuralNetwork
         /// <param name="fnNodeInitializer">Function for creating a new Node at each layer (zero-based) and Node index (zero-based).  The 0 index layer corresponds to the input layer.</param>
         /// <param name="isAutoencoder">Determines whether this Network layer is an auto-encoding layer.</param>
         /// <param name="layerConnections">(Optional) Connection properties for this Network where the first dimension is the layer, second the Node index in that layer,
-        /// and third the Node indexes in the next layer to pair with.<para>For example: 1 => 2 => 2, 3 will link Node 2 in layer 1 to Nodes 2 + 3 in layer 2.</para></param>
+        /// and third the Node indexes in the next layer to pair with.<para>For example: 1 => 2 => [2, 3] will link Node 2 in layer 1 to Nodes 2 + 3 in layer 2.</para></param>
         /// <param name="createBiasNodes">(Optional) Indicates whether bias nodes are automatically created (thus bypassing the <paramref name="fnNodeInitializer"/> function).</param>
         /// <param name="linkBiasNodes">(Optional) Indicates whether bias nodes in hidden layers are automatically linked to their respective hidden nodes.
         /// <para>If this is set to True, it will override any bias node connections specified in parameter <paramref name="layerConnections"/></para></param>

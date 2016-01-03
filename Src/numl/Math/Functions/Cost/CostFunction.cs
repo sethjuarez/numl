@@ -22,7 +22,7 @@ namespace numl.Math.Functions.Cost
         public IRegularizer Regularizer { get; set; }
 
         /// <summary>
-        /// Gets or sets te input matrix.
+        /// Gets or sets the input matrix.
         /// </summary>
         public Matrix X { get; set; }
 

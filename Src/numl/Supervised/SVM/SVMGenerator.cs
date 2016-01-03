@@ -66,7 +66,7 @@ namespace numl.Supervised.SVM
             Matrix copy = x.Copy();
 
             // expect truth = 1 and false = -1
-            y = y.ToBinary(k => k == 1d, 1.0, -1.0);
+            y = y.ToBinary(k => k == 1d, falseValue: -1.0);
 
             // initialise variables
             int m = x.Rows, n = x.Cols, i = -1, j = -1, changes = 0, iterations = 0;

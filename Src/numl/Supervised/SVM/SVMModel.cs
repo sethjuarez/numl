@@ -3,6 +3,7 @@ using System.Linq;
 using numl.Math.Kernels;
 using numl.Math.LinearAlgebra;
 using numl.Supervised.Classification;
+using numl.Utils;
 
 namespace numl.Supervised.SVM
 {
@@ -82,7 +83,7 @@ namespace numl.Supervised.SVM
         /// <returns></returns>
         public override double Predict(Vector x)
         {
-            return PredictRaw(x) >= 0d ? 1.0d : 0.0d;
+            return PredictRaw(x) >= 0d ? Ject.DefaultTruthValue : Ject.DefaultFalseValue;
         }
     }
 }

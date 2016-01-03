@@ -4,6 +4,7 @@ using numl.Math.Functions;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 using numl.Supervised.Classification;
+using numl.Utils;
 
 namespace numl.Supervised.Regression
 {
@@ -23,7 +24,7 @@ namespace numl.Supervised.Regression
         public IFunction LogisticFunction { get; set; }
 
         /// <summary>
-        /// The additional number of quadratic features to create as used in generating the model
+        /// The additional number of polynomial features to apply as used when generating the model.
         /// </summary>
         public int PolynomialFeatures { get; set; }
 
@@ -56,7 +57,7 @@ namespace numl.Supervised.Regression
         /// <returns></returns>
         public override double Predict(Vector x)
         {
-            return this.PredictRaw(x) >= 0.5d ? 1.0d : 0.0d;
+            return this.PredictRaw(x) >= 0.5d ? Ject.DefaultTruthValue : Ject.DefaultFalseValue;
         }
 
         /// <summary>

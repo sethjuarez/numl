@@ -137,10 +137,10 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
         /// <summary>
         /// Updates the weights using the supplied <paramref name="learningRate" />
         /// </summary>
-        /// <param name="learningRate"></param>
-        public override void Update(double learningRate)
+        /// <param name="properties">Network training properties.</param>
+        public override void Update(NetworkTrainingProperties properties)
         {
-            base.Update(learningRate);
+            base.Update(properties);
         }
     }
 }

@@ -119,6 +119,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Recommendation\CofiRecommenderGenerator.cs" />
     <Compile Include="Recommendation\CofiRecommenderModel.cs" />
+    <Compile Include="Supervised\NeuralNetwork\Encoders\AutoencoderGenerator.cs" />
+    <Compile Include="Supervised\NeuralNetwork\Encoders\AutoencoderModel.cs" />
+    <Compile Include="Supervised\NeuralNetwork\Encoders\AutoencoderNeuron.cs" />
+    <Compile Include="Supervised\ISequenceModel.cs" />
+    <Compile Include="Supervised\NeuralNetwork\NetworkTrainingProperties.cs" />
     <Compile Include="Supervised\Score.cs" />
     <Compile Include="Supervised\ScoringMetric.cs" />
     <Compile Include="Serialization\DateTimeFeatureConverter.cs" />

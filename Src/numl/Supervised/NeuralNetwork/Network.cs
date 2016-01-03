@@ -21,6 +21,8 @@ namespace numl.Supervised.NeuralNetwork
         /// <value>The out.</value>
         public Node[] Out { get; set; }
 
+        public double Cost { get; set; } = 0d;
+
         /// <summary>Defaults.</summary>
         /// <param name="d">The Descriptor to process.</param>
         /// <param name="x">The Vector to process.</param>
@@ -28,9 +30,10 @@ namespace numl.Supervised.NeuralNetwork
         /// <param name="activationFunction">The activation.</param>
         /// <param name="outputFunction">The ouput function for hidden nodes (Optional).</param>
         /// <returns>A Network.</returns>
-        public static Network Default(Descriptor d, Matrix x, Vector y, IFunction activationFunction, IFunction outputFunction = null)
+        public static Network Default(Descriptor d, Matrix x, Vector y, IFunction activationFunction, IFunction outputFunction = null, double epsilon = double.NaN)
         {
             Network nn = new Network();
+
             // set output to number of choices of available
             // 1 if only two choices
             int distinct = y.Distinct().Count();
@@ -43,13 +46,13 @@ namespace numl.Supervised.NeuralNetwork
 
             // creating input nodes
             nn.In = new Node[x.Cols + 1];
-            nn.In[0] = new Node { Label = "B0", ActivationFunction = ident };
+            nn.In[0] = new Node(true) { Label = "B0", ActivationFunction = ident };
             for (int i = 1; i < x.Cols + 1; i++)
                 nn.In[i] = new Node { Label = d.ColumnAt(i - 1), ActivationFunction = ident };
 
             // creating hidden nodes
             Node[] h = new Node[hidden + 1];
-            h[0] = new Node { Label = "B1", ActivationFunction = ident };
+            h[0] = new Node(true) { Label = "B1", ActivationFunction = ident };
             for (int i = 1; i < hidden + 1; i++)
                 h[i] = new Node { Label = String.Format("H{0}", i), ActivationFunction = activationFunction, OutputFunction = outputFunction };
 
@@ -62,14 +65,109 @@ namespace numl.Supervised.NeuralNetwork
             // no inputs to the hidden bias node
             for (int i = 1; i < h.Length; i++)
                 for (int j = 0; j < nn.In.Length; j++)
-                    Edge.Create(nn.In[j], h[i]);
+                    Edge.Create(nn.In[j], h[i], epsilon: epsilon);
 
             // link from hidden to output (full)
             for (int i = 0; i < nn.Out.Length; i++)
                 for (int j = 0; j < h.Length; j++)
-                    Edge.Create(h[j], nn.Out[i]);
+                    Edge.Create(h[j], nn.Out[i], epsilon: epsilon);
 
             return nn;
+        }
+
+        /// <summary>
+        /// Creates a new fully connected deep neural network based on the supplied size and depth parameters.
+        /// </summary>
+        /// <param name="inputLayer">Neurons in the input layer.</param>
+        /// <param name="outputLayer">Neurons in the output layer.</param>
+        /// <param name="activationFunction">Activation function for the hidden and output layers.</param>
+        /// <param name="outputFunction">(Optional) Output function of the the Nodes in the output layer (overrides the Activation function).</param>
+        /// <param name="fnNodeInitializer">(Optional) Function to call for initializing new Nodes - supplying parameters for the layer and node index.</param>
+        /// <param name="fnWeightInitializer">(Optional) Function to call for initializing the weights of each connection (including bias nodes).
+        /// <para>Where int1 = Source layer (0 is input layer), int2 = Source Node, int3 = Target node in the next layer.</para></param>
+        /// <param name="epsilon">Weight initialization parameter for random weight selection.  Weight will be in the range of: -epsilon to +epsilon.</param>
+        /// <param name="hiddenLayers">An array of hidden neuron dimensions, where each element is the size of each layer (excluding bias nodes).</param>
+        /// <returns>Returns an untrained neural network model.</returns>
+        public static Network Create(int inputLayer, int outputLayer, IFunction activationFunction, IFunction outputFunction = null, Func<int, int, Node> fnNodeInitializer = null, 
+            Func<int, int, int, double> fnWeightInitializer = null, double epsilon = double.NaN, params int[] hiddenLayers)
+        {
+            Network network = new Network();
+
+            IFunction ident = new Ident();
+
+            if (fnNodeInitializer == null)
+                fnNodeInitializer = new Func<int, int, Node>((i, j) => new Node());
+
+            if (fnWeightInitializer == null)
+                fnWeightInitializer = new Func<int, int, int, double>((l, i, j) => double.NaN);
+
+            // creating input nodes
+            network.In = new Node[inputLayer + 1];
+            network.In[0] = new Node(true) { Label = "B0", ActivationFunction = ident, LayerId = 0 };
+            network.In[0].LayerId = network.In[0].NodeId = 0;
+
+            for (int i = 1; i < inputLayer + 1; i++)
+            {
+                network.In[i] = fnNodeInitializer(0, i);
+                network.In[i].Label = (network.In[i].Label ?? string.Format("I{0}", i));
+                network.In[i].ActivationFunction = (network.In[i].ActivationFunction ?? ident);
+                network.In[i].LayerId = 0;
+                network.In[i].NodeId = i;
+            }
+
+            Node[] last = null;
+            for (int layerIdx = 0; layerIdx < hiddenLayers.Length; layerIdx++)
+            {
+                // creating hidden nodes
+                Node[] layer = new Node[hiddenLayers[layerIdx] + 1];
+                layer[0] = new Node(true) { Label = "B1", ActivationFunction = ident, LayerId = layerIdx + 1 };
+                layer[0].NodeId = 0;
+                for (int i = 1; i < layer.Length; i++)
+                {
+                    layer[i] = fnNodeInitializer(layerIdx + 1, i);
+                    layer[i].Label = (layer[i].Label ?? String.Format("H{0}.{1}", layerIdx + 1, i));
+                    layer[i].ActivationFunction = (layer[i].ActivationFunction ?? activationFunction);
+                    layer[i].OutputFunction = layer[i].OutputFunction;
+                    layer[i].LayerId = layerIdx + 1;
+                    layer[i].NodeId = i;
+                }
+
+                if (layerIdx > 0 && layerIdx < hiddenLayers.Length)
+                {
+                    // create hidden to hidden (full)
+                    for (int i = 0; i < last.Length; i++)
+                        for (int x = 1; x < layer.Length; x++)
+                            Edge.Create(last[i], layer[x], weight: fnWeightInitializer(layerIdx, i, x), epsilon: epsilon);
+                }
+                else if (layerIdx == 0)
+                {
+                    // create input to hidden (full)
+                    for (int i = 0; i < network.In.Length; i++)
+                        for (int j = 1; j < layer.Length; j++)
+                            Edge.Create(network.In[i], layer[j], weight: fnWeightInitializer(layerIdx, i, j), epsilon: epsilon);
+                }
+
+                last = layer;
+            }
+
+            // creating output nodes
+            network.Out = new Node[outputLayer];
+            for (int i = 0; i < outputLayer; i++)
+            {
+                network.Out[i] = fnNodeInitializer(hiddenLayers.Length + 1, i);
+                network.Out[i].Label = (network.Out[i].Label ?? String.Format("O{0}", i));
+                network.Out[i].ActivationFunction = (network.Out[i].ActivationFunction ?? activationFunction);
+                network.Out[i].OutputFunction = (network.Out[i].OutputFunction ?? outputFunction);
+                network.Out[i].LayerId = hiddenLayers.Length + 1;
+                network.Out[i].NodeId = i;
+            }
+
+            // link from (last) hidden to output (full)
+            for (int i = 0; i < network.Out.Length; i++)
+                for (int j = 0; j < last.Length; j++)
+                    Edge.Create(last[j], network.Out[i], weight: fnWeightInitializer(hiddenLayers.Length, j, i), epsilon: epsilon);
+
+            return network;
         }
 
         /// <summary>
@@ -133,7 +231,7 @@ namespace numl.Supervised.NeuralNetwork
         /// <param name="n">The Node to process.</param>
         /// <param name="d">The Descriptor to process.</param>
         /// <returns>The label.</returns>
-        private static string GetLabel(int n, Descriptor d)
+        internal static string GetLabel(int n, Descriptor d)
         {
             var label = "";
             try { label = Enum.GetName(d.Label.Type, n); }
@@ -155,26 +253,61 @@ namespace numl.Supervised.NeuralNetwork
             if (In.Length != x.Length + 1)
                 throw new InvalidOperationException("Input nodes not aligned to input vector");
 
+            // this should forward the input through the network
+            // from the input nodes through the layers to the output layer
+
             // set input (with bias inputs)
             for (int i = 0; i < In.Length; i++)
-                In[i].Input = In[i].Output = (i == 0 ? 1 : x[i - 1]);
+                In[i].Input = (i == 0 ? 1.0 : x[i - 1]);
             // evaluate
             for (int i = 0; i < Out.Length; i++)
                 Out[i].Evaluate();
         }
-        /// <summary>Backpropogates the errors through the network given the supplied label.</summary>
+
+        /// <summary>Backpropagates the errors through the network given the supplied label.</summary>
         /// <param name="t">The double to process.</param>
         /// <param name="learningRate">The learning rate.</param>
-        public void Back(double t, double learningRate)
+        public void Back(double y, NetworkTrainingProperties properties)
         {
+            this.Cost = Score.ComputeRMSE(Vector.Create(this.Out.Length, () => y), this.Out.Select(s => s.Output).ToVector());
+
             // propagate error gradients
-            for (int i = 0; i < In.Length; i++)
-                In[i].Error(t);
+            for (int i = 0; i < Out.Length; i++)
+                Out[i].Error(y);
 
             // reset weights
             for (int i = 0; i < Out.Length; i++)
-                Out[i].Update(learningRate);
+                Out[i].Update(properties);
         }
+
+        /// <summary>Backpropagates the errors through the network given the supplied sequence label.</summary>
+        /// <param name="t">The double to process.</param>
+        /// <param name="learningRate">The learning rate.</param>
+        /// <param name="update">Indicates whether to update the weights after computing the errors.</param>
+        public void Back(Vector y, NetworkTrainingProperties properties, bool update = true)
+        {
+            this.Cost = Score.ComputeRMSE(y, this.Out.Select(s => s.Output).ToVector());
+
+            // CK
+            // propagate error gradients
+            for (int i = 0; i < Out.Length; i++)
+                Out[i].Error(y[i]);
+
+            if (update)
+            {
+                // reset weights
+                for (int i = 0; i < Out.Length; i++)
+                    Out[i].Update(properties);
+            }
+        }
+
+        /// <summary>Propagates a Delta reset event through the network starting from the output Node.</summary>
+        /// <param name="newDelta">New delta value to apply to each Node.</param>
+        //public void Reset(double newDelta)
+        //{
+        //    for (int i = 0; i < Out.Length; i++)
+        //        Out[i].Reset(newDelta);
+        //}
 
         /// <summary>The nodes.</summary>
         private HashSet<string> _nodes;
@@ -189,17 +322,27 @@ namespace numl.Supervised.NeuralNetwork
 
             foreach (var node in Out)
             {
-                _nodes.Add(node.Id);
+                _nodes.Add(node.Label);
                 yield return node;
                 foreach (var n in GetNodes(node))
                 {
-                    if (!_nodes.Contains(n.Id))
+                    if (!_nodes.Contains(n.Label))
                     {
-                        _nodes.Add(n.Id);
+                        _nodes.Add(n.Label);
                         yield return n;
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns the Nodes from the specified layer, where 0 is the Input layer.
+        /// </summary>
+        /// <param name="layer">The layer index to retrieve Nodes from.</param>
+        /// <returns></returns>
+        public IEnumerable<Node> GetNodes(int layer)
+        {
+            return GetNodes().Where(n => n.LayerId == layer);
         }
 
         /// <summary>Gets all nodes leading into the supplied Node.</summary>

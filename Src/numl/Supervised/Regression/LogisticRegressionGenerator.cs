@@ -15,7 +15,7 @@ namespace numl.Supervised.Regression
         public double Lambda { get; set; }
 
         /// <summary>
-        /// The additional number of quadratic features to create, i.e. for polynomial regression.
+        /// The additional number of polynomial features to create, i.e. for polynomial regression.
         /// <para>(A higher value may overfit training data)</para>
         /// </summary>
         public int PolynomialFeatures { get; set; }
@@ -60,7 +60,7 @@ namespace numl.Supervised.Regression
             this.Preprocess(copy, y);
 
             // guarantee 1/0 based label vector
-            y = y.ToBinary(f => f == 1d);
+            y = y.ToBinary(f => f == 1d, falseValue: 0d);
 
             // add intercept term
             copy = copy.Insert(Vector.Ones(copy.Rows), 0, VectorType.Col, false);

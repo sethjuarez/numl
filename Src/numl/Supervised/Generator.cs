@@ -7,6 +7,7 @@ using System.Linq;
 
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
+using numl.Utils;
 
 namespace numl.Supervised
 {
@@ -114,7 +115,7 @@ namespace numl.Supervised
             if (Descriptor.Label == null)
                 throw new InvalidOperationException("Invalid descriptor: Empty label!");
 
-            var doubles = Descriptor.Convert(examples);
+            var doubles = Descriptor.Convert(examples.Shuffle());
             var tuple = doubles.ToExamples();
 
             return Generate(tuple.Item1, tuple.Item2);

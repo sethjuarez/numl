@@ -44,8 +44,6 @@ namespace numl.Supervised.SVM.Selection
         /// </summary>
         /// <param name="i">Current working set pair i.</param>
         /// <param name="j">Current working set pair j.</param>
-        /// <param name="K">Precomputed Kernel matrix.</param>
-        /// <param name="y">Training labels vector (of +1/-1 values).</param>
         /// <param name="gradient">Current Gradient vector.</param>
         /// <param name="alpha">Current alpha parameter vector.</param>
         /// <returns>New working pairs of i, j.  Returns </returns>
@@ -60,7 +58,7 @@ namespace numl.Supervised.SVM.Selection
             {
                 // check for analytical constraints:
                 // (this.Y[k] >= 0 and A < C or this.Y[k] <= 0 and A >= 0)
-                if ((this.Y[k] >= 1.0 && alpha[k] < this.C) || (this.Y[k] <= -1.0 && alpha[k] > 0.0))
+                if ((this.Y[k] >= 1.0 && alpha[k] < this.C) || (this.Y[k] <= 0.0 && alpha[k] > 0.0))
                 {
                     if (-this.Y[k] * gradient[k] >= maxGrad)
                     {
@@ -75,7 +73,7 @@ namespace numl.Supervised.SVM.Selection
             {
                 // check for analytical constraints:
                 // (this.Y[k] > A > 0 or this.Y[k] < 0 < A < C)
-                if ((this.Y[k] >= 1.0 && alpha[k] > 0.0) || (this.Y[k] <= -1.0 && alpha[k] < this.C))
+                if ((this.Y[k] >= 1.0 && alpha[k] > 0.0) || (this.Y[k] <= 0.0 && alpha[k] < this.C))
                 {
                     b = maxGrad + this.Y[k] * gradient[k];
 
@@ -103,8 +101,8 @@ namespace numl.Supervised.SVM.Selection
             }
             else if (i == ij && j == jj)
             {
-                ij = Sampling.GetUniform(-1, m).Clip(0, m - 1);
-                jj = Sampling.GetUniform(-1, m).Clip(0, m - 1);
+                ij = (int)Sampling.GetUniform(-1, m).Clip(0, m - 1);
+                jj = (int)Sampling.GetUniform(-1, m).Clip(0, m - 1);
             }
             return new Tuple<int, int>(ij, jj);
         }

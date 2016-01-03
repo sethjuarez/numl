@@ -58,5 +58,15 @@ namespace numl.Math.Functions
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Returns the maximum value index of the computed softmax vector.
+        /// </summary>
+        /// <param name="x">Vector.</param>
+        /// <returns>Double.</returns>
+        public double Minimize(Vector x)
+        {
+            return this.Compute(x).MaxIndex();
+        }
     }
 }

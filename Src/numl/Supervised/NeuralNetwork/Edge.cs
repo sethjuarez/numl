@@ -25,14 +25,14 @@ namespace numl.Supervised.NeuralNetwork
             if (Sampling.GetUniform() < .5)
                 Weight *= -1;
         }
-        /// <summary>Gets or sets the source for the.</summary>
+        /// <summary>Gets or sets the source Node.</summary>
         /// <value>The source.</value>
         public Node Source { get; set; }
         /// <summary>Gets or sets the identifier of the source.</summary>
         /// <value>The identifier of the source.</value>
         [JsonProperty]
         internal string SourceId { get; set; }
-        /// <summary>Gets or sets the Target for the.</summary>
+        /// <summary>Gets or sets the target Node.</summary>
         /// <value>The target.</value>
         public Node Target { get; set; }
         /// <summary>Gets or sets the identifier of the target.</summary>
@@ -46,15 +46,22 @@ namespace numl.Supervised.NeuralNetwork
         /// <summary>Creates a new Edge.</summary>
         /// <param name="source">Source for the.</param>
         /// <param name="target">Target for the.</param>
+        /// <param name="weight">Weight parameter to initialize with.</param>
+        /// <param name="epsilon">Seed value to use when randomly selecting a weight (ignored when <paramref name="weight"/> is supplied).</param>
         /// <returns>An Edge.</returns>
-        public static Edge Create(Node source, Node target, double weight = 0)
+        public static Edge Create(Node source, Node target, double weight = double.NaN, double epsilon = double.NaN)
         {
             Edge e = new Edge { Source = source, Target = target };
             e.SourceId = source.Id;
             e.TargetId = target.Id;
             source.Out.Add(e);
             target.In.Add(e);
-            e.Weight = weight;
+
+            if (!double.IsNaN(weight))
+                e.Weight = weight;
+            else if (!double.IsNaN(epsilon))
+                e.Weight = Sampling.GetUniform(-epsilon, epsilon);
+
             return e;
         }
         /// <summary>Returns a string that represents the current object.</summary>

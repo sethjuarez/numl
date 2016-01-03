@@ -30,7 +30,7 @@ namespace numl.Tests.SupervisedTests
         }
 
         [Test]
-        public void xor_test_learner()
+        public void XOR_Test_Learner()
         {
             var xor = new[]
             {
@@ -61,8 +61,8 @@ namespace numl.Tests.SupervisedTests
                               .With("b").As(typeof(bool))
                               .Learn("c").As(typeof(bool));
 
-            var generator = new NeuralNetworkGenerator { Descriptor = d };
-            var model = Learner.Learn(xor, .75, 1000, generator).Model;
+            var generator = new NeuralNetworkGenerator { Descriptor = d, LearningRate = 0.1 };
+            var model = Learner.Learn(xor, .75, 100, generator).Model;
                         
             Matrix x = new[,]
                 {{ -1, -1 },  // false, false -> -
@@ -70,11 +70,15 @@ namespace numl.Tests.SupervisedTests
                  {  1, -1 },  // true, false  -> +
                  {  1,  1 }}; // true, true   -> -
 
+            Vector actual = new int[] { -1, 1, 1, -1 };
+
             Vector y = new[] { 0, 0, 0, 0 };
 
             for (int i = 0; i < x.Rows; i++)
                 y[i] = model.Predict(x[i, VectorType.Row]);
 
+            var score = numl.Supervised.Score.ScorePredictions(y, actual);
+            Console.WriteLine(string.Format("Neural Network XOR Test (score) => RMSE: {0}, Accuracy: {1}", score.RMSE, score.Accuracy));
         }
 
         [Test]
@@ -148,13 +152,15 @@ namespace numl.Tests.SupervisedTests
 
             double output = gru.Evaluate();
 
-            Assert.AreEqual(0.24144242, output, 0.002, "First pass");
+            //Assert.AreEqual(0.24144242, output, 0.002, "First pass");
+            Assert.AreEqual(0.18775503, output, 0.002, "First pass");
 
             input.Output = 20.0;
 
             double output2 = gru.Evaluate();
 
-            Assert.AreEqual(0.40416686, output2, 0.002, "Second pass");
+            //Assert.AreEqual(0.40416686, output2, 0.002, "Second pass");
+            Assert.AreEqual(0.30399969, output2, 0.002, "Second pass");
         }
     }
 }

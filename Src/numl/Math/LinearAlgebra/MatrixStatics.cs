@@ -471,16 +471,8 @@ namespace numl.Math.LinearAlgebra
         /// <returns></returns>
         public static Vector Median(Matrix source, VectorType t = VectorType.Col)
         {
-            int num = (t == VectorType.Row ? source.Cols : source.Rows);
-            VectorType vectorType = (t == VectorType.Row ? VectorType.Col : VectorType.Row);
-            Vector vectors = new Vector(num);
-            int even = (num % 2);
-            for (int i = 0; i < num; i++)
-            {
-                var v = source[i, vectorType].OrderBy(o => o).ToArray();
-                vectors[i] = ((v[(int)System.Math.Floor(((double)v.Length - 1.0) / 2.0)] * even) + v[(int)System.Math.Floor((double)v.Length / 2.0)]) / 2.0;
-            }
-            return vectors;
+            var vectors = (t == VectorType.Row ? source.GetCols() : source.GetRows());
+            return vectors.Select(s => s.Median()).ToVector();
         }
 
         /// <summary>Covariances.</summary>

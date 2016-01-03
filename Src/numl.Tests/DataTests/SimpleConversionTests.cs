@@ -80,6 +80,7 @@ namespace numl.Tests.DataTests
         {
             // boolean
             Assert.AreEqual(true, Ject.Convert(1, typeof(bool)));
+            Assert.AreEqual(false, Ject.Convert(0, typeof(bool)));
             Assert.AreEqual(false, Ject.Convert(-1, typeof(bool)));
 
             // numeric types

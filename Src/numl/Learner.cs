@@ -106,7 +106,7 @@ namespace numl
                 scores[i] = t.Score;
             }
 
-            int idx = scores.Select(s => s.Accuracy).MaxIndex();
+            int idx = scores.Select(s => s.RMSE).MinIndex();
 
             // sanity check, for convergence failures
             if (idx < 0 && trainingPercentage < 1d) throw new Exception("All models failed to initialize properly");

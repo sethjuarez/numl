@@ -42,5 +42,15 @@ namespace numl.Math.Functions
         {
             return x.Calc(d => Derivative(d));
         }
+
+        /// <summary>
+        /// Sums the given x coordinate.
+        /// </summary>
+        /// <param name="x">The Vector to process.</param>
+        /// <returns>Double.</returns>
+        public virtual double Minimize(Vector x)
+        {
+            return x.Calc(d => Compute(d)).Sum();
+        }
     }
 }

@@ -75,6 +75,7 @@
     <Compile Include="Data\Tennis.cs" />
     <Compile Include="Data\User.cs" />
     <Compile Include="Data\ValueObject.cs" />
+    <Compile Include="MathTests\FunctionTests.cs" />
     <Compile Include="MathTests\ProbabilityTests.cs" />
     <Compile Include="ScoringTests\ScoreTests.cs" />
     <Compile Include="SerializationTests\BaseSerialization.cs" />
@@ -84,7 +85,9 @@
     <Compile Include="SerializationTests\NaiveBayesSerializationTests.cs" />
     <Compile Include="SerializationTests\NeuralNetworkSerializationTests.cs" />
     <Compile Include="SerializationTests\RegressionSerializationTests.cs" />
+    <Compile Include="SupervisedTests\AutoencoderTests.cs" />
     <Compile Include="SupervisedTests\BaseSupervised.cs" />
+    <Compile Include="SupervisedTests\NeuralNetworkNodeTests.cs" />
     <Compile Include="SupervisedTests\SVMTests.cs" />
     <Compile Include="SupervisedTests\DecisionTreeTests.cs" />
     <Compile Include="MathTests\MetricTests.cs" />

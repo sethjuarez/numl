@@ -23,10 +23,11 @@ namespace numl.Tests.SupervisedTests
                 KernelFunction = new LogisticKernel(),
                 C = 10,
                 Bias = 1,
-                MaxIterations = 20
+                MaxIterations = 100
             }, students, 0.9);
 
             Assert.GreaterOrEqual(model.Accuracy, 0.65d);
+            Console.WriteLine($"SVM Model Accuracy: { model.Accuracy }");
         }
     }
 }
