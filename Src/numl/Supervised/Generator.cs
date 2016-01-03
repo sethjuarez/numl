@@ -121,6 +121,13 @@ namespace numl.Supervised
             return Generate(tuple.Item1, tuple.Item2);
         }
 
+        /// <summary>
+        /// Generate model from descriptor and examples
+        /// </summary>
+        /// <typeparam name="T">Object type</typeparam>
+        /// <param name="descriptor">Desriptor</param>
+        /// <param name="examples">Examples</param>
+        /// <returns>Model</returns>
         public IModel Generate<T>(Descriptor descriptor, IEnumerable<T> examples) where T : class
         {
             return Generate(descriptor, examples as IEnumerable<object>);

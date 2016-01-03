@@ -56,6 +56,10 @@ namespace numl.Math.Probability
             SetSeed((uint)(x >> 16), (uint)(x % 4294967296));
         }
 
+        /// <summary>
+        /// Set random seed from a specified time
+        /// </summary>
+        /// <param name="dt">date time</param>
         public static void SetSeedFromTime(DateTime dt)
         {
             long x = dt.ToFileTime();

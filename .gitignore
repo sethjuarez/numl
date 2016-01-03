@@ -2,6 +2,7 @@
 [Oo]bj/
 [Ww]orking*/
 Build/runbuild.txt
+Build/rundocs.txt
 TestResults/
 packages/
 *.suo
@@ -14,3 +15,9 @@ _ReSharper.*
 *.lock.json
 *.nuget.props
 *.nuget.targets
+_api/
+_site/
+*.orig
+Docs/api/.manifest
+Docs/api/*.yml
+*.GhostDoc.xml

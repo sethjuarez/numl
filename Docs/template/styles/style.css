@@ -1,0 +1,186 @@
+body {
+  font-family: "Open Sans", "Segoe UI", sans-serif;
+  padding-top: 0px;
+  background: url(../images/bg.jpg) repeat-y #000 center;
+  color: #ccc;
+}
+
+.navbar-brand {
+  font-size: 18px;
+  padding: 15px;
+}
+.toc .level3 {
+  font-weight: normal;
+  margin-top: 5px;
+  margin-left: 10px;
+}
+@media only screen and (max-width: 768px) {
+  .toc .level3 > li {
+    display: inline-block;
+  }
+  .toc .level3 > li:after {
+    margin-left: -3px;
+    margin-right: 5px;
+    content: ", ";
+    color: #666666;
+  }
+}
+@media (max-width: 260px)  {
+  .toc .level3 > li {
+    display: block;
+  }
+
+  .toc .level3 > li:after {
+    display: none;
+  }
+}
+
+.navbar-inverse {
+    background: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAICAgICAgICAgICAgICAwQDAgIDBAUEBAQEBAUGBQUFBQUFBgYHBwgHBwYJCQoKCQkMDAwMDAwMDAwMDAwMDAz/2wBDAQMDAwUEBQkGBgkNCwkLDQ8ODg4ODw8MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCAACBLADAREAAhEBAxEB/8QAGgABAQEAAwEAAAAAAAAAAAAAAAUEAQIDCf/EAB0QAQEBAQEAAgMAAAAAAAAAAAADQTEBQnECBMH/xAAXAQEBAQEAAAAAAAAAAAAAAAAAAwIB/8QAFhEBAQEAAAAAAAAAAAAAAAAAAAEC/9oADAMBAAIRAxEAPwD4Xg5874CpLEqtFWaVWinPE6tlUj3xKrxVl1KqxSliVXyqRS0tFSSdVypyxKr5VY59I1bKlHE9LZUpJVaKk8Sq0U5YnVsqUEqtFOWJVaKM06vlUlzxKrRSn3xKqxTl1KrZVI4jV8qck9LRSliWloozxKrRRn3xOrZUZo6WjfNOrR7joAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADp+fAYKtxKsFVYjpMt/FYhU6qsR0m1ViOkyysRqVbVYhpMr1WIVMr8lYnUuuqxDSbVWI1MtqsQqZXVYjpLrqsRqXVWI1MqrENJlvkpEalVViOkuuqxCpd1YjUuuqxHSZXVcoVJtqsSqXbnqsQ0l256rEdI/7HPPtXKGmRtgB//9k=') no-repeat bottom #000;
+
+}
+
+.navbar-inverse 
+.navbar-nav>.active>a, 
+.navbar-inverse .navbar-nav>.active>a:focus, 
+.navbar-inverse .navbar-nav>.active>a:hover {
+    background-color: transparent;
+}
+
+.affix > ul > li.active > a,
+.affix ul > li.active > a,
+.affix ul > li.active > a, 
+.affix ul > li.active > a:before {
+    color: #f0854d;
+}
+
+code {
+    color:#C25F2E;
+    background-color: #444;
+    border-radius:4px
+}
+footer > .inner-footer a:hover {
+    color: #f0854d;
+}
+
+.btn-primary {
+    background-color: #f0854d;
+    border-color: #C25F2E;
+    color: #fff;
+}
+
+a.btn, a.btn-primary {
+    color: #fff;
+} 
+
+.btn-primary:hover {
+    background-color: #f0854d;
+    border-color: #C25F2E;
+    color: #fff;
+}
+
+.hero {
+    background:  url('../images/home-graphic.png') no-repeat center;
+    margin-top: 50px;
+    height: 300px;
+}
+
+.lead {
+    text-shadow: 3px 3px #000;
+}
+
+.inner-footer {
+  border-top: solid 1px #666;
+  padding-top: 12px;
+  padding-bottom: 10px;
+}
+
+
+.btn.focus, .btn:focus, .btn:hover {
+    color: #c0c0c0;
+}
+
+button, a {
+    color: #f0854d;
+}
+
+button, a:hover {
+    color: #fff;
+}
+
+nav {
+    background: transparent;
+}
+
+html,body,#wrapper {
+    height:100%;
+    margin:0;
+    padding:0;
+}
+
+#wrapper {
+    position: relative;
+}
+
+#nav, #middle, #footer {
+     position:absolute;
+}
+
+#nav {
+    height:50px;
+}
+
+#middle {
+    top: 50px;
+    bottom: 81px;
+}
+
+#footer {
+    bottom: 0;
+    height: 81px;
+}
+
+header {
+    position: relative;
+}
+
+.navbar-collapse.in {
+    background-color: #000;
+    text-align: left;
+}
+
+.collapse.in,
+.collapsing {
+    background-color: #000;
+    text-align: left;
+}
+
+.toc .nav > li > a:hover,
+.toc .nav > li > a:focus {
+  color: #c0c0c0;
+  background: none;
+  text-decoration: inherit;
+}
+.toc .nav > li.active > a {
+  color: #f0854d;
+}
+.toc .nav > li.active > a:hover,
+.toc .nav > li.active > a:focus {
+  color: #c0c0c0;
+}
+
+.article {
+    margin-top: 50px;
+}
+
+.toc .nav > li > a {
+    color: rgb(204, 204, 204);
+}
+
+.cta a {
+    margin: 5px;
+}
+
+::-webkit-scrollbar {
+      width: 10px;
+} /* this targets the default scrollbar (compulsory) */

@@ -43,6 +43,7 @@ namespace numl.Supervised.DecisionTree
         [JsonProperty]
         public Edge[] Edges { get; set; }
 
+
         [OnDeserialized]
         internal void OnDeserializedMethod(StreamingContext context)
         {

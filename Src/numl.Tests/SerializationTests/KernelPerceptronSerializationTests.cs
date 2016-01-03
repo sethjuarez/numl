@@ -31,7 +31,7 @@ namespace numl.Tests.SerializationTests
             var generator = new KernelPerceptronGenerator(kernel) { Descriptor = descriptor };
 
             var model = generator.Generate(descriptor, data) as KernelPerceptronModel;
-            
+
             Serialize(model);
 
             //var lmodel = Deserialize<KernelPerceptronModel>();

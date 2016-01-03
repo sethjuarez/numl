@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using numl.Math.LinearAlgebra;
-using System.Xml.Serialization;
 using numl.Utils;
 
 namespace numl.Tests.MathTests
@@ -26,12 +25,10 @@ namespace numl.Tests.MathTests
             // ensure we delete the file first 
             // or we may have extra data
             if (File.Exists(path)) File.Delete(path);
-
-            JsonHelpers.Save<Vector>(path, v1);
+            v1.Save(path);
 
             // deserialize
-            Vector v2 = JsonHelpers.Load<Vector>(path);
-
+            Vector v2 = Vector.Load(path);
             Assert.AreEqual(v1, v2);
         }
 

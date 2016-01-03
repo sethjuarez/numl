@@ -296,7 +296,7 @@ namespace numl.Utils
             if (t == typeof(bool))
                 return (bool)o ? Ject.DefaultTruthValue : Ject.DefaultFalseValue;
             else if (t == typeof(char)) // ascii number of character
-                return (double)Encoding.ASCII.GetBytes(new char[] { (char)o })[0];
+                return (int)((char)o);
             else if (o is Enum)
                 return (int)o;
             else if (t == typeof(TimeSpan)) // get total seconds

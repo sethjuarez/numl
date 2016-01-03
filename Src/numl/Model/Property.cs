@@ -116,6 +116,11 @@ namespace numl.Model
             return $"[{Name}, {Start}, {Length}]";
         }
 
+        /// <summary>
+        /// Equality test
+        /// </summary>
+        /// <param name="obj">object to compare</param>
+        /// <returns>equality</returns>
         public override bool Equals(object obj)
         {
             if (typeof(Property).IsAssignableFrom(obj.GetType()))
@@ -130,6 +135,10 @@ namespace numl.Model
             else return false;
         }
 
+        /// <summary>
+        /// Return hash
+        /// </summary>
+        /// <returns>hash</returns>
         public override int GetHashCode()
         {
             return base.GetHashCode();

@@ -217,15 +217,22 @@ namespace numl.Math.LinearAlgebra
             return source.Each(f => System.Math.Sqrt(f), true);
         }
 
-        /// <summary>A Vector extension method that computes the standard deviation.</summary>
+        /// <summary>
+        /// A Vector extension method that computes the standard deviation
+        /// </summary>
         /// <param name="source">The source to act on.</param>
+        /// <param name="isSamplePop">is sample population?</param>
         /// <returns>A double.</returns>
         public static double StdDev(this Vector source, bool isSamplePop = false)
         {
             return System.Math.Sqrt(source.Variance(isSamplePop));
         }
-        /// <summary>A Vector extension method that variances the given x coordinate.</summary>
-        /// <param name="x">The x to act on.</param>
+        
+        /// <summary>
+        /// A  Vector extension method that computes variances the given x coordinate
+        /// </summary>
+        /// <param name="x">The source to act on.</param>
+        /// <param name="isSamplePop">is sample population?</param>
         /// <returns>A double.</returns>
         public static double Variance(this Vector x, bool isSamplePop = false)
         {
@@ -757,7 +764,7 @@ namespace numl.Math.LinearAlgebra
         {
             Vector result = new Vector(v.Length);
             for (int i = 0; i < v.Length; i++)
-                    result[i] = (fnPredicate(v[i]) ? trueValue : falseValue);
+                result[i] = (fnPredicate(v[i]) ? trueValue : falseValue);
             return result;
         }
     }

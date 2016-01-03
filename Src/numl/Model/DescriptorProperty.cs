@@ -9,9 +9,6 @@ using System.Reflection;
 using System.Collections.Generic;
 using numl.Math.LinearAlgebra;
 using System.Text;
-using System.Xml.Serialization;
-using System.Xml;
-using System.Xml.Schema;
 using System.Linq.Expressions;
 using System.Collections;
 
@@ -60,6 +57,20 @@ namespace numl.Model
             AddProperty(p);
             return _descriptor;
         }
+
+        /// <summary>
+        /// Adds the specified property to the descriptor with the chained name
+        /// </summary>
+        /// <param name="property">The property.</param>
+        /// <returns>descriptor with added property</returns>
+        public Descriptor As(Property property)
+        {
+            property.Name = _name;
+            AddProperty(property);
+            return _descriptor;
+        }
+
+
         /// <summary>
         /// Adds the default string property to descriptor with previously chained name.
         /// </summary>

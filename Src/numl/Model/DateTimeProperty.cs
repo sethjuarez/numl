@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 using numl.Serialization;
 using System;
 using System.Collections.Generic;
-using System.Xml;
 using System.Runtime.Serialization;
 
 namespace numl.Model
@@ -255,6 +254,11 @@ namespace numl.Model
             else throw new InvalidCastException("Object is not a date");
         }
 
+        /// <summary>
+        /// Equality test
+        /// </summary>
+        /// <param name="obj">object to compare</param>
+        /// <returns>equality</returns>
         public override bool Equals(object obj)
         {
             if (base.Equals(obj) && obj is DateTimeProperty)
@@ -262,6 +266,11 @@ namespace numl.Model
             else
                 return false;
         }
+
+        /// <summary>
+        /// Return hash
+        /// </summary>
+        /// <returns>hash</returns>
         public override int GetHashCode()
         {
             return base.GetHashCode();

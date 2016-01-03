@@ -170,6 +170,11 @@ namespace numl.Model
                 Exclude = new string[] { };
         }
 
+        /// <summary>
+        /// Equality test
+        /// </summary>
+        /// <param name="obj">object to compare</param>
+        /// <returns>equality</returns>
         public override bool Equals(object obj)
         {
             if(base.Equals(obj) && obj is StringProperty)
@@ -194,6 +199,10 @@ namespace numl.Model
             return false;
         }
 
+        /// <summary>
+        /// Return hash
+        /// </summary>
+        /// <returns>hash</returns>
         public override int GetHashCode()
         {
             return base.GetHashCode();

@@ -9,13 +9,27 @@ using numl.Serialization;
 
 namespace numl.Utils
 {
+    /// <summary>
+    /// Json Helpers Class
+    /// </summary>
     public static class JsonHelpers
     {
+        /// <summary>
+        /// Serializer
+        /// </summary>
         public static JsonSerializer Serializer { get; set; }
 
+        /// <summary>
+        /// Set current serializer
+        /// </summary>
+        /// <param name="serializer">serializer to set</param>
         public static void SetSerializer(JsonSerializer serializer) =>
             Serializer = serializer;
 
+        /// <summary>
+        /// Get current serializer
+        /// </summary>
+        /// <returns>Currently available serializer</returns>
         public static JsonSerializer GetSerializer()
         {
             if (Serializer == null)
@@ -35,16 +49,15 @@ namespace numl.Utils
         /// <tparam name="T">Generic type parameter.</tparam>
         /// <param name="file">file.</param>
         /// <param name="o">object.</param>
-        ///
-        /// ### <typeparam name="T">Type.</typeparam>
         public static void Save<T>(string file, T o) => 
             Save(file, o, typeof(T));
 
         /// <summary>
-        /// test
+        /// Serialize object to file
         /// </summary>
-        /// <param name="file"></param>
-        /// <param name="o"></param>
+        /// <param name="file">file</param>
+        /// <param name="o">object</param>
+        /// <param name="t">type</param>
         public static void Save(string file, object o, Type t = null)
         {
             using (var stream = File.OpenWrite(file))
@@ -54,7 +67,7 @@ namespace numl.Utils
 
         /// <summary>Save object to file.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>
-        /// <param name="stream">The stream.</param>
+        /// <param name="writer">The writer.</param>
         /// <param name="o">object.</param>
         public static void Save<T>(TextWriter writer, T o) => 
             Save(writer, o, typeof(T));
@@ -105,15 +118,15 @@ namespace numl.Utils
                 return Load(reader, t);
         }
 
-        /// <summary>Loads the given stream.</summary>
+        /// <summary>Loads the given reader.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>
-        /// <param name="stream">The stream.</param>
+        /// <param name="reader">The reader.</param>
         /// <returns>A T.</returns>
         public static T Load<T>(TextReader reader) => 
             (T)Load(reader, typeof(T));
 
         /// <summary>Loads.</summary>
-        /// <param name="stream">The stream.</param>
+        /// <param name="reader">The reader.</param>
         /// <param name="t">type.</param>
         /// <returns>An object.</returns>
         public static object Load(TextReader reader, Type t) => 

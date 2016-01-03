@@ -1,0 +1,49 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "numl is a machine learning library intended to ease the use of using standard modeling techniques for both prediction and clustering",
+  "authors": [ "Seth Juarez", "Chris Kalle" ],
+  "tags": [ "machine learning, AI" ],
+  "projectUrl": "http://numl.net",
+  "licenseUrl": "https://github.com/sethjuarez/numl/blob/master/LICENSE.md",
+  "dependencies": {
+    "Newtonsoft.Json": "7.0.1"
+  },
+  "supports": {
+    "net46.app": { },
+    "uwp.10.0.app": { },
+    "dnxcore50.app": { }
+  },
+  "frameworks": {
+    "net46": { },
+    "net452": { },
+    "dnx451": { },
+    "dnxcore50": {
+      "dependencies": {
+        "System.Collections": "4.0.11-*",
+        "System.Collections.Concurrent": "4.0.11-*",
+        "System.Linq": "4.0.1-*",
+        "System.Linq.Queryable": "4.0.1-*",
+        "System.Runtime": "4.0.21-*",
+        "System.Threading": "4.0.11-*",
+        "System.IO": "4.0.10",
+        "System.IO.FileSystem": "4.0.1-*",
+        "System.Reflection": "4.0.10",
+        "System.Reflection.TypeExtensions": "4.0.0",
+        "System.Text.RegularExpressions": "4.0.11-*",
+        "System.Runtime.Serialization.Primitives": "4.0.10",
+        "System.Text.Encoding": "4.0.0-*"
+      }
+    },
+    "dotnet": {
+      "imports": "portable-net452+win81",
+      "dependencies": {
+        "Microsoft.NETCore": "5.0.0",
+        "Microsoft.NETCore.Portable.Compatibility": "1.0.0",
+        "System.IO.FileSystem": "4.0.0",
+        "System.Reflection": "4.0.10",
+        "System.Reflection.TypeExtensions": "4.0.0",
+        "System.Runtime.Serialization.Primitives": "4.0.10"
+      }
+    }
+  }
+}

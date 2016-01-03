@@ -1,0 +1,56 @@
+{
+  "metadata" : [
+    {
+      "src": [
+        {
+          "files": [
+            "Src/numl/numl.csproj"
+          ],
+          "exclude": [ "**/bin/**", "**/obj/**" ],
+          "cwd" : "../.."
+        }
+      ],
+      "dest": "api"
+    }
+  ],
+  "build": {
+    "content": [
+        {
+          "files": ["api/**/*.yml"]
+        },
+        {
+          "files": [
+            "getting-started/*.md",
+            "about/*.md",
+            "docs/*.md",
+            "api/*.md",
+            "support/*.md"
+          ]
+        },
+        {
+          "files": [
+              "toc.yml",
+              "getting-started/toc.yml",
+              "about/toc.yml",
+              "docs/toc.yml",
+              "api/toc.yml",
+              "support/toc.yml"
+            ]
+        }
+    ],
+    "resource": [
+      {
+        "files": [
+          "images/**",
+          "data/**"
+        ]
+      }
+    ],
+    "externalReference": [],
+    "globalMetadata" : {
+        "_appTitle": "numl"
+    },
+    "dest": "_site",
+    "template": [ "default", "template"]
+  }
+}

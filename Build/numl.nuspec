@@ -4,16 +4,19 @@
         <id>numl</id>
         <version></version>
         <title>numl</title>
-        <authors>Seth Juarez</authors>
+        <authors>Seth Juarez, Chris Kalle</authors>
         <owners>Seth Juarez</owners>
         <licenseUrl>https://github.com/sethjuarez/numl/blob/master/LICENSE.md</licenseUrl>
         <projectUrl>http://numl.net</projectUrl>
-        <iconUrl>http://numl.net/Media/Default/images/numl.png</iconUrl>
+        <iconUrl>http://numl.net/images/ico.png</iconUrl>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <description>numl is a machine learning library intended to ease the use of using standard modeling techniques for both prediction and clustering</description>
         <summary>MIT</summary>
         <copyright>2015</copyright>
         <language>en-US</language>
         <tags>machine learning, framework</tags>
+        <dependencies>
+            <dependency id="Newtonsoft.Json" version="7.0.1" />
+        </dependencies> 
     </metadata>
 </package>

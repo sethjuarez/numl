@@ -1,0 +1,15 @@
+- name: Getting Started
+  href: getting-started/
+  homepage: getting-started/index.md
+- name: About
+  href: about/
+  homepage: about/index.md
+- name: Documentation
+  href: docs/
+  homepage: docs/index.md
+- name: API reference
+  href: api/
+  homepage: api/index.md
+- name: Support
+  href: support/
+  homepage: support/index.md

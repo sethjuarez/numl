@@ -62,16 +62,7 @@ namespace numl.Supervised.DecisionTree
             else
                 throw new InvalidOperationException(String.Format("Unable to match split value {0} for feature {1}[2]\nConsider setting a Hint in order to avoid this error.", v[col], Descriptor.At(col), col));
         }
-        /// <summary>Loads the given stream.</summary>
-        /// <param name="stream">The stream to load.</param>
-        /// <returns>An IModel.</returns>
-        public override IModel Load(System.IO.Stream stream)
-        {
-            var model = base.Load(stream) as DecisionTreeModel;
-
-
-            return model;
-        }
+        
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()

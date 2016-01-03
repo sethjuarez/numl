@@ -34,13 +34,7 @@ namespace numl.Tests.SupervisedTests
         {
             TennisLearnerPrediction(new KNNGenerator());
         }
-
-        [Test]
-        public void House_Learner_Tests()
-        {
-            HouseLearnerPrediction(new KNNGenerator());
-        }
-
+        
         [Test]
         public void Iris_Learner_Tests()
         {

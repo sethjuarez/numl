@@ -133,12 +133,12 @@ namespace numl.Tests.SupervisedTests
         {
             var description = Descriptor.Create<T>();
             generator.Descriptor = description;
-            var lmodel = Learner.Learn(data, .80, 1000, generator);
+            var lmodel = Learner.Learn(data, .80, 10, generator);
             var prediction = lmodel.Model.Predict(item);
             Assert.IsTrue(test(prediction));
         }
 
-        public void HouseLearnerPrediction(IGenerator generator)
+        public static void HouseLearnerPrediction(IGenerator generator)
         {
             // item to verify
             House h = new House
