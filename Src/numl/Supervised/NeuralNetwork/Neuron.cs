@@ -41,6 +41,10 @@ namespace numl.Supervised.NeuralNetwork
         [JsonProperty]
         public bool Constrained { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is bias.
+        /// </summary>
+        /// <value><c>true</c> if this instance is bias; otherwise, <c>false</c>.</value>
         [JsonProperty]
         public bool IsBias { get; set; }
 
@@ -80,6 +84,10 @@ namespace numl.Supervised.NeuralNetwork
         [JsonProperty]
         public int LayerId { get; set; }
 
+        /// <summary>
+        /// Gets or sets the node identifier.
+        /// </summary>
+        /// <value>The node identifier.</value>
         [JsonProperty]
         public int NodeId { get; set; }
 

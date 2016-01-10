@@ -21,14 +21,21 @@ namespace numl.Supervised.NeuralNetwork
         /// <value>The out.</value>
         public Node[] Out { get; set; }
 
+        /// <summary>
+        /// Gets or sets the cost.
+        /// </summary>
+        /// <value>The cost.</value>
         public double Cost { get; set; } = 0d;
 
-        /// <summary>Defaults.</summary>
+        /// <summary>
+        /// Defaults.
+        /// </summary>
         /// <param name="d">The Descriptor to process.</param>
         /// <param name="x">The Vector to process.</param>
         /// <param name="y">The Vector to process.</param>
         /// <param name="activationFunction">The activation.</param>
         /// <param name="outputFunction">The ouput function for hidden nodes (Optional).</param>
+        /// <param name="epsilon">The epsilon.</param>
         /// <returns>A Network.</returns>
         public static Network Default(Descriptor d, Matrix x, Vector y, IFunction activationFunction, IFunction outputFunction = null, double epsilon = double.NaN)
         {
@@ -264,9 +271,11 @@ namespace numl.Supervised.NeuralNetwork
                 Out[i].Evaluate();
         }
 
-        /// <summary>Backpropagates the errors through the network given the supplied label.</summary>
-        /// <param name="t">The double to process.</param>
-        /// <param name="learningRate">The learning rate.</param>
+        /// <summary>
+        /// Backpropagates the errors through the network given the supplied label.
+        /// </summary>
+        /// <param name="y">The y.</param>
+        /// <param name="properties">The properties.</param>
         public void Back(double y, NetworkTrainingProperties properties)
         {
             this.Cost = Score.ComputeRMSE(Vector.Create(this.Out.Length, () => y), this.Out.Select(s => s.Output).ToVector());
@@ -280,9 +289,11 @@ namespace numl.Supervised.NeuralNetwork
                 Out[i].Update(properties);
         }
 
-        /// <summary>Backpropagates the errors through the network given the supplied sequence label.</summary>
-        /// <param name="t">The double to process.</param>
-        /// <param name="learningRate">The learning rate.</param>
+        /// <summary>
+        /// Backpropagates the errors through the network given the supplied sequence label.
+        /// </summary>
+        /// <param name="y">The y.</param>
+        /// <param name="properties">The properties.</param>
         /// <param name="update">Indicates whether to update the weights after computing the errors.</param>
         public void Back(Vector y, NetworkTrainingProperties properties, bool update = true)
         {
@@ -300,14 +311,6 @@ namespace numl.Supervised.NeuralNetwork
                     Out[i].Update(properties);
             }
         }
-
-        /// <summary>Propagates a Delta reset event through the network starting from the output Node.</summary>
-        /// <param name="newDelta">New delta value to apply to each Node.</param>
-        //public void Reset(double newDelta)
-        //{
-        //    for (int i = 0; i < Out.Length; i++)
-        //        Out[i].Reset(newDelta);
-        //}
 
         /// <summary>The nodes.</summary>
         private HashSet<string> _nodes;

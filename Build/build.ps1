@@ -1,6 +1,6 @@
 properties {
 	$majorVersion = "0.9"
-	$majorWithReleaseVersion = "0.9.8"
+	$majorWithReleaseVersion = "0.9.9"
 	$nugetPrelease = "beta"
 	$packageId = "numl"
 	$version = GetVersion $majorWithReleaseVersion

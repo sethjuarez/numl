@@ -4,6 +4,8 @@ using System.Linq;
 using NUnit.Framework;
 using numl.Math.LinearAlgebra;
 using numl.Utils;
+using System.Collections.Generic;
+using numl.Math.Probability;
 
 namespace numl.Tests.MathTests
 {
@@ -206,7 +208,7 @@ namespace numl.Tests.MathTests
         [Test]
         public void Vector_Reshape_To_Matrix_1()
         {
-            Vector v = new Vector(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+            Vector v = new [] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
             Matrix ans = new double[,] 
             {
@@ -225,7 +227,7 @@ namespace numl.Tests.MathTests
         [Test]
         public void Vector_Reshape_To_Matrix_2()
         {
-            Vector v = new Vector(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+            Vector v = new [] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
             Matrix ans = new double[,]
             {
@@ -247,7 +249,7 @@ namespace numl.Tests.MathTests
         [Test]
         public void Vector_Reshape_To_Matrix_3()
         {
-            Vector v = new Vector(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+            Vector v = new [] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
             Matrix ans = new double[,]
             {
@@ -265,5 +267,21 @@ namespace numl.Tests.MathTests
             Assert.AreEqual(v[5], ans[0, 1]);
             Assert.AreEqual(v[9], ans[4, 1]);
         }
+
+        [Test]
+        public void Vector_GetRandom_Element_Test()
+        {
+            Vector v = new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            Vector h = new Vector(v.Length);
+            for (int i = 0; i < 10000; i++)
+                h[(int)v.GetRandom()] += 1;
+
+            h = h / 1000;
+
+            for (int i = 0; i < h.Length; i++)
+                Assert.AreEqual(1d, h[i], .1);
+
+        }
     }
 }
+

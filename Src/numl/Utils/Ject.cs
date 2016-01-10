@@ -17,7 +17,21 @@ namespace numl.Utils
     /// <summary>This class is used for fast reflection over types.</summary>
     public static class Ject
     {
+        /// <summary>
+        /// The default truth value. 
+        /// This is important given that numl
+        /// assumes numerical truthiness as 1.0d.
+        /// This can be overriden depending on
+        /// your model.
+        /// </summary>
         public const double DefaultTruthValue = 1.0;
+        /// <summary>
+        /// The default false value.
+        /// This is important given that numl
+        /// assumes numerical falsiness as -1.0d
+        /// This can be overriden depending on your
+        /// model.
+        /// </summary>
         public const double DefaultFalseValue = -1.0;
 
         /// <summary>The accessors.</summary>

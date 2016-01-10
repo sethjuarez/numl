@@ -94,29 +94,6 @@ namespace numl.Tests.SupervisedTests
         }
 
         [Test]
-        public void ArbitraryPrediction_Test_With_Feature_Value_Greater_Than_Trained_Instances()
-        {
-
-            ArbitraryPrediction predictionValue = new ArbitraryPrediction
-            {
-                FirstTestFeature = 1.0m,
-                //This value is greater than any of the trained instances
-                SecondTestFeature = 106.0m,
-                ThirdTestFeature = 1.2m
-            };
-
-            Assert.Throws<InvalidOperationException>(
-                () => { 
-                Prediction<ArbitraryPrediction>(
-                    new DecisionTreeGenerator(50),
-                    ArbitraryPrediction.GetData(),
-                    predictionValue,
-                    ap => ap.OutcomeLabel == ArbitraryPrediction.PredictionLabel.Maximum
-                );
-            });
-        }
-
-        [Test]
         public void ArbitraryPrediction_Test_With_Named_Iterator()
         {
             var data = ArbitraryPrediction.GetDataUsingNamedIterator();
