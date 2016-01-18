@@ -24,7 +24,11 @@ namespace numl.Supervised.NeuralNetwork
 
         /// <summary>Gets or sets the maximum iterations.</summary>
         /// <value>The maximum iterations.</value>
-        public int MaxIterations { get; set; }
+        public int MaxIterations
+        {
+            get;
+            set;
+        }
 
         /// <summary>Gets or sets the activation.</summary>
         /// <value>The activation.</value>
@@ -49,12 +53,17 @@ namespace numl.Supervised.NeuralNetwork
             Epsilon = 0.5;
             Activation = new Tanh();
         }
+
         /// <summary>Generate model based on a set of examples.</summary>
         /// <param name="X">The Matrix to process.</param>
         /// <param name="y">The Vector to process.</param>
         /// <returns>Model.</returns>
         public override IModel Generate(Matrix X, Vector y)
         {
+            // store max iterations so it can be reset
+            // after training (just in case the generator
+            // is reused)
+            var maxIterations = MaxIterations;
             this.Preprocess(X, y);
             // because I said so...
             if (MaxIterations == -1) MaxIterations = X.Rows * 500;
@@ -86,6 +95,11 @@ namespace numl.Supervised.NeuralNetwork
                 var output = String.Format("Run ({0}/{1}): {2}", i, MaxIterations, network.Cost);
                 OnModelChanged(this, ModelEventArgs.Make(model, output));
             }
+
+            // restore original iteration
+            // variable (just in case the
+            // generator is reused)
+            MaxIterations = maxIterations;
 
             return model;
         }

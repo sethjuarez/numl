@@ -16,7 +16,7 @@ namespace numl.Supervised.NeuralNetwork.Encoders
         /// </summary>
         public double Sparsity { get; set; }
 
-        /// <summary>Calculates and returns the Node's <see cref="Output"/> value.</summary>
+        /// <summary>Calculates and returns the Node's <see cref="Node.Output"/> value.</summary>
         /// <remarks>Input is equal to the weights multiplied by the source <see cref="Node"/>'s Output.</remarks>
         /// <returns>A double.</returns>
         public override double Evaluate()
@@ -24,7 +24,7 @@ namespace numl.Supervised.NeuralNetwork.Encoders
             return base.Evaluate();
         }
 
-        /// <summary>Calculates and returns the error derivative (<see cref="Delta"/>) of this node.</summary>
+        /// <summary>Calculates and returns the error derivative (<see cref="Node.Delta"/>) of this node.</summary>
         /// <param name="t">The double to process.</param>
         /// <returns>A double.</returns>
         public override double Error(double t)

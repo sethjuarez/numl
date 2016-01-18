@@ -80,11 +80,15 @@ namespace numl.Tests.SupervisedTests
         public static IModel Prediction<T>(IGenerator generator, IEnumerable<T> data, T item, Func<T, bool> test)
             where T : class
         {
-            var description = Descriptor.Create<T>();
-            var model = generator.Generate(description, data);
-            var prediction = model.Predict(item);
+            generator.Descriptor = Descriptor.Create<T>();
+            // I can't assume it will always do a good job
+            // especially because of overfitting
+            //var model = generator.Generate(description, data);
+            var model = Learner.Learn(data, .7, 10, generator);
+            Console.WriteLine($"{model}");
+            var prediction = model.Model.Predict(item);
             Assert.IsTrue(test(prediction));
-            return model;
+            return model.Model;
         }
 
         public void HousePrediction(IGenerator generator)

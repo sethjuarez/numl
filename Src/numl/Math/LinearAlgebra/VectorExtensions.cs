@@ -4,6 +4,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using numl.Math.Probability;
 
 namespace numl.Math.LinearAlgebra
 {
@@ -766,6 +767,16 @@ namespace numl.Math.LinearAlgebra
             for (int i = 0; i < v.Length; i++)
                 result[i] = (fnPredicate(v[i]) ? trueValue : falseValue);
             return result;
+        }
+
+        /// <summary>
+        /// Gets a random element from the vector.
+        /// </summary>
+        /// <param name="v">The v.</param>
+        /// <returns>System.Double.</returns>
+        public static double GetRandom(this Vector v)
+        {
+            return v[Sampling.GetUniform(v.Length - 1)];
         }
     }
 }

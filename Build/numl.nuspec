@@ -16,7 +16,7 @@
         <language>en-US</language>
         <tags>machine learning, framework</tags>
         <dependencies>
-            <dependency id="Newtonsoft.Json" version="7.0.1" />
+            <dependency id="Newtonsoft.Json" version="8.0.2" />
         </dependencies> 
     </metadata>
 </package>

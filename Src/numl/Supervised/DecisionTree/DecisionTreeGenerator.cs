@@ -8,6 +8,7 @@ using numl.Math.Information;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 using numl.Utils;
+using numl.Math.Probability;
 
 namespace numl.Supervised.DecisionTree
 {
@@ -92,6 +93,14 @@ namespace numl.Supervised.DecisionTree
             this.Preprocess(x, y);
 
             var n = BuildTree(x, y, Depth, new List<int>(x.Cols));
+
+            // have to guess something....
+            // especially when automating
+            // the thing in a Learner
+            // this only happens if it is something
+            // it has never seen.
+            if (Hint == double.Epsilon)
+                Hint = y.GetRandom(); // flip a coin...
 
             return new DecisionTreeModel
             {

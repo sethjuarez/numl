@@ -43,7 +43,7 @@ There are several links for installing the bits depending on your OS.
         "System.Linq": "4.0.1-*",
         "System.Collections.Concurrent": "4.0.11-*",
         "System.Linq.Expressions": "4.0.11-*",
-        "numl": "0.9.8-*"
+        "numl": "0.9.9-*"
     },
 
     "frameworks": {
@@ -59,7 +59,7 @@ These were lines added:
         "System.Linq": "4.0.1-*",
         "System.Collections.Concurrent": "4.0.11-*",
         "System.Linq.Expressions": "4.0.11-*",
-        "numl": "0.9.8-*"
+        "numl": "0.9.9-*"
 ```
 
 If you are using Visual Studio Code, as soon as you make the changes to the
