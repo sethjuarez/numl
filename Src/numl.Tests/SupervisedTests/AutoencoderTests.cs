@@ -44,9 +44,9 @@ namespace numl.Tests.SupervisedTests
 
             var test = new Matrix(new double[,]
             {
-                { 1.05, 2.80, 3.5, 4.14, 5.25, 6.35 },
-                { 1.10, 2.99, 3.9, 4.19, 5.30, 6.40 },
-                { 1.07, 2.90, 3.7, 4.16, 5.27, 6.37 }
+                { 3.05, 2.80, 3.5, 4.14, 7.25, 6.35 },
+                { 1.90, 2.99, 3.9, 8.19, 5.30, 6.40 },
+                { 1.07, 2.90, 4.7, 4.16, 5.27, 9.37 }
             });
 
             var d = Descriptor.New("DIST")
@@ -61,10 +61,12 @@ namespace numl.Tests.SupervisedTests
             var generator = new AutoencoderGenerator { Descriptor = d, LearningRate = 0.1, OutputFunction = new Math.Functions.Ident() };
             var encoder = (ISequenceModel)generator.Generate(distribution);
 
+            Vector avg = d.ToExamples(distribution).Item1.Mean(VectorType.Row);
+
             for (int i = 0; i < test.Rows; i++)
             {
-                var score = Score.ScorePredictions(encoder.PredictSequence(test[i, VectorType.Row]), test[i, VectorType.Row]);
-                Assert.LessOrEqual(score.NormRMSE, 0.2);
+                var score = Score.ScorePredictions(encoder.PredictSequence(test[i, VectorType.Row]), avg);
+                Assert.LessOrEqual(score.MeanAbsError, 0.001);
             }
 
         }

@@ -78,7 +78,7 @@ namespace numl.Tests.SupervisedTests
                 y[i] = model.Predict(x[i, VectorType.Row]);
 
             var score = numl.Supervised.Score.ScorePredictions(y, actual);
-            Console.WriteLine(string.Format("Neural Network XOR Test (score) => RMSE: {0}, Accuracy: {1}", score.RMSE, score.Accuracy));
+            Console.WriteLine(string.Format("Neural Network XOR Test (score) =>\n{0}", score.RMSE));
         }
 
         [Test]
@@ -161,6 +161,39 @@ namespace numl.Tests.SupervisedTests
 
             //Assert.AreEqual(0.40416686, output2, 0.002, "Second pass");
             Assert.AreEqual(0.30399969, output2, 0.002, "Second pass");
+        }
+
+        [Test]
+        public void Neural_Network_Study_Test()
+        {
+            var data = new[] {
+                new { Study = 2.0, Beer = 3.0, Passed = false},
+                new { Study = 3.0, Beer = 4.0, Passed = false},
+                new { Study = 1.0, Beer = 6.0, Passed = false},
+                new { Study = 4.0, Beer = 5.0, Passed = false},
+                new { Study = 6.0, Beer = 2.0, Passed = true},
+                new { Study = 8.0, Beer = 3.0, Passed = true},
+                new { Study = 12.0, Beer = 1.0, Passed = true},
+                new { Study = 3.0, Beer = 2.0, Passed = true}
+            };
+
+            var descriptor = Descriptor.New("Student")
+                .With("Study").As(typeof(double))
+                .With("Beer").As(typeof(double))
+                .Learn("Passed").As(typeof(bool));
+
+            NeuralNetworkGenerator generator = new NeuralNetworkGenerator()
+            {
+                Descriptor = descriptor,
+                NormalizeFeatures = true,
+                LearningRate = 0.1
+            };
+
+            var model = Learner.Learn(data, 0.8, 10, generator);
+
+            var test = model.Model.Predict(new { Study = 7.0, Beer = 1.0, Passed = false });
+
+            Assert.AreEqual(true, test.Passed);
         }
     }
 }

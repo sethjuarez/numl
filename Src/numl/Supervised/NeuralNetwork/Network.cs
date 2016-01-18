@@ -21,6 +21,9 @@ namespace numl.Supervised.NeuralNetwork
         /// <value>The out.</value>
         public Node[] Out { get; set; }
 
+        /// <summary>
+        /// Gets or sets the current loss of the network.
+        /// </summary>
         public double Cost { get; set; } = 0d;
 
         /// <summary>Defaults.</summary>
@@ -265,8 +268,8 @@ namespace numl.Supervised.NeuralNetwork
         }
 
         /// <summary>Backpropagates the errors through the network given the supplied label.</summary>
-        /// <param name="t">The double to process.</param>
-        /// <param name="learningRate">The learning rate.</param>
+        /// <param name="y">Label to process.</param>
+        /// <param name="properties">Network training properties for use in learning.</param>
         public void Back(double y, NetworkTrainingProperties properties)
         {
             this.Cost = Score.ComputeRMSE(Vector.Create(this.Out.Length, () => y), this.Out.Select(s => s.Output).ToVector());
@@ -281,8 +284,8 @@ namespace numl.Supervised.NeuralNetwork
         }
 
         /// <summary>Backpropagates the errors through the network given the supplied sequence label.</summary>
-        /// <param name="t">The double to process.</param>
-        /// <param name="learningRate">The learning rate.</param>
+        /// <param name="y">Output vector to process.</param>
+        /// <param name="properties">Network training properties for use in learning.</param>
         /// <param name="update">Indicates whether to update the weights after computing the errors.</param>
         public void Back(Vector y, NetworkTrainingProperties properties, bool update = true)
         {

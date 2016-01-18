@@ -100,7 +100,7 @@ namespace numl.Math.Probability
         /// <returns></returns>
         public static double GetUniform(double min = 0d, double max = 1.0d)
         {
-            return Sampling.GetUniform() * (2.0 * max) - System.Math.Abs(min);
+            return min + (Sampling.GetUniform() * ((max - min) + 1d));
         }
 
         /// <summary>

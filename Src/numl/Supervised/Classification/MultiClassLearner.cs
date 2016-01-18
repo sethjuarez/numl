@@ -162,17 +162,15 @@ namespace numl
 
                 Task.WaitAll(learningTasks);
 
+                Score[] scores = new Score[learningTasks.Count()];
+
                 for (int c = 0; c < learningTasks.Count(); c++)
                 {
                     models[learningTasks[c].Result.Item3] = learningTasks[c].Result.Item1;
-
-                    finalScore.FalseNegatives += learningTasks[c].Result.Item2.FalseNegatives;
-                    finalScore.TrueNegatives += learningTasks[c].Result.Item2.TrueNegatives;
-                    finalScore.FalsePositives += learningTasks[c].Result.Item2.FalsePositives;
-                    finalScore.TruePositives += learningTasks[c].Result.Item2.TruePositives;
-                    finalScore.TotalNegatives += learningTasks[c].Result.Item2.TotalNegatives;
-                    finalScore.TotalPositives += learningTasks[c].Result.Item2.TotalPositives;
+                    scores[c] = learningTasks[c].Result.Item2;
                 }
+
+                finalScore = Score.CombineScores(scores);
             }
             else
             {

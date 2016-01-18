@@ -41,8 +41,29 @@ namespace numl.Supervised.NeuralNetwork
         [JsonProperty]
         public bool Constrained { get; set; }
 
+        /// <summary>
+        /// Gets or sets whether this node is a bias node.
+        /// </summary>
         [JsonProperty]
         public bool IsBias { get; set; }
+
+        /// <summary>
+        /// Returns true if this Node is in the input layer, otherwise returns false.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsInput { get { return this.In.Count == 0; } }
+
+        /// <summary>
+        /// Returns true if this Node is a hidden node, otherwise returns false.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsHidden { get { return this.In.Count > 0 && this.Out.Count > 0; } }
+
+        /// <summary>
+        /// Returns true if this Node is in the output layer, otherwise returns false.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsOutput { get { return this.Out.Count == 0; } }
 
         /// <summary>Gets or sets the output value.</summary>
         /// <value>The output.</value>
@@ -80,6 +101,9 @@ namespace numl.Supervised.NeuralNetwork
         [JsonProperty]
         public int LayerId { get; set; }
 
+        /// <summary>
+        /// Gets or sets the Node index in the layer.
+        /// </summary>
         [JsonProperty]
         public int NodeId { get; set; }
 
@@ -121,7 +145,7 @@ namespace numl.Supervised.NeuralNetwork
         }
 
         /// <summary>Calculates and returns the error derivative (<see cref="Delta"/>) of this node.</summary>
-        /// <param name="t">The double to process.</param>
+        /// <param name="t">Error derivative from the previous layer (n + 1).</param>
         /// <returns>A double.</returns>
         public virtual double Error(double t)
         {
@@ -158,10 +182,14 @@ namespace numl.Supervised.NeuralNetwork
         {
             for (int edge = 0; edge < this.In.Count; edge++)
             {
+                Delta = (1.0 / properties.Examples) * Delta;
+
+                if (edge > 0)
+                    Delta = Delta + ((properties.Lambda / properties.Examples) * this.In[edge].Weight);
+
                 if (!this.Constrained)
                 {
                     // using stochastic gradient descent averaged over training examples.
-                    Delta = (1.0 / properties.Examples) * Delta;
                     this.In[edge].Weight = this.In[edge].Weight - properties.LearningRate * Delta;
 
                     // RMSProp (needs to move into a neural optimizer method)

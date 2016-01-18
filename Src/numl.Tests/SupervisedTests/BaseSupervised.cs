@@ -25,6 +25,21 @@ namespace numl.Tests.SupervisedTests
         //}
 
         /// <summary>
+        /// Computes the numerical gradient on the supplied theta.
+        /// </summary>
+        /// <param name="fnGradientSelector">Function to call for computing the gradient with a new theta value.</param>
+        /// <param name="theta">Initial theta value.</param>
+        /// <returns></returns>
+        protected double ComputeNumericalGradient(Func<double, double> fnGradientSelector, double theta)
+        {
+            double e = 1e-4;
+            double loss1 = fnGradientSelector(theta - e);
+            double loss2 = fnGradientSelector(theta + e);
+
+            return (loss2 - loss1) / (2 * e);
+        }
+
+        /// <summary>
         /// Compute the numerical gradient of a random test problem using the supplied cost function reference.
         /// </summary>
         /// <param name="fnCostSelector">A reference to a cost function accepting a Vector.</param>
@@ -40,6 +55,7 @@ namespace numl.Tests.SupervisedTests
             for (int p = 0; p < numericalGrad.Length; p++)
             {
                 perturb[p] = e;
+
                 double loss1 = fnCostSelector(theta - perturb);
                 double loss2 = fnCostSelector(theta + perturb);
 

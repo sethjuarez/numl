@@ -198,6 +198,8 @@
     <Compile Include="Supervised\Score.cs" />
     <Compile Include="Supervised\ScoringMetric.cs" />
     <Compile Include="Supervised\SVM\Selection\ISelection.cs" />
+    <Compile Include="Supervised\SVM\Selection\RandomSetSelection.cs" />
+    <Compile Include="Supervised\SVM\Selection\SequentialSetSelection.cs" />
     <Compile Include="Supervised\SVM\Selection\WorkingSetSelection3.cs" />
     <Compile Include="Supervised\SVM\SVMGenerator.cs" />
     <Compile Include="Supervised\SVM\SVMModel.cs" />

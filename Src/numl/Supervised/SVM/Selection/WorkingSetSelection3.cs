@@ -40,6 +40,17 @@ namespace numl.Supervised.SVM.Selection
         public Vector Y { get; set; }
 
         /// <summary>
+        /// Initializes the selection function.
+        /// </summary>
+        /// <param name="alpha">Alpha vector</param>
+        /// <param name="gradient">Gradient vector.</param>
+        public void Initialize(Vector alpha, Vector gradient)
+        {
+            alpha.Each((d) => 0, false);
+            gradient.Each((d) => -1, false);
+        }
+
+        /// <summary>
         /// Gets a new working set selection of i, j pair.
         /// </summary>
         /// <param name="i">Current working set pair i.</param>
@@ -51,20 +62,22 @@ namespace numl.Supervised.SVM.Selection
         {
             int m = this.Y.Length, ij = -1, jj = -1;
             double maxGrad = double.NegativeInfinity, minGrad = double.PositiveInfinity,
-                minObj = double.PositiveInfinity, a = 0.0, b = 0.0;
+                minObj = double.PositiveInfinity, a = 0.0, b = 0.0, tempGrad = 0.0, tempObj;
+
+            double tau = System.Math.Pow(this.Epsilon, 2.0);
 
             // choose i
             for (int k = 0; k < m; k++)
             {
                 // check for analytical constraints:
-                // (this.Y[k] >= 0 and A < C or this.Y[k] <= 0 and A >= 0)
                 if ((this.Y[k] >= 1.0 && alpha[k] < this.C) || (this.Y[k] <= 0.0 && alpha[k] > 0.0))
                 {
-                    if (-this.Y[k] * gradient[k] >= maxGrad)
+                    tempGrad = -this.Y[k] * gradient[k];
+                    if (tempGrad >= maxGrad)
                     {
                         // store new best fit
                         ij = k;
-                        maxGrad = -this.Y[k] * gradient[k];
+                        maxGrad = tempGrad;
                     }
                 }
             }
@@ -82,14 +95,16 @@ namespace numl.Supervised.SVM.Selection
                     if (b > 0.0)
                     {
                         // compute kernel sub-pair
-                        a = K[ij][ij] + K[k][k] - 2 * this.Y[ij] * this.Y[k] * K[ij][k];
+                        a = K[ij, ij] + K[k, k] - 2 * this.Y[ij] * this.Y[k] * K[ij, k];
                         if (a <= 0)
-                            a = this.Epsilon; // make sure a is within margin
-                        if (-(b * b) / a <= minObj)
+                            a = tau;
+
+                        tempObj = -(b * b) / a;
+                        if (tempObj <= minObj)
                         {
                             // store new best fit and it's cost
                             jj = k;
-                            minObj = -(b * b) / a;
+                            minObj = tempObj;
                         }
                     }
                 }
@@ -99,11 +114,11 @@ namespace numl.Supervised.SVM.Selection
             {
                 return new Tuple<int, int>(-1, -1);
             }
-            else if (i == ij && j == jj)
+            if (jj == -1 || ij == jj)
             {
-                ij = (int)Sampling.GetUniform(-1, m).Clip(0, m - 1);
                 jj = (int)Sampling.GetUniform(-1, m).Clip(0, m - 1);
             }
+
             return new Tuple<int, int>(ij, jj);
         }
     }

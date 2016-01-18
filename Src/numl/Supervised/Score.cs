@@ -2,6 +2,7 @@
 using System.Linq;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
+using numl.Utils;
 
 namespace numl.Supervised
 {
@@ -11,6 +12,12 @@ namespace numl.Supervised
     public class Score
     {
         private double _totalAccuracy = double.NaN;
+        private bool _IsBinary = true;
+
+        /// <summary>
+        /// Gets or sets the total number of scored examples.
+        /// </summary>
+        public int Examples { get; set; }
 
         /// <summary>
         /// Gets or sets the total test accuracy as defined by the normalized distribution over true vs negative cases.
@@ -62,6 +69,16 @@ namespace numl.Supervised
         /// Gets or sets the number of incorrectly scored negative examples.
         /// </summary>
         public int FalseNegatives { get; set; }
+
+        /// <summary>
+        /// Gets or sets the sum of squared errors of the predictions.
+        /// </summary>
+        public double SSE { get; set; }
+
+        /// <summary>
+        /// Gets or sets the mean squared error of the predictions.
+        /// </summary>
+        public double MSE { get; set; }
 
         /// <summary>
         /// Gets or sets the Root Mean Squared Error of the predictions.
@@ -166,20 +183,42 @@ namespace numl.Supervised
         #region Static Methods
 
         /// <summary>
+        /// Computes the Mean Squared Error of the given inputs.
+        /// </summary>
+        /// <param name="y1">Predicted values.</param>
+        /// <param name="y2">Actual values.</param>
+        /// <returns>Double.</returns>
+        public static double ComputeSSE(Vector y1, Vector y2)
+        {
+            return ((y1 - y2) * (y1 - y2)).Sum();
+        }
+
+        /// <summary>
+        /// Computes the Mean Squared Error of the given inputs.
+        /// </summary>
+        /// <param name="y1">Predicted values.</param>
+        /// <param name="y2">Actual values.</param>
+        /// <returns>Double.</returns>
+        public static double ComputeMSE(Vector y1, Vector y2)
+        {
+            return (1.0 / y1.Length) * ComputeSSE(y1, y2);
+        }
+
+        /// <summary>
         /// Computes the Root Mean Squared Error for the given inputs.
         /// </summary>
-        /// <param name="y1">Target values.</param>
+        /// <param name="y1">Predicted values.</param>
         /// <param name="y2">Actual values.</param>
         /// <returns>Double.</returns>
         public static double ComputeRMSE(Vector y1, Vector y2)
         {
-            return System.Math.Sqrt(((y1 - y2) * (y1 - y2)).Sum() / (double)y1.Length);
+            return System.Math.Sqrt(Score.ComputeMSE(y1, y2));
         }
 
         /// <summary>
         /// Computes the Coefficient of Variation of the Root Mean Squared Error for the given inputs.
         /// </summary>
-        /// <param name="y1">Target values.</param>
+        /// <param name="y1">Predicted values.</param>
         /// <param name="y2">Actual values.</param>
         /// <returns>Double.</returns>
         public static double ComputeCoefRMSE(Vector y1, Vector y2)
@@ -190,7 +229,7 @@ namespace numl.Supervised
         /// <summary>
         /// Computes the Normalized Root Mean Squared Error for the given inputs.
         /// </summary>
-        /// <param name="y1">Target values.</param>
+        /// <param name="y1">Predicted values.</param>
         /// <param name="y2">Actual values.</param>
         /// <returns>Double.</returns>
         public static double ComputeNormRMSE(Vector y1, Vector y2)
@@ -201,7 +240,7 @@ namespace numl.Supervised
         /// <summary>
         /// Computes the Mean Absolute Error for the given inputs.
         /// </summary>
-        /// <param name="y1">Target values.</param>
+        /// <param name="y1">Predicted values.</param>
         /// <param name="y2">Actual values.</param>
         /// <returns></returns>
         public static double ComputeMeanError(Vector y1, Vector y2)
@@ -212,26 +251,70 @@ namespace numl.Supervised
         #endregion
 
         /// <summary>
+        /// Returns a string representation of the current Score object.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+
+            return $"Score:\n[" +
+                    $"\n\tNo# of Predictions:\t{Examples}" +
+                    "\n\t---------------------------------" +
+                    $"\n\tAccuracy:\t\t{System.Math.Round(Accuracy, 6)}" +
+                    $"\n\tMAE:\t\t\t{System.Math.Round(MeanAbsError, 6)}" +
+                    $"\n\tSSE:\t\t\t{System.Math.Round(SSE, 6)}" +
+                    $"\n\tMSE:\t\t\t{System.Math.Round(MSE, 6)}" +
+                    $"\n\tRMSE:\t\t\t{System.Math.Round(RMSE, 6)}" +
+                    "\n" +
+                    $"\n\tCoef RMSE:\t\t{System.Math.Round(CoefRMSE, 6)}" +
+                    $"\n\tNorm RMSE:\t\t{System.Math.Round(NormRMSE, 6)}" +
+                    "\n" +
+                    (this._IsBinary ? 
+                      ( $"\n\tAUC:\t\t\t{System.Math.Round(AUC, 6)}" +
+                        "\n\t---------------------------------" +
+                        $"\n\tTrue Positives:\t{TruePositives}" +
+                        $"\n\tFalse Positives:\t{FalsePositives}" +
+                        $"\n\tTrue Negatives:\t{TrueNegatives}" +
+                        $"\n\tFalse Negatives:\t{FalseNegatives}" +
+                        "\n\t---------------------------------" +
+                        $"\n\tPrecision:\t\t{System.Math.Round(Precision, 6)}" +
+                        $"\n\tRecall:\t\t{System.Math.Round(Recall, 6)}" +
+                        $"\n\tSpecificity:\t\t{System.Math.Round(Specificity, 6)}" +
+                        $"\n\tFallout:\t\t{System.Math.Round(Fallout, 6)}" +
+                        $"\n\tF-Score:\t\t{System.Math.Round(FScore, 6)}" )
+                        : string.Empty +
+                    "\n]";
+        }
+
+        /// <summary>
         /// Scores a set of predictions against the actual values.
         /// </summary>
         /// <param name="predictions">Predicted values.</param>
         /// <param name="actual">Actual values.</param>
+        /// <param name="truthLabel">(Optional) the truth label in the <paramref name="actual"/> vector.</param>
+        /// <param name="falseLabel">(Optional) the false label in the <paramref name="actual"/> vector.</param>
         /// <returns></returns>
-        public static numl.Supervised.Score ScorePredictions(Vector predictions, Vector actual)
+        public static Score ScorePredictions(Vector predictions, Vector actual, 
+                                            double truthLabel = Ject.DefaultTruthValue, double falseLabel = Ject.DefaultFalseValue)
         {
-            // TODO: This may not be computing correctly.
             var score = new numl.Supervised.Score()
             {
-                TotalPositives = actual.Where(w => w == 1d).Count(),
-                TotalNegatives = actual.Where(w => (w == 0d || w == -1d)).Count(),
-                TruePositives = actual.Where((i, idx) => i == 1d && i == predictions[idx]).Count(),
-                FalsePositives = actual.Where((i, idx) => (i == -1d || i == 0d) && predictions[idx] == 1d).Count(),
-                TrueNegatives = actual.Where((i, idx) => (i == -1d || i == 0d) && i == predictions[idx]).Count(),
-                FalseNegatives = actual.Where((i, idx) => i == 1d && (predictions[idx] == 0d || predictions[idx] == -1d)).Count()
+                TotalPositives = actual.Where(w => w == truthLabel).Count(),
+                TotalNegatives = actual.Where(w => (w == falseLabel || w != truthLabel)).Count(),
+
+                TruePositives = actual.Where((i, idx) => i == truthLabel && i == predictions[idx]).Count(),
+                FalsePositives = actual.Where((i, idx) => (i == falseLabel || i != truthLabel) && predictions[idx] == truthLabel).Count(),
+
+                TrueNegatives = actual.Where((i, idx) => (i == falseLabel || i != truthLabel) && predictions[idx] != truthLabel).Count(),
+                FalseNegatives = actual.Where((i, idx) => i == truthLabel && (predictions[idx] == falseLabel || predictions[idx] != truthLabel)).Count(),
+
+                Examples = predictions.Length
             };
 
+            score._IsBinary = actual.IsBinary();
+
             // if the labels are continuous values then calculate accuracy manually
-            if (!actual.IsBinary())
+            if (!score._IsBinary)
             {
                 score._totalAccuracy = (predictions.Where((d, idx) => d == actual[idx]).Count() / predictions.Length);
             }
@@ -240,8 +323,42 @@ namespace numl.Supervised
             score.CoefRMSE = Score.ComputeCoefRMSE(predictions, actual);
             score.NormRMSE = Score.ComputeRMSE(predictions, actual);
             score.MeanAbsError = Score.ComputeMeanError(predictions, actual);
+            score.SSE = Score.ComputeSSE(predictions, actual);
+            score.MSE = Score.ComputeMSE(predictions, actual);
 
             return score;
+        }
+
+        /// <summary>
+        /// Combines and averages metrics across all the given scores.
+        /// </summary>
+        /// <param name="scores">Scores.</param>
+        /// <returns></returns>
+        public static Score CombineScores(params Score[] scores)
+        {
+            if (scores == null) return null;
+
+            Score result = new Score();
+
+            result.Accuracy = scores.Average(s => s.Accuracy);
+            result.CoefRMSE = scores.Average(s => s.CoefRMSE);
+            result.Examples = scores.Sum(s => s.Examples);
+
+            result.MSE = scores.Sum(s => s.MSE);
+            
+            result.MeanAbsError = scores.Average(s => s.MeanAbsError);
+            result.NormRMSE = scores.Average(s => s.NormRMSE);
+            result.RMSE = scores.Average(s => s.RMSE);
+
+            result.TotalNegatives = scores.Sum(s => s.TotalNegatives);
+            result.TotalPositives = scores.Sum(s => s.TotalPositives);
+
+            result.TrueNegatives = scores.Sum(s => s.TrueNegatives);
+            result.TruePositives = scores.Sum(s => s.TruePositives);
+            result.FalseNegatives = scores.Sum(s => s.FalseNegatives);
+            result.FalsePositives = scores.Sum(s => s.FalsePositives);
+
+            return result;
         }
     }
 }

@@ -38,6 +38,13 @@ namespace numl.Supervised.SVM.Selection
         Vector Y { get; set; }
 
         /// <summary>
+        /// Initializes the selection function.
+        /// </summary>
+        /// <param name="alpha">Alpha vector</param>
+        /// <param name="gradient">Gradient vector.</param>
+        void Initialize(Vector alpha, Vector gradient);
+
+        /// <summary>
         /// Gets a new working set selection of i, j pair.
         /// </summary>
         /// <param name="i">Current working set pair i.</param>

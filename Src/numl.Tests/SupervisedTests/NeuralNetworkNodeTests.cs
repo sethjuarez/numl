@@ -11,8 +11,10 @@ using numl.Math.LinearAlgebra;
 namespace numl.Tests.SupervisedTests
 {
     [TestFixture, Category("Supervised")]
-    public class NeuralNetworkNodeTests
+    public class NeuralNetworkNodeTests : BaseSupervised
     {
+        private readonly double Epsilon = 10e-004;
+
         private readonly Matrix X = new double[][]
             {
                 new [] {  1.0000,   2.0000,   3.0000,   4.0000  }, // X1
@@ -155,6 +157,19 @@ namespace numl.Tests.SupervisedTests
 
         #endregion
 
+        /// <summary>
+        /// Function for updating the specified theta value and returning the new error.
+        /// </summary>
+        private readonly Func<Network, Node, Vector, Vector, int, double, double> FnCostUpdateFunction = (network, n, input, output, id, theta) =>
+        {
+            n.Out[id].Weight = theta;
+
+            network.Forward(input);
+            network.Back(output, null, false);
+
+            return network.Cost;
+        };
+
         private Network Get_1Layer_Network()
         {
             return Network.Create(4, 3, new Math.Functions.Logistic(), null, null, (l, i, j) =>
@@ -296,6 +311,82 @@ namespace numl.Tests.SupervisedTests
                         Assert.AreEqual(Delta1_2Layer_Case2[input, VectorType.Col].Sum(), net.In[input].Delta, 0.8,
                             $"Node: {net.In[input].Label}");
                 }
+            }
+        }
+
+        [Test]
+        public void Check_Neural_Network_Gradients()
+        {
+            Matrix xtest = new double[][]
+            {
+                new [] {    0.54030,  -0.41615  }, // X1
+                new [] {    0.54030,  -0.41615  }, // X2
+                new [] {    0.28366,   0.96017  }  // X3
+            }.ToMatrix();
+
+            Matrix ytest = new double[][]
+            {
+                new [] {   0d, 0d, 0d, 1d  }, // X1
+                new [] {   0d, 1d, 0d, 0d  }, // X2
+                new [] {   0d, 0d, 1d, 0d  }  // X3
+            }.ToMatrix();
+
+            Matrix theta1 = new double[][]
+            {              //b  //1  //2
+                new [] {   0.1, 0.3, 0.5  }, // h1
+                new [] {   0.2, 0.4, 0.6  }, // h2
+            }.ToMatrix();
+
+            Matrix theta2 = new double[][]
+            {              //b //h1 //h2
+                new [] {   0.7, 1.1, 1.5  }, //o1
+                new [] {   0.8, 1.2, 1.6  }, //o2
+                new [] {   0.9, 1.3, 1.7  }, //o3
+                new [] {   1.0, 1.4, 1.8  }, //o4
+            }.ToMatrix();
+
+            Matrix delta1 = new double[][]
+            {              //b        //1       //2
+                new [] {   0.79393,   0.42896,  -0.33039  }, //h1
+                new [] {   1.05281,   0.56883,  -0.43812  }, //h2
+            }.ToMatrix();
+
+            Matrix delta2 = new double[][]
+            {              //b         //h1        //h2
+                new [] {   0.888659,   0.456328,   0.481220  }, //O1
+                new [] {   0.907427,   0.465965,   0.491383  }, //O2
+                new [] {   0.923305,   0.474118,   0.499981  }, //O3
+                new [] {  -0.063351,  -0.032531,  -0.034305  }, //O4
+            }.ToMatrix();
+
+            Vector delta3 = new[] { 0.888659,  0.907427,  0.923305,  -0.063351 };
+
+            Network net = Network.Create(2, 4, new numl.Math.Functions.Logistic(), fnWeightInitializer: (l, i, j) =>
+            {
+                if (l == 1)
+                {
+                    return theta2[j, i];
+                }
+                else
+                {
+                    return theta1[j - 1, i];
+                }
+            }, hiddenLayers: 2);
+
+            net.Forward(xtest[0, VectorType.Row]);
+            net.Back(ytest[0, VectorType.Row], null, false);
+
+            var hiddenNodes = net.GetNodes(1);
+
+            for (int output = 0; output < net.Out.Count(); output++)
+            {
+                Assert.AreEqual(delta3[output], net.Out.ElementAt(output).Delta, 0.0001);
+            }
+
+            for (int hidden = 0; hidden < hiddenNodes.Count(); hidden++)
+            {
+                Assert.AreEqual(delta2[hidden, VectorType.Col].Sum(), hiddenNodes.ElementAt(hidden).Delta, 0.0001,
+                        $"Node: {hiddenNodes.ElementAt(hidden).Label}");
             }
         }
     }

@@ -215,6 +215,8 @@ namespace numl.Tests.SupervisedTests
             var scored = Supervised.Score.ScorePredictions(y, y_actual);
 
             Assert.GreaterOrEqual(scored.Accuracy, 0.75);
+
+            Console.WriteLine($"LR Model Score: { scored }");
         }
     }
 }

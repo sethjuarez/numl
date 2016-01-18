@@ -36,6 +36,8 @@ namespace numl.Tests.SupervisedTests
 
             double accuracy = count / (double)tests.Count();
 
+            Console.WriteLine($"LR Model Score: { model.Score }");
+
             Console.WriteLine($"Digit Test:\nOverall Accuracy => { accuracy }");
 
             Assert.GreaterOrEqual(accuracy, model.Accuracy);

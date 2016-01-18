@@ -57,6 +57,9 @@ namespace numl.Supervised.NeuralNetwork
         /// </summary>
         public int MaxIterations { get; private set; }
 
+        /// <summary>
+        /// Initializes a new Network Training Properties object.
+        /// </summary>
         public NetworkTrainingProperties()
         {
             this.LearningRate = 0.1;
