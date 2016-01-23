@@ -99,6 +99,8 @@ namespace numl.Tests.SerializationTests
             };
 
             test(arr, truth);
+
+            test("[true   , false,   null,   true ]", new object[] { true, false, null, true });
         }
 
         [Test]

@@ -38,6 +38,10 @@ namespace numl.Serialization
             // or one of the following three literal names
             //    false null true
 
+            // eat whitespace
+            while (WHITESPACE.Contains((char)sr.Peek()))
+                sr.Read();
+
             if (sr.Peek() == -1)
                 return null;
 
