@@ -87,7 +87,9 @@
     <Compile Include="SerializationTests\KernelPerceptronSerializationTests.cs" />
     <Compile Include="SerializationTests\NaiveBayesSerializationTests.cs" />
     <Compile Include="SerializationTests\NeuralNetworkSerializationTests.cs" />
+    <Compile Include="SerializationTests\ParserTests.cs" />
     <Compile Include="SerializationTests\RegressionSerializationTests.cs" />
+    <Compile Include="SerializationTests\SimpleJsonTests.cs" />
     <Compile Include="SupervisedTests\AutoencoderTests.cs" />
     <Compile Include="SupervisedTests\BaseSupervised.cs" />
     <Compile Include="SupervisedTests\NeuralNetworkNodeTests.cs" />

@@ -283,7 +283,7 @@ namespace numl.Supervised
                         $"\n\tFallout:\t\t{System.Math.Round(Fallout, 6)}" +
                         $"\n\tF-Score:\t\t{System.Math.Round(FScore, 6)}" )
                         : string.Empty +
-                    "\n]";
+                    "\n]");
         }
 
         /// <summary>

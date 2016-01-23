@@ -788,7 +788,7 @@ namespace numl.Math.LinearAlgebra
         /// <param name="file">file to save</param>
         public void Save(string file)
         {
-            JsonHelpers.Save<Matrix>(file, this);
+            numl.Serialization.JsonHelpers.Save<Matrix>(file, this);
         }
         /// <summary>Loads the given stream.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested file is not present.</exception>
@@ -797,7 +797,7 @@ namespace numl.Math.LinearAlgebra
         public static Matrix Load(string file)
         {
             if (File.Exists(file))
-                return JsonHelpers.Load<Matrix>(file);
+                return numl.Serialization.JsonHelpers.Load<Matrix>(file);
             else
                 throw new InvalidOperationException("File not found");
         }

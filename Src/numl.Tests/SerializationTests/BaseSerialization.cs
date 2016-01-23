@@ -12,7 +12,7 @@ namespace numl.Tests.SerializationTests
     [SetUpFixture]
     public class BaseSerialization
     {
-        private string GetPath()
+        internal string GetPath()
         {
             var basePath = String.Format("{0}\\{1}", Directory.GetCurrentDirectory(), GetType().Name);
             if (!Directory.Exists(basePath))
@@ -26,14 +26,14 @@ namespace numl.Tests.SerializationTests
             var caller = new StackFrame(1, true).GetMethod().Name;
             string file = string.Format(GetPath(), caller);
             if (File.Exists(file))  File.Delete(file);
-            JsonHelpers.Save(file, o);
+            numl.Serialization.JsonHelpers.Save(file, o);
         }
 
         internal T Deserialize<T>()
         {
             var caller = new StackFrame(1, true).GetMethod().Name;
             string file = string.Format(GetPath(), caller);
-            return JsonHelpers.Load<T>(file);
+            return numl.Serialization.JsonHelpers.Load<T>(file);
         }
     }
 }

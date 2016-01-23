@@ -154,8 +154,10 @@
     <Compile Include="Recommendation\CofiRecommenderGenerator.cs" />
     <Compile Include="Recommendation\CofiRecommenderModel.cs" />
     <Compile Include="Serialization\DateTimeFeatureConverter.cs" />
+    <Compile Include="Serialization\ISerializer.cs" />
     <Compile Include="Serialization\MatrixConverter.cs" />
     <Compile Include="Serialization\NetworkConverter.cs" />
+    <Compile Include="Serialization\Parser.cs" />
     <Compile Include="Serialization\TypeConverter.cs" />
     <Compile Include="Serialization\VectorConverter.cs" />
     <Compile Include="Supervised\Classification\ClassificationModel.cs" />
@@ -211,7 +213,7 @@
     <Compile Include="Utils\DictionaryHelpers.cs" />
     <Compile Include="Utils\EnumerableHelpers.cs" />
     <Compile Include="Utils\Ject.cs" />
-    <Compile Include="Utils\JsonHelpers.cs" />
+    <Compile Include="Serialization\JsonHelpers.cs" />
     <Compile Include="Utils\MathHelpers.cs" />
     <Compile Include="Utils\StringHelpers.cs" />
     <Compile Include="Utils\TypeHelpers.cs" />

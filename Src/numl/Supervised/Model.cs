@@ -101,7 +101,7 @@ namespace numl.Supervised
         /// <param name="file">The file to load.</param>
         public virtual void Save(string file)
         {
-            JsonHelpers.Save(file, this);
+            numl.Serialization.JsonHelpers.Save(file, this);
         }
         
         /// <summary>Converts this object to json.</summary>

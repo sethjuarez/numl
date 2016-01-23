@@ -32,6 +32,7 @@ namespace numl.Supervised.NeuralNetwork
         /// <param name="y">The Vector to process.</param>
         /// <param name="activationFunction">The activation.</param>
         /// <param name="outputFunction">The ouput function for hidden nodes (Optional).</param>
+        /// <param name="epsilon">epsilon</param>
         /// <returns>A Network.</returns>
         public static Network Default(Descriptor d, Matrix x, Vector y, IFunction activationFunction, IFunction outputFunction = null, double epsilon = double.NaN)
         {
@@ -303,14 +304,6 @@ namespace numl.Supervised.NeuralNetwork
                     Out[i].Update(properties);
             }
         }
-
-        /// <summary>Propagates a Delta reset event through the network starting from the output Node.</summary>
-        /// <param name="newDelta">New delta value to apply to each Node.</param>
-        //public void Reset(double newDelta)
-        //{
-        //    for (int i = 0; i < Out.Length; i++)
-        //        Out[i].Reset(newDelta);
-        //}
 
         /// <summary>The nodes.</summary>
         private HashSet<string> _nodes;
