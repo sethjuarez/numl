@@ -10,18 +10,25 @@ namespace numl.Serialization
 {
     public interface ISerializer
     {
-        object Deserialize(StreamReader stream);
-        void Serialize(StreamWriter stream, object o);
+        object Deserialize(TextReader stream);
+        void Serialize(TextWriter stream, object o);
     }
 
     public class MatrixSerializer : ISerializer
     {
-        public object Deserialize(StreamReader stream)
+        public object Deserialize(TextReader stream)
         {
-            return null;
+            var objects = (object[])Serializer.Parse(stream);
+            
+            var matrix = Array.ConvertAll<object, double[]>(objects, 
+                o => Array.ConvertAll<object, double>((object[])o, i => (double)i));
+
+            Matrix m = new Matrix(matrix);
+            
+            return m;
         }
 
-        public void Serialize(StreamWriter stream, object o)
+        public void Serialize(TextWriter stream, object o)
         {
             if(o is Matrix)
             {

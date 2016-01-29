@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-using Newtonsoft.Json;
-
 using numl.Math.Functions;
 using numl.Math.LinearAlgebra;
 using numl.Serialization;
@@ -20,7 +17,6 @@ namespace numl.Supervised.NeuralNetwork.Encoders
         /// <summary>
         /// Gets or sets the underlying neural network of the autoencoder.
         /// </summary>
-        [JsonConverter(typeof(NetworkConverter))]
         public Network Network { get; set; }
 
         /// <summary>

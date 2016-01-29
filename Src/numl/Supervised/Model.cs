@@ -11,6 +11,7 @@ using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 using numl.Math.Normalization;
 using numl.Math;
+using numl.Serialization;
 namespace numl.Supervised
 {
     /// <summary>A model.</summary>
@@ -70,22 +71,7 @@ namespace numl.Supervised
             Ject.Set(o, Descriptor.Label.Name, result);
             return o;
         }
-
-        /// <summary>
-        /// Predicts all the given objects.
-        /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
-        /// <param name="objects">The objects to process.</param>
-        /// <returns>Array of object predictions.</returns>
-        public object[] Predict(object[] objects)
-        {
-            object[] result = new object[objects.Count()];
-            for (int x = 0; x < result.Length; x++)
-            {
-                result[x] = this.Predict(objects[x]);
-            }
-            return result;
-        }
+        
 
         /// <summary>Predicts the given o.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>
@@ -101,9 +87,9 @@ namespace numl.Supervised
         /// <param name="file">The file to load.</param>
         public virtual void Save(string file)
         {
-            numl.Serialization.JsonHelpers.Save(file, this);
+            throw new NotImplementedException();
         }
-        
+
         /// <summary>Converts this object to json.</summary>
         /// <returns>This object as a string.</returns>
         public virtual string ToJson()

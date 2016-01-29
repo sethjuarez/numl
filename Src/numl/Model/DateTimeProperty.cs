@@ -1,11 +1,11 @@
 // file:	Model\DateTimeProperty.cs
 //
 // summary:	Implements the date time property class
-using Newtonsoft.Json;
 using numl.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.IO;
 
 namespace numl.Model
 {
@@ -74,13 +74,10 @@ namespace numl.Model
     }
 
     /// <summary>DateTime Property. Used as a feature expansion mechanism.</summary>
-    [JsonObject(MemberSerialization.OptIn)]
-    public class DateTimeProperty : Property
+    public class DateTimeProperty : Property, ISerializer
     {
         /// <summary>Gets or sets the features.</summary>
         /// <value>The features.</value>
-        [JsonProperty]
-        [JsonConverter(typeof(DateTimeFeatureConverter))]
         public DateTimeFeature Features { get; private set; }
 
         /// <summary>Default constructor.</summary>
@@ -274,6 +271,16 @@ namespace numl.Model
         public override int GetHashCode()
         {
             return base.GetHashCode();
+        }
+
+        public object Deserialize(TextReader stream)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Serialize(TextWriter stream, object o)
+        {
+            throw new NotImplementedException();
         }
     }
 }

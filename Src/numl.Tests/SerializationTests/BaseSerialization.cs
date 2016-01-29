@@ -26,14 +26,14 @@ namespace numl.Tests.SerializationTests
             var caller = new StackFrame(1, true).GetMethod().Name;
             string file = string.Format(GetPath(), caller);
             if (File.Exists(file))  File.Delete(file);
-            numl.Serialization.JsonHelpers.Save(file, o);
+            numl.Serialization.SerializationHelpers.Save(file, o);
         }
 
         internal T Deserialize<T>()
         {
             var caller = new StackFrame(1, true).GetMethod().Name;
             string file = string.Format(GetPath(), caller);
-            return numl.Serialization.JsonHelpers.Load<T>(file);
+            return numl.Serialization.SerializationHelpers.Load<T>(file);
         }
     }
 }

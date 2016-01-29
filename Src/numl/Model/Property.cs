@@ -6,13 +6,11 @@ using numl.Utils;
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using numl.Serialization;
 
 namespace numl.Model
 {
     /// <summary>Concrete property. Used to convert any given data type to a number.</summary>
-    [JsonObject(MemberSerialization.OptIn)]
     public class Property
     {
         /// <summary>Default constructor.</summary>
@@ -23,12 +21,9 @@ namespace numl.Model
 
         /// <summary>Property Name - Maps to object property or dictionary lookup.</summary>
         /// <value>The name.</value>
-        [JsonProperty]
         public string Name { get; set; }
         /// <summary>Type of property.</summary>
         /// <value>The type.</value>
-        [JsonProperty]
-        [JsonConverter(typeof(TypeConverter))]
         public virtual Type Type { get; set; }
         /// <summary>Length of property.</summary>
         /// <value>The length.</value>
@@ -36,12 +31,10 @@ namespace numl.Model
 
         /// <summary>Start position in array.</summary>
         /// <value>The start.</value>
-        [JsonProperty]
         public int Start { get; set; }
 
         /// <summary>Discrete or continuous value.</summary>
         /// <value>true if discrete, false if not.</value>
-        [JsonProperty]
         public virtual bool Discrete { get; set; }
         /// <summary>
         /// Used as a preprocessing step when overridden. Can be used to look at the entire data set as a

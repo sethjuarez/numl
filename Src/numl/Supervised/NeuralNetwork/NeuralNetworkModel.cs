@@ -3,7 +3,6 @@
 // summary:	Implements the neural network model class
 using System;
 using System.Linq;
-using Newtonsoft.Json;
 using numl.Serialization;
 using numl.Math.Functions;
 using numl.Math.LinearAlgebra;
@@ -16,7 +15,6 @@ namespace numl.Supervised.NeuralNetwork
     {
         /// <summary>Gets or sets the network.</summary>
         /// <value>The network.</value>
-        [JsonConverter(typeof(NetworkConverter))]
         public Network Network { get; set; }
 
         /// <summary>

@@ -11,7 +11,6 @@ using System.Collections;
 using numl.Math.LinearAlgebra;
 using System.Linq.Expressions;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using numl.Serialization;
 
 namespace numl.Model
@@ -22,7 +21,6 @@ namespace numl.Model
     /// will be used to discriminate the <see cref="Label"/>. The <see cref="Label"/> itself is the
     /// target element that the machine learning algorithms learn to predict.
     /// </summary>
-    [JsonObject(MemberSerialization.OptIn)]
     public class Descriptor
     {
         /// <summary>Default constructor.</summary>
@@ -34,17 +32,14 @@ namespace numl.Model
 
         /// <summary>Descriptor name.</summary>
         /// <value>The name.</value>
-        [JsonProperty]
         public string Name { get; set; }
         /// <summary>
         /// Set of features used to discriminate or learn about the <see cref="Label"/>.
         /// </summary>
         /// <value>The features.</value>
-        [JsonProperty]
         public Property[] Features { get; set; }
         /// <summary>Target property that is the target of machine learning.</summary>
         /// <value>The label.</value>
-        [JsonProperty]
         public Property Label { get; set; }
         /// <summary>Index into features (for convenience)</summary>
         /// <param name="i">Feature index.</param>
@@ -104,8 +99,6 @@ namespace numl.Model
         }
         /// <summary>Base type of object being described. This could also be null.</summary>
         /// <value>The type.</value>
-        [JsonProperty]
-        [JsonConverter(typeof(TypeConverter))]
         public Type Type { get; set; }
         /// <summary>Gets related property given its offset within the vector representation.</summary>
         /// <exception cref="IndexOutOfRangeException">Thrown when the index is outside the required

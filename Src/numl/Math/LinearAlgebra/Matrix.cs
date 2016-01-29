@@ -8,7 +8,6 @@ using System.Linq;
 using System.Globalization;
 using numl.Math.Probability;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using numl.Utils;
 
 namespace numl.Math.LinearAlgebra
@@ -337,7 +336,6 @@ namespace numl.Math.LinearAlgebra
         /// It will throw an exception if there is an attempt to write to the matrix.
         /// </summary>
         /// <value>The t.</value>
-        [JsonIgnore]
         public Matrix T
         {
             get
@@ -788,7 +786,7 @@ namespace numl.Math.LinearAlgebra
         /// <param name="file">file to save</param>
         public void Save(string file)
         {
-            numl.Serialization.JsonHelpers.Save<Matrix>(file, this);
+            numl.Serialization.SerializationHelpers.Save<Matrix>(file, this);
         }
         /// <summary>Loads the given stream.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested file is not present.</exception>
@@ -797,7 +795,7 @@ namespace numl.Math.LinearAlgebra
         public static Matrix Load(string file)
         {
             if (File.Exists(file))
-                return numl.Serialization.JsonHelpers.Load<Matrix>(file);
+                return numl.Serialization.SerializationHelpers.Load<Matrix>(file);
             else
                 throw new InvalidOperationException("File not found");
         }

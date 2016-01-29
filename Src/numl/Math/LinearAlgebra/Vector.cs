@@ -350,7 +350,7 @@ namespace numl.Math.LinearAlgebra
         /// <param name="file">file to save</param>
         public void Save(string file)
         {
-            numl.Serialization.JsonHelpers.Save<Vector>(file, this);
+            numl.Serialization.SerializationHelpers.Save<Vector>(file, this);
         }
         /// <summary>Loads the given vector file.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested file is not present.</exception>
@@ -359,7 +359,7 @@ namespace numl.Math.LinearAlgebra
         public static Vector Load(string file)
         {
             if (File.Exists(file))
-                return numl.Serialization.JsonHelpers.Load<Vector>(file);
+                return numl.Serialization.SerializationHelpers.Load<Vector>(file);
             else
                 throw new InvalidOperationException("File not found");
         }

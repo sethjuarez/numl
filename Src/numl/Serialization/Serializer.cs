@@ -1,38 +1,114 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Globalization;
+using System.Collections.Generic;
+using numl.Utils;
+
 namespace numl.Serialization
 {
-    public static class Parser
+
+    public static class Serializer
     {
         //begin-array     = ws %x5B ws  ; [ left square bracket
-        const int BEGIN_ARRAY = '[';
+        private const int BEGIN_ARRAY = '[';
         //begin-object    = ws %x7B ws; { left curly bracket
-        const int BEGIN_OBJECT = '{';
+        private const int BEGIN_OBJECT = '{';
         //end-array       = ws %x5D ws; ] right square bracket
-        const int END_ARRAY = ']';
+        private const int END_ARRAY = ']';
         //end-object      = ws %x7D ws; } right curly bracket
-        const int END_OBJECT = '}';
+        private const int END_OBJECT = '}';
         //name-separator  = ws %x3A ws; : colon
-        const int COLON = ':';
+        private const int COLON = ':';
         //value-separator = ws %x2C ws; , comma
-        const int COMMA = ',';
+        private const int COMMA = ',';
         // "
-        const int QUOTATION = '"';
+        private const int QUOTATION = '"';
         // \
-        const int ESCAPE = '\\';
+        private const int ESCAPE = '\\';
 
-        readonly static char[] FALSE = new[] { 'f', 'a', 'l', 's', 'e' };
-        readonly static char[] TRUE = new[] { 't', 'r', 'u', 'e' };
-        readonly static char[] NULL = new[] { 'n', 'u', 'l', 'l' };
-        readonly static char[] WHITESPACE = new[] { ' ', '\t', '\n', '\r' };
-        readonly static char[] NUMBER = new[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.', '-', '+', 'e', 'E' };
+        private readonly static char[] FALSE = new[] { 'f', 'a', 'l', 's', 'e' };
+        private readonly static char[] TRUE = new[] { 't', 'r', 'u', 'e' };
+        private readonly static char[] NULL = new[] { 'n', 'u', 'l', 'l' };
+        private readonly static char[] WHITESPACE = new[] { ' ', '\t', '\n', '\r' };
+        private readonly static char[] NUMBER = new[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.', '-', '+', 'e', 'E' };
 
-        public static object Parse(StreamReader sr)
+        public static void Serialize(TextWriter stream, object o)
+        {
+            if(o == null)
+                stream.Write(new string(NULL));
+            else
+            {
+                var type = o.GetType();
+                if(type.IsPrimitive)
+                {
+                    stream.Write(o);
+                }
+                else if (Ject.CanUseSimpleType(type))
+                {
+                    if (o is string) // TODO: FIX WHITESPACE SERIALIZATION
+                        stream.Write($"\"{o.ToString()}\"");
+                    else
+                        stream.Write(Ject.Convert(o).ToString("r"));
+                }
+                else if (type.GetInterface(typeof(ISerializer).Name) != null)
+                {
+                    var s = (ISerializer)o;
+                    s.Serialize(stream, o);
+                }
+                else if (o is System.Collections.IEnumerable)
+                {
+                    var c = o as System.Collections.IEnumerable;
+                    SerializeArray(stream, c);
+                }
+                else
+                {
+                    SerializeObject(stream, o, type);
+                }
+            }
+        }
+
+        private static void SerializeArray(TextWriter stream, System.Collections.IEnumerable c)
+        {
+            stream.Write((char)BEGIN_ARRAY);
+            bool first = true;
+            foreach (var item in c)
+            {
+                if (!first)
+                    stream.Write($"{(char)COMMA} ");
+
+                Serialize(stream, item);
+
+                first = false;
+            }
+            stream.Write((char)END_ARRAY);
+        }
+        private static void SerializeObject(TextWriter stream, object o, Type type)
+        {
+            stream.Write((char)BEGIN_OBJECT);
+            bool first = true;
+            foreach (var pi in type.GetProperties())
+            {
+                if (!first)
+                    stream.Write($"{(char)COMMA} ");
+
+                Serialize(stream, pi.Name);
+                stream.Write($" {(char)COLON} ");
+                Serialize(stream, pi.GetValue(o));
+
+                first = false;
+            }
+            stream.Write((char)END_OBJECT);
+        }
+
+        /// <summary>
+        /// Parses the specified stream from json.
+        /// </summary>
+        /// <param name="sr">The sr.</param>
+        /// <returns>System.Object.</returns>
+        /// <exception cref="System.InvalidOperationException">Unexpected token encountered while parsing json</exception>
+        public static object Parse(TextReader sr)
         {
             // A JSON value MUST be an object, array, number, or string, 
             // or one of the following three literal names
@@ -64,8 +140,7 @@ namespace numl.Serialization
             else
                 throw new InvalidOperationException("Unexpected token encountered while parsing json");
         }
-
-        private static object ParseObject(StreamReader sr)
+        private static object ParseObject(TextReader sr)
         {
             if (sr.Read() == BEGIN_OBJECT)
             {
@@ -108,8 +183,7 @@ namespace numl.Serialization
             else
                 throw new InvalidOperationException("Unexpected token");
         }
-
-        private static object ParseArray(StreamReader sr)
+        private static object ParseArray(TextReader sr)
         {
             if (sr.Read() == BEGIN_ARRAY)
             {
@@ -139,7 +213,7 @@ namespace numl.Serialization
             else
                 throw new InvalidOperationException("Unexpected token!");
         }
-        private static string ParseString(StreamReader sr)
+        private static string ParseString(TextReader sr)
         {
             if (sr.Read() == QUOTATION)
             {
@@ -199,8 +273,7 @@ namespace numl.Serialization
             else
                 throw new InvalidOperationException("Unexpected token in string");
         }
-
-        private static double ParseNumber(StreamReader sr)
+        private static double ParseNumber(TextReader sr)
         {
             // TODO: This maybe could be faster...
             StringBuilder sb = new StringBuilder();
@@ -208,7 +281,7 @@ namespace numl.Serialization
                 sb.Append((char)sr.Read());
             return double.Parse(sb.ToString());
         }
-        private static object ParseLiteral(StreamReader sr)
+        private static object ParseLiteral(TextReader sr)
         {
             var next = sr.Peek();
             switch (next)

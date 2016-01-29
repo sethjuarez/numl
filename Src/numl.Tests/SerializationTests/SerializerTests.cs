@@ -4,11 +4,12 @@ using System.Linq;
 using NUnit.Framework;
 using numl.Serialization;
 using System.Collections.Generic;
+using System.Text;
 
 namespace numl.Tests.SerializationTests
 {
     [TestFixture]
-    public class ParserTests
+    public class SerializerTests
     {
         /// <summary>
         /// Wraps string into Reader
@@ -29,28 +30,28 @@ namespace numl.Tests.SerializationTests
         [Test]
         public void LiteralTest()
         {
-            var fl = Parser.Parse(FromString("false"));
+            var fl = Serializer.Parse(FromString("false"));
             Assert.AreEqual(false, fl);
-            var tr = Parser.Parse(FromString("true"));
+            var tr = Serializer.Parse(FromString("true"));
             Assert.AreEqual(true, tr);
-            var nl = Parser.Parse(FromString("null"));
+            var nl = Serializer.Parse(FromString("null"));
             Assert.AreEqual(null, nl);
         }
 
         [Test]
         public void NumberTest()
         {
-            var a = Parser.Parse(FromString(System.Math.PI.ToString("r")));
+            var a = Serializer.Parse(FromString(System.Math.PI.ToString("r")));
             Assert.AreEqual(System.Math.PI, a);
-            var b = Parser.Parse(FromString((-1 * System.Math.PI).ToString("r")));
+            var b = Serializer.Parse(FromString((-1 * System.Math.PI).ToString("r")));
             Assert.AreEqual(-1 * System.Math.PI, b);
-            var c = Parser.Parse(FromString((4354).ToString()));
+            var c = Serializer.Parse(FromString((4354).ToString()));
             Assert.AreEqual(4354, c);
-            var d = Parser.Parse(FromString((-4354).ToString()));
+            var d = Serializer.Parse(FromString((-4354).ToString()));
             Assert.AreEqual(-4354, d);
-            var e = Parser.Parse(FromString((double.MinValue).ToString("r")));
+            var e = Serializer.Parse(FromString((double.MinValue).ToString("r")));
             Assert.AreEqual(double.MinValue, e);
-            var f = Parser.Parse(FromString((double.MaxValue).ToString("r")));
+            var f = Serializer.Parse(FromString((double.MaxValue).ToString("r")));
             Assert.AreEqual(double.MaxValue, f);
         }
 
@@ -59,7 +60,7 @@ namespace numl.Tests.SerializationTests
         {
             Action<string, string> test = (s, a) =>
             {
-                var experiment = Parser.Parse(FromString($"\"{s}\""));
+                var experiment = Serializer.Parse(FromString($"\"{s}\""));
                 Assert.AreEqual(a, experiment);
             };
 
@@ -75,7 +76,7 @@ namespace numl.Tests.SerializationTests
         {
             Action<string, object[]> test = (s, a) =>
             {
-                var experiment = Parser.Parse(FromString(s));
+                var experiment = Serializer.Parse(FromString(s));
                 Assert.AreEqual(a, experiment);
             };
 
@@ -108,7 +109,7 @@ namespace numl.Tests.SerializationTests
         {
             Action<string, Dictionary<string, object>> test = (s, a) =>
             {
-                var experiment = Parser.Parse(FromString(s));
+                var experiment = Serializer.Parse(FromString(s));
                 Assert.AreEqual(a, experiment);
             };
 
@@ -131,6 +132,62 @@ namespace numl.Tests.SerializationTests
             };
 
             test(s2, d2);
+        }
+
+        [Test]
+        public void SimpleSerializationTests()
+        {
+            StringBuilder sb = new StringBuilder();
+            StringWriter sw = new StringWriter(sb);
+
+            var s = "Super Interest String!";
+            Serializer.Serialize(sw, s);
+            Assert.AreEqual($"\"{s}\"", sb.ToString());
+
+
+            sb.Clear();
+
+            double x = double.MinValue;
+            Serializer.Serialize(sw, x);
+            Assert.AreEqual(x.ToString("r"), sb.ToString());
+        }
+
+        [Test]
+        public void SimpleArraySerializationTests()
+        {
+            var x1 = new[] { 1, 2, 3, 4, 5, 6, 7 };
+
+
+            StringBuilder sb = new StringBuilder();
+            StringWriter sw = new StringWriter(sb);
+
+            
+            Serializer.Serialize(sw, x1);
+
+
+            sb.Clear();
+
+            var x2 = new[] { "a", "b", "c", "d", "e", "f", "g" };
+            Serializer.Serialize(sw, x2);
+        }
+
+        [Test]
+        public void SimpleObjectSerializationTests()
+        {
+            var x1 = new { a = "one", b = double.MaxValue, c = false };
+
+
+            StringBuilder sb = new StringBuilder();
+            StringWriter sw = new StringWriter(sb);
+
+
+            Serializer.Serialize(sw, x1);
+
+
+            sb.Clear();
+
+            var x2 = new { a = "one", b = double.MaxValue, c = false, x = x1 };
+            Serializer.Serialize(sw, x2);
         }
     }
 }

@@ -6,13 +6,11 @@ using System.Linq;
 using numl.Math.Functions;
 using System.Collections.Generic;
 using numl.Utils;
-using Newtonsoft.Json;
 
 namespace numl.Supervised.NeuralNetwork
 {
     
     /// <summary>A node.</summary>
-    [JsonObject(MemberSerialization.OptIn)]
     public class Node 
     {
         private static int _id = -1;
@@ -38,46 +36,38 @@ namespace numl.Supervised.NeuralNetwork
         /// <summary>
         /// Gets or sets whether weights into this Node are constrained / preserved.
         /// </summary>
-        [JsonProperty]
         public bool Constrained { get; set; }
 
         /// <summary>
         /// Gets or sets whether this node is a bias node.
         /// </summary>
-        [JsonProperty]
         public bool IsBias { get; set; }
 
         /// <summary>
         /// Returns true if this Node is in the input layer, otherwise returns false.
         /// </summary>
-        [JsonIgnore]
         public bool IsInput { get { return this.In.Count == 0; } }
 
         /// <summary>
         /// Returns true if this Node is a hidden node, otherwise returns false.
         /// </summary>
-        [JsonIgnore]
         public bool IsHidden { get { return this.In.Count > 0 && this.Out.Count > 0; } }
 
         /// <summary>
         /// Returns true if this Node is in the output layer, otherwise returns false.
         /// </summary>
-        [JsonIgnore]
         public bool IsOutput { get { return this.Out.Count == 0; } }
 
         /// <summary>Gets or sets the output value.</summary>
         /// <value>The output.</value>
-        [JsonProperty]
         public double Output { get; set; }
 
         /// <summary>Gets or sets the combined input value.</summary>
         /// <value>The input.</value>
-        [JsonProperty]
         public double Input { get; set; }
 
         /// <summary>Gets or sets the delta.</summary>
         /// <value>The delta.</value>
-        [JsonProperty]
         public double Delta { get; set; }
 
         /// <summary>
@@ -87,24 +77,20 @@ namespace numl.Supervised.NeuralNetwork
 
         /// <summary>Gets or sets the label.</summary>
         /// <value>The label.</value>
-        [JsonProperty]
         public string Label { get; set; }
 
         /// <summary>Gets or sets the identifier.</summary>
         /// <value>The identifier.</value>
-        [JsonProperty]
         public string Id { get; private set; }
 
         /// <summary>
         /// Gets or sets the layer of this Node.
         /// </summary>
-        [JsonProperty]
         public int LayerId { get; set; }
 
         /// <summary>
         /// Gets or sets the Node index in the layer.
         /// </summary>
-        [JsonProperty]
         public int NodeId { get; set; }
 
         /// <summary>Gets or sets the Output <see cref="Node"/> connections.</summary>
@@ -117,13 +103,11 @@ namespace numl.Supervised.NeuralNetwork
 
         /// <summary>Gets or sets the activation function.</summary>
         /// <value>The activation.</value>
-        [JsonProperty]
         public IFunction ActivationFunction { get; set; }
 
         /// <summary>
         /// Gets or sets the output function (optional).
         /// </summary>
-        [JsonProperty]
         public IFunction OutputFunction { get; set; }
 
         /// <summary>Calculates and returns the Node's <see cref="Output"/> value.</summary>

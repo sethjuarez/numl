@@ -6,26 +6,22 @@ using numl.Utils;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 
 namespace numl.Model
 {
     /// <summary>Enumerable property. Expanded feature.</summary>
-    [JsonObject(MemberSerialization.OptIn)]
     public class EnumerableProperty : Property
     {
         /// <summary>Default constructor.</summary>
         internal EnumerableProperty() { }
         /// <summary>Constructor.</summary>
         /// <param name="length">The length.</param>
-        [JsonConstructor]
         public EnumerableProperty(int length)
         {
             Length = length;
         }
         /// <summary>Length of property.</summary>
         /// <value>The length.</value>
-        [JsonProperty]
         public override int Length { get; }
 
         /// <summary>
