@@ -5,7 +5,7 @@ using System.Text;
 using System.Globalization;
 using System.Collections.Generic;
 using numl.Utils;
-
+using System.Collections;
 namespace numl.Serialization
 {
 
@@ -36,19 +36,26 @@ namespace numl.Serialization
 
         public static void Serialize(TextWriter stream, object o)
         {
-            if(o == null)
+            if (o == null)
                 stream.Write(new string(NULL));
             else
             {
                 var type = o.GetType();
-                if(type.IsPrimitive)
+                if(type == typeof(bool))
                 {
-                    stream.Write(o);
+                    stream.Write(((bool)o).ToString().ToLower());
                 }
                 else if (Ject.CanUseSimpleType(type))
                 {
-                    if (o is string) // TODO: FIX WHITESPACE SERIALIZATION
-                        stream.Write($"\"{o.ToString()}\"");
+                    if (o is string)
+                    {
+                        var s = o.ToString()
+                                 .Replace("\t", "\\t")
+                                 .Replace("\n", "\\n")
+                                 .Replace("\r", "\\r");
+                        
+                        stream.Write($"\"{s}\"");
+                    }
                     else
                         stream.Write(Ject.Convert(o).ToString("r"));
                 }
@@ -57,9 +64,9 @@ namespace numl.Serialization
                     var s = (ISerializer)o;
                     s.Serialize(stream, o);
                 }
-                else if (o is System.Collections.IEnumerable)
+                else if (o is IEnumerable)
                 {
-                    var c = o as System.Collections.IEnumerable;
+                    var c = o as IEnumerable;
                     SerializeArray(stream, c);
                 }
                 else
@@ -69,7 +76,7 @@ namespace numl.Serialization
             }
         }
 
-        private static void SerializeArray(TextWriter stream, System.Collections.IEnumerable c)
+        private static void SerializeArray(TextWriter stream, IEnumerable c)
         {
             stream.Write((char)BEGIN_ARRAY);
             bool first = true;

@@ -5,6 +5,7 @@ using NUnit.Framework;
 using numl.Serialization;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace numl.Tests.SerializationTests
 {
@@ -25,6 +26,15 @@ namespace numl.Tests.SerializationTests
             stream.Position = 0;
             var sr = new StreamReader(stream);
             return sr;
+        }
+
+        public static string FromObject(object o)
+        {
+            StringBuilder sb = new StringBuilder();
+            StringWriter sw = new StringWriter(sb);
+            Serializer.Serialize(sw, o);
+            var s = Regex.Replace(sb.ToString(), "(\"(?:[^\"\\\\]|\\\\.)*\")|\\s+", "$1");
+            return s;
         }
 
         [Test]
@@ -137,57 +147,45 @@ namespace numl.Tests.SerializationTests
         [Test]
         public void SimpleSerializationTests()
         {
-            StringBuilder sb = new StringBuilder();
-            StringWriter sw = new StringWriter(sb);
-
             var s = "Super Interest String!";
-            Serializer.Serialize(sw, s);
-            Assert.AreEqual($"\"{s}\"", sb.ToString());
+            var ss = FromObject(s);
+            Assert.AreEqual($"\"{s}\"", ss);
 
-
-            sb.Clear();
 
             double x = double.MinValue;
-            Serializer.Serialize(sw, x);
-            Assert.AreEqual(x.ToString("r"), sb.ToString());
+            var xo = FromObject(x);
+            Assert.AreEqual(x.ToString("r"), xo);
         }
 
         [Test]
         public void SimpleArraySerializationTests()
         {
             var x1 = new[] { 1, 2, 3, 4, 5, 6, 7 };
-
-
-            StringBuilder sb = new StringBuilder();
-            StringWriter sw = new StringWriter(sb);
-
-            
-            Serializer.Serialize(sw, x1);
-
-
-            sb.Clear();
+            var x1o = FromObject(x1);
+            var x1s = "[1,2,3,4,5,6,7]";
+            Assert.AreEqual(x1s, x1o);
 
             var x2 = new[] { "a", "b", "c", "d", "e", "f", "g" };
-            Serializer.Serialize(sw, x2);
+            var x2o = FromObject(x2);
+            var x2s = "[\"a\",\"b\",\"c\",\"d\",\"e\",\"f\",\"g\"]";
+            Assert.AreEqual(x2s, x2o);
         }
 
         [Test]
         public void SimpleObjectSerializationTests()
         {
-            var x1 = new { a = "one", b = double.MaxValue, c = false };
+            var val = double.MaxValue;
+            var valS = val.ToString("r");
 
+            var x1 = new { a = "one", b = val, c = false };
+            var x1o = FromObject(x1);
+            var x1s = $"{{\"a\":\"one\",\"b\":{valS},\"c\":false}}";
+            Assert.AreEqual(x1s, x1o);
 
-            StringBuilder sb = new StringBuilder();
-            StringWriter sw = new StringWriter(sb);
-
-
-            Serializer.Serialize(sw, x1);
-
-
-            sb.Clear();
-
-            var x2 = new { a = "one", b = double.MaxValue, c = false, x = x1 };
-            Serializer.Serialize(sw, x2);
+            var x2 = new { a = "one", b = val, c = false, x = x1 };
+            var x2o = FromObject(x2);
+            var x2s = $"{{\"a\":\"one\",\"b\":{valS},\"c\":false,\"x\":{{\"a\":\"one\",\"b\":{valS},\"c\":false}}}}";
+            Assert.AreEqual(x2s, x2o);
         }
     }
 }

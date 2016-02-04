@@ -309,6 +309,8 @@ namespace numl.Utils
 
             if (t == typeof(bool))
                 return (bool)o ? Ject.DefaultTruthValue : Ject.DefaultFalseValue;
+            else if (t == typeof(bool))
+                return (double)o;
             else if (t == typeof(char)) // ascii number of character
                 return (int)((char)o);
             else if (o is Enum)

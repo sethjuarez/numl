@@ -153,7 +153,7 @@
     <Compile Include="Serialization\ISerializer.cs" />
     <Compile Include="Serialization\MatrixConverter.cs" />
     <Compile Include="Serialization\NetworkConverter.cs" />
-    <Compile Include="Serialization\Parser.cs" />
+    <Compile Include="Serialization\Serializer.cs" />
     <Compile Include="Serialization\TypeConverter.cs" />
     <Compile Include="Serialization\VectorConverter.cs" />
     <Compile Include="Supervised\Classification\ClassificationModel.cs" />

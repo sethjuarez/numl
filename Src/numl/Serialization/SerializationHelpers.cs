@@ -11,43 +11,12 @@ namespace numl.Serialization
     /// </summary>
     public static class SerializationHelpers
     {
-        public static Dictionary<Type, ISerializer> Serializers { get; set; }
-
         /// <summary>
-        /// Serializer
+        /// Saves the specified file.
         /// </summary>
-        //public static JsonSerializer Serializer { get; set; }
-
-        /// <summary>
-        /// Set current serializer
-        /// </summary>
-        /// <param name="serializer">serializer to set</param>
-        //public static void SetSerializer(JsonSerializer serializer) =>
-        //    Serializer = serializer;
-
-        /// <summary>
-        /// Get current serializer
-        /// </summary>
-        /// <returns>Currently available serializer</returns>
-        //public static JsonSerializer GetSerializer()
-        //{
-        //    if (Serializer == null)
-        //    {
-        //        Serializer = new JsonSerializer();
-        //        Serializer.Converters.Add(new TypeConverter());
-        //        Serializer.Converters.Add(new MatrixConverter());
-        //        Serializer.Converters.Add(new DateTimeFeatureConverter());
-        //        Serializer.Converters.Add(new VectorConverter());
-        //        Serializer.Converters.Add(new NetworkConverter());
-        //        Serializer.Formatting = Formatting.Indented;
-        //        Serializer.TypeNameHandling = TypeNameHandling.Auto;
-        //    }
-        //    return Serializer;
-        //}
-        /// <summary>Save object to file.</summary>
-        /// <tparam name="T">Generic type parameter.</tparam>
-        /// <param name="file">file.</param>
-        /// <param name="o">object.</param>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="file">The file.</param>
+        /// <param name="o">The o.</param>
         public static void Save<T>(string file, T o) => 
             Save(file, o, typeof(T));
 
