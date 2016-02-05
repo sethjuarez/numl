@@ -28,7 +28,7 @@ namespace numl.Tests.SerializationTests
             var file = string.Format(path, "MatrixSerializationTest");
             MatrixSerializer m = new MatrixSerializer();
             using (var f = new StreamWriter(file, false))
-                m.Serialize(f, m1);
+                m.Write(f, m1);
 
             using (var f = new StreamReader(file))
             {

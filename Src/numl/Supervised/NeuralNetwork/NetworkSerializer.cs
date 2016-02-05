@@ -1,15 +1,60 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
-using System.Reflection;
+using numl.Serialization;
 using System.Collections.Generic;
-using numl.Supervised.NeuralNetwork;
 
-namespace numl.Serialization
+namespace numl.Supervised.NeuralNetwork
 {
+    public class NetworkSerializer : ISerializer
+    {
+        public bool CanConvert(Type type)
+        {
+            return typeof(Network).IsAssignableFrom(type);
+        }
+
+        public object Deserialize(TextReader reader)
+        {
+            var dictionary = Serializer.Parse(reader);
+
+
+            return dictionary;
+        }
+
+        public void Write(TextWriter writer, object o)
+        {
+            if (o == null)
+                writer.WriteNull();
+            else
+            {
+                var network = (Network)o;
+
+                writer.WriteStartObject();
+
+                // write out nodes
+                writer.WriteArrayProperty("Nodes", 
+                        network.GetNodes().ToArray(), 
+                        new NodeSerializer());
+
+                // write out all edges
+                writer.WriteArrayProperty("Edges", 
+                        network.GetEdges().ToArray(),
+                        new EdgeSerializer());
+
+                // write out IN edges
+                writer.WriteArrayProperty("In", network.In.Select(n => n.Id).ToArray());
+
+                // write out OUT edges
+                writer.WriteArrayProperty("Out", network.Out.Select(n => n.Id).ToArray());
+
+                writer.WriteEndObject();
+            }
+        }
+    }
     /// <summary>
     /// 
     /// </summary>
-    public class NetworkConverter 
+    public class NetworkConverter
     {
         /// <summary>
         /// 

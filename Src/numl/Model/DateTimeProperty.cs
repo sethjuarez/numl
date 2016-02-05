@@ -74,7 +74,7 @@ namespace numl.Model
     }
 
     /// <summary>DateTime Property. Used as a feature expansion mechanism.</summary>
-    public class DateTimeProperty : Property, ISerializer
+    public class DateTimeProperty : Property
     {
         /// <summary>Gets or sets the features.</summary>
         /// <value>The features.</value>
@@ -272,15 +272,6 @@ namespace numl.Model
         {
             return base.GetHashCode();
         }
-
-        public object Deserialize(TextReader stream)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Serialize(TextWriter stream, object o)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

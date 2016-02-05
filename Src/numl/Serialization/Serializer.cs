@@ -11,6 +11,20 @@ namespace numl.Serialization
 
     public static class Serializer
     {
+
+        private static readonly List<ISerializer> _serializers;
+        static Serializer()
+        {
+            _serializers = new List<ISerializer>();
+            _serializers.Add(new MatrixSerializer());
+            _serializers.Add(new VectorSerializer());
+        }
+
+        public static void AddSerializer(ISerializer serializer)
+        {
+            _serializers.Add(serializer);
+        }
+
         //begin-array     = ws %x5B ws  ; [ left square bracket
         private const int BEGIN_ARRAY = '[';
         //begin-object    = ws %x7B ws; { left curly bracket
@@ -34,116 +48,167 @@ namespace numl.Serialization
         private readonly static char[] WHITESPACE = new[] { ' ', '\t', '\n', '\r' };
         private readonly static char[] NUMBER = new[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.', '-', '+', 'e', 'E' };
 
-        public static void Serialize(TextWriter stream, object o)
+        public static void Write(TextWriter writer, object value)
         {
-            if (o == null)
-                stream.Write(new string(NULL));
+            if (value == null)
+                writer.WriteNull();
             else
             {
-                var type = o.GetType();
-                if(type == typeof(bool))
+                var type = value.GetType();
+                if (type == typeof(bool))
                 {
-                    stream.Write(((bool)o).ToString().ToLower());
+                    writer.Write(((bool)value).ToString().ToLower());
                 }
                 else if (Ject.CanUseSimpleType(type))
                 {
-                    if (o is string)
+                    if (value is string)
                     {
-                        var s = o.ToString()
+                        var s = value.ToString()
                                  .Replace("\t", "\\t")
                                  .Replace("\n", "\\n")
                                  .Replace("\r", "\\r");
-                        
-                        stream.Write($"\"{s}\"");
+
+                        writer.Write($"\"{s}\"");
                     }
                     else
-                        stream.Write(Ject.Convert(o).ToString("r"));
+                        writer.Write(Ject.Convert(value).ToString("r"));
                 }
-                else if (type.GetInterface(typeof(ISerializer).Name) != null)
+                else if (_serializers.Where(s => s.CanConvert(type)).Count() > 0)
                 {
-                    var s = (ISerializer)o;
-                    s.Serialize(stream, o);
+                    var serializer = _serializers
+                                        .Where(s => s.CanConvert(type))
+                                        .First();
+                    serializer.Write(writer, value);
                 }
-                else if (o is IEnumerable)
+                else if (value is IEnumerable)
                 {
-                    var c = o as IEnumerable;
-                    SerializeArray(stream, c);
+                    var c = value as IEnumerable;
+                    WriteArray(writer, c);
                 }
                 else
                 {
-                    SerializeObject(stream, o, type);
+                    SerializeObject(writer, value, type);
                 }
             }
         }
 
-        private static void SerializeArray(TextWriter stream, IEnumerable c)
+        public static void WriteBeginArray(this TextWriter stream)
         {
             stream.Write((char)BEGIN_ARRAY);
+        }
+
+        public static void WriteEndArray(this TextWriter stream)
+        {
+            stream.Write((char)END_ARRAY);
+        }
+
+        private static void WriteArray(this TextWriter writer,
+            IEnumerable c, ISerializer serializer = null)
+        {
+            writer.WriteBeginArray();
             bool first = true;
             foreach (var item in c)
             {
                 if (!first)
-                    stream.Write($"{(char)COMMA} ");
+                    writer.Write($"{(char)COMMA} ");
 
-                Serialize(stream, item);
+                if (serializer != null && serializer.CanConvert(item.GetType()))
+                    serializer.Write(writer, item);
+                else
+                    Write(writer, item);
 
                 first = false;
             }
-            stream.Write((char)END_ARRAY);
+            writer.WriteEndArray();
+        }
+
+        public static void WriteNull(this TextWriter stream)
+        {
+            stream.Write(new string(NULL));
+        }
+
+        public static void WriteStartObject(this TextWriter writer)
+        {
+            writer.Write((char)BEGIN_OBJECT);
+        }
+
+        public static void WriteEndObject(this TextWriter stream)
+        {
+            stream.Write((char)END_OBJECT);
+        }
+
+        public static void WriteProperty(this TextWriter writer,
+            string name, object val, ISerializer serializer = null)
+        {
+            Write(writer, name);
+            writer.Write($" {(char)COLON} ");
+            if (serializer != null && serializer.CanConvert(val.GetType()))
+                serializer.Write(writer, val);
+            else
+                Write(writer, val);
+        }
+
+        public static void WriteArrayProperty(this TextWriter writer,
+            string name, IEnumerable val, ISerializer serializer = null)
+        {
+            Write(writer, name);
+            writer.Write($" {(char)COLON} ");
+            if (serializer != null && serializer.CanConvert(val.GetType()))
+                Serializer.WriteArray(writer, val, serializer);
+            else
+                Write(writer, val);
         }
         private static void SerializeObject(TextWriter stream, object o, Type type)
         {
-            stream.Write((char)BEGIN_OBJECT);
+            stream.WriteStartObject();
             bool first = true;
             foreach (var pi in type.GetProperties())
             {
                 if (!first)
                     stream.Write($"{(char)COMMA} ");
 
-                Serialize(stream, pi.Name);
-                stream.Write($" {(char)COLON} ");
-                Serialize(stream, pi.GetValue(o));
+                stream.WriteProperty(pi.Name, pi.GetValue(o));
 
                 first = false;
             }
-            stream.Write((char)END_OBJECT);
+            stream.WriteEndObject();
         }
 
         /// <summary>
         /// Parses the specified stream from json.
         /// </summary>
-        /// <param name="sr">The sr.</param>
+        /// <param name="reader">The reader.</param>
         /// <returns>System.Object.</returns>
         /// <exception cref="System.InvalidOperationException">Unexpected token encountered while parsing json</exception>
-        public static object Parse(TextReader sr)
+        public static object Parse(TextReader reader)
         {
             // A JSON value MUST be an object, array, number, or string, 
             // or one of the following three literal names
             //    false null true
 
             // eat whitespace
-            while (WHITESPACE.Contains((char)sr.Peek()))
-                sr.Read();
+            while (WHITESPACE.Contains((char)reader.Peek()))
+                reader.Read();
 
-            if (sr.Peek() == -1)
+            if (reader.Peek() == -1)
                 return null;
 
             // eat whitespace
-            while (WHITESPACE.Contains((char)sr.Peek()))
-                sr.Read();
+            while (WHITESPACE.Contains((char)reader.Peek()))
+                reader.Read();
 
-            var next = sr.Peek();
+            var next = reader.Peek();
 
             if (next == BEGIN_OBJECT)
-                return ParseObject(sr);
+                return ParseObject(reader);
             else if (next == BEGIN_ARRAY)
-                return ParseArray(sr);
+                return ParseArray(reader);
             else if (next == QUOTATION)
-                return ParseString(sr);
+                return ParseString(reader);
             else if (char.IsNumber((char)next) || next == '-')
-                return ParseNumber(sr);
+                return ParseNumber(reader);
             else if (next == 'f' || next == 'n' || next == 't')
-                return ParseLiteral(sr);
+                return ParseLiteral(reader);
             else
                 throw new InvalidOperationException("Unexpected token encountered while parsing json");
         }

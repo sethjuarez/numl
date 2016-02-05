@@ -43,13 +43,9 @@ namespace numl.Serialization
         /// <summary>Save object to file.</summary>
         /// <param name="writer">The stream.</param>
         /// <param name="o">object.</param>
-        /// <param name="t">type.</param>
-        public static void Save(TextWriter writer, object o, Type t)
-        {
-            throw new NotImplementedException();
-            // TODO: Rewire here...
-            //GetSerializer().Serialize(writer, o, t);
-        }
+        /// <param name="type">type.</param>
+        public static void Save(TextWriter writer, object o, Type type) =>
+            Serializer.Write(writer, o);
         
         /// <summary>Loads.</summary>
         /// <param name="reader">The reader.</param>

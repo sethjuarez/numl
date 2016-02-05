@@ -1,23 +1,23 @@
 ﻿using System;
+using numl.Model;
 using System.Linq;
 using System.Reflection;
-using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 using System.IO;
 
 namespace numl.Serialization
 {
-    public class VectorSerializer : ISerializer
+    public class DateTimePropertySerializer : ISerializer
     {
         public bool CanConvert(Type type)
         {
-            return typeof(Vector).IsAssignableFrom(type);
+            return typeof(DateTimeProperty).IsAssignableFrom(type);
         }
 
         public object Deserialize(TextReader reader)
         {
             var o = Serializer.Parse(reader);
-
+            // TODO: Normalize
             return o;
         }
 
@@ -26,7 +26,8 @@ namespace numl.Serialization
             if (value == null)
                 writer.WriteNull();
             else
-                Serializer.Write(writer, ((Vector)value).ToArray());
+                Serializer.Write(writer, DateTimeProperty.GetColumns((DateTimeFeature)value).ToArray());
+
         }
     }
 }

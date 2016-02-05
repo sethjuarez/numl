@@ -32,7 +32,7 @@ namespace numl.Tests.SerializationTests
         {
             StringBuilder sb = new StringBuilder();
             StringWriter sw = new StringWriter(sb);
-            Serializer.Serialize(sw, o);
+            Serializer.Write(sw, o);
             var s = Regex.Replace(sb.ToString(), "(\"(?:[^\"\\\\]|\\\\.)*\")|\\s+", "$1");
             return s;
         }

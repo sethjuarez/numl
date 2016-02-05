@@ -33,5 +33,6 @@ namespace numl.Supervised.NeuralNetwork
 
             return (this.OutputFunction != null ? this.OutputFunction.Compute(output).Max() : output.Max());
         }
+
     }
 }
