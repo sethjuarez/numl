@@ -6,7 +6,7 @@ using numl.Tests.Data;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace numl.Tests.SerializationTests
+namespace numl.Tests.SerializationTests.DescriptorSerialization
 {
     [TestFixture, Category("Serialization")]
     public class DescriptorSerializationTests : BaseSerialization

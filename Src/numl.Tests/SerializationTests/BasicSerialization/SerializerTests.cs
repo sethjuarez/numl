@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace numl.Tests.SerializationTests
+namespace numl.Tests.SerializationTests.BasicSerialization
 {
     [TestFixture]
     public class SerializerTests

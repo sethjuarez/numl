@@ -6,7 +6,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using numl.Supervised.DecisionTree;
 
-namespace numl.Tests.SerializationTests
+namespace numl.Tests.SerializationTests.ModelSerialization
 {
     [TestFixture, Category("Serialization")]
     public class DecisionTreeSerializationTests : BaseSerialization

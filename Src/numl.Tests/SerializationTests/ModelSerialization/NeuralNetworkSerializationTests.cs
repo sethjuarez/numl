@@ -6,7 +6,7 @@ using numl.Tests.SupervisedTests;
 using System.Collections.Generic;
 using numl.Supervised.NeuralNetwork;
 
-namespace numl.Tests.SerializationTests
+namespace numl.Tests.SerializationTests.ModelSerialization
 {
     [TestFixture, Category("Serialization")]
     public class NeuralNetworkSerializationTests : BaseSerialization

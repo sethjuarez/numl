@@ -6,7 +6,7 @@ using NUnit.Framework;
 using numl.Supervised.NaiveBayes;
 using System.Collections.Generic;
 
-namespace numl.Tests.SerializationTests
+namespace numl.Tests.SerializationTests.ModelSerialization
 {
     [TestFixture, Category("Serialization")]
     public class NaiveBayesSerializationTests : BaseSerialization

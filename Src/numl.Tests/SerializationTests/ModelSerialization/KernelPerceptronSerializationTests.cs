@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using numl.Math.Kernels;
 using numl.Supervised.Perceptron;
 
-namespace numl.Tests.SerializationTests
+namespace numl.Tests.SerializationTests.ModelSerialization
 {
     [TestFixture, Category("Serialization")]
     public class KernelPerceptronSerializationTests : BaseSerialization

@@ -82,14 +82,14 @@
     <Compile Include="MathTests\ProbabilityTests.cs" />
     <Compile Include="ScoringTests\ScoreTests.cs" />
     <Compile Include="SerializationTests\BaseSerialization.cs" />
-    <Compile Include="SerializationTests\DecisionTreeSerializationTests.cs" />
-    <Compile Include="SerializationTests\DescriptorSerializationTests.cs" />
-    <Compile Include="SerializationTests\KernelPerceptronSerializationTests.cs" />
-    <Compile Include="SerializationTests\NaiveBayesSerializationTests.cs" />
-    <Compile Include="SerializationTests\NeuralNetworkSerializationTests.cs" />
-    <Compile Include="SerializationTests\SerializerTests.cs" />
-    <Compile Include="SerializationTests\RegressionSerializationTests.cs" />
-    <Compile Include="SerializationTests\SimpleJsonTests.cs" />
+    <Compile Include="SerializationTests\ModelSerialization\DecisionTreeSerializationTests.cs" />
+    <Compile Include="SerializationTests\DescriptorSerialization\DescriptorSerializationTests.cs" />
+    <Compile Include="SerializationTests\ModelSerialization\KernelPerceptronSerializationTests.cs" />
+    <Compile Include="SerializationTests\ModelSerialization\NaiveBayesSerializationTests.cs" />
+    <Compile Include="SerializationTests\ModelSerialization\NeuralNetworkSerializationTests.cs" />
+    <Compile Include="SerializationTests\BasicSerialization\SerializerTests.cs" />
+    <Compile Include="SerializationTests\ModelSerialization\RegressionSerializationTests.cs" />
+    <Compile Include="SerializationTests\BasicSerialization\SimpleJsonTests.cs" />
     <Compile Include="SupervisedTests\AutoencoderTests.cs" />
     <Compile Include="SupervisedTests\BaseSupervised.cs" />
     <Compile Include="SupervisedTests\NeuralNetworkNodeTests.cs" />
@@ -115,7 +115,7 @@
     <Compile Include="UnsupervisedTests\PCATests.cs" />
     <Compile Include="SupervisedTests\PerceptronTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SerializationTests\PropertySerializationTests.cs" />
+    <Compile Include="SerializationTests\DescriptorSerialization\PropertySerializationTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">

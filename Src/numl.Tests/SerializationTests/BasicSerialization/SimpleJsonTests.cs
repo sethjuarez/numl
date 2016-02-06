@@ -1,18 +1,32 @@
-﻿using numl.Math.LinearAlgebra;
-using numl.Serialization;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using NUnit.Framework;
+using numl.Serialization;
+using numl.Math.LinearAlgebra;
+using System.Collections.Generic;
 
-namespace numl.Tests.SerializationTests
+namespace numl.Tests.SerializationTests.BasicSerialization
 {
     [TestFixture]
     public class SimpleJsonTests : BaseSerialization
     {
+        [Test]
+        public void VectorSerializationTest()
+        {
+            Vector v = new[] {
+                System.Math.PI,
+                System.Math.PI / 2.3,
+                System.Math.PI * 1.2,
+                System.Math.PI,
+                System.Math.PI / 2.3,
+                System.Math.PI * 1.2 
+            };
+
+            SerializeWith<VectorSerializer>(v);
+            var vector = DeserializeWith<VectorSerializer>();
+
+            Assert.AreEqual(v, vector);
+        }
         [Test]
         public void MatrixSerializationTest()
         {
@@ -24,17 +38,10 @@ namespace numl.Tests.SerializationTests
                 { System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2, System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2 }
             };
 
-            var path = GetPath();
-            var file = string.Format(path, "MatrixSerializationTest");
-            MatrixSerializer m = new MatrixSerializer();
-            using (var f = new StreamWriter(file, false))
-                m.Write(f, m1);
+            SerializeWith<MatrixSerializer>(m1);
+            var matrix = DeserializeWith<MatrixSerializer>();
 
-            using (var f = new StreamReader(file))
-            {
-                var matrix = m.Deserialize(f);
-                Assert.AreEqual(m1, matrix);
-            }
+            Assert.AreEqual(m1, matrix);
         }
     }
 }
