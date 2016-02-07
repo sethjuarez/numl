@@ -16,7 +16,7 @@ namespace numl.Serialization
 
         public object Deserialize(TextReader reader)
         {
-            var o = Serializer.Parse(reader);
+            var o = Serializer.Read(reader);
 
             return o;
         }

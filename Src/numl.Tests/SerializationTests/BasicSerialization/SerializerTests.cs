@@ -40,28 +40,28 @@ namespace numl.Tests.SerializationTests.BasicSerialization
         [Test]
         public void LiteralTest()
         {
-            var fl = Serializer.Parse(FromString("false"));
+            var fl = Serializer.Read(FromString("false"));
             Assert.AreEqual(false, fl);
-            var tr = Serializer.Parse(FromString("true"));
+            var tr = Serializer.Read(FromString("true"));
             Assert.AreEqual(true, tr);
-            var nl = Serializer.Parse(FromString("null"));
+            var nl = Serializer.Read(FromString("null"));
             Assert.AreEqual(null, nl);
         }
 
         [Test]
         public void NumberTest()
         {
-            var a = Serializer.Parse(FromString(System.Math.PI.ToString("r")));
+            var a = Serializer.Read(FromString(System.Math.PI.ToString("r")));
             Assert.AreEqual(System.Math.PI, a);
-            var b = Serializer.Parse(FromString((-1 * System.Math.PI).ToString("r")));
+            var b = Serializer.Read(FromString((-1 * System.Math.PI).ToString("r")));
             Assert.AreEqual(-1 * System.Math.PI, b);
-            var c = Serializer.Parse(FromString((4354).ToString()));
+            var c = Serializer.Read(FromString((4354).ToString()));
             Assert.AreEqual(4354, c);
-            var d = Serializer.Parse(FromString((-4354).ToString()));
+            var d = Serializer.Read(FromString((-4354).ToString()));
             Assert.AreEqual(-4354, d);
-            var e = Serializer.Parse(FromString((double.MinValue).ToString("r")));
+            var e = Serializer.Read(FromString((double.MinValue).ToString("r")));
             Assert.AreEqual(double.MinValue, e);
-            var f = Serializer.Parse(FromString((double.MaxValue).ToString("r")));
+            var f = Serializer.Read(FromString((double.MaxValue).ToString("r")));
             Assert.AreEqual(double.MaxValue, f);
         }
 
@@ -70,7 +70,7 @@ namespace numl.Tests.SerializationTests.BasicSerialization
         {
             Action<string, string> test = (s, a) =>
             {
-                var experiment = Serializer.Parse(FromString($"\"{s}\""));
+                var experiment = Serializer.Read(FromString($"\"{s}\""));
                 Assert.AreEqual(a, experiment);
             };
 
@@ -86,7 +86,7 @@ namespace numl.Tests.SerializationTests.BasicSerialization
         {
             Action<string, object[]> test = (s, a) =>
             {
-                var experiment = Serializer.Parse(FromString(s));
+                var experiment = Serializer.Read(FromString(s));
                 Assert.AreEqual(a, experiment);
             };
 
@@ -119,7 +119,7 @@ namespace numl.Tests.SerializationTests.BasicSerialization
         {
             Action<string, Dictionary<string, object>> test = (s, a) =>
             {
-                var experiment = Serializer.Parse(FromString(s));
+                var experiment = Serializer.Read(FromString(s));
                 Assert.AreEqual(a, experiment);
             };
 

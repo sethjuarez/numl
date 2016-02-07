@@ -374,6 +374,13 @@ namespace numl.Utils
             }
         }
 
+        private readonly static List<Assembly> _assemblies = new List<Assembly>();
+        internal static void AddAssembly(Assembly assembly)
+        {
+            if (!_assemblies.Contains(assembly))
+                _assemblies.Add(assembly);
+        }
+
         /// <summary>The types.</summary>
         private readonly static Dictionary<string, Type> _types = new Dictionary<string, Type>();
         /// <summary>Searches for the first type.</summary>
@@ -382,12 +389,25 @@ namespace numl.Utils
         /// <returns>The found type.</returns>
         public static Type FindType(string s)
         {
+            if (!_assemblies.Contains(typeof(Ject).GetType().Assembly))
+                _assemblies.Add(typeof(Ject).GetType().Assembly);
+
             if (_types.ContainsKey(s))
                 return _types[s];
 
             var type = Type.GetType(s);
+            if(type == null) // need to look elsewhere
+            {
+                var q = (from p in _assemblies
+                         from t in p.GetTypesSafe()
+                         where t.FullName == s || t.Name == s
+                         select t).ToArray();
 
-            if (type != null)
+                if (q.Length == 1)
+                    type = q[0];
+            }
+
+            if(type != null)
             {
                 // cache
                 _types[s] = type;

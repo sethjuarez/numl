@@ -15,7 +15,7 @@ namespace numl.Serialization
 
         public object Deserialize(TextReader stream)
         {
-            var objects = (object[])Serializer.Parse(stream);
+            var objects = (object[])Serializer.Read(stream);
 
             var matrix = Array.ConvertAll<object, double[]>(objects,
                 o => Array.ConvertAll<object, double>((object[])o, i => (double)i));

@@ -48,6 +48,16 @@ namespace numl.Serialization
         private readonly static char[] WHITESPACE = new[] { ' ', '\t', '\n', '\r' };
         private readonly static char[] NUMBER = new[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.', '-', '+', 'e', 'E' };
 
+        public static string[] ToStringArray(this object[] array)
+        {
+            return array.ForEach(o => o.ToString()).ToArray();
+        }
+
+        public static string[] ToStringArray(this object o)
+        {
+            return ((object[])o).ToStringArray();
+        }
+
         public static void Write(TextWriter writer, object value)
         {
             if (value == null)
@@ -148,6 +158,13 @@ namespace numl.Serialization
                 Write(writer, val);
         }
 
+        public static void WriteNextProperty(this TextWriter writer,
+            string name, object val, ISerializer serializer = null)
+        {
+            writer.Write($" {(char)COMMA} ");
+            WriteProperty(writer, name, val, serializer);
+        }
+
         public static void WriteArrayProperty(this TextWriter writer,
             string name, IEnumerable val, ISerializer serializer = null)
         {
@@ -157,6 +174,13 @@ namespace numl.Serialization
                 Serializer.WriteArray(writer, val, serializer);
             else
                 Write(writer, val);
+        }
+
+        public static void WriteNextArrayProperty(this TextWriter writer,
+            string name, IEnumerable val, ISerializer serializer = null)
+        {
+            writer.Write($" {(char)COMMA} ");
+            WriteArrayProperty(writer, name, val, serializer);
         }
         private static void SerializeObject(TextWriter stream, object o, Type type)
         {
@@ -180,7 +204,7 @@ namespace numl.Serialization
         /// <param name="reader">The reader.</param>
         /// <returns>System.Object.</returns>
         /// <exception cref="System.InvalidOperationException">Unexpected token encountered while parsing json</exception>
-        public static object Parse(TextReader reader)
+        public static object Read(TextReader reader)
         {
             // A JSON value MUST be an object, array, number, or string, 
             // or one of the following three literal names
@@ -237,7 +261,7 @@ namespace numl.Serialization
                     if (obj.ContainsKey(name))
                         throw new InvalidOperationException("Key already exists");
 
-                    obj[name] = Parse(sr);
+                    obj[name] = Read(sr);
 
                     while (WHITESPACE.Contains((char)sr.Peek()))
                         sr.Read();
@@ -266,7 +290,7 @@ namespace numl.Serialization
                     while (WHITESPACE.Contains((char)sr.Peek()))
                         sr.Read();
 
-                    array.Add(Parse(sr));
+                    array.Add(Read(sr));
 
                     while (WHITESPACE.Contains((char)sr.Peek()))
                         sr.Read();

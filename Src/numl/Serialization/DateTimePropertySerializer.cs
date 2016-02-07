@@ -1,33 +1,32 @@
 ﻿using System;
+using System.IO;
 using numl.Model;
 using System.Linq;
-using System.Reflection;
 using System.Collections.Generic;
-using System.IO;
 
 namespace numl.Serialization
 {
-    public class DateTimePropertySerializer : ISerializer
+
+    public class DateTimePropertySerializer : PropertySerializer
     {
-        public bool CanConvert(Type type)
+        public override bool CanConvert(Type type)
         {
             return typeof(DateTimeProperty).IsAssignableFrom(type);
         }
 
-        public object Deserialize(TextReader reader)
+        public override Property CreateProperty(Dictionary<string, object> dictionary)
         {
-            var o = Serializer.Parse(reader);
-            // TODO: Normalize
-            return o;
+            var features = DateTimeProperty.GetFeatures(dictionary["Features"].ToStringArray());
+            DateTimeProperty p = new DateTimeProperty(features);
+            p = (DateTimeProperty)MapBaseProperties(p, dictionary);
+            return p;
+
         }
 
-        public void Write(TextWriter writer, object value)
+        public override void WriteAdditionalProperties(TextWriter writer, object value)
         {
-            if (value == null)
-                writer.WriteNull();
-            else
-                Serializer.Write(writer, DateTimeProperty.GetColumns((DateTimeFeature)value).ToArray());
-
+            var p = (DateTimeProperty)value;
+            writer.WriteNextArrayProperty("Features", DateTimeProperty.GetColumns(p.Features));
         }
     }
 }

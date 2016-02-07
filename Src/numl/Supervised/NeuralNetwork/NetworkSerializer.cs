@@ -15,7 +15,7 @@ namespace numl.Supervised.NeuralNetwork
 
         public object Deserialize(TextReader reader)
         {
-            var dictionary = Serializer.Parse(reader);
+            var dictionary = Serializer.Read(reader);
 
 
             return dictionary;
