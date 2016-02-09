@@ -13,7 +13,7 @@ namespace numl.Supervised.NeuralNetwork
             return typeof(Edge).IsAssignableFrom(type);
         }
 
-        public object Deserialize(TextReader reader)
+        public object Read(TextReader reader)
         {
             throw new NotImplementedException();
         }

@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using numl.Utils;
 using System.IO;
+using numl.Serialization;
 
 namespace numl.Math.LinearAlgebra
 {
@@ -350,7 +351,9 @@ namespace numl.Math.LinearAlgebra
         /// <param name="file">file to save</param>
         public void Save(string file)
         {
-            numl.Serialization.SerializationHelpers.Save<Vector>(file, this);
+            var serializer = new VectorSerializer();
+            using (var f = new StreamWriter(file, false))
+                serializer.Write(f, this);
         }
         /// <summary>Loads the given vector file.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested file is not present.</exception>
@@ -359,7 +362,11 @@ namespace numl.Math.LinearAlgebra
         public static Vector Load(string file)
         {
             if (File.Exists(file))
-                return numl.Serialization.SerializationHelpers.Load<Vector>(file);
+            {
+                var serializer = new VectorSerializer();
+                using (var f = new StreamReader(file))
+                    return (Vector)serializer.Read(f);
+            }
             else
                 throw new InvalidOperationException("File not found");
         }

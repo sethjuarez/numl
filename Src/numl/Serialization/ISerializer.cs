@@ -25,7 +25,7 @@ namespace numl.Serialization
         /// </summary>
         /// <param name="reader">The stream.</param>
         /// <returns>System.Object.</returns>
-        object Deserialize(TextReader reader);
+        object Read(TextReader reader);
 
         /// <summary>
         /// Serializes the specified stream.

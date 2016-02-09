@@ -42,7 +42,7 @@ namespace numl.Tests.SerializationTests
             var caller = new StackFrame(1, true).GetMethod().Name;
             string file = string.Format(GetPath(), caller);
             using (var f = new StreamReader(file))
-                return serializer.Deserialize(f);
+                return serializer.Read(f);
         }
 
         internal void Serialize(object o)
@@ -50,14 +50,16 @@ namespace numl.Tests.SerializationTests
             var caller = new StackFrame(1, true).GetMethod().Name;
             string file = string.Format(GetPath(), caller);
             if (File.Exists(file))  File.Delete(file);
-            numl.Serialization.SerializationHelpers.Save(file, o);
+            // ALONG THE PATH TO SERIALIZATION GREATNESS!!
+            throw new NotImplementedException();
         }
 
         internal T Deserialize<T>()
         {
             var caller = new StackFrame(1, true).GetMethod().Name;
             string file = string.Format(GetPath(), caller);
-            return numl.Serialization.SerializationHelpers.Load<T>(file);
+            // ALONG THE PATH TO SERIALIZATION GREATNESS!!
+            throw new NotImplementedException();
         }
     }
 }

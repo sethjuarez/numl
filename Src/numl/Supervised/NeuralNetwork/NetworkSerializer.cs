@@ -13,7 +13,7 @@ namespace numl.Supervised.NeuralNetwork
             return typeof(Network).IsAssignableFrom(type);
         }
 
-        public object Deserialize(TextReader reader)
+        public object Read(TextReader reader)
         {
             var dictionary = Serializer.Read(reader);
 

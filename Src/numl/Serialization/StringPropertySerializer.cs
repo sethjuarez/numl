@@ -15,20 +15,18 @@ namespace numl.Serialization
         {
             return typeof(StringProperty).IsAssignableFrom(type);
         }
-
-        public override Property CreateProperty(Dictionary<string, object> dictionary)
+        
+        public override Property ReadAdditionalProperties(TextReader reader)
         {
-            StringProperty property = new StringProperty();
-            property = (StringProperty)MapBaseProperties(property, dictionary);
+            StringProperty p = new StringProperty();
+            p.Separator = reader.ReadNextProperty().Value.ToString();
+            p.SplitType = (StringSplitType)Enum.Parse(typeof(StringSplitType), 
+                                reader.ReadNextProperty().Value.ToString());
+            p.Dictionary = ((object[])reader.ReadNextArrayProperty().Value).ToStringArray();
+            p.Exclude = ((object[])reader.ReadNextArrayProperty().Value).ToStringArray();
+            p.AsEnum = (bool)reader.ReadNextProperty().Value;
 
-            property.Separator = dictionary["Separator"].ToString();
-
-            property.SplitType = (StringSplitType)Enum.Parse(typeof(StringSplitType), dictionary["SplitType"].ToString());
-            property.Dictionary = ((object[])dictionary["Dictionary"]).ForEach(o => o.ToString()).ToArray();
-            property.Exclude = ((object[])dictionary["Exclude"]).ForEach(o => o.ToString()).ToArray();
-            property.AsEnum = (bool)dictionary["AsEnum"];
-
-            return property;
+            return p;
         }
 
         public override void WriteAdditionalProperties(TextWriter writer, object value)

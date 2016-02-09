@@ -210,7 +210,6 @@
     <Compile Include="Utils\DictionaryHelpers.cs" />
     <Compile Include="Utils\EnumerableHelpers.cs" />
     <Compile Include="Utils\Ject.cs" />
-    <Compile Include="Serialization\SerializationHelpers.cs" />
     <Compile Include="Utils\MathHelpers.cs" />
     <Compile Include="Utils\StringHelpers.cs" />
     <Compile Include="Utils\TypeHelpers.cs" />

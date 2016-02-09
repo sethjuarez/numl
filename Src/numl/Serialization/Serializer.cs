@@ -8,6 +8,11 @@ using numl.Utils;
 using System.Collections;
 namespace numl.Serialization
 {
+    public struct JsonProperty
+    {
+        public string Name;
+        public object Value;
+    }
 
     public static class Serializer
     {
@@ -58,7 +63,7 @@ namespace numl.Serialization
             return ((object[])o).ToStringArray();
         }
 
-        public static void Write(TextWriter writer, object value)
+        public static void Write(this TextWriter writer, object value)
         {
             if (value == null)
                 writer.WriteNull();
@@ -97,22 +102,22 @@ namespace numl.Serialization
                 }
                 else
                 {
-                    SerializeObject(writer, value, type);
+                    WriteObject(writer, value, type);
                 }
             }
         }
 
-        public static void WriteBeginArray(this TextWriter stream)
+        private static void WriteBeginArray(this TextWriter writer)
         {
-            stream.Write((char)BEGIN_ARRAY);
+            writer.Write((char)BEGIN_ARRAY);
         }
 
-        public static void WriteEndArray(this TextWriter stream)
+        private static void WriteEndArray(this TextWriter writer)
         {
-            stream.Write((char)END_ARRAY);
+            writer.Write((char)END_ARRAY);
         }
 
-        private static void WriteArray(this TextWriter writer,
+        public static void WriteArray(this TextWriter writer,
             IEnumerable c, ISerializer serializer = null)
         {
             writer.WriteBeginArray();
@@ -142,9 +147,21 @@ namespace numl.Serialization
             writer.Write((char)BEGIN_OBJECT);
         }
 
+        public static void ReadStartObject(this TextReader reader)
+        {
+            reader.EatWhitespace();
+            reader.ReadToken(BEGIN_OBJECT);
+        }
+
         public static void WriteEndObject(this TextWriter stream)
         {
             stream.Write((char)END_OBJECT);
+        }
+
+        public static void ReadEndObject(this TextReader reader)
+        {
+            reader.EatWhitespace();
+            reader.ReadToken(END_OBJECT);
         }
 
         public static void WriteProperty(this TextWriter writer,
@@ -158,11 +175,39 @@ namespace numl.Serialization
                 Write(writer, val);
         }
 
+        public static JsonProperty ReadProperty(this TextReader reader, ISerializer serializer = null)
+        {
+            JsonProperty p = new JsonProperty();
+            reader.EatWhitespace();
+
+            p.Name = reader.ReadString();
+
+            reader.EatWhitespace();
+
+            reader.ReadToken(COLON);
+
+            reader.EatWhitespace();
+
+            if (serializer == null)
+                p.Value = Read(reader);
+            else
+                p.Value = serializer.Read(reader);
+
+            return p;
+        }
+
         public static void WriteNextProperty(this TextWriter writer,
             string name, object val, ISerializer serializer = null)
         {
             writer.Write($" {(char)COMMA} ");
             WriteProperty(writer, name, val, serializer);
+        }
+
+        public static JsonProperty ReadNextProperty(this TextReader reader, ISerializer serializer = null)
+        {
+            reader.EatWhitespace();
+            reader.ReadToken(COMMA);
+            return reader.ReadProperty(serializer);
         }
 
         public static void WriteArrayProperty(this TextWriter writer,
@@ -176,13 +221,40 @@ namespace numl.Serialization
                 Write(writer, val);
         }
 
+        public static JsonProperty ReadArrayProperty(this TextReader reader, ISerializer serializer = null)
+        {
+            JsonProperty p = new JsonProperty();
+
+            reader.EatWhitespace();
+
+            p.Name = reader.ReadString();
+
+            reader.EatWhitespace();
+
+            reader.ReadToken(COLON);
+
+            reader.EatWhitespace();
+
+            p.Value = reader.ReadArray(serializer);
+
+            return p;
+        }
+
         public static void WriteNextArrayProperty(this TextWriter writer,
             string name, IEnumerable val, ISerializer serializer = null)
         {
             writer.Write($" {(char)COMMA} ");
             WriteArrayProperty(writer, name, val, serializer);
         }
-        private static void SerializeObject(TextWriter stream, object o, Type type)
+
+        public static JsonProperty ReadNextArrayProperty(this TextReader reader, ISerializer serializer = null)
+        {
+            reader.EatWhitespace();
+            reader.ReadToken(COMMA);
+            return reader.ReadArrayProperty(serializer);
+        }
+
+        private static void WriteObject(TextWriter stream, object o, Type type)
         {
             stream.WriteStartObject();
             bool first = true;
@@ -210,117 +282,115 @@ namespace numl.Serialization
             // or one of the following three literal names
             //    false null true
 
-            // eat whitespace
-            while (WHITESPACE.Contains((char)reader.Peek()))
-                reader.Read();
+            reader.EatWhitespace();
 
             if (reader.Peek() == -1)
                 return null;
 
-            // eat whitespace
-            while (WHITESPACE.Contains((char)reader.Peek()))
-                reader.Read();
+            reader.EatWhitespace();
 
             var next = reader.Peek();
 
             if (next == BEGIN_OBJECT)
-                return ParseObject(reader);
+                return ReadObject(reader);
             else if (next == BEGIN_ARRAY)
-                return ParseArray(reader);
+                return ReadArray(reader);
             else if (next == QUOTATION)
-                return ParseString(reader);
+                return ReadString(reader);
             else if (char.IsNumber((char)next) || next == '-')
-                return ParseNumber(reader);
+                return ReadNumber(reader);
             else if (next == 'f' || next == 'n' || next == 't')
-                return ParseLiteral(reader);
+                return ReadLiteral(reader);
             else
                 throw new InvalidOperationException("Unexpected token encountered while parsing json");
         }
-        private static object ParseObject(TextReader sr)
+        private static object ReadObject(TextReader reader)
         {
-            if (sr.Read() == BEGIN_OBJECT)
+            if (reader.Read() == BEGIN_OBJECT)
             {
                 var obj = new Dictionary<string, object>();
                 int token = 0;
                 while (token != END_OBJECT)
                 {
-                    while (WHITESPACE.Contains((char)sr.Peek()))
-                        sr.Read();
+                    reader.EatWhitespace();
 
-                    string name = ParseString(sr);
+                    string name = ReadString(reader);
 
-                    while (WHITESPACE.Contains((char)sr.Peek()))
-                        sr.Read();
+                    reader.EatWhitespace();
 
-                    if (sr.Read() != COLON)
+                    if (reader.Read() != COLON)
                         throw new InvalidOperationException("Unexpected token");
 
-                    while (WHITESPACE.Contains((char)sr.Peek()))
-                        sr.Read();
+                    reader.EatWhitespace();
 
                     if (obj.ContainsKey(name))
                         throw new InvalidOperationException("Key already exists");
 
-                    obj[name] = Read(sr);
+                    obj[name] = Read(reader);
 
-                    while (WHITESPACE.Contains((char)sr.Peek()))
-                        sr.Read();
+                    reader.EatWhitespace();
 
-                    token = sr.Read();
+                    token = reader.Read();
                     if (token != COMMA && token != END_OBJECT)
                         throw new InvalidOperationException("Unexpected token!");
                 }
 
-                while (WHITESPACE.Contains((char)sr.Peek()))
-                    sr.Read();
+                reader.EatWhitespace();
 
                 return obj;
             }
             else
                 throw new InvalidOperationException("Unexpected token");
         }
-        private static object ParseArray(TextReader sr)
+        public static bool IsNull(this TextReader reader)
         {
-            if (sr.Read() == BEGIN_ARRAY)
+            reader.EatWhitespace();
+            return reader.Peek() == NULL[0] && reader.ReadLiteral() == null;
+        }
+
+        public static object[] ReadArray(this TextReader reader, ISerializer serializer = null)
+        {
+            reader.EatWhitespace();
+            if (reader.Read() == BEGIN_ARRAY)
             {
                 List<object> array = new List<object>();
                 int token = 0;
                 do
                 {
-                    while (WHITESPACE.Contains((char)sr.Peek()))
-                        sr.Read();
+                    reader.EatWhitespace();
 
-                    array.Add(Read(sr));
+                    if (serializer == null)
+                        array.Add(Read(reader));
+                    else
+                        array.Add(serializer.Read(reader));
 
-                    while (WHITESPACE.Contains((char)sr.Peek()))
-                        sr.Read();
+                    reader.EatWhitespace();
 
-                    token = sr.Read();
+                    token = reader.Read();
                     if (token != COMMA && token != END_ARRAY)
                         throw new InvalidOperationException("Unexpected token!");
                 }
                 while (token != END_ARRAY);
 
-                while (WHITESPACE.Contains((char)sr.Peek()))
-                    sr.Read();
+                reader.EatWhitespace();
 
                 return array.ToArray();
             }
             else
                 throw new InvalidOperationException("Unexpected token!");
         }
-        private static string ParseString(TextReader sr)
+        public static string ReadString(this TextReader reader)
         {
-            if (sr.Read() == QUOTATION)
+            if (reader.Read() == QUOTATION)
             {
                 StringBuilder sb = new StringBuilder();
 
-                int cur = sr.Read();
+                int cur = reader.Read();
                 while (cur != QUOTATION)
                 {
                     if (cur == ESCAPE)
                     {
-                        cur = sr.Read();
+                        cur = reader.Read();
                         switch (cur)
                         {
                             case '\\':
@@ -348,7 +418,7 @@ namespace numl.Serialization
                                 sb.Append('"');
                                 break;
                             case 'u':
-                                var hex = new string(new[] { (char)sr.Read(), (char)sr.Read(), (char)sr.Read(), (char)sr.Read() });
+                                var hex = new string(new[] { (char)reader.Read(), (char)reader.Read(), (char)reader.Read(), (char)reader.Read() });
                                 sb.Append((char)ushort.Parse(hex, NumberStyles.HexNumber));
                                 break;
                             default:
@@ -358,49 +428,60 @@ namespace numl.Serialization
                     }
                     else
                         sb.Append((char)cur);
-                    cur = sr.Read();
+                    cur = reader.Read();
                 }
 
-                while (WHITESPACE.Contains((char)sr.Peek()))
-                    sr.Read();
+                reader.EatWhitespace();
 
                 return sb.ToString();
             }
             else
                 throw new InvalidOperationException("Unexpected token in string");
         }
-        private static double ParseNumber(TextReader sr)
+        public static double ReadNumber(this TextReader reader)
         {
             // TODO: This maybe could be faster...
             StringBuilder sb = new StringBuilder();
-            while (sr.Peek() > -1 && NUMBER.Contains((char)sr.Peek()))
-                sb.Append((char)sr.Read());
+            while (reader.Peek() > -1 && NUMBER.Contains((char)reader.Peek()))
+                sb.Append((char)reader.Read());
             return double.Parse(sb.ToString());
         }
-        private static object ParseLiteral(TextReader sr)
+        public static object ReadLiteral(this TextReader reader)
         {
-            var next = sr.Peek();
+            var next = reader.Peek();
             switch (next)
             {
                 case 'f':
                     for (int i = 0; i < FALSE.Length; i++)
-                        if (sr.Read() != FALSE[i])
+                        if (reader.Read() != FALSE[i])
                             throw new InvalidOperationException("Unexpected token!");
                     return false;
                 case 'n':
                     for (int i = 0; i < NULL.Length; i++)
-                        if (sr.Read() != NULL[i])
+                        if (reader.Read() != NULL[i])
                             throw new InvalidOperationException("Unexpected token!");
                     return null;
                 case 't':
                     for (int i = 0; i < TRUE.Length; i++)
-                        if (sr.Read() != TRUE[i])
+                        if (reader.Read() != TRUE[i])
                             throw new InvalidOperationException("Unexpected token!");
                     return true;
                 default:
                     throw new InvalidOperationException("Unexpected token!");
 
             }
+        }
+
+        private static void ReadToken(this TextReader reader, int token)
+        {
+            if (reader.Read() != token)
+                throw new InvalidOperationException($"Invalid token (expected {token})!");
+        }
+
+        private static void EatWhitespace(this TextReader reader)
+        {
+            while (WHITESPACE.Contains((char)reader.Peek()))
+                reader.Read();
         }
     }
 }

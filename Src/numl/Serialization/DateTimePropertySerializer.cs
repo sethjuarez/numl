@@ -13,14 +13,12 @@ namespace numl.Serialization
         {
             return typeof(DateTimeProperty).IsAssignableFrom(type);
         }
-
-        public override Property CreateProperty(Dictionary<string, object> dictionary)
+        
+        public override Property ReadAdditionalProperties(TextReader reader)
         {
-            var features = DateTimeProperty.GetFeatures(dictionary["Features"].ToStringArray());
-            DateTimeProperty p = new DateTimeProperty(features);
-            p = (DateTimeProperty)MapBaseProperties(p, dictionary);
+            var features = reader.ReadNextArrayProperty().Value.ToStringArray();
+            var p = new DateTimeProperty(DateTimeProperty.GetFeatures(features));
             return p;
-
         }
 
         public override void WriteAdditionalProperties(TextWriter writer, object value)

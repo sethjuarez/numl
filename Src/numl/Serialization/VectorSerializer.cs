@@ -14,11 +14,12 @@ namespace numl.Serialization
             return typeof(Vector).IsAssignableFrom(type);
         }
 
-        public object Deserialize(TextReader reader)
+        public object Read(TextReader reader)
         {
-            var o = Serializer.Read(reader);
-
-            return o;
+            if (reader.IsNull())
+                return null;
+            else
+                return new Vector((from i in reader.ReadArray() select (double)i).ToArray());
         }
 
         public void Write(TextWriter writer, object value)

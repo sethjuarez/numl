@@ -16,17 +16,32 @@ namespace numl.Serialization
             return typeof(Property).IsAssignableFrom(type);
         }
 
-        public object Deserialize(TextReader reader)
+        public object Read(TextReader reader)
         {
-            var o = Serializer.Read(reader);
-            if (o is Dictionary<string, object>)
-            {
-                var dictionary = (Dictionary<string, object>)o;
-                return CreateProperty(dictionary);
-            }
+            if (reader.IsNull()) return null;
             else
-                throw new InvalidOperationException("Invalid Parse :(");
+            {
+                reader.ReadStartObject();
+                var s = Ject.FindType(reader.ReadProperty().Value.ToString());
 
+                var serializer = (PropertySerializer)Activator.CreateInstance(s);
+
+                var name = reader.ReadNextProperty().Value.ToString();
+                var type = Ject.FindType(reader.ReadNextProperty().Value.ToString());
+                var start = int.Parse(reader.ReadNextProperty().Value.ToString());
+                var discrete = (bool)reader.ReadNextProperty().Value;
+
+                var property = serializer.ReadAdditionalProperties(reader);
+
+                reader.ReadEndObject();
+
+                property.Name = name;
+                property.Type = type;
+                property.Start = start;
+                property.Discrete = discrete;
+
+                return property;
+            }
         }
 
 
@@ -38,7 +53,7 @@ namespace numl.Serialization
                 var p = (Property)value;
 
                 writer.WriteStartObject();
-                writer.WriteProperty("Serializer", this.GetType().FullName);
+                writer.WriteProperty("Serializer", GetType().FullName);
                 writer.WriteNextProperty("Name", p.Name);
                 writer.WriteNextProperty("Type", p.Type.FullName);
                 writer.WriteNextProperty("Start", p.Start);
@@ -50,18 +65,10 @@ namespace numl.Serialization
             }
         }
 
-        public Property MapBaseProperties(Property property, Dictionary<string, object> dictionary)
+        public virtual Property ReadAdditionalProperties(TextReader reader)
         {
-            property.Name = dictionary["Name"].ToString();
-            property.Type = Ject.FindType(dictionary["Type"].ToString());
-            property.Start = int.Parse(dictionary["Start"].ToString());
-            property.Discrete = (bool)dictionary["Discrete"];
-            return property;
-        }
-        public virtual Property CreateProperty(Dictionary<string, object> dictionary)
-        {
-            Property property = new Property();
-            return MapBaseProperties(property, dictionary);
+            Property p = new Property();
+            return p;
         }
 
         public virtual void WriteAdditionalProperties(TextWriter writer, object value)

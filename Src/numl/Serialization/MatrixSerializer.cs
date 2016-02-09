@@ -13,37 +13,21 @@ namespace numl.Serialization
             return typeof(Matrix).IsAssignableFrom(t);
         }
 
-        public object Deserialize(TextReader stream)
+        public object Read(TextReader reader)
         {
-            var objects = (object[])Serializer.Read(stream);
-
-            var matrix = Array.ConvertAll<object, double[]>(objects,
-                o => Array.ConvertAll<object, double>((object[])o, i => (double)i));
-
-            Matrix m = new Matrix(matrix);
-
-            return m;
+            if (reader.IsNull())
+                return null;
+            else
+            {
+                var objects = reader.ReadArray(new VectorSerializer());
+                return Matrix.Stack((from v in objects select (Vector)v).ToArray());
+            }
         }
 
-        public void Write(TextWriter stream, object o)
+        public void Write(TextWriter writer, object o)
         {
             if (o is Matrix)
-            {
-                var m = o as Matrix;
-                stream.Write("[");
-                for (int i = 0; i < m.Rows; i++)
-                {
-                    if (i > 0) stream.Write(",\n ");
-                    stream.Write("[");
-                    for (int j = 0; j < m.Cols; j++)
-                    {
-                        if (j > 0) stream.Write(", ");
-                        stream.Write(m[i, j].ToString("r"));
-                    }
-                    stream.Write("]");
-                }
-                stream.Write("]");
-            }
+                writer.WriteArray((o as Matrix).GetRows(), new VectorSerializer());
         }
     }
 }

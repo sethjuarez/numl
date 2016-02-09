@@ -15,11 +15,11 @@ namespace numl.Serialization
             return typeof(EnumerableProperty).IsAssignableFrom(type);
         }
 
-        public override Property CreateProperty(Dictionary<string, object> dictionary)
+        public override Property ReadAdditionalProperties(TextReader reader)
         {
-            int length = int.Parse(dictionary["Length"].ToString());
+            var length = int.Parse(reader.ReadNextProperty().Value.ToString());
             EnumerableProperty p = new EnumerableProperty(length);
-            return MapBaseProperties(p, dictionary);
+            return p;
         }
 
         public override void WriteAdditionalProperties(TextWriter writer, object value)
