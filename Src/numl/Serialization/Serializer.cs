@@ -20,14 +20,20 @@ namespace numl.Serialization
         private static readonly List<ISerializer> _serializers;
         static Serializer()
         {
-            _serializers = new List<ISerializer>();
-            _serializers.Add(new MatrixSerializer());
-            _serializers.Add(new VectorSerializer());
+            // type magic to selfr register all available
+            // ISerializers
+            var serializers =
+                from t in typeof(ISerializer).Assembly.GetTypes()
+                where typeof(ISerializer).IsAssignableFrom(t) &&
+                      t != typeof(ISerializer)
+                select (ISerializer)Activator.CreateInstance(t);
+
+            _serializers = new List<ISerializer>(serializers);
         }
 
-        public static void AddSerializer(ISerializer serializer)
+        internal static void AddSerializer(params ISerializer[] serializers)
         {
-            _serializers.Add(serializer);
+            _serializers.AddRange(serializers);
         }
 
         //begin-array     = ws %x5B ws  ; [ left square bracket
@@ -56,6 +62,11 @@ namespace numl.Serialization
         public static string[] ToStringArray(this object[] array)
         {
             return array.ForEach(o => o.ToString()).ToArray();
+        }
+
+        public static T[] ToArray<T>(this object o)
+        {
+            return ((object[])o).ForEach(i => (T)i).ToArray();
         }
 
         public static string[] ToStringArray(this object o)
@@ -88,11 +99,10 @@ namespace numl.Serialization
                     else
                         writer.Write(Ject.Convert(value).ToString("r"));
                 }
-                else if (_serializers.Where(s => s.CanConvert(type)).Count() > 0)
+                else if (HasSerializer(type))
                 {
-                    var serializer = _serializers
-                                        .Where(s => s.CanConvert(type))
-                                        .First();
+                    var serializer = GetSerializer(type);
+
                     serializer.Write(writer, value);
                 }
                 else if (value is IEnumerable)
@@ -105,6 +115,19 @@ namespace numl.Serialization
                     WriteObject(writer, value, type);
                 }
             }
+        }
+
+        private static ISerializer GetSerializer(Type type)
+        {
+            var q = _serializers.Where(s => s.CanConvert(type));
+
+            return q.Last();
+        }
+
+        private static bool HasSerializer(Type type)
+        {
+            return _serializers.Where(s => s.CanConvert(type))
+                               .Count() > 0;
         }
 
         private static void WriteBeginArray(this TextWriter writer)
@@ -358,6 +381,13 @@ namespace numl.Serialization
                 do
                 {
                     reader.EatWhitespace();
+
+                    // empty array situation
+                    if(reader.Peek() == END_ARRAY)
+                    {
+                        reader.Read();
+                        break;
+                    }
 
                     if (serializer == null)
                         array.Add(Read(reader));

@@ -27,7 +27,12 @@ namespace numl.Serialization
                 var serializer = (PropertySerializer)Activator.CreateInstance(s);
 
                 var name = reader.ReadNextProperty().Value.ToString();
-                var type = Ject.FindType(reader.ReadNextProperty().Value.ToString());
+
+                Type type = null;
+                var typeName = reader.ReadNextProperty().Value;
+                if (typeName != null)
+                    type = Ject.FindType(typeName.ToString());
+
                 var start = int.Parse(reader.ReadNextProperty().Value.ToString());
                 var discrete = (bool)reader.ReadNextProperty().Value;
 
@@ -55,7 +60,7 @@ namespace numl.Serialization
                 writer.WriteStartObject();
                 writer.WriteProperty("Serializer", GetType().FullName);
                 writer.WriteNextProperty("Name", p.Name);
-                writer.WriteNextProperty("Type", p.Type.FullName);
+                writer.WriteNextProperty("Type", p.Type?.FullName);
                 writer.WriteNextProperty("Start", p.Start);
                 writer.WriteNextProperty("Discrete", p.Discrete);
 

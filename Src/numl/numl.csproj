@@ -147,6 +147,7 @@
     <Compile Include="Recommendation\CofiRecommenderModel.cs" />
     <Compile Include="Register.cs" />
     <Compile Include="Serialization\DateTimePropertySerializer.cs" />
+    <Compile Include="Serialization\DescriptorSerializer.cs" />
     <Compile Include="Serialization\EnumerablePropertySerializer.cs" />
     <Compile Include="Serialization\ISerializer.cs" />
     <Compile Include="Serialization\MatrixSerializer.cs" />

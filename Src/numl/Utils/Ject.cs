@@ -11,12 +11,18 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Globalization;
 using numl.Model;
+using numl.Serialization;
 
 namespace numl.Utils
 {
     /// <summary>This class is used for fast reflection over types.</summary>
     public static class Ject
     {
+        static Ject()
+        {
+            _assemblies.Add(typeof(decimal).Assembly);
+            _assemblies.Add(typeof(Ject).Assembly);
+        }
         /// <summary>
         /// The default truth value. 
         /// This is important given that numl
@@ -378,7 +384,17 @@ namespace numl.Utils
         internal static void AddAssembly(Assembly assembly)
         {
             if (!_assemblies.Contains(assembly))
+            {
                 _assemblies.Add(assembly);
+
+                // add serializers
+                var serializers =
+                    from t in assembly.GetTypesSafe()
+                    where typeof(ISerializer).IsAssignableFrom(t)
+                    select (ISerializer)Activator.CreateInstance(t);
+
+                Serializer.AddSerializer(serializers.ToArray());
+            }
         }
 
         /// <summary>The types.</summary>
@@ -389,9 +405,6 @@ namespace numl.Utils
         /// <returns>The found type.</returns>
         public static Type FindType(string s)
         {
-            if (!_assemblies.Contains(typeof(Ject).GetType().Assembly))
-                _assemblies.Add(typeof(Ject).GetType().Assembly);
-
             if (_types.ContainsKey(s))
                 return _types[s];
 

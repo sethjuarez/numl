@@ -1,4 +1,5 @@
-﻿using numl.Utils;
+﻿using numl.Serialization;
+using numl.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +15,11 @@ namespace numl
         /// Registration for numl to understand all of
         /// your types
         /// </summary>
-        /// <param name="assembly">The assembly.</param>
-        public static void Assembly(params Assembly[] assembly)
+        /// <param name="assemblies">The assembly.</param>
+        public static void Assembly(params Assembly[] assemblies)
         {
-            foreach (var a in assembly)
+            // register assemblies
+            foreach (var a in assemblies)
                 Ject.AddAssembly(a);
         }
     }
