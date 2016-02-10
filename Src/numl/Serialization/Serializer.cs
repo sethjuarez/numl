@@ -120,8 +120,16 @@ namespace numl.Serialization
         private static ISerializer GetSerializer(Type type)
         {
             var q = _serializers.Where(s => s.CanConvert(type));
+            if(q.Count() > 1)
+            {
+                var s = q.ToArray();
+                if (s[0].GetType().IsSubclassOf(s[1].GetType()))
+                    return s[0];
+                else
+                    return s[1];
+            }
 
-            return q.Last();
+            return q.First();
         }
 
         private static bool HasSerializer(Type type)
