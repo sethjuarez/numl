@@ -129,9 +129,6 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
 
             var d = DeserializeWith<DescriptorSerializer>() as Descriptor;
 
-            Console.WriteLine(description);
-            Console.WriteLine(d);
-
             Assert.AreEqual(description, d);
         }
 

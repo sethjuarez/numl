@@ -150,6 +150,9 @@
     <Compile Include="Serialization\DescriptorSerializer.cs" />
     <Compile Include="Serialization\EnumerablePropertySerializer.cs" />
     <Compile Include="Serialization\ISerializer.cs" />
+    <Compile Include="Serialization\JsonConstants.cs" />
+    <Compile Include="Serialization\JsonReader.cs" />
+    <Compile Include="Serialization\JsonWriter.cs" />
     <Compile Include="Serialization\MatrixSerializer.cs" />
     <Compile Include="Serialization\PropertySerializer.cs" />
     <Compile Include="Serialization\StringPropertySerializer.cs" />
