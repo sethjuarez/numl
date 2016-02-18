@@ -19,18 +19,21 @@ namespace numl.Tests.SerializationTests.BasicSerialization
                 System.Math.PI * 1.2,
                 System.Math.PI,
                 System.Math.PI / 2.3,
-                System.Math.PI * 1.2 
+                System.Math.PI * 1.2
             };
 
-            SerializeWith<VectorSerializer>(v);
-            var vector = DeserializeWith<VectorSerializer>();
+            using (var w = GetWriter()) w.WriteVector(v);
 
-            Assert.AreEqual(v, vector);
+            using (var reader = GetReader())
+            {
+                Vector v3 = reader.ReadVector();
+                Assert.AreEqual(v, v3);
+            }
         }
         [Test]
         public void MatrixSerializationTest()
         {
-            Matrix m1 = new[,] {
+            Matrix m = new[,] {
                 { System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2, System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2 },
                 { System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2, System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2 },
                 { System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2, System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2 },
@@ -38,10 +41,13 @@ namespace numl.Tests.SerializationTests.BasicSerialization
                 { System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2, System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2 }
             };
 
-            SerializeWith<MatrixSerializer>(m1);
-            var matrix = DeserializeWith<MatrixSerializer>();
+            using (var w = GetWriter()) w.WriteMatrix(m);
 
-            Assert.AreEqual(m1, matrix);
+            using (var reader = GetReader())
+            {
+                Matrix m3 = reader.ReadMatrix();
+                Assert.AreEqual(m, m3);
+            }
         }
     }
 }

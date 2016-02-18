@@ -15,17 +15,17 @@ namespace numl.Serialization
             return typeof(EnumerableProperty).IsAssignableFrom(type);
         }
 
-        public override Property ReadAdditionalProperties(TextReader reader)
-        {
-            var length = int.Parse(reader.ReadNextProperty().Value.ToString());
-            EnumerableProperty p = new EnumerableProperty(length);
-            return p;
-        }
+        //public override Property ReadAdditionalProperties(TextReader reader)
+        //{
+        //    var length = int.Parse(reader.ReadNextProperty().Value.ToString());
+        //    EnumerableProperty p = new EnumerableProperty(length);
+        //    return p;
+        //}
 
-        public override void WriteAdditionalProperties(TextWriter writer, object value)
-        {
-            var p = (EnumerableProperty)value;
-            writer.WriteNextProperty("Length", p.Length);
-        }
+        //public override void WriteAdditionalProperties(TextWriter writer, object value)
+        //{
+        //    var p = (EnumerableProperty)value;
+        //    writer.WriteNextProperty("Length", p.Length);
+        //}
     }
 }

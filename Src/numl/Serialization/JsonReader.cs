@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Globalization;
 using System.Collections.Generic;
+using numl.Math.LinearAlgebra;
+using numl.Utils;
 
 namespace numl.Serialization
 {
-    public class JsonReader
+    public class JsonReader : IDisposable
     {
         private readonly TextReader _reader;
         public JsonReader(TextReader reader)
@@ -25,7 +27,7 @@ namespace numl.Serialization
         {
             EatWhitespace();
             return _reader.Peek() == JsonConstants.NULL[0] &&
-                   _reader.ReadLiteral() == null;
+                   ReadLiteral() == null;
         }
 
         internal void ReadToken(int token)
@@ -33,6 +35,13 @@ namespace numl.Serialization
             EatWhitespace();
             if (_reader.Read() != token)
                 throw new InvalidOperationException($"Invalid token (expected {(char)token})!");
+        }
+
+        internal void PeekToken(int token)
+        {
+            EatWhitespace();
+            if (_reader.Peek() == token)
+                _reader.Read();
         }
 
         public string ReadString()
@@ -124,6 +133,18 @@ namespace numl.Serialization
             }
         }
 
+        public Vector ReadVector()
+        {
+            return new Vector(ReadArray().Select(i => (double)i).ToArray());
+        }
+
+        public Matrix ReadMatrix()
+        {
+            return new Matrix(
+                ReadArray().Select(i => ((object[])i).Select(j => (double)j).ToArray()).ToArray()
+            );
+        }
+
         public object[] ReadArray()
         {
             EatWhitespace();
@@ -170,59 +191,46 @@ namespace numl.Serialization
             var name = ReadString();
             ReadToken(JsonConstants.COLON);
             var value = Read();
-            return new JsonProperty { Name = name, Value = value };
-        }
+            PeekToken(JsonConstants.COMMA);
 
-        public JsonProperty ReadNextProperty()
-        {
-            ReadToken(JsonConstants.COMMA);
-            return ReadProperty();
+            return new JsonProperty { Name = name, Value = value };
         }
 
         public JsonProperty ReadArrayProperty()
         {
 
             var name = ReadString();
-
             ReadToken(JsonConstants.COLON);
-
             var value = ReadArray();
-
+            PeekToken(JsonConstants.COMMA);
             return new JsonProperty { Name = name, Value = value };
-        }
-
-        public JsonProperty ReadNextArrayProperty()
-        {
-            ReadToken(JsonConstants.COMMA);
-            return ReadArrayProperty();
         }
 
         public object ReadObject()
         {
             ReadToken(JsonConstants.BEGIN_OBJECT);
-
             var obj = new Dictionary<string, object>();
-            int token = 0;
-            while (token != JsonConstants.END_OBJECT)
+            while (_reader.Peek() != JsonConstants.END_OBJECT)
             {
-                string name = ReadString();
+                var p = ReadProperty();
 
-                ReadToken(JsonConstants.COLON);
+                if (p.Name == JsonSerializer.SERIALIZER_ATTRIBUTE)
+                {
+                    // TODO: Maybe keep instances of these things for later reuse
+                    var s = (ISerializer)Activator.CreateInstance(Ject.FindType(p.Value.ToString()));
+                    var o = s.Read(this);
+                    s.PostRead(this);
+                    return o;
+                }
 
-                if (obj.ContainsKey(name))
+                if (obj.ContainsKey(p.Name))
                     throw new InvalidOperationException("Key already exists");
 
-                // TODO: HERE I SHOULD CHECK FOR ISERIALIZER
-
-                obj[name] = Read();
-
-                EatWhitespace();
-
-                token = _reader.Read();
-                if (token != JsonConstants.COMMA && token != JsonConstants.END_OBJECT)
-                    throw new InvalidOperationException("Unexpected token when parsig object!");
+                obj[p.Name] = p.Value;
+                
             }
 
+            ReadToken(JsonConstants.END_OBJECT);
             return obj;
         }
 
@@ -253,6 +261,12 @@ namespace numl.Serialization
                 return ReadLiteral();
             else
                 throw new InvalidOperationException("Unexpected token encountered while parsing json");
+        }
+
+        public void Dispose()
+        {
+            if (_reader != null)
+                _reader.Dispose();
         }
     }
 }

@@ -25,6 +25,11 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
             var po = DeserializeWith<PropertySerializer>();
 
             Assert.AreEqual(p, po);
+
+            Serialize(p);
+            var p2 = Deserialize<Property>();
+
+            Assert.AreEqual(p, p2);
         }
 
         [Test]

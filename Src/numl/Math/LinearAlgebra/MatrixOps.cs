@@ -37,6 +37,16 @@ namespace numl.Math.LinearAlgebra
             return matrix;
         }
 
+        /// <summary>
+        /// Performs an implicit conversion from <see cref="System.Double[][]"/> to <see cref="Matrix"/>.
+        /// </summary>
+        /// <param name="m">The m.</param>
+        /// <returns>The result of the conversion.</returns>
+        public static implicit operator Matrix(double[][] m)
+        {
+            return new Matrix(m);
+        }
+
         // --------------------- mathematical ops
         /// <summary>Equality operator.</summary>
         /// <param name="m1">The first Matrix.</param>

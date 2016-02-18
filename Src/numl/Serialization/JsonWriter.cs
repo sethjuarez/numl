@@ -4,10 +4,11 @@ using numl.Utils;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using numl.Math.LinearAlgebra;
 
 namespace numl.Serialization
 {
-    public class JsonWriter
+    public class JsonWriter : IDisposable
     {
         private readonly TextWriter _writer;
         public JsonWriter(TextWriter writer)
@@ -15,27 +16,9 @@ namespace numl.Serialization
             _writer = writer;
         }
 
-        public void Write(object value)
+        internal void WriteToken(int token)
         {
-            if (value == null)
-                WriteNull();
-            else
-            {
-                var type = value.GetType();
-                if (type == typeof(bool))
-                    WriteBool((bool)value);
-                else if (Ject.CanUseSimpleType(type))
-                {
-                    if (value is string) WriteString((string)value);
-                    else WriteSimpleType(value);
-                }
-                else if (JsonConstants.HasSerializer(type))
-                    JsonConstants.GetSerializer(type).Write(_writer, value);
-                else if (value is IEnumerable)
-                    WriteArray(value as IEnumerable);
-                else
-                    WriteObject(value);
-            }
+            _writer.Write((char)token);
         }
 
         public void WriteBool(bool value)
@@ -58,14 +41,33 @@ namespace numl.Serialization
             _writer.Write(Ject.Convert(value).ToString("r"));
         }
 
+        public void WriteVector(Vector v)
+        {
+            WriteArray(v as IEnumerable);
+        }
+
+        public void WriteMatrix(Matrix matrix)
+        {
+            WriteBeginArray();
+            bool first = true;
+            foreach (var vector in matrix.GetRows())
+            {
+                if (!first) WriteToken(JsonConstants.COMMA);
+                WriteArray(vector as IEnumerable);
+                first = false;
+
+            }
+            WriteEndArray();
+        }
+
         public void WriteBeginArray()
         {
-            _writer.Write((char)JsonConstants.BEGIN_ARRAY);
+            WriteToken(JsonConstants.BEGIN_ARRAY);
         }
 
         public void WriteEndArray()
         {
-            _writer.Write((char)JsonConstants.END_ARRAY);
+            WriteToken(JsonConstants.END_ARRAY);
         }
 
         public void WriteArray(IEnumerable c)
@@ -74,7 +76,7 @@ namespace numl.Serialization
             bool first = true;
             foreach (var item in c)
             {
-                if (!first) _writer.Write($"{(char)JsonConstants.COMMA} ");
+                if (!first) WriteToken(JsonConstants.COMMA);
                 Write(item);
                 first = false;
             }
@@ -88,56 +90,93 @@ namespace numl.Serialization
 
         public void WriteStartObject()
         {
-            _writer.Write((char)JsonConstants.BEGIN_OBJECT);
+            WriteToken(JsonConstants.BEGIN_OBJECT);
         }
 
         public void WriteEndObject()
         {
-            _writer.Write((char)JsonConstants.END_OBJECT);
+            WriteToken(JsonConstants.END_OBJECT);
+        }
+
+        internal void WriteFirstProperty(string name, object val)
+        {
+            Write(name);
+            WriteToken(JsonConstants.COLON);
+            Write(val);
         }
 
         public void WriteProperty(string name, object val)
         {
-            Write(name);
-            _writer.Write($" {(char)JsonConstants.COLON} ");
-            Write(val);
-        }
-
-        public void WriteNextProperty(string name, object val)
-        {
-            _writer.Write($" {(char)JsonConstants.COMMA} ");
-            WriteProperty(name, val);
+            WriteToken(JsonConstants.COMMA);
+            WriteFirstProperty(name, val);
         }
 
         public void WriteArrayProperty(string name, IEnumerable val)
         {
             Write(name);
-            _writer.Write($" {(char)JsonConstants.COLON} ");
+            WriteToken(JsonConstants.COLON);
             Write(val);
         }
 
         public void WriteNextArrayProperty(string name, IEnumerable val)
         {
-            _writer.Write($" {(char)JsonConstants.COMMA} ");
+            WriteToken(JsonConstants.COMMA);
             WriteArrayProperty(name, val);
         }
 
         public void WriteObject(object o)
         {
-            _writer.WriteStartObject();
+            WriteStartObject();
 
             // TODO: WRITE ISERIALIZER OUT HERE
             bool first = true;
             foreach (var pi in o.GetType().GetProperties())
             {
-                if (!first)
-                    _writer.Write($"{(char)JsonConstants.COMMA} ");
+                if (!first) WriteToken(JsonConstants.COMMA);
 
-                _writer.WriteProperty(pi.Name, pi.GetValue(o));
+                WriteFirstProperty(pi.Name, pi.GetValue(o));
 
                 first = false;
             }
-            _writer.WriteEndObject();
+            WriteEndObject();
+        }
+
+        public void Write(object value)
+        {
+            if (value == null)
+                WriteNull();
+            else
+            {
+                var type = value.GetType();
+                if (type == typeof(bool))
+                    WriteBool((bool)value);
+                else if (Ject.CanUseSimpleType(type))
+                {
+                    if (value is string) WriteString((string)value);
+                    else WriteSimpleType(value);
+                }
+                else if (type == typeof(Vector))
+                    WriteVector((Vector)value);
+                else if (type == typeof(Matrix))
+                    WriteMatrix((Matrix)value);
+                else if (JsonConstants.HasSerializer(type))
+                {
+                    var serializer = JsonConstants.GetSerializer(type);
+                    serializer.PreWrite(this);
+                    serializer.Write(this, value);
+                    serializer.PostWrite(this);
+                }
+                else if (value is IEnumerable)
+                    WriteArray(value as IEnumerable);
+                else
+                    WriteObject(value);
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_writer != null)
+                _writer.Dispose();
         }
     }
 }

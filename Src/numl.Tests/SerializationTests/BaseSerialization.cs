@@ -23,7 +23,7 @@ namespace numl.Tests.SerializationTests
         }
 
         internal void SerializeWith<T>(object o)
-            where T : ISerializer
+            where T : JsonSerializer
         {
             var serializer = Activator.CreateInstance<T>();
             if (!serializer.CanConvert(o.GetType()))
@@ -32,34 +32,78 @@ namespace numl.Tests.SerializationTests
             string file = string.Format(GetPath(), caller);
             if (File.Exists(file)) File.Delete(file);
             using (var f = new StreamWriter(file, false))
-                serializer.Write(f, o);
+            using (var writer = new JsonWriter(f))
+            {
+                serializer.PreWrite(writer);
+                serializer.Write(writer, o);
+                serializer.PostWrite(writer);
+            }
         }
 
         internal object DeserializeWith<T>()
-            where T : ISerializer
+            where T : JsonSerializer
         {
             var serializer = Activator.CreateInstance<T>();
             var caller = new StackFrame(1, true).GetMethod().Name;
             string file = string.Format(GetPath(), caller);
             using (var f = new StreamReader(file))
-                return serializer.Read(f);
+            using (var reader = new JsonReader(f))
+            {
+                reader.ReadStartObject();
+                var p = reader.ReadProperty();
+
+                Assert.AreEqual("$Serializer", p.Name);
+                Assert.AreEqual(serializer.GetType().FullName, p.Value);
+                
+                var o = serializer.Read(reader);
+                serializer.PostRead(reader);
+                return o;
+            }
         }
 
         internal void Serialize(object o)
         {
             var caller = new StackFrame(1, true).GetMethod().Name;
             string file = string.Format(GetPath(), caller);
-            if (File.Exists(file))  File.Delete(file);
-            // ALONG THE PATH TO SERIALIZATION GREATNESS!!
-            throw new NotImplementedException();
+            if (File.Exists(file)) File.Delete(file);
+            using (var f = new StreamWriter(file, false))
+                new JsonWriter(f).Write(o);
         }
 
         internal T Deserialize<T>()
         {
             var caller = new StackFrame(1, true).GetMethod().Name;
             string file = string.Format(GetPath(), caller);
-            // ALONG THE PATH TO SERIALIZATION GREATNESS!!
-            throw new NotImplementedException();
+            using (var f = new StreamReader(file))
+            {
+                var val = new JsonReader(f).Read();
+                return (T)val;
+            }
+        }
+
+        internal object Deserialize()
+        {
+            var caller = new StackFrame(1, true).GetMethod().Name;
+            string file = string.Format(GetPath(), caller);
+            using (var f = new StreamReader(file))
+                return new JsonReader(f).Read();
+        }
+
+        internal JsonWriter GetWriter()
+        {
+            var caller = new StackFrame(1, true).GetMethod().Name;
+            string file = string.Format(GetPath(), caller);
+            if (File.Exists(file)) File.Delete(file);
+            var f = new StreamWriter(file, false);
+            return new JsonWriter(f);
+        }
+
+        internal JsonReader GetReader()
+        {
+            var caller = new StackFrame(1, true).GetMethod().Name;
+            string file = string.Format(GetPath(), caller);
+            var f = new StreamReader(file);
+            return new JsonReader(f);
         }
     }
 }

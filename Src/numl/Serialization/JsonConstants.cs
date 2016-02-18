@@ -8,15 +8,15 @@ namespace numl.Serialization
     {
         static JsonConstants()
         {
-            // type magic to selfr register all available
-            // ISerializers
+            // type magic to self register
+            // all available ISerializers
             var serializers =
-                from t in typeof(ISerializer).Assembly.GetTypes()
-                where typeof(ISerializer).IsAssignableFrom(t) &&
-                      t != typeof(ISerializer)
-                select (ISerializer)Activator.CreateInstance(t);
+                from t in typeof(JsonSerializer).Assembly.GetTypes()
+                where typeof(JsonSerializer).IsAssignableFrom(t) &&
+                      t != typeof(JsonSerializer)
+                select (JsonSerializer)Activator.CreateInstance(t);
 
-            _serializers = new List<ISerializer>(serializers);
+            _serializers = new List<JsonSerializer>(serializers);
         }
 
         //begin-array     = ws %x5B ws  ; [ left square bracket
@@ -42,8 +42,8 @@ namespace numl.Serialization
         internal readonly static char[] WHITESPACE = new[] { ' ', '\t', '\n', '\r' };
         internal readonly static char[] NUMBER = new[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.', '-', '+', 'e', 'E' };
 
-        private static readonly List<ISerializer> _serializers;
-        internal static ISerializer GetSerializer(Type type)
+        private static readonly List<JsonSerializer> _serializers;
+        internal static JsonSerializer GetSerializer(Type type)
         {
             var q = _serializers.Where(s => s.CanConvert(type));
             if (q.Count() > 1)
@@ -63,6 +63,11 @@ namespace numl.Serialization
             return _serializers.Where(s => s.CanConvert(type))
                                .Count() > 0;
         }
+        internal static void AddSerializer(params JsonSerializer[] serializers)
+        {
+            _serializers.AddRange(serializers);
+        }
+
     }
 
 }

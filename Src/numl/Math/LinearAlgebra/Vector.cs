@@ -351,9 +351,9 @@ namespace numl.Math.LinearAlgebra
         /// <param name="file">file to save</param>
         public void Save(string file)
         {
-            var serializer = new VectorSerializer();
             using (var f = new StreamWriter(file, false))
-                serializer.Write(f, this);
+            using (var w = new JsonWriter(f))
+                w.WriteVector(this);
         }
         /// <summary>Loads the given vector file.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested file is not present.</exception>
@@ -363,9 +363,9 @@ namespace numl.Math.LinearAlgebra
         {
             if (File.Exists(file))
             {
-                var serializer = new VectorSerializer();
                 using (var f = new StreamReader(file))
-                    return (Vector)serializer.Read(f);
+                using (var r = new JsonReader(f))
+                    return r.ReadVector();
             }
             else
                 throw new InvalidOperationException("File not found");

@@ -152,14 +152,11 @@
     <Compile Include="Serialization\ISerializer.cs" />
     <Compile Include="Serialization\JsonConstants.cs" />
     <Compile Include="Serialization\JsonReader.cs" />
+    <Compile Include="Serialization\JsonSerializer.cs" />
     <Compile Include="Serialization\JsonWriter.cs" />
-    <Compile Include="Serialization\MatrixSerializer.cs" />
     <Compile Include="Serialization\PropertySerializer.cs" />
     <Compile Include="Serialization\StringPropertySerializer.cs" />
-    <Compile Include="Supervised\NeuralNetwork\EdgeSerializer.cs" />
-    <Compile Include="Supervised\NeuralNetwork\NetworkSerializer.cs" />
     <Compile Include="Serialization\Serializer.cs" />
-    <Compile Include="Serialization\VectorSerializer.cs" />
     <Compile Include="Supervised\Classification\ClassificationModel.cs" />
     <Compile Include="Supervised\Classification\IClassifier.cs" />
     <Compile Include="Supervised\Classification\MultiClassLearner.cs" />
@@ -187,7 +184,6 @@
     <Compile Include="Supervised\NeuralNetwork\Encoders\AutoencoderGenerator.cs" />
     <Compile Include="Supervised\NeuralNetwork\Encoders\AutoencoderModel.cs" />
     <Compile Include="Supervised\NeuralNetwork\Encoders\AutoencoderNeuron.cs" />
-    <Compile Include="Supervised\NeuralNetwork\NodeSerializer.cs" />
     <Compile Include="Supervised\NeuralNetwork\Recurrent\GatedRNNGenerator.cs" />
     <Compile Include="Supervised\NeuralNetwork\Recurrent\RecurrentNeuron.cs" />
     <Compile Include="Supervised\Perceptron\KernelPerceptronGenerator.cs" />

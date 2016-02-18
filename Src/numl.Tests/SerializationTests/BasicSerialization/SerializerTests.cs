@@ -17,7 +17,7 @@ namespace numl.Tests.SerializationTests.BasicSerialization
         /// </summary>
         /// <param name="s">The s.</param>
         /// <returns>StreamReader.</returns>
-        public static StreamReader FromString(string s)
+        public static JsonReader JsonReaderFromString(string s)
         {
             MemoryStream stream = new MemoryStream();
             var writer = new StreamWriter(stream);
@@ -25,14 +25,15 @@ namespace numl.Tests.SerializationTests.BasicSerialization
             writer.Flush();
             stream.Position = 0;
             var sr = new StreamReader(stream);
-            return sr;
+            return new JsonReader(sr);
         }
 
-        public static string FromObject(object o)
+        public static string JsonStringFromObject(object o)
         {
             StringBuilder sb = new StringBuilder();
             StringWriter sw = new StringWriter(sb);
-            Serializer.Write(sw, o);
+            JsonWriter wr = new JsonWriter(sw);
+            wr.Write(o);
             var s = Regex.Replace(sb.ToString(), "(\"(?:[^\"\\\\]|\\\\.)*\")|\\s+", "$1");
             return s;
         }
@@ -40,28 +41,28 @@ namespace numl.Tests.SerializationTests.BasicSerialization
         [Test]
         public void LiteralTest()
         {
-            var fl = Serializer.Read(FromString("false"));
+            var fl = JsonReaderFromString("false").Read();
             Assert.AreEqual(false, fl);
-            var tr = Serializer.Read(FromString("true"));
+            var tr = JsonReaderFromString("true").Read();
             Assert.AreEqual(true, tr);
-            var nl = Serializer.Read(FromString("null"));
+            var nl = JsonReaderFromString("null").Read();
             Assert.AreEqual(null, nl);
         }
 
         [Test]
         public void NumberTest()
         {
-            var a = Serializer.Read(FromString(System.Math.PI.ToString("r")));
+            var a = JsonReaderFromString(System.Math.PI.ToString("r")).Read();
             Assert.AreEqual(System.Math.PI, a);
-            var b = Serializer.Read(FromString((-1 * System.Math.PI).ToString("r")));
+            var b = JsonReaderFromString((-1 * System.Math.PI).ToString("r")).Read();
             Assert.AreEqual(-1 * System.Math.PI, b);
-            var c = Serializer.Read(FromString((4354).ToString()));
+            var c = JsonReaderFromString((4354).ToString()).Read();
             Assert.AreEqual(4354, c);
-            var d = Serializer.Read(FromString((-4354).ToString()));
+            var d = JsonReaderFromString((-4354).ToString()).Read();
             Assert.AreEqual(-4354, d);
-            var e = Serializer.Read(FromString((double.MinValue).ToString("r")));
+            var e = JsonReaderFromString((double.MinValue).ToString("r")).Read();
             Assert.AreEqual(double.MinValue, e);
-            var f = Serializer.Read(FromString((double.MaxValue).ToString("r")));
+            var f = JsonReaderFromString((double.MaxValue).ToString("r")).Read();
             Assert.AreEqual(double.MaxValue, f);
         }
 
@@ -70,7 +71,7 @@ namespace numl.Tests.SerializationTests.BasicSerialization
         {
             Action<string, string> test = (s, a) =>
             {
-                var experiment = Serializer.Read(FromString($"\"{s}\""));
+                var experiment = JsonReaderFromString($"\"{s}\"").Read();
                 Assert.AreEqual(a, experiment);
             };
 
@@ -86,7 +87,7 @@ namespace numl.Tests.SerializationTests.BasicSerialization
         {
             Action<string, object[]> test = (s, a) =>
             {
-                var experiment = Serializer.Read(FromString(s));
+                var experiment = JsonReaderFromString(s).Read();
                 Assert.AreEqual(a, experiment);
             };
 
@@ -119,7 +120,7 @@ namespace numl.Tests.SerializationTests.BasicSerialization
         {
             Action<string, Dictionary<string, object>> test = (s, a) =>
             {
-                var experiment = Serializer.Read(FromString(s));
+                var experiment = JsonReaderFromString(s).Read();
                 Assert.AreEqual(a, experiment);
             };
 
@@ -148,12 +149,12 @@ namespace numl.Tests.SerializationTests.BasicSerialization
         public void SimpleSerializationTests()
         {
             var s = "Super Interest String!";
-            var ss = FromObject(s);
+            var ss = JsonStringFromObject(s);
             Assert.AreEqual($"\"{s}\"", ss);
 
 
             double x = double.MinValue;
-            var xo = FromObject(x);
+            var xo = JsonStringFromObject(x);
             Assert.AreEqual(x.ToString("r"), xo);
         }
 
@@ -161,12 +162,12 @@ namespace numl.Tests.SerializationTests.BasicSerialization
         public void SimpleArraySerializationTests()
         {
             var x1 = new[] { 1, 2, 3, 4, 5, 6, 7 };
-            var x1o = FromObject(x1);
+            var x1o = JsonStringFromObject(x1);
             var x1s = "[1,2,3,4,5,6,7]";
             Assert.AreEqual(x1s, x1o);
 
             var x2 = new[] { "a", "b", "c", "d", "e", "f", "g" };
-            var x2o = FromObject(x2);
+            var x2o = JsonStringFromObject(x2);
             var x2s = "[\"a\",\"b\",\"c\",\"d\",\"e\",\"f\",\"g\"]";
             Assert.AreEqual(x2s, x2o);
         }
@@ -178,12 +179,12 @@ namespace numl.Tests.SerializationTests.BasicSerialization
             var valS = val.ToString("r");
 
             var x1 = new { a = "one", b = val, c = false };
-            var x1o = FromObject(x1);
+            var x1o = JsonStringFromObject(x1);
             var x1s = $"{{\"a\":\"one\",\"b\":{valS},\"c\":false}}";
             Assert.AreEqual(x1s, x1o);
 
             var x2 = new { a = "one", b = val, c = false, x = x1 };
-            var x2o = FromObject(x2);
+            var x2o = JsonStringFromObject(x2);
             var x2s = $"{{\"a\":\"one\",\"b\":{valS},\"c\":false,\"x\":{{\"a\":\"one\",\"b\":{valS},\"c\":false}}}}";
             Assert.AreEqual(x2s, x2o);
         }

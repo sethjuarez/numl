@@ -387,13 +387,14 @@ namespace numl.Utils
             {
                 _assemblies.Add(assembly);
 
+
                 // add serializers
                 var serializers =
                     from t in assembly.GetTypesSafe()
-                    where typeof(ISerializer).IsAssignableFrom(t)
-                    select (ISerializer)Activator.CreateInstance(t);
+                    where typeof(JsonSerializer).IsAssignableFrom(t)
+                    select (JsonSerializer)Activator.CreateInstance(t);
 
-                Serializer.AddSerializer(serializers.ToArray());
+                JsonConstants.AddSerializer(serializers.ToArray());
             }
         }
 
