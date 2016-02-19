@@ -34,7 +34,7 @@ namespace numl.Serialization
         {
             EatWhitespace();
             if (_reader.Read() != token)
-                throw new InvalidOperationException($"Invalid token (expected {(char)token})!");
+                throw new InvalidOperationException($"Invalid token (expected \"{(char)token}\")!");
         }
 
         internal void PeekToken(int token)

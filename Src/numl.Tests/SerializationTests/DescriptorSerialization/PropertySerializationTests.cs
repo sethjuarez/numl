@@ -20,16 +20,9 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
             p.Discrete = false;
             p.Start = 5;
 
-            SerializeWith<PropertySerializer>(p);
-
-            var po = DeserializeWith<PropertySerializer>();
-
-            Assert.AreEqual(p, po);
-
             Serialize(p);
-            var p2 = Deserialize<Property>();
-
-            Assert.AreEqual(p, p2);
+            var property = Deserialize<Property>();
+            Assert.AreEqual(p, property);
         }
 
         [Test]
@@ -42,11 +35,9 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
             p.Dictionary = new string[] { "ONE", "TWO", "THREE", "FOUR" };
             p.Exclude = new string[] { "FIVE", "SIX", "SEVEN" };
 
-            SerializeWith<StringPropertySerializer>(p);
-
-            var po = DeserializeWith<StringPropertySerializer>();
-
-            Assert.AreEqual(p, po);
+            Serialize(p);
+            var property = Deserialize<StringProperty>();
+            Assert.AreEqual(p, property);
         }
 
         [Test]
@@ -58,9 +49,9 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
             p.Discrete = false;
             p.Start = 5;
 
-            SerializeWith<EnumerablePropertySerializer>(p);
-            var po = DeserializeWith<EnumerablePropertySerializer>();
-            Assert.AreEqual(p, po);
+            Serialize(p);
+            var property = Deserialize<EnumerableProperty>();
+            Assert.AreEqual(p, property);
         }
 
         [Test]
@@ -74,9 +65,9 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
             p.Discrete = false;
             p.Start = 5;
 
-            SerializeWith<DateTimePropertySerializer>(p);
-            var po = DeserializeWith<DateTimePropertySerializer>();
-            Assert.AreEqual(p, po);
+            Serialize(p);
+            var property = Deserialize<DateTimeProperty>();
+            Assert.AreEqual(p, property);
         }
     }
 }

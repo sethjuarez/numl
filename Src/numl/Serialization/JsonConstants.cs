@@ -16,7 +16,7 @@ namespace numl.Serialization
                       t != typeof(JsonSerializer)
                 select (JsonSerializer)Activator.CreateInstance(t);
 
-            _serializers = new List<JsonSerializer>(serializers);
+            _serializers = new List<ISerializer>(serializers);
         }
 
         //begin-array     = ws %x5B ws  ; [ left square bracket
@@ -42,20 +42,35 @@ namespace numl.Serialization
         internal readonly static char[] WHITESPACE = new[] { ' ', '\t', '\n', '\r' };
         internal readonly static char[] NUMBER = new[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.', '-', '+', 'e', 'E' };
 
-        private static readonly List<JsonSerializer> _serializers;
-        internal static JsonSerializer GetSerializer(Type type)
+        private static readonly List<ISerializer> _serializers;
+        internal static ISerializer GetSerializer(Type type)
         {
-            var q = _serializers.Where(s => s.CanConvert(type));
-            if (q.Count() > 1)
+            List<ISerializer> s = new List<ISerializer>();
+            foreach (var serializer in _serializers)
+                if (serializer.CanConvert(type))
+                    s.Add(serializer);
+            if (s.Count == 1)
+                return s[0];
+            else
             {
-                var s = q.ToArray();
-                if (s[0].GetType().IsSubclassOf(s[1].GetType()))
-                    return s[0];
-                else
-                    return s[1];
+                    if (s[0].GetType().IsSubclassOf(s[1].GetType()))
+                        return s[0];
+                    else
+                        return s[1];
             }
 
-            return q.First();
+
+            //var q = _serializers.Where(s => s.CanConvert(type));
+            //if (q.Count() > 1)
+            //{
+            //    var s = q.ToArray();
+            //    if (s[0].GetType().IsSubclassOf(s[1].GetType()))
+            //        return s[0];
+            //    else
+            //        return s[1];
+            //}
+
+            //return q.First();
         }
 
         internal static bool HasSerializer(Type type)
@@ -63,7 +78,7 @@ namespace numl.Serialization
             return _serializers.Where(s => s.CanConvert(type))
                                .Count() > 0;
         }
-        internal static void AddSerializer(params JsonSerializer[] serializers)
+        internal static void AddSerializer(params ISerializer[] serializers)
         {
             _serializers.AddRange(serializers);
         }

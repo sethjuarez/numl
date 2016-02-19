@@ -38,9 +38,8 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
             // to populate dictionaries
             var examples = description.ToExamples(data);
 
-            SerializeWith<DescriptorSerializer>(description);
-
-            var d = DeserializeWith<DescriptorSerializer>() as Descriptor;
+            Serialize(description);
+            var d = Deserialize<Descriptor>();
 
             Assert.AreEqual(description.Type, d.Type);
             Assert.AreEqual(description.Features.Length, d.Features.Length);
@@ -64,9 +63,8 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
             // to populate dictionaries
             var examples = description.ToExamples(data);
 
-            SerializeWith<DescriptorSerializer>(description);
-
-            var d = DeserializeWith<DescriptorSerializer>() as Descriptor;
+            Serialize(description);
+            var d = Deserialize<Descriptor>();
 
             Assert.AreEqual(description.Type, d.Type);
             Assert.AreEqual(description.Features.Length, d.Features.Length);
@@ -100,9 +98,8 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
                 
             };
 
-            SerializeWith<DescriptorSerializer>(description);
-
-            var d = DeserializeWith<DescriptorSerializer>() as Descriptor;
+            Serialize(description);
+            var d = Deserialize<Descriptor>();
 
             Assert.AreEqual(description, d);
         }
@@ -125,9 +122,8 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
             ((StringProperty)description["StringProp"]).Dictionary = dictionary;
             ((StringProperty)description["StringEnumProp"]).Dictionary = dictionary;
 
-            SerializeWith<DescriptorSerializer>(description);
-
-            var d = DeserializeWith<DescriptorSerializer>() as Descriptor;
+            Serialize(description);
+            var d = Deserialize<Descriptor>();
 
             Assert.AreEqual(description, d);
         }
@@ -136,8 +132,8 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
         public void Descriptor_With_Class_Serialization_Test()
         {
             var description = Descriptor.Create<House>();
-            SerializeWith<DescriptorSerializer>(description);
-            var d = DeserializeWith<DescriptorSerializer>() as Descriptor;
+            Serialize(description);
+            var d = Deserialize<Descriptor>();
             Assert.AreEqual(description, d);
         }
     }

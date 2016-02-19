@@ -11,32 +11,43 @@ namespace numl.Serialization
 {
     public class StringPropertySerializer : PropertySerializer
     {
-        public bool CanConvert(Type type)
+        public StringPropertySerializer()
         {
-            return typeof(StringProperty).IsAssignableFrom(type);
+            Type = typeof(StringProperty);
         }
-        
-        //public override Property ReadAdditionalProperties(TextReader reader)
-        //{
-        //    StringProperty p = new StringProperty();
-        //    p.Separator = reader.ReadNextProperty().Value.ToString();
-        //    p.SplitType = (StringSplitType)Enum.Parse(typeof(StringSplitType), 
-        //                        reader.ReadNextProperty().Value.ToString());
-        //    p.Dictionary = ((object[])reader.ReadNextArrayProperty().Value).ToStringArray();
-        //    p.Exclude = ((object[])reader.ReadNextArrayProperty().Value).ToStringArray();
-        //    p.AsEnum = (bool)reader.ReadNextProperty().Value;
 
-        //    return p;
-        //}
+        public override bool CanConvert(Type type)
+        {
+            return typeof(StringProperty).IsAssignableFrom(type); ;
+        }
 
-        //public override void WriteAdditionalProperties(TextWriter writer, object value)
-        //{
-        //    var p = (StringProperty)value;
-        //    writer.WriteNextProperty("Separator", p.Separator);
-        //    writer.WriteNextProperty("SplitType", Enum.GetName(typeof(StringSplitType), p.SplitType));
-        //    writer.WriteNextArrayProperty("Dictionary", p.Dictionary);
-        //    writer.WriteNextArrayProperty("Exclude", p.Exclude);
-        //    writer.WriteNextProperty("AsEnum", p.AsEnum);
-        //}
+        public override object Read(JsonReader reader)
+        {
+            var p = (StringProperty)base.Read(reader);
+            p.Separator = reader.ReadProperty().Value.ToString();
+            p.SplitType = (StringSplitType)Enum.Parse(typeof(StringSplitType),
+                                reader.ReadProperty().Value.ToString());
+            p.Dictionary = ((object[])reader.ReadArrayProperty().Value)
+                                .Select(o => (string)o)
+                                .ToArray();
+            p.Exclude = ((object[])reader.ReadProperty().Value)
+                                .Select(o => (string)o)
+                                .ToArray();
+            p.AsEnum = (bool)reader.ReadProperty().Value;
+
+
+            return p;
+        }
+
+        public override void Write(JsonWriter writer, object value)
+        {
+            base.Write(writer, value);
+            var p = (StringProperty)value;
+            writer.WriteProperty("Separator", p.Separator);
+            writer.WriteProperty("SplitType", Enum.GetName(typeof(StringSplitType), p.SplitType));
+            writer.WriteArrayProperty("Dictionary", p.Dictionary);
+            writer.WriteArrayProperty("Exclude", p.Exclude);
+            writer.WriteProperty("AsEnum", p.AsEnum);
+        }
     }
 }

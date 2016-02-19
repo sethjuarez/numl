@@ -16,40 +16,26 @@ namespace numl.Serialization
 
         public override object Read(JsonReader reader)
         {
-            if (reader.IsNull()) return null;
-            else
-            {
-                Descriptor d = new Descriptor();
-                reader.ReadStartObject();
-                d.Name = reader.ReadProperty().Value.ToString();
-                //d.Features = reader.ReadNextArrayProperty(new PropertySerializer()).
-                //                Value.ToArray<Property>();
-                //d.Label = (Property)reader.ReadNextProperty(new PropertySerializer()).Value;
-                var typeName = reader.ReadProperty().Value;
-                if (typeName != null)
-                    d.Type = Ject.FindType(typeName.ToString());
-                reader.ReadEndObject();
-                return d;
-            }
+            Descriptor d = new Descriptor();
+            d.Name = reader.ReadProperty().Value.ToString();
+            d.Features = ((object[])reader.ReadArrayProperty().Value)
+                            .Select(o => (Property)o)
+                            .ToArray();
+            d.Label = (Property)reader.ReadProperty().Value;
+            var typeName = reader.ReadProperty().Value;
+            if (typeName != null)
+                d.Type = Ject.FindType(typeName.ToString());
+            return d;
+
         }
 
         public override void Write(JsonWriter writer, object value)
         {
-            if (value == null) writer.WriteNull();
-            else
-            {
-                var d = (Descriptor)value;
-
-                writer.WriteStartObject();
-
-                writer.WriteFirstProperty("Name", d.Name);
-                writer.WriteNextArrayProperty("Features", d.Features);
-                writer.WriteProperty("Label", d.Label);
-
-                writer.WriteProperty("Type", d.Type?.FullName);
-
-                writer.WriteEndObject();
-            }
+            var d = (Descriptor)value;
+            writer.WriteProperty("Name", d.Name);
+            writer.WriteArrayProperty("Features", d.Features);
+            writer.WriteProperty("Label", d.Label);
+            writer.WriteProperty("Type", d.Type?.FullName);
         }
     }
 }

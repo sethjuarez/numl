@@ -22,45 +22,6 @@ namespace numl.Tests.SerializationTests
             return basePath;
         }
 
-        internal void SerializeWith<T>(object o)
-            where T : JsonSerializer
-        {
-            var serializer = Activator.CreateInstance<T>();
-            if (!serializer.CanConvert(o.GetType()))
-                throw new InvalidOperationException("Bad serializer!");
-            var caller = new StackFrame(1, true).GetMethod().Name;
-            string file = string.Format(GetPath(), caller);
-            if (File.Exists(file)) File.Delete(file);
-            using (var f = new StreamWriter(file, false))
-            using (var writer = new JsonWriter(f))
-            {
-                serializer.PreWrite(writer);
-                serializer.Write(writer, o);
-                serializer.PostWrite(writer);
-            }
-        }
-
-        internal object DeserializeWith<T>()
-            where T : JsonSerializer
-        {
-            var serializer = Activator.CreateInstance<T>();
-            var caller = new StackFrame(1, true).GetMethod().Name;
-            string file = string.Format(GetPath(), caller);
-            using (var f = new StreamReader(file))
-            using (var reader = new JsonReader(f))
-            {
-                reader.ReadStartObject();
-                var p = reader.ReadProperty();
-
-                Assert.AreEqual("$Serializer", p.Name);
-                Assert.AreEqual(serializer.GetType().FullName, p.Value);
-                
-                var o = serializer.Read(reader);
-                serializer.PostRead(reader);
-                return o;
-            }
-        }
-
         internal void Serialize(object o)
         {
             var caller = new StackFrame(1, true).GetMethod().Name;

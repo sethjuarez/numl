@@ -11,6 +11,13 @@ namespace numl.Serialization
 {
     public class PropertySerializer : JsonSerializer
     {
+        public virtual Type Type { get; set; }
+        
+        public PropertySerializer()
+        {
+            Type = typeof(Property);
+        }
+
         public override bool CanConvert(Type type)
         {
             return typeof(Property).IsAssignableFrom(type);
@@ -28,14 +35,12 @@ namespace numl.Serialization
             var start = int.Parse(reader.ReadProperty().Value.ToString());
             var discrete = (bool)reader.ReadProperty().Value;
 
-
-            return new Property
-            {
-                Name = name,
-                Type = type,
-                Start = start,
-                Discrete = discrete,
-            };
+            var p = (Property)Activator.CreateInstance(Type);
+            p.Name = name;
+            p.Type = type;
+            p.Start = start;
+            p.Discrete = discrete;
+            return p;
         }
 
         public override void Write(JsonWriter writer, object value)

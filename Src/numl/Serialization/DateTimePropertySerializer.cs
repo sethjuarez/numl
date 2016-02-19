@@ -9,22 +9,37 @@ namespace numl.Serialization
 
     public class DateTimePropertySerializer : PropertySerializer
     {
+        /// <summary>
+        /// Initializes a new instance of the DateTimePropertySerializer class.
+        /// </summary>
+        public DateTimePropertySerializer()
+        {
+            Type = typeof(DateTimeProperty);
+        }
         public override bool CanConvert(Type type)
         {
             return typeof(DateTimeProperty).IsAssignableFrom(type);
         }
-        
-        //public override Property ReadAdditionalProperties(TextReader reader)
-        //{
-        //    var features = reader.ReadNextArrayProperty().Value.ToStringArray();
-        //    var p = new DateTimeProperty(DateTimeProperty.GetFeatures(features));
-        //    return p;
-        //}
 
-        //public override void WriteAdditionalProperties(TextWriter writer, object value)
-        //{
-        //    var p = (DateTimeProperty)value;
-        //    writer.WriteNextArrayProperty("Features", DateTimeProperty.GetColumns(p.Features));
-        //}
+        public override object Read(JsonReader reader)
+        {
+            var p = (DateTimeProperty)base.Read(reader);
+
+            var features = ((object[])reader.ReadArrayProperty().Value)
+                            .Select(o => (string)o)
+                            .ToArray();
+
+            p.Features = DateTimeProperty.GetFeatures(features);
+
+            return p;
+        }
+
+        public override void Write(JsonWriter writer, object value)
+        {
+            base.Write(writer, value);
+            var p = (DateTimeProperty)value;
+            writer.WriteFirstArrayProperty("Features", DateTimeProperty.GetColumns(p.Features));
+        }
+        
     }
 }

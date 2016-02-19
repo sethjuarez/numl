@@ -78,7 +78,7 @@ namespace numl.Model
     {
         /// <summary>Gets or sets the features.</summary>
         /// <value>The features.</value>
-        public DateTimeFeature Features { get; private set; }
+        public DateTimeFeature Features { get; set; }
 
         /// <summary>Default constructor.</summary>
         public DateTimeProperty()

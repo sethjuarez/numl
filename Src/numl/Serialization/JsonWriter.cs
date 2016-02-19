@@ -111,17 +111,17 @@ namespace numl.Serialization
             WriteFirstProperty(name, val);
         }
 
-        public void WriteArrayProperty(string name, IEnumerable val)
+        public void WriteFirstArrayProperty(string name, IEnumerable val)
         {
             Write(name);
             WriteToken(JsonConstants.COLON);
             Write(val);
         }
 
-        public void WriteNextArrayProperty(string name, IEnumerable val)
+        public void WriteArrayProperty(string name, IEnumerable val)
         {
             WriteToken(JsonConstants.COMMA);
-            WriteArrayProperty(name, val);
+            WriteFirstArrayProperty(name, val);
         }
 
         public void WriteObject(object o)
@@ -150,7 +150,7 @@ namespace numl.Serialization
                 var type = value.GetType();
                 if (type == typeof(bool))
                     WriteBool((bool)value);
-                else if (Ject.CanUseSimpleType(type))
+                else if (Ject.CanUseSimpleType(type)) // TODO: This might take some refactoring..
                 {
                     if (value is string) WriteString((string)value);
                     else WriteSimpleType(value);

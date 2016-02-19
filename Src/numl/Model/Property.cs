@@ -27,7 +27,11 @@ namespace numl.Model
         public virtual Type Type { get; set; }
         /// <summary>Length of property.</summary>
         /// <value>The length.</value>
-        public virtual int Length { get { return 1; } }
+        public virtual int Length
+        {
+            get { return 1; }
+            set { }
+        }
 
         /// <summary>Start position in array.</summary>
         /// <value>The start.</value>
