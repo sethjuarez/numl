@@ -146,17 +146,18 @@
     <Compile Include="Recommendation\CofiRecommenderGenerator.cs" />
     <Compile Include="Recommendation\CofiRecommenderModel.cs" />
     <Compile Include="Register.cs" />
-    <Compile Include="Serialization\DateTimePropertySerializer.cs" />
-    <Compile Include="Serialization\DescriptorSerializer.cs" />
-    <Compile Include="Serialization\EnumerablePropertySerializer.cs" />
+    <Compile Include="Serialization\Model\DateTimePropertySerializer.cs" />
+    <Compile Include="Serialization\Model\DescriptorSerializer.cs" />
+    <Compile Include="Serialization\Model\EnumerablePropertySerializer.cs" />
     <Compile Include="Serialization\ISerializer.cs" />
     <Compile Include="Serialization\JsonConstants.cs" />
     <Compile Include="Serialization\JsonReader.cs" />
     <Compile Include="Serialization\JsonSerializer.cs" />
     <Compile Include="Serialization\JsonWriter.cs" />
-    <Compile Include="Serialization\PropertySerializer.cs" />
-    <Compile Include="Serialization\StringPropertySerializer.cs" />
-    <Compile Include="Serialization\Serializer.cs" />
+    <Compile Include="Serialization\Model\PropertySerializer.cs" />
+    <Compile Include="Serialization\Model\StringPropertySerializer.cs" />
+    <Compile Include="Serialization\JsonProperty.cs" />
+    <Compile Include="Serialization\Supervised\ModelSerializer.cs" />
     <Compile Include="Supervised\Classification\ClassificationModel.cs" />
     <Compile Include="Supervised\Classification\IClassifier.cs" />
     <Compile Include="Supervised\Classification\MultiClassLearner.cs" />
@@ -214,6 +215,7 @@
     <Compile Include="Utils\StringHelpers.cs" />
     <Compile Include="Utils\TypeHelpers.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

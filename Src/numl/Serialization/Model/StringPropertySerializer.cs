@@ -1,24 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using numl.Model;
-using numl.Utils;
+using System.Linq;
+using System.Collections.Generic;
 
-namespace numl.Serialization
+namespace numl.Serialization.Model
 {
     public class StringPropertySerializer : PropertySerializer
     {
-        public StringPropertySerializer()
+        public override object Create()
         {
-            Type = typeof(StringProperty);
+            return new StringProperty();
         }
 
         public override bool CanConvert(Type type)
         {
-            return typeof(StringProperty).IsAssignableFrom(type); ;
+            return typeof(StringProperty).IsAssignableFrom(type);
         }
 
         public override object Read(JsonReader reader)

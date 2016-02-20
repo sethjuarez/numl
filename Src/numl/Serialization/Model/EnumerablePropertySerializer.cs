@@ -1,22 +1,17 @@
-﻿using numl.Model;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using numl.Model;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
+using System.Collections.Generic;
 
-namespace numl.Serialization
+namespace numl.Serialization.Model
 {
-    public class EnumerablePropertySerializer : PropertySerializer
+    public class EnumerablePropertySerializer : numl.Serialization.Model.PropertySerializer
     {
-        /// <summary>
-        /// Initializes a new instance of the EnumerablePropertySerializer class.
-        /// </summary>
-        public EnumerablePropertySerializer()
+        public override object Create()
         {
-            Type = typeof(EnumerableProperty);
+            return new EnumerableProperty();
         }
+
         public override bool CanConvert(Type type)
         {
             return typeof(EnumerableProperty).IsAssignableFrom(type);

@@ -1,26 +1,21 @@
-﻿using numl.Model;
+﻿using System;
+using numl.Model;
 using numl.Utils;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
-namespace numl.Serialization
+namespace numl.Serialization.Model
 {
     public class PropertySerializer : JsonSerializer
     {
-        public virtual Type Type { get; set; }
-        
-        public PropertySerializer()
-        {
-            Type = typeof(Property);
-        }
-
         public override bool CanConvert(Type type)
         {
             return typeof(Property).IsAssignableFrom(type);
+        }
+
+        public override object Create()
+        {
+            return new Property();
         }
 
         public override object Read(JsonReader reader)
@@ -35,7 +30,7 @@ namespace numl.Serialization
             var start = int.Parse(reader.ReadProperty().Value.ToString());
             var discrete = (bool)reader.ReadProperty().Value;
 
-            var p = (Property)Activator.CreateInstance(Type);
+            var p = (Property)Create();
             p.Name = name;
             p.Type = type;
             p.Start = start;

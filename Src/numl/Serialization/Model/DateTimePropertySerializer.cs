@@ -1,24 +1,21 @@
 ﻿using System;
-using System.IO;
 using numl.Model;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace numl.Serialization
+namespace numl.Serialization.Model
 {
-
-    public class DateTimePropertySerializer : PropertySerializer
+    public class DateTimePropertySerializer : numl.Serialization.Model.PropertySerializer
     {
-        /// <summary>
-        /// Initializes a new instance of the DateTimePropertySerializer class.
-        /// </summary>
-        public DateTimePropertySerializer()
-        {
-            Type = typeof(DateTimeProperty);
-        }
+        
         public override bool CanConvert(Type type)
         {
             return typeof(DateTimeProperty).IsAssignableFrom(type);
+        }
+
+        public override object Create()
+        {
+            return new DateTimeProperty();
         }
 
         public override object Read(JsonReader reader)

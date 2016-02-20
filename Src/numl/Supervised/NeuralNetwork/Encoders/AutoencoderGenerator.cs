@@ -68,8 +68,8 @@ namespace numl.Supervised.NeuralNetwork.Encoders
             {
                 Descriptor = Descriptor,
                 NormalizeFeatures = base.NormalizeFeatures,
-                FeatureNormalizer = base.FeatureNormalizer,
-                FeatureProperties = base.FeatureProperties,
+                Normalizer = base.FeatureNormalizer,
+                Summary = base.FeatureProperties,
                 Network = network,
                 OutputFunction = this.OutputFunction
             };

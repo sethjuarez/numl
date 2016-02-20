@@ -57,7 +57,7 @@ namespace numl.Supervised.SVM
             double prediction = 0d;
 
             x = (NormalizeFeatures ?
-                    FeatureNormalizer.Normalize(x, FeatureProperties) :
+                    Normalizer.Normalize(x, Summary) :
                     x);
 
             if (KernelFunction.IsLinear)

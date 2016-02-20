@@ -15,6 +15,12 @@ namespace numl.Serialization
         /// <returns><c>true</c> if this instance can convert the specified type; otherwise, <c>false</c>.</returns>
         public abstract bool CanConvert(Type type);
 
+        /// <summary>
+        /// Creates an instance of the type to be deserialized
+        /// </summary>
+        /// <returns>System.Object.</returns>
+        public abstract object Create();
+
 
         /// <summary>
         /// Reads the specified reader.

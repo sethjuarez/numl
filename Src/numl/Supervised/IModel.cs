@@ -38,12 +38,12 @@ namespace numl.Supervised
         /// <summary>
         /// Feature normalizer to apply
         /// </summary>
-        INormalizer FeatureNormalizer { get; set; }
+        INormalizer Normalizer { get; set; }
 
         /// <summary>
         /// Feature properties of the original item set.
         /// </summary>
-        Summary FeatureProperties { get; set; }
+        Summary Summary { get; set; }
 
         /// <summary>Saves the given IModel to a file.</summary>
         /// <param name="file">The file to load.</param>

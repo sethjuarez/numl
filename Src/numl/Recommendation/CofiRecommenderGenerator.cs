@@ -128,8 +128,8 @@ namespace numl.Recommendation
             {
                 Descriptor = this.Descriptor,
                 NormalizeFeatures = this.NormalizeFeatures,
-                FeatureNormalizer = this.FeatureNormalizer,
-                FeatureProperties = this.FeatureProperties,
+                Normalizer = this.FeatureNormalizer,
+                Summary = this.FeatureProperties,
                 Ratings = this.Ratings,
                 ReferenceFeatureMap = this.ReferenceFeatureMap,
                 EntityFeatureMap = this.EntityFeatureMap,

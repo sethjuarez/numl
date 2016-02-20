@@ -1,14 +1,18 @@
 ﻿using System;
-using System.IO;
 using numl.Model;
+using numl.Utils;
 using System.Linq;
 using System.Collections.Generic;
-using numl.Utils;
 
-namespace numl.Serialization
+namespace numl.Serialization.Model
 {
     public class DescriptorSerializer : JsonSerializer
     {
+        public override object Create()
+        {
+            return new Descriptor();
+        }
+
         public override bool CanConvert(Type type)
         {
             return typeof(Descriptor).IsAssignableFrom(type);
@@ -16,7 +20,7 @@ namespace numl.Serialization
 
         public override object Read(JsonReader reader)
         {
-            Descriptor d = new Descriptor();
+            Descriptor d = (Descriptor)Create();
             d.Name = reader.ReadProperty().Value.ToString();
             d.Features = ((object[])reader.ReadArrayProperty().Value)
                             .Select(o => (Property)o)

@@ -74,8 +74,8 @@ namespace numl.Supervised.Regression
             { 
                 Descriptor = this.Descriptor,
                 NormalizeFeatures = base.NormalizeFeatures,
-                FeatureNormalizer = base.FeatureNormalizer,
-                FeatureProperties = base.FeatureProperties,
+                Normalizer = base.FeatureNormalizer,
+                Summary = base.FeatureProperties,
                 Theta = optimizer.Properties.Theta
             };
 

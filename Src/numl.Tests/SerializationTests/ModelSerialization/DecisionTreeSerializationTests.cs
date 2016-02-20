@@ -54,8 +54,8 @@ namespace numl.Tests.SerializationTests.ModelSerialization
             var model = generator.Generate(description, data) as DecisionTreeModel;
 
             Serialize(model);
-
             var lmodel = Deserialize<DecisionTreeModel>();
+
             Assert.AreEqual(model.Descriptor, lmodel.Descriptor);
             Assert.AreEqual(model.Hint, lmodel.Hint);
             AreEqual(model.Tree, lmodel.Tree, false);
