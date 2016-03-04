@@ -9,6 +9,7 @@ using System.Globalization;
 using numl.Math.Probability;
 using System.Collections.Generic;
 using numl.Utils;
+using numl.Serialization;
 
 namespace numl.Math.LinearAlgebra
 {
@@ -786,7 +787,9 @@ namespace numl.Math.LinearAlgebra
         /// <param name="file">file to save</param>
         public void Save(string file)
         {
-            numl.Serialization.SerializationHelpers.Save<Matrix>(file, this);
+            using (var f = new StreamWriter(file, false))
+            using (var w = new JsonWriter(f))
+                w.WriteMatrix(this);
         }
         /// <summary>Loads the given stream.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested file is not present.</exception>
@@ -795,7 +798,11 @@ namespace numl.Math.LinearAlgebra
         public static Matrix Load(string file)
         {
             if (File.Exists(file))
-                return numl.Serialization.SerializationHelpers.Load<Matrix>(file);
+            {
+                using (var f = new StreamReader(file))
+                using (var r = new JsonReader(f))
+                    return r.ReadMatrix();
+            }
             else
                 throw new InvalidOperationException("File not found");
         }

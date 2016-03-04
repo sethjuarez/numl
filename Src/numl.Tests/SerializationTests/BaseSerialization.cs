@@ -22,42 +22,49 @@ namespace numl.Tests.SerializationTests
             return basePath;
         }
 
-        internal void SerializeWith<T>(object o)
-            where T : ISerializer
-        {
-            var serializer = Activator.CreateInstance<T>();
-            if (!serializer.CanConvert(o.GetType()))
-                throw new InvalidOperationException("Bad serializer!");
-            var caller = new StackFrame(1, true).GetMethod().Name;
-            string file = string.Format(GetPath(), caller);
-            if (File.Exists(file)) File.Delete(file);
-            using (var f = new StreamWriter(file, false))
-                serializer.Write(f, o);
-        }
-
-        internal object DeserializeWith<T>()
-            where T : ISerializer
-        {
-            var serializer = Activator.CreateInstance<T>();
-            var caller = new StackFrame(1, true).GetMethod().Name;
-            string file = string.Format(GetPath(), caller);
-            using (var f = new StreamReader(file))
-                return serializer.Deserialize(f);
-        }
-
         internal void Serialize(object o)
         {
             var caller = new StackFrame(1, true).GetMethod().Name;
             string file = string.Format(GetPath(), caller);
-            if (File.Exists(file))  File.Delete(file);
-            numl.Serialization.SerializationHelpers.Save(file, o);
+            if (File.Exists(file)) File.Delete(file);
+            using (var f = new StreamWriter(file, false))
+                new JsonWriter(f).Write(o);
         }
 
         internal T Deserialize<T>()
         {
             var caller = new StackFrame(1, true).GetMethod().Name;
             string file = string.Format(GetPath(), caller);
-            return numl.Serialization.SerializationHelpers.Load<T>(file);
+            using (var f = new StreamReader(file))
+            {
+                var val = new JsonReader(f).Read();
+                return (T)val;
+            }
+        }
+
+        internal object Deserialize()
+        {
+            var caller = new StackFrame(1, true).GetMethod().Name;
+            string file = string.Format(GetPath(), caller);
+            using (var f = new StreamReader(file))
+                return new JsonReader(f).Read();
+        }
+
+        internal JsonWriter GetWriter()
+        {
+            var caller = new StackFrame(1, true).GetMethod().Name;
+            string file = string.Format(GetPath(), caller);
+            if (File.Exists(file)) File.Delete(file);
+            var f = new StreamWriter(file, false);
+            return new JsonWriter(f);
+        }
+
+        internal JsonReader GetReader()
+        {
+            var caller = new StackFrame(1, true).GetMethod().Name;
+            string file = string.Format(GetPath(), caller);
+            var f = new StreamReader(file);
+            return new JsonReader(f);
         }
     }
 }

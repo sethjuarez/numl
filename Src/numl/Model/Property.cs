@@ -27,7 +27,11 @@ namespace numl.Model
         public virtual Type Type { get; set; }
         /// <summary>Length of property.</summary>
         /// <value>The length.</value>
-        public virtual int Length { get { return 1; } }
+        public virtual int Length
+        {
+            get { return 1; }
+            set { }
+        }
 
         /// <summary>Start position in array.</summary>
         /// <value>The start.</value>
@@ -106,7 +110,7 @@ namespace numl.Model
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-            return $"[{Name}, {Start}, {Length}]";
+            return $"[{Name}, {Start}, {Length}] ({this.GetType().Name})";
         }
 
         /// <summary>

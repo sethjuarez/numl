@@ -13,24 +13,45 @@ namespace numl.Serialization
     /// </summary>
     public interface ISerializer
     {
-
         /// <summary>
         /// Determines whether this instance can convert the specified type.
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns><c>true</c> if this instance can convert the specified type; otherwise, <c>false</c>.</returns>
         bool CanConvert(Type type);
+
+
         /// <summary>
-        /// Deserializes the specified stream.
+        /// Reads the specified reader.
         /// </summary>
-        /// <param name="reader">The stream.</param>
+        /// <param name="reader">The reader.</param>
         /// <returns>System.Object.</returns>
-        object Deserialize(TextReader reader);
+        object Read(JsonReader reader);
+
+
         /// <summary>
-        /// Serializes the specified stream.
+        /// Cleans up object after reading type
         /// </summary>
-        /// <param name="writer">The stream.</param>
-        /// <param name="value">The o.</param>
-        void Write(TextWriter writer, object value);
+        /// <param name="reader">The reader.</param>
+        void PostRead(JsonReader reader);
+
+        /// <summary>
+        /// Writes out type Json Administrivia
+        /// </summary>
+        /// <param name="writer">The writer.</param>
+        void PreWrite(JsonWriter writer);
+
+        /// <summary>
+        /// Writes the specified object
+        /// </summary>
+        /// <param name="writer">The writer.</param>
+        /// <param name="value">The value.</param>
+        void Write(JsonWriter writer, object value);
+
+        /// <summary>
+        /// Writes out closing brace etc.
+        /// </summary>
+        /// <param name="writer">The writer.</param>
+        void PostWrite(JsonWriter writer);
     }
 }

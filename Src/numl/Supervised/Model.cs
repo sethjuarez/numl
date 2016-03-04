@@ -2,16 +2,14 @@
 //
 // summary:	Implements the model class
 using System;
-using System.IO;
+using numl.Math;
 using numl.Utils;
 using numl.Model;
 using System.Linq;
-
 using numl.Math.LinearAlgebra;
-using System.Collections.Generic;
 using numl.Math.Normalization;
-using numl.Math;
-using numl.Serialization;
+using System.Collections.Generic;
+
 namespace numl.Supervised
 {
     /// <summary>A model.</summary>
@@ -29,12 +27,12 @@ namespace numl.Supervised
         /// <summary>
         /// Feature normalizer to use over each item.
         /// </summary>
-        public INormalizer FeatureNormalizer { get; set; }
+        public INormalizer Normalizer { get; set; }
 
         /// <summary>
         /// Feature properties from the original item set.
         /// </summary>
-        public Summary FeatureProperties { get; set; }
+        public Summary Summary { get; set; }
 
         /// <summary>Predicts the given o.</summary>
         /// <param name="y">The Vector to process.</param>

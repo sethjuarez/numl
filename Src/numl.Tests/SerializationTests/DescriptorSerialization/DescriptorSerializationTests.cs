@@ -5,6 +5,7 @@ using System.Linq;
 using numl.Tests.Data;
 using NUnit.Framework;
 using System.Collections.Generic;
+using numl.Serialization;
 
 namespace numl.Tests.SerializationTests.DescriptorSerialization
 {
@@ -22,16 +23,72 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
             }
         }
 
+        [TestFixtureSetUp]
+        public void RegisterTypes()
+        {
+            // Need to register external assemblies
+            Register.Assembly(GetType().Assembly);
+        }
+
+        [Test]
+        public void Descriptor_Save_And_load()
+        {
+            var data = Iris.Load();
+            var description = Descriptor.Create<Iris>();
+            // to populate dictionaries
+            var examples = description.ToExamples(data);
+
+            Serialize(description);
+            var d = Deserialize<Descriptor>();
+
+            Assert.AreEqual(description.Type, d.Type);
+            Assert.AreEqual(description.Features.Length, d.Features.Length);
+            for (int i = 0; i < description.Features.Length; i++)
+            {
+                Assert.AreEqual(description.Features[i].Type, d.Features[i].Type);
+                Assert.AreEqual(description.Features[i].Name, d.Features[i].Name);
+                Assert.AreEqual(description.Features[i].Start, d.Features[i].Start);
+            }
+
+            Assert.AreEqual(description.Label.Type, d.Label.Type);
+            Assert.AreEqual(description.Label.Name, d.Label.Name);
+            Assert.AreEqual(description.Label.Start, d.Label.Start);
+        }
+
+        [Test]
+        public void Complex_Descriptor_Save_And_Load_No_Label()
+        {
+            var data = Generic.GetRows(100).ToArray();
+            var description = Descriptor.Create<Generic>();
+            // to populate dictionaries
+            var examples = description.ToExamples(data);
+
+            Serialize(description);
+            var d = Deserialize<Descriptor>();
+
+            Assert.AreEqual(description.Type, d.Type);
+            Assert.AreEqual(description.Features.Length, d.Features.Length);
+            for (int i = 0; i < description.Features.Length; i++)
+            {
+                Assert.AreEqual(description.Features[i].Type, d.Features[i].Type);
+                Assert.AreEqual(description.Features[i].Name, d.Features[i].Name);
+                Assert.AreEqual(description.Features[i].Start, d.Features[i].Start);
+            }
+
+            Assert.IsTrue(d.Label == null);
+        }
+
+
         [Test]
         public void Descriptor_Dictionary_Serialization_Test()
         {
-            Descriptor d = new Descriptor();
+            Descriptor description = new Descriptor();
 
             var dictionary = StringHelpers.BuildWordDictionary(WordStrings)
                                           .Select(k => k.Key)
                                           .ToArray();
 
-            d.Features = new Property[]
+            description.Features = new Property[]
             {
                 new Property { Name = "Age", Type = typeof(int) },
                 new Property { Name = "Height", Type = typeof(decimal) },
@@ -41,11 +98,10 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
                 
             };
 
-            Serialize(d);
+            Serialize(description);
+            var d = Deserialize<Descriptor>();
 
-            var desc = Deserialize<Descriptor>();
-
-            Assert.AreEqual(d, desc);
+            Assert.AreEqual(description, d);
         }
 
         [Test]
@@ -55,7 +111,7 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
                                           .Select(k => k.Key)
                                           .ToArray();
 
-            Descriptor d = Descriptor.New("MyDescriptor")
+            Descriptor description = Descriptor.New("MyDescriptor")
                                      .With("NumberProp").As(typeof(double))
                                      .With("EnumerableProp").AsEnumerable(5)
                                      .With("DateTimeProp").AsDateTime(DatePortion.Date | DatePortion.Time)
@@ -63,21 +119,22 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
                                      .With("StringEnumProp").AsStringEnum()
                                      .Learn("TargetProp").As(typeof(bool));
 
-            ((StringProperty)d["StringProp"]).Dictionary = dictionary;
-            ((StringProperty)d["StringEnumProp"]).Dictionary = dictionary;
+            ((StringProperty)description["StringProp"]).Dictionary = dictionary;
+            ((StringProperty)description["StringEnumProp"]).Dictionary = dictionary;
 
-            Serialize(d);
-            var desc = Deserialize<Descriptor>();
-            Assert.AreEqual(d, desc);
+            Serialize(description);
+            var d = Deserialize<Descriptor>();
+
+            Assert.AreEqual(description, d);
         }
 
         [Test]
         public void Descriptor_With_Class_Serialization_Test()
         {
-            var d = Descriptor.Create<House>();
-            Serialize(d);
-            var desc = Deserialize<Descriptor>();
-            Assert.AreEqual(d, desc);
+            var description = Descriptor.Create<House>();
+            Serialize(description);
+            var d = Deserialize<Descriptor>();
+            Assert.AreEqual(description, d);
         }
     }
 }

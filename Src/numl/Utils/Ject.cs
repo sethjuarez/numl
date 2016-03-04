@@ -11,12 +11,18 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Globalization;
 using numl.Model;
+using numl.Serialization;
 
 namespace numl.Utils
 {
     /// <summary>This class is used for fast reflection over types.</summary>
     public static class Ject
     {
+        static Ject()
+        {
+            _assemblies.Add(typeof(decimal).Assembly);
+            _assemblies.Add(typeof(Ject).Assembly);
+        }
         /// <summary>
         /// The default truth value. 
         /// This is important given that numl
@@ -359,6 +365,24 @@ namespace numl.Utils
             }
         }
 
+        private readonly static List<Assembly> _assemblies = new List<Assembly>();
+        internal static void AddAssembly(Assembly assembly)
+        {
+            if (!_assemblies.Contains(assembly))
+            {
+                _assemblies.Add(assembly);
+
+
+                // add serializers
+                var serializers =
+                    from t in assembly.GetTypesSafe()
+                    where typeof(JsonSerializer).IsAssignableFrom(t)
+                    select (JsonSerializer)Activator.CreateInstance(t);
+
+                JsonConstants.AddSerializer(serializers.ToArray());
+            }
+        }
+
         /// <summary>The types.</summary>
         private readonly static Dictionary<string, Type> _types = new Dictionary<string, Type>();
         /// <summary>Searches for the first type.</summary>
@@ -371,8 +395,18 @@ namespace numl.Utils
                 return _types[s];
 
             var type = Type.GetType(s);
+            if(type == null) // need to look elsewhere
+            {
+                var q = (from p in _assemblies
+                         from t in p.GetTypesSafe()
+                         where t.FullName == s || t.Name == s
+                         select t).ToArray();
 
-            if (type != null)
+                if (q.Length == 1)
+                    type = q[0];
+            }
+
+            if(type != null)
             {
                 // cache
                 _types[s] = type;

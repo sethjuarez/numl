@@ -13,7 +13,7 @@ namespace numl.Model
     public class EnumerableProperty : Property
     {
         /// <summary>Default constructor.</summary>
-        internal EnumerableProperty() { }
+        public EnumerableProperty() { }
         /// <summary>Constructor.</summary>
         /// <param name="length">The length.</param>
         public EnumerableProperty(int length)
@@ -22,7 +22,7 @@ namespace numl.Model
         }
         /// <summary>Length of property.</summary>
         /// <value>The length.</value>
-        public override int Length { get; }
+        public override int Length { get; set; }
 
         /// <summary>
         /// Retrieve the list of expanded columns. If there is a one-to-one correspondence between the
