@@ -9,9 +9,9 @@ using System.Collections;
 namespace numl.Serialization
 {
     /// <summary>
-    /// JsonProperty structure.
+    /// JsonArray structure.
     /// </summary>
-    public struct JsonProperty
+    public struct JsonArray
     {
         /// <summary>
         /// Name of the property.
@@ -21,6 +21,6 @@ namespace numl.Serialization
         /// <summary>
         /// Value.
         /// </summary>
-        public object Value { get; set; }
+        public object[] Value { get; set; }
     }
 }

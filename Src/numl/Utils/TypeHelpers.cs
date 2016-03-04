@@ -91,5 +91,18 @@ namespace numl.Utils
                     t == typeof(Int64) ||
                     t == typeof(UInt64)));
         }
+
+        /// <summary>
+        /// Creates a default instance using a parameterless constructor of the given type.
+        /// </summary>
+        /// <typeparam name="T">Expected type of the object to be returned.</typeparam>
+        /// <param name="type">The underlying Type.</param>
+        /// <returns>Instantiated object of type <typeparamref name="T"/></returns>
+        public static T CreateDefault<T>(this Type type) where T : class
+        {
+            if (type == null) throw new ArgumentNullException("The supplied type parameter was not specified");
+
+            return (T)Activator.CreateInstance(type) ?? default(T);
+        }
     }
 }

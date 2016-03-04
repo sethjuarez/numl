@@ -6,8 +6,16 @@ using System.Collections.Generic;
 
 namespace numl.Serialization.Supervised
 {
+    /// <summary>
+    /// A generic Model serializer object.
+    /// </summary>
     public abstract class ModelSerializer : JsonSerializer
     {
+        /// <summary>
+        /// Deserializes a generic model object from the stream.
+        /// </summary>
+        /// <param name="reader">A JSON Reader.</param>
+        /// <returns></returns>
         public override object Read(JsonReader reader)
         {
             if (reader.IsNull()) return null;
@@ -27,6 +35,11 @@ namespace numl.Serialization.Supervised
             }
         }
 
+        /// <summary>
+        /// Serializes a generic model object to the stream.
+        /// </summary>
+        /// <param name="writer">A JSON Writer.</param>
+        /// <param name="value"></param>
         public override void Write(JsonWriter writer, object value)
         {
             if (value == null) writer.WriteNull();
