@@ -12,8 +12,7 @@ namespace numl.Serialization
             // all available ISerializers
             var serializers =
                 from t in typeof(JsonSerializer).Assembly.GetTypes()
-                where typeof(JsonSerializer).IsAssignableFrom(t) &&
-                      t != typeof(JsonSerializer)
+                where typeof(JsonSerializer).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract
                 select (JsonSerializer)Activator.CreateInstance(t);
 
             _serializers = new List<ISerializer>(serializers);
@@ -75,14 +74,13 @@ namespace numl.Serialization
 
         internal static bool HasSerializer(Type type)
         {
-            return _serializers.Where(s => s.CanConvert(type))
-                               .Count() > 0;
+            return _serializers.Any(s => s.CanConvert(type));
         }
+
         internal static void AddSerializer(params ISerializer[] serializers)
         {
             _serializers.AddRange(serializers);
         }
-
     }
 
 }
