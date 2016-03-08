@@ -54,5 +54,13 @@ namespace numl.Utils
             else
                 dictionary[key] = value(seed);
         }
+
+        public static void AddOrUpdate<K, V>(this Dictionary<K, Dictionary<K, V>> dictionary, K key1, K key2, V value)
+        {
+            if (dictionary.ContainsKey(key1))
+                dictionary[key1].Add(key2, value);
+            else
+                dictionary.Add(key1, new Dictionary<K, V> { { key2, value } });
+        }
     }
 }
