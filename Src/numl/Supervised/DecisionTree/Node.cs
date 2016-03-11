@@ -4,14 +4,23 @@
 using System;
 using numl.Math;
 using System.Runtime.Serialization;
+using numl.Data;
 
 namespace numl.Supervised.DecisionTree
 {
-    /// <summary>A node.</summary>
-    public class Node
+    public class Node : IVertex
     {
-        /// <summary>Default constructor.</summary>
-        public Node() { }
+        static int _id = 0;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Node"/> class.
+        /// </summary>
+        public Node() { Id = ++_id; }
+        /// <summary>
+        /// Gets or sets the identifier.
+        /// </summary>
+        /// <value>The identifier.</value>
+        public int Id { get; set; }
+
         /// <summary>if is a leaf.</summary>
         /// <value>true if this object is leaf, false if not.</value>
         public bool IsLeaf { get; set; }
@@ -30,25 +39,16 @@ namespace numl.Supervised.DecisionTree
         /// <summary>Gets or sets the gain.</summary>
         /// <value>The gain.</value>
         public double Gain { get; set; }
-        /// <summary>Gets or sets the edges.</summary>
-        /// <value>The edges.</value>
-        public Edge[] Edges { get; set; }
-
-
-        [OnDeserialized]
-        internal void OnDeserializedMethod(StreamingContext context)
-        {
-            if (Edges != null)
-                foreach (var e in Edges)
-                    e.Parent = this;
-        }
     }
 
-    /// <summary>An edge.</summary>
-    public class Edge
+    public class Edge : IEdge
     {
-        /// <summary>Default constructor.</summary>
-        public Edge() { }
+        /// <summary>Gets or sets the child identifier.</summary>
+        /// <value>The child identifier.</value>
+        public int ChildId { get; set; }
+        /// <summary> Gets or sets the parent identifier.</summary>
+        /// <value>The parent identifier.</value>
+        public int ParentId { get; set; }
         /// <summary>Gets or sets the minimum.</summary>
         /// <value>The minimum value.</value>
         public double Min { get; set; }
@@ -61,11 +61,6 @@ namespace numl.Supervised.DecisionTree
         /// <summary>Gets or sets the label.</summary>
         /// <value>The label.</value>
         public string Label { get; set; }
-        /// <summary>Gets or sets the parent.</summary>
-        /// <value>The parent.</value>
-        public Node Parent { get; set; }
-        /// <summary>Gets or sets the child.</summary>
-        /// <value>The child.</value>
-        public Node Child { get; set; }
     }
+
 }

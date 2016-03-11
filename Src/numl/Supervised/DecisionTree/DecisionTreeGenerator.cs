@@ -9,6 +9,7 @@ using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 using numl.Utils;
 using numl.Math.Probability;
+using numl.Data;
 
 namespace numl.Supervised.DecisionTree
 {
@@ -80,6 +81,7 @@ namespace numl.Supervised.DecisionTree
         {
             Hint = Descriptor.Label.Convert(o).First();
         }
+
         /// <summary>Generates.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
         /// <param name="x">The Matrix to process.</param>
@@ -90,9 +92,10 @@ namespace numl.Supervised.DecisionTree
             if (Descriptor == null)
                 throw new InvalidOperationException("Cannot build decision tree without type knowledge!");
 
-            this.Preprocess(x, y);
-
-            var n = BuildTree(x, y, Depth, new List<int>(x.Cols));
+            Preprocess(x, y);
+            var tree = new Tree();
+            //var n = BuildUglyTree(x, y, Depth, new List<int>(x.Cols));
+            tree.Root = BuildTree(x, y, Depth, new List<int>(x.Cols), tree);
 
             // have to guess something....
             // especially when automating
@@ -105,20 +108,21 @@ namespace numl.Supervised.DecisionTree
             return new DecisionTreeModel
             {
                 Descriptor = Descriptor,
-                NormalizeFeatures = base.NormalizeFeatures,
-                Normalizer = base.FeatureNormalizer,
-                Summary = base.FeatureProperties,
-                Tree = n,
+                NormalizeFeatures = NormalizeFeatures,
+                Normalizer = FeatureNormalizer,
+                Summary = FeatureProperties,
+                Tree = tree,
                 Hint = Hint
             };
         }
+
         /// <summary>Builds a tree.</summary>
         /// <param name="x">The Matrix to process.</param>
         /// <param name="y">The Vector to process.</param>
         /// <param name="depth">The depth.</param>
         /// <param name="used">The used.</param>
         /// <returns>A Node.</returns>
-        private Node BuildTree(Matrix x, Vector y, int depth, List<int> used)
+        private Node BuildTree(Matrix x, Vector y, int depth, List<int> used, Tree tree)
         {
             if (depth < 0)
                 return BuildLeafNode(y.Mode());
@@ -152,7 +156,7 @@ namespace numl.Supervised.DecisionTree
                 var segment = measure.Segments[i];
                 var edge = new Edge()
                 {
-                    Parent = node,
+                    ParentId = node.Id,
                     Discrete = measure.Discrete,
                     Min = segment.Min,
                     Max = segment.Max
@@ -184,29 +188,46 @@ namespace numl.Supervised.DecisionTree
                     Vector ySlice = y.Slice(slice);
                     // only one answer, set leaf
                     if (ySlice.Distinct().Count() == 1)
-                        edge.Child = BuildLeafNode(ySlice[0]);
+                    {
+                        var child = BuildLeafNode(ySlice[0]);
+                        tree.AddVertex(child);
+                        edge.ChildId = child.Id;
+                    }
                     // otherwise continue to build tree
                     else
-                        edge.Child = BuildTree(x.Slice(slice), ySlice, depth - 1, used);
+                    {
+                        var child = BuildTree(x.Slice(slice), ySlice, depth - 1, used, tree);
+                        tree.AddVertex(child);
+                        edge.ChildId = child.Id;
+                    }
 
                     edges.Add(edge);
                 }
             }
 
-            // might check if there are no edges
-            // if this is the case should convert
-            // node to leaf and bail
-            var egs = edges.ToArray();
             // problem, need to convert
             // parent to terminal node
             // with mode
-            if (egs.Length <= 1)
-                node = BuildLeafNode(y.Mode());
-            else
-                node.Edges = egs;
+            if (edges.Count <= 1)
+            {
+                var val = y.Mode();
+                node.IsLeaf = true;
+                node.Value = val;
+                node.Label = Descriptor.Label.Convert(val);
+            }
+
+            tree.AddVertex(node);
+
+            if(edges.Count > 1)
+                foreach (var e in edges)
+                    tree.AddEdge(e);
 
             return node;
         }
+
+
+
+
         /// <summary>Gets best split.</summary>
         /// <param name="x">The Matrix to process.</param>
         /// <param name="y">The Vector to process.</param>
@@ -224,7 +245,6 @@ namespace numl.Supervised.DecisionTree
                 if (used.Contains(i)) continue;
 
                 double gain = 0;
-                //Impurity measure = (Impurity)Activator.CreateInstance(ImpurityType);
 
                 Impurity measure = (Impurity)Ject.Create(ImpurityType);
 
@@ -252,13 +272,15 @@ namespace numl.Supervised.DecisionTree
 
             return new Tuple<int, double, Impurity>(bestFeature, bestGain, bestMeasure);
         }
-        /// <summary>Builds leaf node.</summary>
-        /// <param name="val">The value.</param>
-        /// <returns>A Node.</returns>
+
         private Node BuildLeafNode(double val)
         {
-            // build leaf node
-            return new Node { IsLeaf = true, Value = val, Edges = null, Label = Descriptor.Label.Convert(val) };
+            return new Node()
+            {
+                IsLeaf = true,
+                Value = val,
+                Label = Descriptor.Label.Convert(val)
+            };
         }
     }
 }

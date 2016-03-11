@@ -18,7 +18,15 @@ namespace numl.Data
 
         public void AddVertex(IVertex v)
         {
-            _vertices.Add(v.Id, v);
+            _vertices[v.Id] = v;
+        }
+
+        public IVertex GetVertex(int id)
+        {
+            if (_vertices.ContainsKey(id))
+                return _vertices[id];
+            else
+                throw new InvalidOperationException($"Vertex {id} does not exist!");
         }
 
         public void RemoveVertex(IVertex v)
