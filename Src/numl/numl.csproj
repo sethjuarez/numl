@@ -147,6 +147,7 @@
     <Compile Include="Recommendation\CofiRecommenderGenerator.cs" />
     <Compile Include="Recommendation\CofiRecommenderModel.cs" />
     <Compile Include="Register.cs" />
+    <Compile Include="Serialization\JsonArray.cs" />
     <Compile Include="Serialization\Model\DateTimePropertySerializer.cs" />
     <Compile Include="Serialization\Model\DescriptorSerializer.cs" />
     <Compile Include="Serialization\Model\EnumerablePropertySerializer.cs" />
@@ -159,6 +160,10 @@
     <Compile Include="Serialization\Model\StringPropertySerializer.cs" />
     <Compile Include="Serialization\JsonProperty.cs" />
     <Compile Include="Serialization\Supervised\ModelSerializer.cs" />
+    <Compile Include="Serialization\Supervised\NeuralNetwork\EdgeSerializer.cs" />
+    <Compile Include="Serialization\Supervised\NeuralNetwork\NetworkSerializer.cs" />
+    <Compile Include="Serialization\Supervised\NeuralNetwork\NodeSerializer.cs" />
+    <Compile Include="Serialization\Supervised\NeuralNetwork\Recurrent\RecurrentNeuronSerializer.cs" />
     <Compile Include="Serialization\Supervised\SummarySerializer.cs" />
     <Compile Include="Supervised\Classification\ClassificationModel.cs" />
     <Compile Include="Supervised\Classification\IClassifier.cs" />

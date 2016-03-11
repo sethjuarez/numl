@@ -81,7 +81,7 @@ namespace numl.Supervised.NeuralNetwork
 
         /// <summary>Gets or sets the identifier.</summary>
         /// <value>The identifier.</value>
-        public string Id { get; private set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// Gets or sets the layer of this Node.

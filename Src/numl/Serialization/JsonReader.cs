@@ -17,7 +17,9 @@ namespace numl.Serialization
             _reader = reader;
         }
 
-        public void EatWhitespace()
+        #region Raw Methods
+
+        internal void EatWhitespace()
         {
             while (JsonConstants.WHITESPACE.Contains((char)_reader.Peek()))
                 _reader.Read();
@@ -44,7 +46,7 @@ namespace numl.Serialization
                 _reader.Read();
         }
 
-        public string ReadString()
+        internal string ReadString()
         {
             EatWhitespace();
             ReadToken(JsonConstants.QUOTATION);
@@ -98,7 +100,7 @@ namespace numl.Serialization
             return sb.ToString();
 
         }
-        public double ReadNumber()
+        internal double ReadNumber()
         {
             EatWhitespace();
             StringBuilder sb = new StringBuilder();
@@ -106,7 +108,8 @@ namespace numl.Serialization
                 sb.Append((char)_reader.Read());
             return double.Parse(sb.ToString());
         }
-        public object ReadLiteral()
+
+        internal object ReadLiteral()
         {
             EatWhitespace();
             var next = _reader.Peek();
@@ -133,11 +136,19 @@ namespace numl.Serialization
             }
         }
 
+        /// <summary>
+        /// Reads a Vector from the underlying Json stream.
+        /// </summary>
+        /// <returns></returns>
         public Vector ReadVector()
         {
             return new Vector(ReadArray().Select(i => (double)i).ToArray());
         }
 
+        /// <summary>
+        /// Reads a Matrix from the underlying Json stream.
+        /// </summary>
+        /// <returns></returns>
         public Matrix ReadMatrix()
         {
             return new Matrix(
@@ -145,7 +156,7 @@ namespace numl.Serialization
             );
         }
 
-        public object[] ReadArray()
+        internal object[] ReadArray()
         {
             EatWhitespace();
             ReadToken(JsonConstants.BEGIN_ARRAY);
@@ -174,39 +185,20 @@ namespace numl.Serialization
 
             return array.ToArray();
         }
-        public void ReadStartObject()
+
+        internal void ReadStartObject()
         {
             EatWhitespace();
             ReadToken(JsonConstants.BEGIN_OBJECT);
         }
 
-        public void ReadEndObject()
+        internal void ReadEndObject()
         {
             EatWhitespace();
             ReadToken(JsonConstants.END_OBJECT);
         }
 
-        public JsonProperty ReadProperty()
-        {
-            var name = ReadString();
-            ReadToken(JsonConstants.COLON);
-            var value = Read();
-            PeekToken(JsonConstants.COMMA);
-
-            return new JsonProperty { Name = name, Value = value };
-        }
-
-        public JsonProperty ReadArrayProperty()
-        {
-
-            var name = ReadString();
-            ReadToken(JsonConstants.COLON);
-            var value = ReadArray();
-            PeekToken(JsonConstants.COMMA);
-            return new JsonProperty { Name = name, Value = value };
-        }
-
-        public object ReadObject()
+        internal object ReadObject()
         {
             ReadToken(JsonConstants.BEGIN_OBJECT);
             var obj = new Dictionary<string, object>();
@@ -217,7 +209,7 @@ namespace numl.Serialization
                 if (p.Name == JsonSerializer.SERIALIZER_ATTRIBUTE)
                 {
                     // TODO: Maybe keep instances of these things for later reuse
-                    var s = (ISerializer)Activator.CreateInstance(Ject.FindType(p.Value.ToString()));
+                    var s = (ISerializer) Activator.CreateInstance(Ject.FindType(p.Value.ToString()));
                     var o = s.Read(this);
                     s.PostRead(this);
                     return o;
@@ -227,13 +219,47 @@ namespace numl.Serialization
                     throw new InvalidOperationException("Key already exists");
 
                 obj[p.Name] = p.Value;
-                
+
             }
 
             ReadToken(JsonConstants.END_OBJECT);
             return obj;
         }
 
+        #endregion
+
+        /// <summary>
+        /// Reads a property from the JSON serialized stream.
+        /// </summary>
+        /// <returns></returns>
+        public JsonProperty ReadProperty()
+        {
+            var name = ReadString();
+            ReadToken(JsonConstants.COLON);
+            var value = Read();
+            PeekToken(JsonConstants.COMMA);
+
+            return new JsonProperty { Name = name, Value = value };
+        }
+
+        /// <summary>
+        /// Reads an array property from the JSON serialized stream.
+        /// </summary>
+        /// <returns></returns>
+        public JsonArray ReadArrayProperty()
+        {
+
+            var name = ReadString();
+            ReadToken(JsonConstants.COLON);
+            var value = ReadArray();
+            PeekToken(JsonConstants.COMMA);
+            return new JsonArray { Name = name, Value = value };
+        }
+
+        /// <summary>
+        /// Reads from the current JSON serialized stream.
+        /// </summary>
+        /// <returns></returns>
         public object Read()
         {
             // A JSON value MUST be an object, array, number, or string, 

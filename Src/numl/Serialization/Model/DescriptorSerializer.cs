@@ -36,10 +36,10 @@ namespace numl.Serialization.Model
         public override void Write(JsonWriter writer, object value)
         {
             var d = (Descriptor)value;
-            writer.WriteProperty("Name", d.Name);
-            writer.WriteArrayProperty("Features", d.Features);
-            writer.WriteProperty("Label", d.Label);
-            writer.WriteProperty("Type", d.Type?.FullName);
+            writer.WriteProperty(nameof(Descriptor.Name), d.Name);
+            writer.WriteArrayProperty(nameof(Descriptor.Features), d.Features);
+            writer.WriteProperty(nameof(Descriptor.Label), d.Label);
+            writer.WriteProperty(nameof(Descriptor.Type), d.Type?.FullName);
         }
     }
 }

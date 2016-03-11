@@ -26,6 +26,8 @@ namespace numl.Supervised.NeuralNetwork
         /// </summary>
         public double Cost { get; set; } = 0d;
 
+        #region Initialization
+
         /// <summary>Defaults.</summary>
         /// <param name="d">The Descriptor to process.</param>
         /// <param name="x">The Vector to process.</param>
@@ -50,20 +52,20 @@ namespace numl.Supervised.NeuralNetwork
 
             // creating input nodes
             nn.In = new Node[x.Cols + 1];
-            nn.In[0] = new Node(true) { Label = "B0", ActivationFunction = ident };
+            nn.In[0] = new Node(true) { Label = "B0", ActivationFunction = ident, NodeId = 0, LayerId = 0 };
             for (int i = 1; i < x.Cols + 1; i++)
-                nn.In[i] = new Node { Label = d.ColumnAt(i - 1), ActivationFunction = ident };
+                nn.In[i] = new Node { Label = d.ColumnAt(i - 1), ActivationFunction = ident, NodeId = i, LayerId = 0 };
 
             // creating hidden nodes
             Node[] h = new Node[hidden + 1];
-            h[0] = new Node(true) { Label = "B1", ActivationFunction = ident };
+            h[0] = new Node(true) { Label = "B1", ActivationFunction = ident, NodeId = 0, LayerId = 1 };
             for (int i = 1; i < hidden + 1; i++)
-                h[i] = new Node { Label = String.Format("H{0}", i), ActivationFunction = activationFunction, OutputFunction = outputFunction };
+                h[i] = new Node { Label = String.Format("H{0}", i), ActivationFunction = activationFunction, OutputFunction = outputFunction, NodeId = i, LayerId = 1 };
 
             // creating output nodes
             nn.Out = new Node[output];
             for (int i = 0; i < output; i++)
-                nn.Out[i] = new Node { Label = GetLabel(i, d), ActivationFunction = activationFunction, OutputFunction = outputFunction };
+                nn.Out[i] = new Node { Label = GetLabel(i, d), ActivationFunction = activationFunction, OutputFunction = outputFunction, NodeId = i, LayerId = 2 };
 
             // link input to hidden. Note: there are
             // no inputs to the hidden bias node
@@ -230,6 +232,58 @@ namespace numl.Supervised.NeuralNetwork
             return nn;
         }
 
+        /// <summary>
+        /// Links a Network from nodes and edges.
+        /// </summary>
+        /// <param name="nodes">An array of nodes in the network</param>
+        /// <param name="edges">An array of edges between the nodes in the network.</param>
+        public static Network LinkNodes(IEnumerable<Node> nodes, IEnumerable<Edge> edges)
+        {
+            Network network = new Network();
+
+            int inputLayerId = nodes.Min(m => m.LayerId);
+            int outputLayerId = nodes.Max(m => m.LayerId);
+
+            network.In = nodes.Where(w => w.LayerId == inputLayerId).ToArray();
+
+            int hiddenLayers = (1 - outputLayerId) - inputLayerId;
+
+            // relink nodes
+            Node[] last = null;
+            for (int layerIdx = 0; layerIdx < hiddenLayers; layerIdx++)
+            {
+                Node[] layer = nodes.Where(w => w.LayerId == (layerIdx + inputLayerId)).ToArray();
+                if (layerIdx > 0 && layerIdx < hiddenLayers)
+                {
+                    // create hidden to hidden (full)
+                    for (int i = 0; i < last.Length; i++)
+                        for (int x = 1; x < layer.Length; x++)
+                            Edge.Create(last[i], layer[x], 
+                                weight: edges.First(f => f.SourceId == last[i].Id && f.TargetId == layer[x].Id).Weight);
+                }
+                else if (layerIdx == 0)
+                {
+                    // create input to hidden (full)
+                    for (int i = 0; i < network.In.Length; i++)
+                        for (int j = 1; j < layer.Length; j++)
+                            Edge.Create(network.In[i], layer[j], 
+                                weight: edges.First(f => f.SourceId == network.In[i].Id && f.TargetId == layer[j].Id).Weight);
+                }
+
+                last = layer;
+            }
+
+            network.Out = nodes.Where(w => w.LayerId == outputLayerId).ToArray();
+
+            for (int i = 0; i < network.Out.Length; i++)
+                for (int j = 0; j < last.Length; j++)
+                    Edge.Create(last[j], network.Out[i], 
+                        weight: edges.First(f => f.SourceId == last[j].Id && f.TargetId == network.Out[i].Id).Weight);
+
+            return network;
+        }
+
+        #endregion
 
         /// <summary>Gets a label.</summary>
         /// <param name="n">The Node to process.</param>
@@ -249,6 +303,9 @@ namespace numl.Supervised.NeuralNetwork
 
             return label;
         }
+
+        #region Computation
+
         /// <summary>Forwards the given x coordinate.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
         /// <param name="x">The Vector to process.</param>
@@ -305,6 +362,10 @@ namespace numl.Supervised.NeuralNetwork
             }
         }
 
+        #endregion
+
+        #region Node Selection
+
         /// <summary>The nodes.</summary>
         private HashSet<string> _nodes;
         /// <summary>Gets the nodes in this collection.</summary>
@@ -356,6 +417,10 @@ namespace numl.Supervised.NeuralNetwork
             }
         }
 
+        #endregion
+
+        #region Edge Selection
+
         /// <summary>The edges.</summary>
         private HashSet<Tuple<string, string>> _edges;
 
@@ -396,5 +461,7 @@ namespace numl.Supervised.NeuralNetwork
                     yield return e;
             }
         }
+
+        #endregion
     }
 }
