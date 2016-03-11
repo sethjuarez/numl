@@ -42,7 +42,7 @@ namespace numl.Data
             else
                 throw new InvalidOperationException("Invalid vertex index specified in edge");
         }
-
+        
         public void RemoveEdge(IEdge edge)
         {
             _edges[edge.ParentId].Remove(edge.ChildId);
