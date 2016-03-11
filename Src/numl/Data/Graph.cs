@@ -87,19 +87,4 @@ namespace numl.Data
                     yield return e.Value;
         }
     }
-
-    public interface IVertex
-    {
-        int Id { get; set; }
-
-        string Label { get; set; }
-
-    }
-
-    public interface IEdge
-    {
-        int ParentId { get; set; }
-
-        int ChildId { get; set; }
-    }
 }

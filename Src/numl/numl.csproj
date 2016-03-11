@@ -62,6 +62,8 @@
     <Compile Include="AI\StateComparer.cs" />
     <Compile Include="AI\StateExpansionEventArgs.cs" />
     <Compile Include="Data\Graph.cs" />
+    <Compile Include="Data\IEdge.cs" />
+    <Compile Include="Data\IVertex.cs" />
     <Compile Include="Learner.cs" />
     <Compile Include="LearningModel.cs" />
     <Compile Include="Math\Functions\ClippedRectifiedLinear.cs" />
