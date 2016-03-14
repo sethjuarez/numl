@@ -160,7 +160,7 @@ namespace numl.Tests.SupervisedTests
         /// <summary>
         /// Function for updating the specified theta value and returning the new error.
         /// </summary>
-        private readonly Func<Network, Node, Vector, Vector, int, double, double> FnCostUpdateFunction = (network, n, input, output, id, theta) =>
+        private readonly Func<Network, Neuron, Vector, Vector, int, double, double> FnCostUpdateFunction = (network, n, input, output, id, theta) =>
         {
             n.Out[id].Weight = theta;
 

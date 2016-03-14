@@ -43,7 +43,7 @@ namespace numl.Serialization.Supervised.NeuralNetwork
             {
                 var network = (Network)this.Create();
 
-                var nodes = reader.ReadArrayProperty().Value.OfType<Node>();
+                var nodes = reader.ReadArrayProperty().Value.OfType<Neuron>();
                 var edges = reader.ReadArrayProperty().Value.OfType<Edge>();
 
                 var linked = Network.LinkNodes(nodes, edges);
@@ -70,7 +70,7 @@ namespace numl.Serialization.Supervised.NeuralNetwork
 
                 // write out nodes
                 writer.WriteArrayProperty("Nodes", 
-                        network.GetNodes().ToArray());
+                        network.GetVertices().ToArray());
 
                 // write out all edges
                 writer.WriteArrayProperty("Edges", 

@@ -28,7 +28,7 @@ namespace numl.Tests.DataTests
         public void OutEdgesVertexTest()
         {
             Vertex.Reset();
-            Graph g = new Graph();
+            Graph<Vertex> g = new Graph<Vertex>();
             var vertex1 = new Vertex();
             g.AddVertex(vertex1); // 1
             g.AddVertex(new Vertex()); // 2
@@ -54,7 +54,7 @@ namespace numl.Tests.DataTests
         public void ChildVertexTest()
         {
             Vertex.Reset();
-            Graph g = new Graph();
+            Graph<Vertex> g = new Graph<Vertex>();
             var vertex1 = new Vertex();
             g.AddVertex(vertex1); // 1
             g.AddVertex(new Vertex()); // 2
@@ -78,7 +78,7 @@ namespace numl.Tests.DataTests
         public void InEdgesVertexTest()
         {
             Vertex.Reset();
-            Graph g = new Graph();
+            Graph<Vertex> g = new Graph<Vertex>();
             var vertex1 = new Vertex();
             g.AddVertex(vertex1); // 1
             g.AddVertex(new Vertex()); // 2
@@ -104,7 +104,7 @@ namespace numl.Tests.DataTests
         public void ParentVertexTest()
         {
             Vertex.Reset();
-            Graph g = new Graph();
+            Graph<Vertex> g = new Graph<Vertex>();
             var vertex1 = new Vertex();
             g.AddVertex(vertex1); // 1
             g.AddVertex(new Vertex()); // 2
@@ -127,7 +127,7 @@ namespace numl.Tests.DataTests
         public void RemoveVertexTest()
         {
             Vertex.Reset();
-            Graph g = new Graph();
+            Graph<Vertex> g = new Graph<Vertex>();
             var vertex1 = new Vertex();
             g.AddVertex(vertex1); // 1
             g.AddVertex(new Vertex()); // 2
@@ -150,7 +150,7 @@ namespace numl.Tests.DataTests
         public void RemoveEdgeTest()
         {
             Vertex.Reset();
-            Graph g = new Graph();
+            Graph<Vertex> g = new Graph<Vertex>();
             g.AddVertex(new Vertex()); // 1
             g.AddVertex(new Vertex()); // 2
             g.AddVertex(new Vertex()); // 3

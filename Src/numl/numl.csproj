@@ -64,7 +64,6 @@
     <Compile Include="Data\Graph.cs" />
     <Compile Include="Data\IEdge.cs" />
     <Compile Include="Data\IVertex.cs" />
-    <Compile Include="Data\Network.cs" />
     <Compile Include="Data\Tree.cs" />
     <Compile Include="Learner.cs" />
     <Compile Include="LearningModel.cs" />
@@ -166,7 +165,7 @@
     <Compile Include="Serialization\Supervised\ModelSerializer.cs" />
     <Compile Include="Serialization\Supervised\NeuralNetwork\EdgeSerializer.cs" />
     <Compile Include="Serialization\Supervised\NeuralNetwork\NetworkSerializer.cs" />
-    <Compile Include="Serialization\Supervised\NeuralNetwork\NodeSerializer.cs" />
+    <Compile Include="Serialization\Supervised\NeuralNetwork\NeuronSerializer.cs" />
     <Compile Include="Serialization\Supervised\NeuralNetwork\Recurrent\RecurrentNeuronSerializer.cs" />
     <Compile Include="Serialization\Supervised\SummarySerializer.cs" />
     <Compile Include="Supervised\Classification\ClassificationModel.cs" />
@@ -188,6 +187,7 @@
     <Compile Include="Supervised\NaiveBayes\Statistic.cs" />
     <Compile Include="Supervised\NeuralNetwork\Edge.cs" />
     <Compile Include="Supervised\NeuralNetwork\Network.cs" />
+    <Compile Include="Supervised\NeuralNetwork\NetworkOps.cs" />
     <Compile Include="Supervised\NeuralNetwork\NetworkLayer.cs" />
     <Compile Include="Supervised\NeuralNetwork\NetworkTrainingProperties.cs" />
     <Compile Include="Supervised\NeuralNetwork\NeuralNetworkGenerator.cs" />

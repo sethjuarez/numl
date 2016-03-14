@@ -43,8 +43,8 @@ namespace numl.Serialization.Supervised.NeuralNetwork
             {
                 var edge = (Edge)this.Create();
 
-                edge.SourceId = reader.ReadProperty().Value.ToString();
-                edge.TargetId = reader.ReadProperty().Value.ToString();
+                edge.ParentId = (int)reader.ReadProperty().Value;
+                edge.ChildId = (int)reader.ReadProperty().Value;
                 edge.Weight = (double)reader.ReadProperty().Value;
                 
                 return edge;
@@ -64,8 +64,8 @@ namespace numl.Serialization.Supervised.NeuralNetwork
             {
                 var edge = (Edge)value;
 
-                writer.WriteProperty(nameof(edge.SourceId), edge.SourceId);
-                writer.WriteProperty(nameof(edge.TargetId), edge.TargetId);
+                writer.WriteProperty(nameof(edge.ParentId), edge.ParentId);
+                writer.WriteProperty(nameof(edge.ChildId), edge.ChildId);
                 writer.WriteProperty(nameof(edge.Weight), edge.Weight);
             }
         }

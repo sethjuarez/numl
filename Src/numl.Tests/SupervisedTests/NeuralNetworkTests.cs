@@ -84,7 +84,7 @@ namespace numl.Tests.SupervisedTests
         [Test]
         public void RNN_Unit_Test_1()
         {
-            var input = new Supervised.NeuralNetwork.Node()
+            var input = new Supervised.NeuralNetwork.Neuron()
             {
                 ActivationFunction = new Math.Functions.Ident(),
                 Input = 1.0
@@ -128,7 +128,7 @@ namespace numl.Tests.SupervisedTests
         [Test]
         public void RNN_Unit_Test_2()
         {
-            var input = new Supervised.NeuralNetwork.Node()
+            var input = new Supervised.NeuralNetwork.Neuron()
             {
                 ActivationFunction = new Math.Functions.Ident(),
                 Output = 10.0

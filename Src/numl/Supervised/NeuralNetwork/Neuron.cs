@@ -10,14 +10,14 @@ using numl.Utils;
 namespace numl.Supervised.NeuralNetwork
 {
     
-    /// <summary>A node.</summary>
-    public class Node 
+    /// <summary>An Artifical Neuron.</summary>
+    public class Neuron : Data.IVertex
     {
         private static int _id = -1;
         private double _DeltaL = 0;
 
         /// <summary>Default constructor.</summary>
-        public Node(bool isBias = false)
+        public Neuron(bool isBias = false)
         {
             // assume bias node unless
             // otherwise told through
@@ -30,7 +30,7 @@ namespace numl.Supervised.NeuralNetwork
             Label = null;
             Out = new List<Edge>();
             In = new List<Edge>();
-            Id = (++_id).ToString();
+            Id = (++_id);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace numl.Supervised.NeuralNetwork
 
         /// <summary>Gets or sets the identifier.</summary>
         /// <value>The identifier.</value>
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Gets or sets the layer of this Node.
@@ -93,11 +93,11 @@ namespace numl.Supervised.NeuralNetwork
         /// </summary>
         public int NodeId { get; set; }
 
-        /// <summary>Gets or sets the Output <see cref="Node"/> connections.</summary>
+        /// <summary>Gets or sets the Output <see cref="Neuron"/> connections.</summary>
         /// <value>The out.</value>
         public List<Edge> Out { get; set; }
 
-        /// <summary>Gets or sets the Input <see cref="Node"/> connections.</summary>
+        /// <summary>Gets or sets the Input <see cref="Neuron"/> connections.</summary>
         /// <value>The in.</value>
         public List<Edge> In { get; set; }
 
@@ -111,7 +111,7 @@ namespace numl.Supervised.NeuralNetwork
         public IFunction OutputFunction { get; set; }
 
         /// <summary>Calculates and returns the Node's <see cref="Output"/> value.</summary>
-        /// <remarks>Input is equal to the weights multiplied by the source <see cref="Node"/>'s Output.</remarks>
+        /// <remarks>Input is equal to the weights multiplied by the source <see cref="Neuron"/>'s Output.</remarks>
         /// <returns>A double.</returns>
         public virtual double Evaluate()
         {

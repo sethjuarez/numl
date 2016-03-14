@@ -5,31 +5,44 @@ using System.Collections.Generic;
 
 namespace numl.Data
 {
-    public class Graph
+    public class Graph<T> where T : IVertex
     {
-        private readonly Dictionary<int, IVertex> _vertices;
+        private readonly Dictionary<int, T> _vertices;
         private readonly Dictionary<int, Dictionary<int, IEdge>> _edges;
 
         public Graph()
         {
-            _vertices = new Dictionary<int, IVertex>();
+            _vertices = new Dictionary<int, T>();
             _edges = new Dictionary<int, Dictionary<int, IEdge>>();
         }
 
-        public void AddVertex(IVertex v)
+        public void AddVertex(T v)
         {
             _vertices[v.Id] = v;
         }
 
-        public IVertex GetVertex(int id)
+        public T GetVertex(int id)
         {
-            if (_vertices.ContainsKey(id))
-                return _vertices[id];
-            else
-                throw new InvalidOperationException($"Vertex {id} does not exist!");
+            return this[id];
         }
 
-        public void RemoveVertex(IVertex v)
+        /// <summary>
+        /// Gets the IVertex by the specified Id.
+        /// </summary>
+        /// <param name="id">The key of the specified IVertex to return.</param>
+        /// <returns>IVertex.</returns>
+        public T this[int id]
+        {
+            get
+            {
+                if (_vertices.ContainsKey(id))
+                    return _vertices[id];
+                else
+                    throw new InvalidOperationException($"Vertex {id} does not exist!");
+            }
+        }
+
+        public void RemoveVertex(T v)
         {
             // remove vertex
             _vertices.Remove(v.Id);
@@ -56,13 +69,13 @@ namespace numl.Data
             _edges[edge.ParentId].Remove(edge.ChildId);
         }
 
-        public IEnumerable<IEdge> GetOutEdges(IVertex v)
+        public IEnumerable<IEdge> GetOutEdges(T v)
         {
             foreach (var edges in _edges[v.Id])
                 yield return edges.Value;
         }
 
-        public IEnumerable<IEdge> GetInEdges(IVertex v)
+        public IEnumerable<IEdge> GetInEdges(T v)
         {
             foreach (var edges in _edges)
                 foreach (var e in edges.Value)
@@ -70,19 +83,19 @@ namespace numl.Data
                         yield return e.Value;
         }
 
-        public IEnumerable<IVertex> GetChildren(IVertex v)
+        public IEnumerable<T> GetChildren(T v)
         {
             foreach (var edges in GetOutEdges(v))
                 yield return _vertices[edges.ChildId];
         }
 
-        public IEnumerable<IVertex> GetParents(IVertex v)
+        public IEnumerable<T> GetParents(T v)
         {
             foreach (var edges in GetInEdges(v))
                 yield return _vertices[edges.ParentId];
         }
 
-        public IEnumerable<IVertex> GetVertices()
+        public IEnumerable<T> GetVertices()
         {
             foreach (var vertices in _vertices)
                 yield return vertices.Value;

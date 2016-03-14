@@ -12,7 +12,7 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
     /// <summary>
     /// An individual Gated Recurrent Neuron
     /// </summary>
-    public class RecurrentNeuron : Node
+    public class RecurrentNeuron : Neuron
     {
         /// <summary>
         /// Gets or Sets the hidden (internal) state of the neuron.

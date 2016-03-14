@@ -42,7 +42,7 @@ namespace numl.Supervised.NeuralNetwork
         /// <param name="createBiasNodes">(Optional) Indicates whether bias nodes are automatically created (thus bypassing the <paramref name="fnNodeInitializer"/> function).</param>
         /// <param name="linkBiasNodes">(Optional) Indicates whether bias nodes in hidden layers are automatically linked to their respective hidden nodes.
         /// <para>If this is set to True, it will override any bias node connections specified in parameter <paramref name="layerConnections"/></para></param>
-        public NetworkLayer(int inputNodes, int outputNodes, bool isFullyConnected, int[] hiddenLayers, Func<int, int, Node> fnNodeInitializer, 
+        public NetworkLayer(int inputNodes, int outputNodes, bool isFullyConnected, int[] hiddenLayers, Func<int, int, Neuron> fnNodeInitializer, 
             bool isAutoencoder = false, int[][][] layerConnections = null, bool createBiasNodes = true, bool linkBiasNodes = true) : base()
         {
             this.IsFullyConnected = isFullyConnected;
@@ -53,19 +53,19 @@ namespace numl.Supervised.NeuralNetwork
 
             IFunction ident = new Ident();
 
-            this.In = new Node[inputNodes];
-            this.In[0] = new Node { Label = "B0", ActivationFunction = ident };
+            this.In = new Neuron[inputNodes];
+            this.In[0] = new Neuron { Label = "B0", ActivationFunction = ident };
 
             // create input nodes
             for (int i = 1; i < this.In.Length; i++)
                 this.In[i] = fnNodeInitializer(0, i);
 
             // create hidden layers
-            Node[][] hiddenNodes = new Node[hiddenLayers.Length][];
+            Neuron[][] hiddenNodes = new Neuron[hiddenLayers.Length][];
 
             for (int hiddenLayer = 0; hiddenLayer < hiddenLayers.Count(); hiddenLayer++)
             {
-                hiddenNodes[hiddenLayer] = new Node[hiddenLayers[hiddenLayer]];
+                hiddenNodes[hiddenLayer] = new Neuron[hiddenLayers[hiddenLayer]];
 
                 for (int h = 0; h < hiddenLayers[hiddenLayer]; h++)
                 {
@@ -73,7 +73,7 @@ namespace numl.Supervised.NeuralNetwork
                     {
                         // create the bias node in this layer
                         if (createBiasNodes)
-                            hiddenNodes[hiddenLayer][0] = new Node { Label = $"B{hiddenLayer + 1}", ActivationFunction = ident };
+                            hiddenNodes[hiddenLayer][0] = new Neuron { Label = $"B{hiddenLayer + 1}", ActivationFunction = ident };
                         else
                             hiddenNodes[hiddenLayer][0] = fnNodeInitializer(hiddenLayer + 1, h);
                     }
@@ -114,7 +114,7 @@ namespace numl.Supervised.NeuralNetwork
             }
 
             // creating output nodes
-            this.Out = new Node[outputNodes];
+            this.Out = new Neuron[outputNodes];
             for (int i = 0; i < outputNodes; i++)
                 this.Out[i] = fnNodeInitializer(hiddenLayers.Length + 1, i);
 

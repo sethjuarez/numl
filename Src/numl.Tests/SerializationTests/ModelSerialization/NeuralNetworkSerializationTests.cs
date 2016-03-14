@@ -23,7 +23,7 @@ namespace numl.Tests.SerializationTests.ModelSerialization
                 AreEqual(n1.Out[i], n2.Out[i]);
         }
 
-        public static void AreEqual(Node n1, Node n2)
+        public static void AreEqual(Neuron n1, Neuron n2)
         {
             if (n1 != null && n2 != null)
             {

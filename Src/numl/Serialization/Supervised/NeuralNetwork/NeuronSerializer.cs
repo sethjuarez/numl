@@ -21,7 +21,7 @@ namespace numl.Serialization.Supervised.NeuralNetwork
         /// <returns></returns>
         public override bool CanConvert(Type type)
         {
-            return typeof(Node).IsAssignableFrom(type);
+            return typeof(Neuron).IsAssignableFrom(type);
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace numl.Serialization.Supervised.NeuralNetwork
         /// <returns></returns>
         public override object Create()
         {
-            return new Node();
+            return new Neuron();
         }
 
         /// <summary>
@@ -43,11 +43,11 @@ namespace numl.Serialization.Supervised.NeuralNetwork
             if (reader.IsNull()) return null;
             else
             {
-                var node = (Node)this.Create();
+                var node = (Neuron)this.Create();
 
                 node.Label = reader.ReadProperty().Value.ToString();
 
-                node.Id = reader.ReadProperty().Value.ToString();
+                node.Id = (int)reader.ReadProperty().Value;
                 node.NodeId = (int)reader.ReadProperty().Value;
                 node.LayerId = (int)reader.ReadProperty().Value;
                 node.IsBias = (bool)reader.ReadProperty().Value;
@@ -81,26 +81,26 @@ namespace numl.Serialization.Supervised.NeuralNetwork
                 writer.WriteNull();
             else
             {
-                var node = (Node)value;
+                var node = (Neuron)value;
 
-                writer.WriteProperty(nameof(Node.Label), node.Label);
+                writer.WriteProperty(nameof(Neuron.Label), node.Label);
 
-                writer.WriteProperty(nameof(Node.Id), node.Id);
-                writer.WriteProperty(nameof(Node.NodeId), node.NodeId);
-                writer.WriteProperty(nameof(Node.LayerId), node.LayerId);
-                writer.WriteProperty(nameof(Node.IsBias), node.IsBias);
+                writer.WriteProperty(nameof(Neuron.Id), node.Id);
+                writer.WriteProperty(nameof(Neuron.NodeId), node.NodeId);
+                writer.WriteProperty(nameof(Neuron.LayerId), node.LayerId);
+                writer.WriteProperty(nameof(Neuron.IsBias), node.IsBias);
 
-                writer.WriteProperty(nameof(Node.ActivationFunction), node.ActivationFunction.GetType().FullName);
+                writer.WriteProperty(nameof(Neuron.ActivationFunction), node.ActivationFunction.GetType().FullName);
 
-                writer.WriteProperty(nameof(Node.OutputFunction), node.OutputFunction?.GetType().FullName);
+                writer.WriteProperty(nameof(Neuron.OutputFunction), node.OutputFunction?.GetType().FullName);
 
-                writer.WriteProperty(nameof(Node.Constrained), node.Constrained);
+                writer.WriteProperty(nameof(Neuron.Constrained), node.Constrained);
 
-                writer.WriteProperty(nameof(Node.delta), node.delta);
-                writer.WriteProperty(nameof(Node.Delta), node.Delta);
+                writer.WriteProperty(nameof(Neuron.delta), node.delta);
+                writer.WriteProperty(nameof(Neuron.Delta), node.Delta);
 
-                writer.WriteProperty(nameof(Node.Input), node.Input);
-                writer.WriteProperty(nameof(Node.Output), node.Output);
+                writer.WriteProperty(nameof(Neuron.Input), node.Input);
+                writer.WriteProperty(nameof(Neuron.Output), node.Output);
             }
         }
     }

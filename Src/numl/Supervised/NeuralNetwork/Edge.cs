@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace numl.Supervised.NeuralNetwork
 {
     /// <summary>An edge.</summary>
-    public class Edge
+    public class Edge : Data.IEdge
     {
         /// <summary>Default constructor.</summary>
         public Edge()
@@ -25,16 +25,16 @@ namespace numl.Supervised.NeuralNetwork
         }
         /// <summary>Gets or sets the source Node.</summary>
         /// <value>The source.</value>
-        public Node Source { get; set; }
+        public Neuron Source { get; set; }
         /// <summary>Gets or sets the identifier of the source.</summary>
         /// <value>The identifier of the source.</value>
-        internal string SourceId { get; set; }
+        public int ParentId { get; set; }
         /// <summary>Gets or sets the target Node.</summary>
         /// <value>The target.</value>
-        public Node Target { get; set; }
+        public Neuron Target { get; set; }
         /// <summary>Gets or sets the identifier of the target.</summary>
         /// <value>The identifier of the target.</value>
-        internal string TargetId { get; set; }
+        public int ChildId { get; set; }
         /// <summary>Gets or sets the weight.</summary>
         /// <value>The weight.</value>
         public double Weight { get; set; }
@@ -44,11 +44,11 @@ namespace numl.Supervised.NeuralNetwork
         /// <param name="weight">Weight parameter to initialize with.</param>
         /// <param name="epsilon">Seed value to use when randomly selecting a weight (ignored when <paramref name="weight"/> is supplied).</param>
         /// <returns>An Edge.</returns>
-        public static Edge Create(Node source, Node target, double weight = double.NaN, double epsilon = double.NaN)
+        public static Edge Create(Neuron source, Neuron target, double weight = double.NaN, double epsilon = double.NaN)
         {
             Edge e = new Edge { Source = source, Target = target };
-            e.SourceId = source.Id;
-            e.TargetId = target.Id;
+            e.ParentId = source.Id;
+            e.ChildId = target.Id;
             source.Out.Add(e);
             target.In.Add(e);
 
