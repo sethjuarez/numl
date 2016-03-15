@@ -11,7 +11,7 @@ using System.Collections.Generic;
 namespace numl.Supervised.NeuralNetwork
 {
     /// <summary>A network.</summary>
-    public partial class Network : Data.Graph<Neuron>
+    public partial class Network : Data.Graph
     {
         /// <summary>Gets or sets the in.</summary>
         /// <value>The in.</value>
@@ -140,7 +140,8 @@ namespace numl.Supervised.NeuralNetwork
         /// <returns></returns>
         public IEnumerable<Neuron> GetNodes(int layer)
         {
-            return GetVertices().Where(n => n.LayerId == layer);
+            return GetVertices().Where(n => ((Neuron)n).LayerId == layer)
+                                .Select(n => (Neuron)n);
         }
 
         ///// <summary>Gets all nodes leading into the supplied Node.</summary>
