@@ -67,4 +67,18 @@ namespace numl.Serialization
             writer.WriteEndObject();
         }
     }
+
+    public abstract class JsonSerializer<T> : JsonSerializer
+        where T : class, new()
+    {
+        public override bool CanConvert(Type type)
+        {
+            return typeof(T).IsAssignableFrom(type);
+        }
+
+        public override object Create()
+        {
+            return new T();
+        }
+    }
 }

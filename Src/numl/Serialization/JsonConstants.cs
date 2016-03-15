@@ -11,9 +11,9 @@ namespace numl.Serialization
             // type magic to self register
             // all available ISerializers
             var serializers =
-                from t in typeof(JsonSerializer).Assembly.GetTypes()
-                where typeof(JsonSerializer).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract
-                select (JsonSerializer)Activator.CreateInstance(t);
+                from t in typeof(ISerializer).Assembly.GetTypes()
+                where typeof(ISerializer).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract && !t.IsInterface
+                select (ISerializer)Activator.CreateInstance(t);
 
             _serializers = new List<ISerializer>(serializers);
         }

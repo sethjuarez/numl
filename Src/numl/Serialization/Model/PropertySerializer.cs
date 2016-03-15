@@ -6,18 +6,8 @@ using System.Collections.Generic;
 
 namespace numl.Serialization.Model
 {
-    public class PropertySerializer : JsonSerializer
+    public class PropertySerializer : JsonSerializer<Property>
     {
-        public override bool CanConvert(Type type)
-        {
-            return typeof(Property).IsAssignableFrom(type);
-        }
-
-        public override object Create()
-        {
-            return new Property();
-        }
-
         public override object Read(JsonReader reader)
         {
             var name = reader.ReadProperty().Value.ToString();
@@ -41,10 +31,10 @@ namespace numl.Serialization.Model
         public override void Write(JsonWriter writer, object value)
         {
             var p = (Property)value;
-            writer.WriteProperty("Name", p.Name);
-            writer.WriteProperty("Type", p.Type?.FullName);
-            writer.WriteProperty("Start", p.Start);
-            writer.WriteProperty("Discrete", p.Discrete);
+            writer.WriteProperty(nameof(p.Name), p.Name);
+            writer.WriteProperty(nameof(p.Type), p.Type?.FullName);
+            writer.WriteProperty(nameof(p.Start), p.Start);
+            writer.WriteProperty(nameof(p.Discrete), p.Discrete);
         }
     }
 }

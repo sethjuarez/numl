@@ -12,27 +12,8 @@ namespace numl.Serialization.Supervised.NeuralNetwork
     /// <summary>
     /// Node serializer.
     /// </summary>
-    public class NodeSerializer : JsonSerializer
+    public class NeuronSerializer : JsonSerializer<Neuron>
     {
-        /// <summary>
-        /// Returns True if the specified type can be assigned.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public override bool CanConvert(Type type)
-        {
-            return typeof(Neuron).IsAssignableFrom(type);
-        }
-
-        /// <summary>
-        /// Creates a default Node object.
-        /// </summary>
-        /// <returns></returns>
-        public override object Create()
-        {
-            return new Neuron();
-        }
-
         /// <summary>
         /// Deserializes the object from the stream.
         /// </summary>

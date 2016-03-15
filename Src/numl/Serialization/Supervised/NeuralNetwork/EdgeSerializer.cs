@@ -10,27 +10,8 @@ namespace numl.Serialization.Supervised.NeuralNetwork
     /// <summary>
     /// Edge serializer.
     /// </summary>
-    public class EdgeSerializer : JsonSerializer
+    public class EdgeSerializer : JsonSerializer<Edge>
     {
-        /// <summary>
-        /// Returns True if the specified type can be assigned.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public override bool CanConvert(Type type)
-        {
-            return typeof(Edge).IsAssignableFrom(type);
-        }
-
-        /// <summary>
-        /// Creates a default Edge object.
-        /// </summary>
-        /// <returns></returns>
-        public override object Create()
-        {
-            return new Edge();
-        }
-
         /// <summary>
         /// Deserializes the object from the stream.
         /// </summary>

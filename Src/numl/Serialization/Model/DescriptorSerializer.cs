@@ -6,23 +6,13 @@ using System.Collections.Generic;
 
 namespace numl.Serialization.Model
 {
-    public class DescriptorSerializer : JsonSerializer
+    public class DescriptorSerializer : JsonSerializer<Descriptor>
     {
-        public override object Create()
-        {
-            return new Descriptor();
-        }
-
-        public override bool CanConvert(Type type)
-        {
-            return typeof(Descriptor).IsAssignableFrom(type);
-        }
-
         public override object Read(JsonReader reader)
         {
             Descriptor d = (Descriptor)Create();
             d.Name = reader.ReadProperty().Value.ToString();
-            d.Features = ((object[])reader.ReadArrayProperty().Value)
+            d.Features = reader.ReadArrayProperty().Value
                             .Select(o => (Property)o)
                             .ToArray();
             d.Label = (Property)reader.ReadProperty().Value;

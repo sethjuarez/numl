@@ -105,33 +105,6 @@ namespace numl.Supervised.NeuralNetwork
 
         #endregion
 
-        //#region Node Selection
-
-        ///// <summary>The nodes.</summary>
-        //private HashSet<string> _nodes;
-        ///// <summary>Gets the nodes in this collection.</summary>
-        ///// <returns>
-        ///// An enumerator that allows foreach to be used to process the nodes in this collection.
-        ///// </returns>
-        //public IEnumerable<Neuron> GetNodes()
-        //{
-        //    if (_nodes == null) _nodes = new HashSet<string>();
-        //    else _nodes.Clear();
-
-        //    foreach (var node in Out)
-        //    {
-        //        _nodes.Add(node.Label);
-        //        yield return node;
-        //        foreach (var n in GetNodes(node))
-        //        {
-        //            if (!_nodes.Contains(n.Label))
-        //            {
-        //                _nodes.Add(n.Label);
-        //                yield return n;
-        //            }
-        //        }
-        //    }
-        //}
 
         /// <summary>
         /// Returns the Nodes from the specified layer, where 0 is the Input layer.
@@ -143,67 +116,5 @@ namespace numl.Supervised.NeuralNetwork
             return GetVertices().Where(n => ((Neuron)n).LayerId == layer)
                                 .Select(n => (Neuron)n);
         }
-
-        ///// <summary>Gets all nodes leading into the supplied Node.</summary>
-        ///// <param name="n">The Node to process.</param>
-        ///// <returns>
-        ///// An enumerator that allows foreach to be used to process the nodes in this collection.
-        ///// </returns>
-        //private static IEnumerable<Neuron> GetNodes(Neuron n)
-        //{
-        //    foreach (var edge in n.In)
-        //    {
-        //        yield return edge.Source;
-        //        foreach (var node in GetNodes(edge.Source))
-        //            yield return node;
-        //    }
-        //}
-
-        //#endregion
-
-        //#region Edge Selection
-
-        ///// <summary>The edges.</summary>
-        //private HashSet<Tuple<string, string>> _edges;
-
-        ///// <summary>Gets the edges in this collection.</summary>
-        ///// <returns>
-        ///// An enumerator that allows foreach to be used to process the edges in this collection.
-        ///// </returns>
-        //public IEnumerable<Edge> GetEdges()
-        //{
-        //    if (_edges == null) _edges = new HashSet<Tuple<string, string>>();
-        //    else _edges.Clear();
-
-        //    foreach (var node in Out)
-        //    {
-        //        foreach (var edge in GetEdges(node))
-        //        {
-        //            var key = new Tuple<string, string>(edge.Source.Id, edge.Target.Id);
-        //            if (!_edges.Contains(key))
-        //            {
-        //                _edges.Add(key);
-        //                yield return edge;
-        //            }
-        //        }
-        //    }
-        //}
-
-        ///// <summary>Gets all edges leading into the supplied Node.</summary>
-        ///// <param name="n">The Node to process.</param>
-        ///// <returns>
-        ///// An enumerator that allows foreach to be used to process the edges in this collection.
-        ///// </returns>
-        //private static IEnumerable<Edge> GetEdges(Neuron n)
-        //{
-        //    foreach (var edge in n.In)
-        //    {
-        //        yield return edge;
-        //        foreach (var e in GetEdges(edge.Source))
-        //            yield return e;
-        //    }
-        //}
-
-        //#endregion
     }
 }

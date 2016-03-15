@@ -71,7 +71,8 @@ namespace numl.Supervised.NeuralNetwork
 
             var network = Network.Default(Descriptor, X, y, Activation, OutputFunction, epsilon: Epsilon);
 
-            var model = new NeuralNetworkModel {
+            var model = new NeuralNetworkModel
+            {
                 Descriptor = Descriptor,
                 NormalizeFeatures = base.NormalizeFeatures,
                 Normalizer = base.FeatureNormalizer,

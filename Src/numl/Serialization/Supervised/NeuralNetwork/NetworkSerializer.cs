@@ -10,27 +10,8 @@ namespace numl.Serialization.Supervised.NeuralNetwork
     /// <summary>
     /// Neural Network serializer.
     /// </summary>
-    public class NetworkSerializer : JsonSerializer
+    public class NetworkSerializer : JsonSerializer<Network>
     {
-        /// <summary>
-        /// Returns True if the specified type can be assigned.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public override bool CanConvert(Type type)
-        {
-            return typeof(Network).IsAssignableFrom(type);
-        }
-
-        /// <summary>
-        /// Creates a default Network object.
-        /// </summary>
-        /// <returns></returns>
-        public override object Create()
-        {
-            return new Network();
-        }
-
         /// <summary>
         /// Deserializes the object from the stream.
         /// </summary>

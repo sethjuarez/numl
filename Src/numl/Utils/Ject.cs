@@ -375,9 +375,9 @@ namespace numl.Utils
 
                 // add serializers
                 var serializers =
-                    from t in assembly.GetTypesSafe()
-                    where typeof(JsonSerializer).IsAssignableFrom(t)
-                    select (JsonSerializer)Activator.CreateInstance(t);
+                    from t in typeof(ISerializer).Assembly.GetTypes()
+                    where typeof(ISerializer).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract && !t.IsInterface
+                    select (ISerializer)Activator.CreateInstance(t);
 
                 JsonConstants.AddSerializer(serializers.ToArray());
             }

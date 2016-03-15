@@ -11,6 +11,16 @@ namespace numl.Serialization.Supervised
     /// </summary>
     public abstract class ModelSerializer : JsonSerializer
     {
+        public override bool CanConvert(Type type)
+        {
+            return false;
+        }
+
+        public override object Create()
+        {
+            return null;
+        }
+
         /// <summary>
         /// Deserializes a generic model object from the stream.
         /// </summary>
@@ -46,10 +56,10 @@ namespace numl.Serialization.Supervised
             else
             {
                 var model = (numl.Supervised.Model)value;
-                writer.WriteProperty("Descriptor", model.Descriptor);
-                writer.WriteProperty("NormalizeFeatures", model.NormalizeFeatures);
-                writer.WriteProperty("Normalizer", model.Normalizer?.GetType().FullName);
-                writer.WriteProperty("Summary", model.Summary);
+                writer.WriteProperty(nameof(model.Descriptor), model.Descriptor);
+                writer.WriteProperty(nameof(model.NormalizeFeatures), model.NormalizeFeatures);
+                writer.WriteProperty(nameof(model.Normalizer), model.Normalizer?.GetType().FullName);
+                writer.WriteProperty(nameof(model.Summary), model.Summary);
             }
         }
     }

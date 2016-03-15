@@ -14,27 +14,8 @@ namespace numl.Serialization.Supervised.NeuralNetwork
     /// <summary>
     /// Recurrent Node serializer.
     /// </summary>
-    public class RecurrentNeuronSerializer : JsonSerializer
+    public class RecurrentNeuronSerializer : JsonSerializer<RecurrentNeuron>
     {
-        /// <summary>
-        /// Returns True if the specified type can be assigned.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public override bool CanConvert(Type type)
-        {
-            return typeof(RecurrentNeuron).IsAssignableFrom(type);
-        }
-
-        /// <summary>
-        /// Creates a default Node object.
-        /// </summary>
-        /// <returns></returns>
-        public override object Create()
-        {
-            return new RecurrentNeuron();
-        }
-
         /// <summary>
         /// Deserializes the object from the stream.
         /// </summary>

@@ -16,8 +16,24 @@ namespace numl.Supervised.NeuralNetwork
         private static int _id = -1;
         private double _DeltaL = 0;
 
+        public Neuron()
+        {
+            // assume bias node unless
+            // otherwise told through
+            // links
+            this.Constrained = false;
+            this.IsBias = false;
+            Output = 1d;
+            Input = 1d;
+            Delta = 0d;
+            Label = null;
+            Out = new List<Edge>();
+            In = new List<Edge>();
+            Id = (++_id);
+        }
+
         /// <summary>Default constructor.</summary>
-        public Neuron(bool isBias = false)
+        public Neuron(bool isBias)
         {
             // assume bias node unless
             // otherwise told through

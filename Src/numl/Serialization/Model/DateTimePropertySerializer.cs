@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace numl.Serialization.Model
 {
-    public class DateTimePropertySerializer : numl.Serialization.Model.PropertySerializer
+    public class DateTimePropertySerializer : PropertySerializer
     {
         
         public override bool CanConvert(Type type)
