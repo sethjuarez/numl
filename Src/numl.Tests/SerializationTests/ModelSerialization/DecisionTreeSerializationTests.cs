@@ -11,6 +11,13 @@ namespace numl.Tests.SerializationTests.ModelSerialization
     [TestFixture, Category("Serialization")]
     public class DecisionTreeSerializationTests : BaseSerialization
     {
+        [TestFixtureSetUp]
+        public void RegisterTypes()
+        {
+            // Need to register external assemblies
+            Register.Assembly(GetType().Assembly);
+        }
+
         private static void AreEqual(Node n1, Node n2, bool ignoreParent)
         {
             Assert.AreEqual(n1.IsLeaf, n2.IsLeaf);
@@ -71,6 +78,7 @@ namespace numl.Tests.SerializationTests.ModelSerialization
 
             Serialize(model);
             var lmodel = Deserialize<DecisionTreeModel>();
+            Assert.AreEqual(model.Descriptor, lmodel.Descriptor);
             Assert.AreEqual(model.Hint, lmodel.Hint);
             //AreEqual(model.UglyTree, lmodel.UglyTree, false);
         }

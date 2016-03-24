@@ -22,7 +22,7 @@ namespace numl.Serialization
         internal void EatWhitespace()
         {
             while (JsonConstants.WHITESPACE.Contains((char)_reader.Peek()))
-                _reader.Read();
+                ReadChar();
         }
 
         public bool IsNull()
@@ -35,7 +35,7 @@ namespace numl.Serialization
         internal void ReadToken(int token)
         {
             EatWhitespace();
-            if (_reader.Read() != token)
+            if (ReadChar() != token)
                 throw new InvalidOperationException($"Invalid token (expected \"{(char)token}\")!");
         }
 
@@ -43,7 +43,7 @@ namespace numl.Serialization
         {
             EatWhitespace();
             if (_reader.Peek() == token)
-                _reader.Read();
+                ReadChar();
         }
 
         internal string ReadString()
@@ -51,12 +51,12 @@ namespace numl.Serialization
             EatWhitespace();
             ReadToken(JsonConstants.QUOTATION);
             StringBuilder sb = new StringBuilder();
-            int cur = _reader.Read();
+            int cur = ReadChar();
             while (cur != JsonConstants.QUOTATION)
             {
                 if (cur == JsonConstants.ESCAPE)
                 {
-                    cur = _reader.Read();
+                    cur = ReadChar();
                     switch (cur)
                     {
                         case '\\':
@@ -84,7 +84,7 @@ namespace numl.Serialization
                             sb.Append('"');
                             break;
                         case 'u':
-                            var hex = new string(new[] { (char)_reader.Read(), (char)_reader.Read(), (char)_reader.Read(), (char)_reader.Read() });
+                            var hex = new string(new[] { (char)ReadChar(), (char)ReadChar(), (char)ReadChar(), (char)ReadChar() });
                             sb.Append((char)ushort.Parse(hex, NumberStyles.HexNumber));
                             break;
                         default:
@@ -94,7 +94,7 @@ namespace numl.Serialization
                 }
                 else
                     sb.Append((char)cur);
-                cur = _reader.Read();
+                cur = ReadChar();
             }
 
             return sb.ToString();
@@ -105,7 +105,7 @@ namespace numl.Serialization
             EatWhitespace();
             StringBuilder sb = new StringBuilder();
             while (_reader.Peek() > -1 && JsonConstants.NUMBER.Contains((char)_reader.Peek()))
-                sb.Append((char)_reader.Read());
+                sb.Append((char)ReadChar());
             return double.Parse(sb.ToString());
         }
 
@@ -117,17 +117,17 @@ namespace numl.Serialization
             {
                 case 'f':
                     for (int i = 0; i < JsonConstants.FALSE.Length; i++)
-                        if (_reader.Read() != JsonConstants.FALSE[i])
+                        if (ReadChar() != JsonConstants.FALSE[i])
                             throw new InvalidOperationException($"Unexpected token parsing \"false\", exected {(char)JsonConstants.FALSE[i]}!");
                     return false;
                 case 'n':
                     for (int i = 0; i < JsonConstants.NULL.Length; i++)
-                        if (_reader.Read() != JsonConstants.NULL[i])
+                        if (ReadChar() != JsonConstants.NULL[i])
                             throw new InvalidOperationException($"Unexpected token parsing \"null\", exected {(char)JsonConstants.NULL[i]}!");
                     return null;
                 case 't':
                     for (int i = 0; i < JsonConstants.TRUE.Length; i++)
-                        if (_reader.Read() != JsonConstants.TRUE[i])
+                        if (ReadChar() != JsonConstants.TRUE[i])
                             throw new InvalidOperationException($"Unexpected token parsing \"true\", exected {(char)JsonConstants.TRUE[i]}!");
                     return true;
                 default:
@@ -146,6 +146,20 @@ namespace numl.Serialization
         }
 
         /// <summary>
+        /// Reads the vector property from the underlying Json stream..
+        /// </summary>
+        /// <returns>JsonProperty.</returns>
+        public JsonProperty ReadVectorProperty()
+        {
+            var name = ReadString();
+            ReadToken(JsonConstants.COLON);
+            var value = ReadVector();
+            PeekToken(JsonConstants.COMMA);
+
+            return new JsonProperty { Name = name, Value = value };
+        }
+
+        /// <summary>
         /// Reads a Matrix from the underlying Json stream.
         /// </summary>
         /// <returns></returns>
@@ -154,6 +168,20 @@ namespace numl.Serialization
             return new Matrix(
                 ReadArray().Select(i => ((object[])i).Select(j => (double)j).ToArray()).ToArray()
             );
+        }
+
+        /// <summary>
+        /// Reads the matrix property.
+        /// </summary>
+        /// <returns>JsonProperty.</returns>
+        public JsonProperty ReadMatrixProperty()
+        {
+            var name = ReadString();
+            ReadToken(JsonConstants.COLON);
+            var value = ReadMatrix();
+            PeekToken(JsonConstants.COMMA);
+
+            return new JsonProperty { Name = name, Value = value };
         }
 
         internal object[] ReadArray()
@@ -169,7 +197,7 @@ namespace numl.Serialization
                 // empty array situation
                 if (_reader.Peek() == JsonConstants.END_ARRAY)
                 {
-                    _reader.Read();
+                    ReadChar();
                     break;
                 }
 
@@ -177,7 +205,7 @@ namespace numl.Serialization
 
                 EatWhitespace();
 
-                token = _reader.Read();
+                token = ReadChar();
                 if (token != JsonConstants.COMMA && token != JsonConstants.END_ARRAY)
                     throw new InvalidOperationException("Unexpected token while parsing array!");
             }
@@ -200,7 +228,7 @@ namespace numl.Serialization
 
         internal object ReadObject()
         {
-            ReadToken(JsonConstants.BEGIN_OBJECT);
+            ReadStartObject();
             var obj = new Dictionary<string, object>();
             while (_reader.Peek() != JsonConstants.END_OBJECT)
             {
@@ -208,8 +236,7 @@ namespace numl.Serialization
 
                 if (p.Name == JsonSerializer.SERIALIZER_ATTRIBUTE)
                 {
-                    // TODO: Maybe keep instances of these things for later reuse
-                    var s = (ISerializer) Activator.CreateInstance(Ject.FindType(p.Value.ToString()));
+                    var s = JsonConstants.GetSerializer(Ject.FindType(p.Value.ToString()));
                     var o = s.Read(this);
                     s.PostRead(this);
                     return o;
@@ -221,11 +248,10 @@ namespace numl.Serialization
                 obj[p.Name] = p.Value;
 
             }
-
-            ReadToken(JsonConstants.END_OBJECT);
+            ReadEndObject();
             return obj;
         }
-
+        
         #endregion
 
         /// <summary>
@@ -287,6 +313,25 @@ namespace numl.Serialization
                 return ReadLiteral();
             else
                 throw new InvalidOperationException("Unexpected token encountered while parsing json");
+        }
+
+#if DEBUG
+        readonly StringBuilder parsedText = new StringBuilder();
+#endif
+        private int ReadChar()
+        {
+#if DEBUG
+            var c = _reader.Read();
+            parsedText.Append((char)c);
+            return c;
+#else
+            return _reader.Read();
+#endif
+        }
+
+        private int PeekChar()
+        {
+            return _reader.Peek();
         }
 
         public void Dispose()

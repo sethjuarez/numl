@@ -1,4 +1,5 @@
 ﻿using numl.Math;
+using numl.Math.LinearAlgebra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,11 +43,11 @@ namespace numl.Serialization.Supervised
             else
             {
                 var summary = (Summary)Create();
-                summary.Average = reader.ReadVector();
-                summary.Minimum = reader.ReadVector();
-                summary.Median = reader.ReadVector();
-                summary.Maximum = reader.ReadVector();
-                summary.StandardDeviation = reader.ReadVector();
+                summary.Average = reader.ReadVectorProperty().Value as Vector;
+                summary.Minimum = reader.ReadVectorProperty().Value as Vector;
+                summary.Median = reader.ReadVectorProperty().Value as Vector;
+                summary.Maximum = reader.ReadVectorProperty().Value as Vector;
+                summary.StandardDeviation = reader.ReadVectorProperty().Value as Vector;
                 return summary;
             }
         }

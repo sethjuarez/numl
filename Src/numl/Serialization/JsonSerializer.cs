@@ -69,7 +69,6 @@ namespace numl.Serialization
     }
 
     public abstract class JsonSerializer<T> : JsonSerializer
-        where T : class, new()
     {
         public override bool CanConvert(Type type)
         {
@@ -78,7 +77,36 @@ namespace numl.Serialization
 
         public override object Create()
         {
-            return new T();
+            return Activator.CreateInstance<T>();
         }
+
+        public override object Read(JsonReader reader)
+        {
+            if (reader.IsNull())
+                return null;
+            else
+            {
+                var t = (T)Create();
+                foreach (var p in typeof(T).GetProperties())
+                {
+                    var property = reader.ReadProperty();
+                    if (property.Name == p.Name)
+                        p.SetValue(t, Convert.ChangeType(property.Value, p.PropertyType));
+                }
+                return t;
+            }
+        }
+
+        public override void Write(JsonWriter writer, object value)
+        {
+            if (value == null)
+                writer.WriteNull();
+            else
+            {
+                var t = (T)value;
+                foreach (var p in typeof(T).GetProperties())
+                    writer.WriteProperty(p.Name, p.GetValue(t));
+            }
+        }       
     }
 }

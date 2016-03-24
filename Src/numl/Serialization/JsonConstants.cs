@@ -42,7 +42,7 @@ namespace numl.Serialization
         internal readonly static char[] NUMBER = new[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.', '-', '+', 'e', 'E' };
 
         private static readonly List<ISerializer> _serializers;
-        internal static ISerializer GetSerializer(Type type)
+        internal static ISerializer GetSerializerFor(Type type)
         {
             List<ISerializer> s = new List<ISerializer>();
             foreach (var serializer in _serializers)
@@ -57,6 +57,13 @@ namespace numl.Serialization
                     else
                         return s[1];
             }
+        }
+
+        internal static ISerializer GetSerializer(Type serializer)
+        {
+            return _serializers
+                        .Where(s => s.GetType() == serializer)
+                        .First();
         }
 
         internal static bool HasSerializer(Type type)

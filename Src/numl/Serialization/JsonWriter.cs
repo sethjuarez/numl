@@ -198,9 +198,7 @@ namespace numl.Serialization
         public void WriteObject(object o)
         {
             WriteStartObject();
-
-            // TODO: WRITE ISERIALIZER OUT HERE
-            bool first = true;
+            var first = true;
             foreach (var pi in o.GetType().GetProperties())
             {
                 if (!first) WriteToken(JsonConstants.COMMA);
@@ -211,7 +209,7 @@ namespace numl.Serialization
             }
             WriteEndObject();
         }
-
+        
         /// <summary>
         /// Writes a raw simple object to the underlying stream.
         /// </summary>
@@ -236,7 +234,7 @@ namespace numl.Serialization
                     WriteMatrix((Matrix)value);
                 else if (JsonConstants.HasSerializer(type))
                 {
-                    var serializer = JsonConstants.GetSerializer(type);
+                    var serializer = JsonConstants.GetSerializerFor(type);
                     serializer.PreWrite(this);
                     serializer.Write(this, value);
                     serializer.PostWrite(this);

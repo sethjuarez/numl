@@ -7,16 +7,7 @@ using System.Threading.Tasks;
 
 namespace numl.Serialization.Supervised.DecisionTree
 {
-    public class NodeSerializer : JsonSerializer<Node>
-    {
-        public override object Read(JsonReader reader)
-        {
-            throw new NotImplementedException();
-        }
+    public class NodeSerializer : JsonSerializer<Node> { }
+    public class EdgeSerializer : JsonSerializer<Edge> { }
 
-        public override void Write(JsonWriter writer, object value)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }
