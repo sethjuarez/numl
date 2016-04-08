@@ -1,12 +1,10 @@
-﻿using numl.Data;
-using numl.Supervised.DecisionTree;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using numl.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using numl.Supervised.DecisionTree;
 
-namespace numl.Serialization.Supervised.DecisionTree
+namespace numl.Serialization.Supervised
 {
     public class DecisionTreeSerializer : ModelSerializer
     {
@@ -43,10 +41,7 @@ namespace numl.Serialization.Supervised.DecisionTree
                 writer.WriteProperty(nameof(d.Hint), d.Hint);
             }
         }
-
-        public class NodeSerializer : JsonSerializer<Node> { }
-        public class EdgeSerializer : JsonSerializer<Edge> { }
     }
-
-
+    public class NodeSerializer : JsonSerializer<Node> { }
+    public class EdgeSerializer : JsonSerializer<Edge> { }
 }
