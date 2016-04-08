@@ -165,7 +165,6 @@
     <Compile Include="Serialization\Model\StringPropertySerializer.cs" />
     <Compile Include="Serialization\JsonProperty.cs" />
     <Compile Include="Serialization\Supervised\DecisionTree\DecisionTreeSerializer.cs" />
-    <Compile Include="Serialization\Supervised\DecisionTree\NodeSerializer.cs" />
     <Compile Include="Serialization\Supervised\ModelSerializer.cs" />
     <Compile Include="Serialization\Supervised\NeuralNetwork\EdgeSerializer.cs" />
     <Compile Include="Serialization\Supervised\NeuralNetwork\NetworkSerializer.cs" />

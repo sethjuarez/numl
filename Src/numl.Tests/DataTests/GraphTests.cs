@@ -12,6 +12,14 @@ namespace numl.Tests.DataTests
         public int Id { get; set; }
 
         public string Label { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Vertex)
+                return ((Vertex)obj).Id == Id && ((Vertex)obj).Label == Label;
+            else
+                return false;
+        }
     }
 
     public class Edge : IEdge
@@ -19,6 +27,14 @@ namespace numl.Tests.DataTests
         public int ChildId { get; set; }
 
         public int ParentId { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Edge)
+                return ((Edge)obj).ChildId == ChildId && ((Edge)obj).ParentId == ParentId;
+            else
+                return false;
+        }
     }
 
     [TestFixture]
@@ -168,5 +184,159 @@ namespace numl.Tests.DataTests
             Assert.AreEqual(0, g.GetEdges().Where(e => e.ParentId == 1 && e.ChildId == 5).Count());
 
         }
+
+        [Test]
+        public void EqualsTest()
+        {
+            Vertex.Reset();
+            Graph g1 = new Graph();
+            g1.AddVertex(new Vertex()); // 1
+            g1.AddVertex(new Vertex()); // 2
+            g1.AddVertex(new Vertex()); // 3
+            g1.AddVertex(new Vertex()); // 4
+            g1.AddVertex(new Vertex()); // 5
+
+            g1.AddEdge(new Edge { ParentId = 1, ChildId = 5 });
+            g1.AddEdge(new Edge { ParentId = 1, ChildId = 2 });
+            g1.AddEdge(new Edge { ParentId = 2, ChildId = 3 });
+            g1.AddEdge(new Edge { ParentId = 3, ChildId = 1 });
+
+            Vertex.Reset();
+            Graph g2 = new Graph();
+            g2.AddVertex(new Vertex()); // 1
+            g2.AddVertex(new Vertex()); // 2
+            g2.AddVertex(new Vertex()); // 3
+            g2.AddVertex(new Vertex()); // 4
+            g2.AddVertex(new Vertex()); // 5
+
+            g2.AddEdge(new Edge { ParentId = 1, ChildId = 5 });
+            g2.AddEdge(new Edge { ParentId = 1, ChildId = 2 });
+            g2.AddEdge(new Edge { ParentId = 2, ChildId = 3 });
+            g2.AddEdge(new Edge { ParentId = 3, ChildId = 1 });
+
+            Assert.IsTrue(g1.Equals(g2));
+        }
+
+        [Test]
+        public void NotEqualsTest()
+        {
+            Vertex.Reset();
+            Graph g1 = new Graph();
+            g1.AddVertex(new Vertex()); // 1
+            g1.AddVertex(new Vertex()); // 2
+            g1.AddVertex(new Vertex()); // 3
+            g1.AddVertex(new Vertex()); // 4
+            g1.AddVertex(new Vertex()); // 5
+
+            g1.AddEdge(new Edge { ParentId = 4, ChildId = 5 });
+            g1.AddEdge(new Edge { ParentId = 1, ChildId = 2 });
+            g1.AddEdge(new Edge { ParentId = 2, ChildId = 3 });
+            g1.AddEdge(new Edge { ParentId = 3, ChildId = 1 });
+
+            Vertex.Reset();
+            Graph g2 = new Graph();
+            g2.AddVertex(new Vertex()); // 1
+            g2.AddVertex(new Vertex()); // 2
+            g2.AddVertex(new Vertex()); // 3
+            g2.AddVertex(new Vertex()); // 4
+            g2.AddVertex(new Vertex()); // 5
+
+            g2.AddEdge(new Edge { ParentId = 1, ChildId = 5 });
+            g2.AddEdge(new Edge { ParentId = 1, ChildId = 2 });
+            g2.AddEdge(new Edge { ParentId = 2, ChildId = 3 });
+            g2.AddEdge(new Edge { ParentId = 3, ChildId = 1 });
+
+            Assert.IsFalse(g1.Equals(g2));
+        }
+
+        [Test]
+        public void TreeEqualTest()
+        {
+            Vertex.Reset();
+            Tree g1 = new Tree();
+            var r1 = new Vertex();
+            g1.Root = r1;
+            g1.AddVertex(r1); // 1
+            g1.AddVertex(new Vertex()); // 2
+            g1.AddVertex(new Vertex()); // 3
+            g1.AddVertex(new Vertex()); // 4
+            g1.AddVertex(new Vertex()); // 5
+            g1.AddVertex(new Vertex()); // 6
+            g1.AddVertex(new Vertex()); // 7
+
+            g1.AddEdge(new Edge { ParentId = 1, ChildId = 2 });
+            g1.AddEdge(new Edge { ParentId = 1, ChildId = 3 });
+            g1.AddEdge(new Edge { ParentId = 2, ChildId = 4 });
+            g1.AddEdge(new Edge { ParentId = 2, ChildId = 5 });
+            g1.AddEdge(new Edge { ParentId = 3, ChildId = 6 });
+            g1.AddEdge(new Edge { ParentId = 3, ChildId = 7 });
+
+            Vertex.Reset();
+            Tree g2 = new Tree();
+            var r2 = new Vertex();
+            g2.Root = r2;
+            g2.AddVertex(r2); // 1
+            g2.AddVertex(new Vertex()); // 2
+            g2.AddVertex(new Vertex()); // 3
+            g2.AddVertex(new Vertex()); // 4
+            g2.AddVertex(new Vertex()); // 5
+            g2.AddVertex(new Vertex()); // 6
+            g2.AddVertex(new Vertex()); // 7
+
+            g2.AddEdge(new Edge { ParentId = 1, ChildId = 2 });
+            g2.AddEdge(new Edge { ParentId = 1, ChildId = 3 });
+            g2.AddEdge(new Edge { ParentId = 2, ChildId = 4 });
+            g2.AddEdge(new Edge { ParentId = 2, ChildId = 5 });
+            g2.AddEdge(new Edge { ParentId = 3, ChildId = 6 });
+            g2.AddEdge(new Edge { ParentId = 3, ChildId = 7 });
+
+            Assert.IsTrue(g1.Equals(g2));
+        }
+
+        [Test]
+        public void TreeNotEqualTest()
+        {
+            Vertex.Reset();
+            Tree g1 = new Tree();
+            var r1 = new Vertex();
+            g1.Root = r1;
+            g1.AddVertex(r1); // 1
+            g1.AddVertex(new Vertex()); // 2
+            g1.AddVertex(new Vertex()); // 3
+            g1.AddVertex(new Vertex()); // 4
+            g1.AddVertex(new Vertex()); // 5
+            g1.AddVertex(new Vertex()); // 6
+            g1.AddVertex(new Vertex()); // 7
+
+            g1.AddEdge(new Edge { ParentId = 1, ChildId = 2 });
+            g1.AddEdge(new Edge { ParentId = 1, ChildId = 3 });
+            g1.AddEdge(new Edge { ParentId = 2, ChildId = 4 });
+            g1.AddEdge(new Edge { ParentId = 2, ChildId = 5 });
+            g1.AddEdge(new Edge { ParentId = 3, ChildId = 6 });
+            g1.AddEdge(new Edge { ParentId = 3, ChildId = 7 });
+
+            Vertex.Reset();
+            Tree g2 = new Tree();
+            var r2 = new Vertex();
+            g2.Root = r2;
+            g2.AddVertex(r2); // 1
+            g2.AddVertex(new Vertex()); // 2
+            g2.AddVertex(new Vertex()); // 3
+            g2.AddVertex(new Vertex()); // 4
+            g2.AddVertex(new Vertex()); // 5
+            g2.AddVertex(new Vertex()); // 6
+            g2.AddVertex(new Vertex()); // 7
+
+            g2.AddEdge(new Edge { ParentId = 1, ChildId = 2 });
+            g2.AddEdge(new Edge { ParentId = 1, ChildId = 3 });
+            g2.AddEdge(new Edge { ParentId = 2, ChildId = 4 });
+            g2.AddEdge(new Edge { ParentId = 2, ChildId = 5 });
+            g2.AddEdge(new Edge { ParentId = 1, ChildId = 6 });
+            g2.AddEdge(new Edge { ParentId = 3, ChildId = 7 });
+
+            Assert.IsFalse(g1.Equals(g2));
+        }
+
+
     }
 }

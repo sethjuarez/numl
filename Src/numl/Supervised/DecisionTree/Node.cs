@@ -27,9 +27,6 @@ namespace numl.Supervised.DecisionTree
         /// <summary>Gets or sets the value.</summary>
         /// <value>The value.</value>
         public double Value { get; set; }
-        /// <summary>Gets or sets the label.</summary>
-        /// <value>The label.</value>
-        public object Label { get; set; }
         /// <summary>Gets or sets the column.</summary>
         /// <value>The column.</value>
         public int Column { get; set; }
@@ -39,6 +36,26 @@ namespace numl.Supervised.DecisionTree
         /// <summary>Gets or sets the gain.</summary>
         /// <value>The gain.</value>
         public double Gain { get; set; }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The object to compare with the current object.</param>
+        /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj is Node)
+            {
+                return ((Node)obj).Column == Column &&
+                       ((Node)obj).Gain == Gain &&
+                       ((Node)obj).Id == Id &&
+                       ((Node)obj).IsLeaf == IsLeaf &&
+                       ((Node)obj).Name == Name &&
+                       ((Node)obj).Value == Value;
+            }
+            else
+                return false;
+        }
     }
 
     public class Edge : IEdge
@@ -61,6 +78,22 @@ namespace numl.Supervised.DecisionTree
         /// <summary>Gets or sets the label.</summary>
         /// <value>The label.</value>
         public string Label { get; set; }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The object to compare with the current object.</param>
+        /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
+        public override bool Equals(object obj)
+        {
+            return obj is Edge &&
+                   ((Edge)obj).ChildId == ChildId &&
+                   ((Edge)obj).ParentId == ParentId &&
+                   ((Edge)obj).Min == Min &&
+                   ((Edge)obj).Max == Max &&
+                   ((Edge)obj).Discrete == Discrete &&
+                   ((Edge)obj).Label == Label;
+        }
     }
 
 }

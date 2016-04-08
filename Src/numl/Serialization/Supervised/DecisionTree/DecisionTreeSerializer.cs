@@ -43,6 +43,9 @@ namespace numl.Serialization.Supervised.DecisionTree
                 writer.WriteProperty(nameof(d.Hint), d.Hint);
             }
         }
+
+        public class NodeSerializer : JsonSerializer<Node> { }
+        public class EdgeSerializer : JsonSerializer<Edge> { }
     }
 
 

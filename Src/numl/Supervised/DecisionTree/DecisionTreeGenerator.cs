@@ -213,7 +213,6 @@ namespace numl.Supervised.DecisionTree
                 var val = y.Mode();
                 node.IsLeaf = true;
                 node.Value = val;
-                node.Label = Descriptor.Label.Convert(val);
             }
 
             tree.AddVertex(node);
@@ -278,8 +277,7 @@ namespace numl.Supervised.DecisionTree
             return new Node()
             {
                 IsLeaf = true,
-                Value = val,
-                Label = Descriptor.Label.Convert(val)
+                Value = val
             };
         }
     }

@@ -15,5 +15,21 @@ namespace numl.Data
         /// </summary>
         /// <value>The root.</value>
         public IVertex Root { get; set; }
+
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Tree)
+            {
+                if (!base.Equals((Graph)obj))
+                    return false;
+                else if (!((Tree)obj).Root.Equals(Root))
+                    return false;
+                else
+                    return true;
+            }
+            else
+                return false;
+        }
     }
 }
