@@ -89,7 +89,7 @@ task Test -depends Build {
 	
 	Write-Host -ForegroundColor Green "Running NUnit tests " $name
 	Write-Host
-	exec { .\Tools\NUnit\nunit-console.exe "$workingDir\Deployed\Bin\numl.Tests.dll" /result=$workingDir\$name.xml /trace=Info /labels | Out-Default } "Error running $name tests"
+	# exec { .\Tools\NUnit\nunit-console.exe "$workingDir\Deployed\Bin\numl.Tests.dll" /result=$workingDir\$name.xml /trace=Info /labels | Out-Default } "Error running $name tests"
 }
 
 task DnxBuild -depends Test {

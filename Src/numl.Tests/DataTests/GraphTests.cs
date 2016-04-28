@@ -13,6 +13,10 @@ namespace numl.Tests.DataTests
 
         public string Label { get; set; }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
         public override bool Equals(object obj)
         {
             if (obj is Vertex)
@@ -28,6 +32,10 @@ namespace numl.Tests.DataTests
 
         public int ParentId { get; set; }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
         public override bool Equals(object obj)
         {
             if (obj is Edge)

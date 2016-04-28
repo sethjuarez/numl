@@ -108,6 +108,10 @@ namespace numl.Data
                     yield return e.Value;
         }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
         public override bool Equals(object obj)
         {
             if (obj is Graph)

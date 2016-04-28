@@ -16,7 +16,10 @@ namespace numl.Data
         /// <value>The root.</value>
         public IVertex Root { get; set; }
 
-
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
         public override bool Equals(object obj)
         {
             if (obj is Tree)

@@ -13,7 +13,6 @@ namespace numl.Tests.SupervisedTests
     [TestFixture, Category("Supervised")]
     public class NeuralNetworkNodeTests : BaseSupervised
     {
-        private readonly double Epsilon = 10e-004;
 
         private readonly Matrix X = new double[][]
             {

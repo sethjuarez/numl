@@ -37,6 +37,10 @@ namespace numl.Supervised.DecisionTree
         /// <value>The gain.</value>
         public double Gain { get; set; }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
         /// <summary>
         /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
         /// </summary>
@@ -79,6 +83,10 @@ namespace numl.Supervised.DecisionTree
         /// <value>The label.</value>
         public string Label { get; set; }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
         /// <summary>
         /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
         /// </summary>

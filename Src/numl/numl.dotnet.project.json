@@ -5,9 +5,6 @@
   "tags": [ "machine learning, AI" ],
   "projectUrl": "http://numl.net",
   "licenseUrl": "https://github.com/sethjuarez/numl/blob/master/LICENSE.md",
-  "dependencies": {
-    "Newtonsoft.Json": "7.0.1"
-  },
   "supports": {
     "net46.app": { },
     "uwp.10.0.app": { },

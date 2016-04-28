@@ -23,13 +23,6 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
             }
         }
 
-        [TestFixtureSetUp]
-        public void RegisterTypes()
-        {
-            // Need to register external assemblies
-            Register.Assembly(GetType().Assembly);
-        }
-
         [Test]
         public void Descriptor_Save_And_load()
         {
