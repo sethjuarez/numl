@@ -10,9 +10,15 @@ using numl.Serialization;
 
 namespace numl.Tests.SerializationTests
 {
-    [SetUpFixture]
     public class BaseSerialization
     {
+        [TestFixtureSetUp]
+        public void RegisterTypes()
+        {
+            // Need to register external assemblies
+            Register.Assembly(GetType().Assembly);
+        }
+
         internal string GetPath()
         {
             var basePath = String.Format("{0}\\{1}", Directory.GetCurrentDirectory(), GetType().Name);

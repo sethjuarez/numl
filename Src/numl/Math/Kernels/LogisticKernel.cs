@@ -40,8 +40,8 @@ namespace numl.Math.Kernels
         /// <summary>Default constructor (Sigmoid logit function).</summary>
         public LogisticKernel()
         {
-            this.Lambda = 1d;
-            this.LogisticFunction = new Functions.Logistic();
+            Lambda = 1d;
+            LogisticFunction = new Logistic();
         }
 
         /// <summary>Computes a Logistic Kernel matrix from the given input matrix.</summary>
@@ -56,7 +56,7 @@ namespace numl.Math.Kernels
                 for (int j = i; j < m.Rows; j++)
                 {
                     var xy = m[i].Dot(m[j]);
-                    K[i, j] = K[j, i] = this.LogisticFunction.Compute(this.Lambda * xy);
+                    K[i, j] = K[j, i] = LogisticFunction.Compute(Lambda * xy);
                 }
             }
 
@@ -71,7 +71,7 @@ namespace numl.Math.Kernels
         /// <returns>Similarity.</returns>
         public double Compute(Vector v1, Vector v2)
         {
-            return this.LogisticFunction.Compute(v1.Dot(v2));
+            return LogisticFunction.Compute(v1.Dot(v2));
         }
 
         /// <summary>Projects vector into a logistic kernel space.</summary>
@@ -85,7 +85,7 @@ namespace numl.Math.Kernels
             for (int i = 0; i < K.Length; i++)
             {
                 var xy = m[i].Dot(x);
-                K[i] = this.LogisticFunction.Compute(this.Lambda * xy);
+                K[i] = LogisticFunction.Compute(Lambda * xy);
             }
 
             return K;

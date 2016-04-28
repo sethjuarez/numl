@@ -28,13 +28,18 @@ namespace numl.Math.Kernels
 
         /// <summary>RBF free parameter.</summary>
         /// <value>The sigma.</value>
-        public double Sigma { get; private set; }
+        public double Sigma { get; set; }
 
         /// <summary>ctor.</summary>
         /// <param name="sigma">Input Parameter.</param>
         public RBFKernel(double sigma)
         {
             Sigma = sigma;
+        }
+
+        public RBFKernel()
+        {
+            Sigma = 1;
         }
 
         /// <summary>Computes RBF Kernel with provided free sigma parameter.</summary>

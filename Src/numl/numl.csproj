@@ -164,8 +164,10 @@
     <Compile Include="Serialization\Model\PropertySerializer.cs" />
     <Compile Include="Serialization\Model\StringPropertySerializer.cs" />
     <Compile Include="Serialization\JsonProperty.cs" />
+    <Compile Include="Serialization\Supervised\LinearRegressionSerializer.cs" />
     <Compile Include="Serialization\Supervised\DecisionTreeSerializer.cs" />
     <Compile Include="Serialization\Supervised\ModelSerializer.cs" />
+    <Compile Include="Serialization\Supervised\KernelPerceptronSerializer.cs" />
     <Compile Include="Serialization\Supervised\NeuralNetwork\EdgeSerializer.cs" />
     <Compile Include="Serialization\Supervised\NeuralNetwork\NetworkSerializer.cs" />
     <Compile Include="Serialization\Supervised\NeuralNetwork\NeuronSerializer.cs" />

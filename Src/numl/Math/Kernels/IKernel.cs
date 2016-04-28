@@ -34,7 +34,7 @@ namespace numl.Math.Kernels
         /// <returns>Similarity.</returns>
         double Compute(Vector v1, Vector v2);
 
-        /// <summary>Projects the vector <c>x</c> into the correspoding inner product space.</summary>
+        /// <summary>Projects the vector <c>x</c> into the corresponding inner product space.</summary>
         /// <param name="m">Kernel Matrix.</param>
         /// <param name="x">Vector in original space.</param>
         /// <returns>Vector in inner product space.</returns>

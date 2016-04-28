@@ -34,26 +34,7 @@ namespace numl.Tests.SerializationTests.ModelSerialization
 
             Serialize(model);
 
-            //var lmodel = Deserialize<KernelPerceptronModel>();
-            //Assert.AreEqual(model.Root, lmodel.Root);
-
-            //learningModel.Model.Save("model.mdl");
-            //// THIS FAILS ----
-            //learningModel.Model.Load("model.mdl");
-        }
-
-        [Test]
-        public void Iris_Naive_Bayes_Save_And_Load_Test()
-        {
-            var data = Iris.Load();
-            var description = Descriptor.Create<Iris>();
-            var generator = new NaiveBayesGenerator(2);
-            var model = generator.Generate(description, data) as NaiveBayesModel;
-
-            Serialize(model);
-
-            var lmodel = Deserialize<NaiveBayesModel>();
-            Assert.AreEqual(model.Root, lmodel.Root);
+            var lmodel = Deserialize<KernelPerceptronModel>();
         }
     }
 }

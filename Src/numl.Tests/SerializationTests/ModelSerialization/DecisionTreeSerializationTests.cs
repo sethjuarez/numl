@@ -11,13 +11,6 @@ namespace numl.Tests.SerializationTests.ModelSerialization
     [TestFixture, Category("Serialization")]
     public class DecisionTreeSerializationTests : BaseSerialization
     {
-        [TestFixtureSetUp]
-        public void RegisterTypes()
-        {
-            // Need to register external assemblies
-            Register.Assembly(GetType().Assembly);
-        }
-
         [Test]
         public void Save_And_Load_HouseDT()
         {

@@ -21,15 +21,15 @@ namespace numl.Tests.SerializationTests.ModelSerialization
 
             LinearRegressionModel model;
 
-            var data = new List<numl.Tests.SerializationTests.ModelSerialization.ModelItem>();
+            var data = new List<ModelItem>();
             for (var i = 0; i < 100; i++)
             {
                 var left = rnd.NextDouble(0, 50000);
                 var right = rnd.NextDouble(0, 50000);
                 var result = func(left, right);
-                data.Add(new numl.Tests.SerializationTests.ModelSerialization.ModelItem { LeftOperand = left, RightOperand = right, Result = result });
+                data.Add(new ModelItem { LeftOperand = left, RightOperand = right, Result = result });
             }
-            var d = Descriptor.Create<numl.Tests.SerializationTests.ModelSerialization.ModelItem>();
+            var d = Descriptor.Create<ModelItem>();
             var g = new LinearRegressionGenerator { Descriptor = d };
             var learningModel = Learner.Learn(data, .80, 5, g); // changed from 1000
             model = (LinearRegressionModel)learningModel.Model;

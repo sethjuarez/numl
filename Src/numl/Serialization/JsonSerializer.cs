@@ -89,9 +89,12 @@ namespace numl.Serialization
                 var t = (T)Create();
                 foreach (var p in typeof(T).GetProperties())
                 {
-                    var property = reader.ReadProperty();
-                    if (property.Name == p.Name)
-                        p.SetValue(t, Convert.ChangeType(property.Value, p.PropertyType));
+                    if (p.CanRead && p.CanWrite)
+                    {
+                        var property = reader.ReadProperty();
+                        if (property.Name == p.Name)
+                            p.SetValue(t, Convert.ChangeType(property.Value, p.PropertyType));
+                    }
                 }
                 return t;
             }
@@ -105,8 +108,11 @@ namespace numl.Serialization
             {
                 var t = (T)value;
                 foreach (var p in typeof(T).GetProperties())
-                    writer.WriteProperty(p.Name, p.GetValue(t));
+                {
+                    if (p.CanRead && p.CanWrite)
+                        writer.WriteProperty(p.Name, p.GetValue(t));
+                }
             }
-        }       
+        }
     }
 }

@@ -26,13 +26,18 @@ namespace numl.Math.Kernels
         /// Specifies dimensionality of projection based on (1 + x.T y)^d where d is the dimension.
         /// </summary>
         /// <value>The dimension.</value>
-        public double Dimension { get; private set; } 
+        public double Dimension { get; set; } 
 
         /// <summary>ctor.</summary>
         /// <param name="dimension">Polynomial Kernel Dimension.</param>
         public PolyKernel(double dimension)
         {
             Dimension = dimension;
+        }
+
+        public PolyKernel()
+        {
+            Dimension = 1;
         }
         /// <summary>Computes polynomial kernel of the specified degree (in Dimension)</summary>
         /// <param name="m">Input Matrix.</param>
