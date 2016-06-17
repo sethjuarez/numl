@@ -1,6 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Reflection;
 
 namespace numl.Serialization
 {
@@ -87,7 +86,7 @@ namespace numl.Serialization
             else
             {
                 var t = (T)Create();
-                foreach (var p in typeof(T).GetProperties())
+                foreach (var p in typeof(T).GetTypeInfo().GetProperties())
                 {
                     if (p.CanRead && p.CanWrite)
                     {

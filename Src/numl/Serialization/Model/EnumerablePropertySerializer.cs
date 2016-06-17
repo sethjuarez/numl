@@ -1,11 +1,10 @@
 ﻿using System;
 using numl.Model;
-using System.Linq;
-using System.Collections.Generic;
+using System.Reflection;
 
 namespace numl.Serialization.Model
 {
-    public class EnumerablePropertySerializer : numl.Serialization.Model.PropertySerializer
+    public class EnumerablePropertySerializer : PropertySerializer
     {
         public override object Create()
         {

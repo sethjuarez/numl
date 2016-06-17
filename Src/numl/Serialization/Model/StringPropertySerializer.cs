@@ -1,7 +1,7 @@
 ﻿using System;
 using numl.Model;
 using System.Linq;
-using System.Collections.Generic;
+using System.Reflection;
 
 namespace numl.Serialization.Model
 {

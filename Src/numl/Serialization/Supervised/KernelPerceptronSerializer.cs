@@ -1,11 +1,8 @@
+using System;
+using System.Reflection;
 using numl.Math.Kernels;
 using numl.Math.LinearAlgebra;
 using numl.Supervised.Perceptron;
-using numl.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace numl.Serialization.Supervised
 {

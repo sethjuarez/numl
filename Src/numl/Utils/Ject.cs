@@ -20,8 +20,8 @@ namespace numl.Utils
     {
         static Ject()
         {
-            _assemblies.Add(typeof(decimal).Assembly);
-            _assemblies.Add(typeof(Ject).Assembly);
+            _assemblies.Add(typeof(decimal).GetTypeInfo().Assembly);
+            _assemblies.Add(typeof(Ject).GetTypeInfo().Assembly);
         }
         /// <summary>
         /// The default truth value. 
@@ -372,11 +372,13 @@ namespace numl.Utils
             {
                 _assemblies.Add(assembly);
 
-
                 // add serializers
                 var serializers =
-                    from t in typeof(ISerializer).Assembly.GetTypes()
-                    where typeof(ISerializer).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract && !t.IsInterface
+                    from t in typeof(ISerializer).GetTypeInfo().Assembly.GetTypes()
+                    where typeof(ISerializer).IsAssignableFrom(t) && 
+                          t.GetTypeInfo().IsClass && 
+                          !t.GetTypeInfo().IsAbstract && 
+                          !t.GetTypeInfo().IsInterface
                     select (ISerializer)Activator.CreateInstance(t);
 
                 JsonConstants.AddSerializer(serializers.ToArray());
@@ -395,7 +397,7 @@ namespace numl.Utils
                 return _types[s];
 
             var type = Type.GetType(s);
-            if(type == null) // need to look elsewhere
+            if (type == null) // need to look elsewhere
             {
                 var q = (from p in _assemblies
                          from t in p.GetTypesSafe()
@@ -406,7 +408,7 @@ namespace numl.Utils
                     type = q[0];
             }
 
-            if(type != null)
+            if (type != null)
             {
                 // cache
                 _types[s] = type;

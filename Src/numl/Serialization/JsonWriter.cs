@@ -1,9 +1,8 @@
 using System;
 using System.IO;
 using numl.Utils;
-using System.Linq;
+using System.Reflection;
 using System.Collections;
-using System.Collections.Generic;
 using numl.Math.LinearAlgebra;
 
 namespace numl.Serialization
@@ -199,7 +198,7 @@ namespace numl.Serialization
         {
             WriteStartObject();
             var first = true;
-            foreach (var pi in o.GetType().GetProperties())
+            foreach (var pi in o.GetType().GetTypeInfo().GetProperties())
             {
                 if (!first) WriteToken(JsonConstants.COMMA);
 

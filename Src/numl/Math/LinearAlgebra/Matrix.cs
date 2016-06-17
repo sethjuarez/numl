@@ -787,7 +787,8 @@ namespace numl.Math.LinearAlgebra
         /// <param name="file">file to save</param>
         public void Save(string file)
         {
-            using (var f = new StreamWriter(file, false))
+            using (var fs = new FileStream(file, FileMode.CreateNew))
+            using (var f = new StreamWriter(fs))
             using (var w = new JsonWriter(f))
                 w.WriteMatrix(this);
         }
@@ -799,7 +800,8 @@ namespace numl.Math.LinearAlgebra
         {
             if (File.Exists(file))
             {
-                using (var f = new StreamReader(file))
+                using (var fs = new FileStream(file, FileMode.Open))
+                using (var f = new StreamReader(fs))
                 using (var r = new JsonReader(f))
                     return r.ReadMatrix();
             }

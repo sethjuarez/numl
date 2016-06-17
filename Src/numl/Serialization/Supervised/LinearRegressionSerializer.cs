@@ -1,9 +1,7 @@
 ﻿using System;
-using numl.Data;
-using System.Linq;
-using System.Collections.Generic;
-using numl.Supervised.Regression;
+using System.Reflection;
 using numl.Math.LinearAlgebra;
+using numl.Supervised.Regression;
 
 namespace numl.Serialization.Supervised
 {

@@ -1,10 +1,8 @@
-﻿using numl.Math;
+﻿using System;
+using numl.Math;
+using System.Reflection;
 using numl.Math.LinearAlgebra;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace numl.Serialization.Supervised
 {

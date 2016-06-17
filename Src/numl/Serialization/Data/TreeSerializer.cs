@@ -1,9 +1,6 @@
-﻿using numl.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using numl.Data;
+using System.Reflection;
 
 namespace numl.Serialization.Data
 {

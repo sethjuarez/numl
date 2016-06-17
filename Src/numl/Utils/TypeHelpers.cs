@@ -55,16 +55,6 @@ namespace numl.Utils
         }
 
         /// <summary>
-        /// Returns True if the type is located outside of the current assembly.
-        /// </summary>
-        /// <param name="type">Type to check for scope.</param>
-        /// <returns></returns>
-        public static bool IsExternal(this Type type)
-        {
-            return (System.Reflection.Assembly.GetExecutingAssembly().GetType(type.FullName, false) == null);
-        }
-
-        /// <summary>
         /// Returns a value indicating whether the type is an inbuilt runtime value type, i.e. string, number, DateTime, timespan.
         /// </summary>
         /// <param name="t"></param>

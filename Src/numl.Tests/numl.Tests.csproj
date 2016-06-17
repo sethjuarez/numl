@@ -123,12 +123,6 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\numl\numl.csproj">
-      <Project>{63b04c26-4ccd-47b0-aeca-e01756810185}</Project>
-      <Name>numl</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Data\Emails\Test_Data.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

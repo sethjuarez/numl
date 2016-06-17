@@ -1,7 +1,8 @@
 ﻿using System;
 using numl.Model;
 using System.Linq;
-using System.Collections.Generic;
+using System.Reflection;
+
 
 namespace numl.Serialization.Model
 {
@@ -22,7 +23,7 @@ namespace numl.Serialization.Model
         {
             var p = (DateTimeProperty)base.Read(reader);
 
-            var features = ((object[])reader.ReadArrayProperty().Value)
+            var features = reader.ReadArrayProperty().Value
                             .Select(o => (string)o)
                             .ToArray();
 

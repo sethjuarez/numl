@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Collections.Generic;
 
 namespace numl.Serialization
@@ -11,8 +12,11 @@ namespace numl.Serialization
             // type magic to self register
             // all available ISerializers
             var serializers =
-                from t in typeof(ISerializer).Assembly.GetTypes()
-                where typeof(ISerializer).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract && !t.IsInterface
+                from t in typeof(ISerializer).GetTypeInfo().Assembly.GetTypes()
+                where typeof(ISerializer).IsAssignableFrom(t) && 
+                      t.GetTypeInfo().IsClass && 
+                      !t.GetTypeInfo().IsAbstract && 
+                      !t.GetTypeInfo().IsInterface
                 select (ISerializer)Activator.CreateInstance(t);
 
             _serializers = new List<ISerializer>(serializers);
@@ -52,7 +56,7 @@ namespace numl.Serialization
                 return s[0];
             else
             {
-                    if (s[0].GetType().IsSubclassOf(s[1].GetType()))
+                    if (s[0].GetType().GetTypeInfo().IsSubclassOf(s[1].GetType()))
                         return s[0];
                     else
                         return s[1];
