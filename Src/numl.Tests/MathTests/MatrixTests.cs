@@ -4,6 +4,7 @@ using NUnit.Framework;
 using numl.Math.LinearAlgebra;
 using numl.Utils;
 using System.Diagnostics;
+using numl.Tests.SerializationTests;
 
 namespace numl.Tests.MathTests
 {
@@ -77,7 +78,7 @@ namespace numl.Tests.MathTests
         [Test]
         public void Matrix_Serialize_Test()
         {
-            string path = Directory.GetCurrentDirectory() + @"\matrix_serialize_test.json";
+            string path = string.Format(BaseSerialization.GetPath(GetType()), "matrix_serialize_test");
 
             Matrix m1 = new[,] {
                 { System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2, System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2 },

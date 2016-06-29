@@ -6,6 +6,7 @@ using numl.Math.LinearAlgebra;
 using numl.Utils;
 using System.Collections.Generic;
 using numl.Math.Probability;
+using numl.Tests.SerializationTests;
 
 namespace numl.Tests.MathTests
 {
@@ -18,7 +19,7 @@ namespace numl.Tests.MathTests
         [Test]
         public void Vector_Serialize_Test()
         {
-            string path = Directory.GetCurrentDirectory() + @"\vector_serialize_test.json";
+            string path = string.Format(BaseSerialization.GetPath(GetType()), "vector_serialize_test");
 
             // want to test "ugly" members in the vector
             Vector v1 = new[] { System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2, System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2 };

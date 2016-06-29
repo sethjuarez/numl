@@ -4,6 +4,7 @@
 Build/runbuild.txt
 Build/rundocs.txt
 TestResults/
+TestResult.xml
 packages/
 *.suo
 *.user
