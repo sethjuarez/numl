@@ -189,11 +189,11 @@ namespace numl.Tests.SupervisedTests
                 LearningRate = 0.1
             };
 
-            var model = Learner.Learn(data, 0.8, 10, generator);
+            var model = Learner.Learn(data, 0.8, 10, generator).Model;
 
-            var test = model.Model.Predict(new { Study = 7.0, Beer = 1.0, Passed = false });
+            var test = model.PredictValue(new { Study = 7.0, Beer = 1.0, Passed = false });
 
-            Assert.AreEqual(true, test.Passed);
+            Assert.AreEqual(true, test);
         }
     }
 }

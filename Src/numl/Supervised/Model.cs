@@ -66,10 +66,27 @@ namespace numl.Supervised
             var y = Descriptor.Convert(o, false).ToVector();
             var val = Predict(y);
             var result = Descriptor.Label.Convert(val);
+
             Ject.Set(o, Descriptor.Label.Name, result);
             return o;
         }
-        
+
+        /// <summary>
+        /// Predicts the raw label value
+        /// </summary>
+        /// <param name="o">Object to predict</param>
+        /// <returns>Predicted value</returns>
+        public object PredictValue(object o)
+        {
+            if (Descriptor.Label == null)
+                throw new InvalidOperationException("Empty label precludes prediction!");
+
+            var y = Descriptor.Convert(o, false).ToVector();
+            var val = Predict(y);
+            var result = Descriptor.Label.Convert(val);
+            return result;
+        }
+
 
         /// <summary>Predicts the given o.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>
@@ -94,7 +111,7 @@ namespace numl.Supervised
         {
             throw new NotImplementedException();
         }
-        
+
         /// <summary>Loads a json string.</summary>
         /// <param name="json">The json string.</param>
         /// <returns>The Model.</returns>

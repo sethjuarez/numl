@@ -1,28 +1,30 @@
 ﻿using System;
-using numl.Model;
-using numl.Utils;
+using System.Collections.Generic;
 using System.Linq;
+using numl.Math.LinearAlgebra;
+using numl.Model;
 using numl.Supervised;
 using numl.Tests.Data;
+using numl.Utils;
 using NUnit.Framework;
 using numl.Math.Probability;
-using numl.Math.LinearAlgebra;
-using System.Collections.Generic;
 
 namespace numl.Tests.SupervisedTests
 {
     [SetUpFixture]
     public class BaseSupervised
     {
-        //[SetUp]
-        //public void Setup()
-        //{
-        //    // just in case a generator uses
-        //    // randomization, need to have a
-        //    // good starting seed
-        //    // MATH IS HARD OK
-        //    // Sampling.SetSeedFromTime(new DateTime(1885, 11, 24, 18, 10, 13));
-        //}
+
+        /// <summary>
+        /// Compares the two gradients and returns the relative difference.
+        /// </summary>
+        /// <param name="numericalGrad"></param>
+        /// <param name="grad"></param>
+        /// <returns></returns>
+        protected double CheckNumericalGradient(Vector numericalGrad, Vector grad)
+        {
+            return (numericalGrad - grad).Norm() / (numericalGrad + grad).Norm();
+        }
 
         /// <summary>
         /// Computes the numerical gradient on the supplied theta.
@@ -66,29 +68,23 @@ namespace numl.Tests.SupervisedTests
             return numericalGrad;
         }
 
-        /// <summary>
-        /// Compares the two gradients and returns the relative difference.
-        /// </summary>
-        /// <param name="numericalGrad"></param>
-        /// <param name="grad"></param>
-        /// <returns></returns>
-        protected double CheckNumericalGradient(Vector numericalGrad, Vector grad)
+        public static void HouseLearnerPrediction(IGenerator generator)
         {
-            return (numericalGrad - grad).Norm() / (numericalGrad + grad).Norm();
-        }
+            // item to verify
+            House h = new House
+            {
+                District = District.Rural,
+                HouseType = HouseType.Detached,
+                Income = Income.High,
+                PreviousCustomer = false
+            };
 
-        public static IModel Prediction<T>(IGenerator generator, IEnumerable<T> data, T item, Func<T, bool> test)
-            where T : class
-        {
-            generator.Descriptor = Descriptor.Create<T>();
-            // I can't assume it will always do a good job
-            // especially because of overfitting
-            //var model = generator.Generate(description, data);
-            var model = Learner.Learn(data, .7, 10, generator);
-            Console.WriteLine($"{model}");
-            var prediction = model.Model.Predict(item);
-            Assert.IsTrue(test(prediction));
-            return model.Model;
+            LearnerPrediction<House>(
+                generator,              // generator
+                House.GetData(),        // Training data
+                h,                      // test object
+                p => p.Response         // should be true
+            );
         }
 
         public void HousePrediction(IGenerator generator)
@@ -110,21 +106,23 @@ namespace numl.Tests.SupervisedTests
             );
         }
 
-        public void TennisPrediction(IGenerator generator)
+        public void IrisLearnerPrediction(IGenerator generator)
         {
-            Tennis t = new Tennis
+            // should be Iris-Setosa
+            Iris iris = new Iris
             {
-                Humidity = Humidity.Normal,
-                Outlook = Outlook.Overcast,
-                Temperature = Temperature.Cool,
-                Windy = true
+                PetalWidth = 0.5m,
+                PetalLength = 2.3m,
+                SepalLength = 2.1m,
+                SepalWidth = 2.1m
             };
 
-            Prediction<Tennis>(
-                generator,              // generator
-                Tennis.GetData(),       // training data
-                t,                      // test object
-                p => p.Play             // should be true
+
+            LearnerPrediction<Iris>(
+               generator,
+                Iris.Load(),
+                iris,
+                i => "Iris-setosa".Sanitize() == i.Class    // should be true
             );
         }
 
@@ -158,23 +156,18 @@ namespace numl.Tests.SupervisedTests
             Assert.IsTrue(test(prediction));
         }
 
-        public static void HouseLearnerPrediction(IGenerator generator)
+        public static IModel Prediction<T>(IGenerator generator, IEnumerable<T> data, T item, Func<T, bool> test)
+            where T : class
         {
-            // item to verify
-            House h = new House
-            {
-                District = District.Rural,
-                HouseType = HouseType.Detached,
-                Income = Income.High,
-                PreviousCustomer = false
-            };
-
-            LearnerPrediction<House>(
-                generator,              // generator
-                House.GetData(),        // Training data
-                h,                      // test object
-                p => p.Response         // should be true
-            );
+            generator.Descriptor = Descriptor.Create<T>();
+            // I can't assume it will always do a good job
+            // especially because of overfitting
+            // var model = generator.Generate(description, data);
+            var model = Learner.Learn(data, .7, 10, generator);
+            Console.WriteLine($"{model}");
+            var prediction = model.Model.Predict(item);
+            Assert.IsTrue(test(prediction));
+            return model.Model;
         }
 
         public void TennisLearnerPrediction(IGenerator generator)
@@ -195,23 +188,21 @@ namespace numl.Tests.SupervisedTests
             );
         }
 
-        public void IrisLearnerPrediction(IGenerator generator)
+        public void TennisPrediction(IGenerator generator)
         {
-            // should be Iris-Setosa
-            Iris iris = new Iris
+            Tennis t = new Tennis
             {
-                PetalWidth = 0.5m,
-                PetalLength = 2.3m,
-                SepalLength = 2.1m,
-                SepalWidth = 2.1m
+                Humidity = Humidity.Normal,
+                Outlook = Outlook.Overcast,
+                Temperature = Temperature.Cool,
+                Windy = true
             };
 
-
-            LearnerPrediction<Iris>(
-               generator,
-                Iris.Load(),
-                iris,
-                i => "Iris-setosa".Sanitize() == i.Class    // should be true
+            Prediction<Tennis>(
+                generator,              // generator
+                Tennis.GetData(),       // training data
+                t,                      // test object
+                p => p.Play             // should be true
             );
         }
     }

@@ -30,7 +30,14 @@ namespace numl.Supervised
         /// <param name="o">The object to process.</param>
         /// <returns>An object.</returns>
         object Predict(object o);
-        
+
+        /// <summary>
+        /// Predicts the raw label value
+        /// </summary>
+        /// <param name="o">Object to predict</param>
+        /// <returns>Predicted value</returns>
+        object PredictValue(object o);
+
         /// <summary>Gets or sets the descriptor.</summary>
         /// <value>The descriptor.</value>
         Descriptor Descriptor { get; set; }
