@@ -2,6 +2,7 @@
 using System.Linq;
 using NUnit.Framework;
 using numl.Math.Metrics;
+using System.Reflection;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 

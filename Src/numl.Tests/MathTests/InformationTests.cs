@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
+using System.Reflection;
 using numl.Math.Information;
 using System.Collections.Generic;
 
@@ -17,7 +18,7 @@ namespace numl.Tests.MathTests
         [TestCase(new[] { 2d, 3, 3, 2, 4, 7, 6, 3, 2, 7 }, typeof(Error), 0.7)]
         public void Impurity_Calculation(double[] x, Type t, double truth)
         {
-            Assert.AreEqual(typeof(Impurity), t.BaseType);
+            Assert.AreEqual(typeof(Impurity), t.GetTypeInfo().BaseType);
 
             var impurity = (Impurity)Activator.CreateInstance(t);
             var result = impurity.Calculate(x);

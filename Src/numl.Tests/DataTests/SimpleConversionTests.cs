@@ -1,7 +1,6 @@
 using System;
 using numl.Utils;
 using numl.Model;
-using System.Data;
 using System.Linq;
 using System.Dynamic;
 using numl.Tests.Data;
@@ -322,34 +321,34 @@ namespace numl.Tests.DataTests
             Assert.AreEqual(truths, actual);
         }
 
-        [Test]
-        public void Test_Vector_DataRow_Conversion_Simple_Numbers()
-        {
-            Descriptor d = new Descriptor();
-            d.Features = new Property[]
-            {
-                new Property { Name = "Age", },
-                new Property { Name = "Height", },
-                new Property { Name = "Weight", },
-                new Property { Name = "Good", },
-            };
+        //[Test]
+        //public void Test_Vector_DataRow_Conversion_Simple_Numbers()
+        //{
+        //    Descriptor d = new Descriptor();
+        //    d.Features = new Property[]
+        //    {
+        //        new Property { Name = "Age", },
+        //        new Property { Name = "Height", },
+        //        new Property { Name = "Weight", },
+        //        new Property { Name = "Good", },
+        //    };
 
-            DataTable table = new DataTable("student");
-            var age = table.Columns.Add("Age", typeof(int));
-            var height = table.Columns.Add("Height", typeof(double));
-            var weight = table.Columns.Add("Weight", typeof(decimal));
-            var good = table.Columns.Add("Good", typeof(bool));
+        //    DataTable table = new DataTable("student");
+        //    var age = table.Columns.Add("Age", typeof(int));
+        //    var height = table.Columns.Add("Height", typeof(double));
+        //    var weight = table.Columns.Add("Weight", typeof(decimal));
+        //    var good = table.Columns.Add("Good", typeof(bool));
 
-            DataRow row = table.NewRow();
-            row[age] = 23;
-            row[height] = 6.21;
-            row[weight] = 220m;
-            row[good] = false;
+        //    DataRow row = table.NewRow();
+        //    row[age] = 23;
+        //    row[height] = 6.21;
+        //    row[weight] = 220m;
+        //    row[good] = false;
 
-            var truths = new double[] { 23, 6.21, 220, -1 };
-            var actual = d.Convert(row);
-            Assert.AreEqual(truths, actual);
-        }
+        //    var truths = new double[] { 23, 6.21, 220, -1 };
+        //    var actual = d.Convert(row);
+        //    Assert.AreEqual(truths, actual);
+        //}
 
         [Test]
         public void Test_Vector_Dictionary_Conversion_Simple_Numbers()
