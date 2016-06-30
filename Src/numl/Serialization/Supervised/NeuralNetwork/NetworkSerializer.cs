@@ -1,8 +1,5 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
-using numl.Serialization;
-using System.Collections.Generic;
 using numl.Supervised.NeuralNetwork;
 
 namespace numl.Serialization.Supervised.NeuralNetwork
@@ -57,6 +54,6 @@ namespace numl.Serialization.Supervised.NeuralNetwork
                 writer.WriteArrayProperty("Edges", 
                         network.GetEdges().ToArray());
             }
-        }
+        } 
     }
 }
