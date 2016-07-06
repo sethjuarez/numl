@@ -1,11 +1,11 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using numl.Math.Functions;
 using numl.Serialization;
 using numl.Supervised.NeuralNetwork;
 using numl.Utils;
-using numl.Math.Functions;
 
 namespace numl.Serialization.Supervised.NeuralNetwork
 {

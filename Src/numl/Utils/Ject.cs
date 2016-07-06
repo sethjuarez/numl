@@ -371,18 +371,13 @@ namespace numl.Utils
             if (!_assemblies.Contains(assembly))
             {
                 _assemblies.Add(assembly);
-
-                // add serializers
-                var serializers =
-                    from t in typeof(ISerializer).GetTypeInfo().Assembly.GetTypes()
-                    where typeof(ISerializer).IsAssignableFrom(t) && 
-                          t.GetTypeInfo().IsClass && 
-                          !t.GetTypeInfo().IsAbstract && 
-                          !t.GetTypeInfo().IsInterface
-                    select (ISerializer)Activator.CreateInstance(t);
-
-                JsonConstants.AddSerializer(serializers.ToArray());
+                Serializers.ReloadSerializers();
             }
+        }
+
+        internal static IEnumerable<Assembly> GetLoadedAssemblies()
+        {
+            return _assemblies;
         }
 
         /// <summary>The types.</summary>

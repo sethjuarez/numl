@@ -1,14 +1,27 @@
 ﻿using System;
 using System.Linq;
 using numl.Supervised.NeuralNetwork;
+using System.Reflection;
+using numl.Data;
+using numl.Serialization.Data;
 
 namespace numl.Serialization.Supervised.NeuralNetwork
 {
     /// <summary>
     /// Neural Network serializer.
     /// </summary>
-    public class NetworkSerializer : JsonSerializer<Network>
+    public class NetworkSerializer : GraphSerializer
     {
+        public override bool CanConvert(Type type)
+        {
+            return typeof(Network).IsAssignableFrom(type);
+        }
+
+        public override object Create()
+        {
+            return new Network();
+        }
+
         /// <summary>
         /// Deserializes the object from the stream.
         /// </summary>
@@ -45,6 +58,7 @@ namespace numl.Serialization.Supervised.NeuralNetwork
             else
             {
                 var network = (Network)value;
+
 
                 // write out nodes
                 writer.WriteArrayProperty("Nodes", 

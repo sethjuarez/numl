@@ -231,9 +231,9 @@ namespace numl.Serialization
                     WriteVector((Vector)value);
                 else if (type == typeof(Matrix))
                     WriteMatrix((Matrix)value);
-                else if (JsonConstants.HasSerializer(type))
+                else if (type.HasSerializer())
                 {
-                    var serializer = JsonConstants.GetSerializerFor(type);
+                    var serializer = type.GetSerializer();
                     serializer.PreWrite(this);
                     serializer.Write(this, value);
                     serializer.PostWrite(this);

@@ -236,7 +236,7 @@ namespace numl.Serialization
 
                 if (p.Name == JsonSerializer.SERIALIZER_ATTRIBUTE)
                 {
-                    var s = JsonConstants.GetSerializer(Ject.FindType(p.Value.ToString()));
+                    var s = Ject.FindType(p.Value.ToString()).GetSerializer();
                     var o = s.Read(this);
                     s.PostRead(this);
                     return o;

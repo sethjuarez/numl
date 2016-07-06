@@ -64,7 +64,7 @@ namespace numl.Serialization.Supervised.NeuralNetwork
 
                 // write out function
                 writer.WriteProperty(nameof(model.OutputFunction), 
-                    model.OutputFunction.GetType().FullName);
+                    model.OutputFunction?.GetType().FullName);
 
                 // write out network
                 writer.WriteProperty(nameof(model.Network), model.Network);

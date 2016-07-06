@@ -7,21 +7,6 @@ namespace numl.Serialization
 {
     internal static class JsonConstants
     {
-        static JsonConstants()
-        {
-            // type magic to self register
-            // all available ISerializers
-            var serializers =
-                from t in typeof(ISerializer).GetTypeInfo().Assembly.GetTypes()
-                where typeof(ISerializer).IsAssignableFrom(t) && 
-                      t.GetTypeInfo().IsClass && 
-                      !t.GetTypeInfo().IsAbstract && 
-                      !t.GetTypeInfo().IsInterface
-                select (ISerializer)Activator.CreateInstance(t);
-
-            _serializers = new List<ISerializer>(serializers);
-        }
-
         //begin-array     = ws %x5B ws  ; [ left square bracket
         internal const int BEGIN_ARRAY = '[';
         //begin-object    = ws %x7B ws; { left curly bracket
@@ -44,41 +29,6 @@ namespace numl.Serialization
         internal readonly static char[] NULL = new[] { 'n', 'u', 'l', 'l' };
         internal readonly static char[] WHITESPACE = new[] { ' ', '\t', '\n', '\r' };
         internal readonly static char[] NUMBER = new[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.', '-', '+', 'e', 'E' };
-
-        private static readonly List<ISerializer> _serializers;
-        internal static ISerializer GetSerializerFor(Type type)
-        {
-            List<ISerializer> s = new List<ISerializer>();
-            foreach (var serializer in _serializers)
-                if (serializer.CanConvert(type))
-                    s.Add(serializer);
-            if (s.Count == 1)
-                return s[0];
-            else
-            {
-                    if (s[0].GetType().GetTypeInfo().IsSubclassOf(s[1].GetType()))
-                        return s[0];
-                    else
-                        return s[1];
-            }
-        }
-
-        internal static ISerializer GetSerializer(Type serializer)
-        {
-            return _serializers
-                        .Where(s => s.GetType() == serializer)
-                        .First();
-        }
-
-        internal static bool HasSerializer(Type type)
-        {
-            return _serializers.Any(s => s.CanConvert(type));
-        }
-
-        internal static void AddSerializer(params ISerializer[] serializers)
-        {
-            _serializers.AddRange(serializers);
-        }
     }
 
 }
