@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using numl.Unsupervised;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ namespace numl.Tests.UnsupervisedTests
     [TestFixture, Category("Unsupervised")]
     public class PCATests
     {
-        [Test]
+        [Fact]
         public void Test_Numerical_PCA()
         {
             Matrix m = new[,]

@@ -1,7 +1,7 @@
 ﻿using System;
 using numl.Model;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using numl.Supervised.KNN;
 using System.Collections.Generic;
 using numl.Tests.Data;
@@ -11,31 +11,31 @@ namespace numl.Tests.SupervisedTests
     [TestFixture, Category("Supervised")]
     public class KNNTests : BaseSupervised
     {
-        [Test]
+        [Fact]
         public void Tennis_Tests()
         {
             TennisPrediction(new KNNGenerator());
         }
 
-        [Test]
+        [Fact]
         public void House_Tests()
         {
             HousePrediction(new KNNGenerator());
         }
 
-        [Test]
+        [Fact]
         public void Iris_Tests()
         {
             IrisPrediction(new KNNGenerator());
         }
 
-        [Test]
+        [Fact]
         public void Tennis_Learner_Tests()
         {
             TennisLearnerPrediction(new KNNGenerator());
         }
         
-        [Test]
+        [Fact]
         public void Iris_Learner_Tests()
         {
             IrisLearnerPrediction(new KNNGenerator());

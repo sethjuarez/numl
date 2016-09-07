@@ -1,12 +1,12 @@
 ﻿using System;
 using numl.AI;
 using System.Linq;
-using NUnit.Framework;
 using System.Collections.Generic;
+using Xunit;
 
 namespace numl.Tests.AITests
 {
-    [TestFixture, Category("AI")]
+    [Trait("Category", "AI")]
     public class TicTacToeTests
     {
         private static void PrintSolution(IEnumerable<ISuccessor> solution)
@@ -24,7 +24,7 @@ namespace numl.Tests.AITests
             Console.WriteLine("{0} {1}\n--------\n", successor.State.IsTerminal, (successor.State as IAdversarialState).Utility);
         }
 
-        [Test]
+        [Fact]
         public void Test_Expansion()
         {
 
@@ -36,7 +36,7 @@ namespace numl.Tests.AITests
             }
         }
 
-        [Test]
+        [Fact]
         public void SuperSimpleWinMinimax()
         {
             Minimax m = new Minimax();

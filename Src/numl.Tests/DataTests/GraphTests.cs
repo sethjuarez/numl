@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using numl.Data;
-using NUnit.Framework;
+using Xunit;
 
 namespace numl.Tests.DataTests
 {
@@ -45,10 +45,11 @@ namespace numl.Tests.DataTests
         }
     }
 
-    [TestFixture]
+
+    [Trait("Category", "Data")]
     public class GraphTests
     {
-        [Test]
+        [Fact]
         public void OutEdgesVertexTest()
         {
             Vertex.Reset();
@@ -65,16 +66,16 @@ namespace numl.Tests.DataTests
             g.AddEdge(new Edge { ParentId = 2, ChildId = 3 });
 
             var edges = g.GetOutEdges(vertex1).ToArray();
-            Assert.AreEqual(2, edges.Length);
+            Assert.Equal(2, edges.Length);
 
-            Assert.IsTrue(edges.Select(e => e.ParentId).Distinct().Count() == 1);
-            Assert.AreEqual(1, edges.Select(e => e.ParentId).Distinct().First());
-            Assert.IsTrue(edges.Select(e => e.ChildId).Contains(5));
-            Assert.IsTrue(edges.Select(e => e.ChildId).Contains(2));
+            Assert.True(edges.Select(e => e.ParentId).Distinct().Count() == 1);
+            Assert.Equal(1, edges.Select(e => e.ParentId).Distinct().First());
+            Assert.True(edges.Select(e => e.ChildId).Contains(5));
+            Assert.True(edges.Select(e => e.ChildId).Contains(2));
 
         }
 
-        [Test]
+        [Fact]
         public void ChildVertexTest()
         {
             Vertex.Reset();
@@ -91,14 +92,14 @@ namespace numl.Tests.DataTests
             g.AddEdge(new Edge { ParentId = 2, ChildId = 3 });
 
             var children = g.GetChildren(vertex1).ToArray();
-            Assert.AreEqual(2, children.Length);
+            Assert.Equal(2, children.Length);
 
-            Assert.IsTrue(children.Select(e => e.Id).ToArray().Contains(5));
-            Assert.IsTrue(children.Select(e => e.Id).ToArray().Contains(2));
+            Assert.True(children.Select(e => e.Id).ToArray().Contains(5));
+            Assert.True(children.Select(e => e.Id).ToArray().Contains(2));
 
         }
 
-        [Test]
+        [Fact]
         public void InEdgesVertexTest()
         {
             Vertex.Reset();
@@ -115,16 +116,16 @@ namespace numl.Tests.DataTests
             g.AddEdge(new Edge { ParentId = 2, ChildId = 3 });
 
             var edges = g.GetInEdges(vertex1).ToArray();
-            Assert.AreEqual(2, edges.Length);
+            Assert.Equal(2, edges.Length);
 
-            Assert.IsTrue(edges.Select(e => e.ChildId).Distinct().Count() == 1);
-            Assert.AreEqual(1, edges.Select(e => e.ChildId).Distinct().First());
-            Assert.IsTrue(edges.Select(e => e.ParentId).ToArray().Contains(5));
-            Assert.IsTrue(edges.Select(e => e.ParentId).ToArray().Contains(2));
+            Assert.True(edges.Select(e => e.ChildId).Distinct().Count() == 1);
+            Assert.Equal(1, edges.Select(e => e.ChildId).Distinct().First());
+            Assert.True(edges.Select(e => e.ParentId).ToArray().Contains(5));
+            Assert.True(edges.Select(e => e.ParentId).ToArray().Contains(2));
 
         }
 
-        [Test]
+        [Fact]
         public void ParentVertexTest()
         {
             Vertex.Reset();
@@ -141,13 +142,13 @@ namespace numl.Tests.DataTests
             g.AddEdge(new Edge { ParentId = 2, ChildId = 3 });
 
             var parents = g.GetParents(vertex1).ToArray();
-            Assert.AreEqual(2, parents.Length);
+            Assert.Equal(2, parents.Length);
 
-            Assert.IsTrue(parents.Select(e => e.Id).ToArray().Contains(5));
-            Assert.IsTrue(parents.Select(e => e.Id).ToArray().Contains(2));
+            Assert.True(parents.Select(e => e.Id).ToArray().Contains(5));
+            Assert.True(parents.Select(e => e.Id).ToArray().Contains(2));
         }
 
-        [Test]
+        [Fact]
         public void RemoveVertexTest()
         {
             Vertex.Reset();
@@ -166,11 +167,11 @@ namespace numl.Tests.DataTests
 
             g.RemoveVertex(vertex1);
 
-            Assert.AreEqual(0, g.GetVertices().Where(v => v.Id == 1).Count());
-            Assert.AreEqual(0, g.GetEdges().Where(e => e.ParentId == 1 || e.ChildId == 1).Count());
+            Assert.Equal(0, g.GetVertices().Where(v => v.Id == 1).Count());
+            Assert.Equal(0, g.GetEdges().Where(e => e.ParentId == 1 || e.ChildId == 1).Count());
         }
 
-        [Test]
+        [Fact]
         public void RemoveEdgeTest()
         {
             Vertex.Reset();
@@ -189,11 +190,11 @@ namespace numl.Tests.DataTests
 
             g.RemoveEdge(edge);
 
-            Assert.AreEqual(0, g.GetEdges().Where(e => e.ParentId == 1 && e.ChildId == 5).Count());
+            Assert.Equal(0, g.GetEdges().Where(e => e.ParentId == 1 && e.ChildId == 5).Count());
 
         }
 
-        [Test]
+        [Fact]
         public void EqualsTest()
         {
             Vertex.Reset();
@@ -222,10 +223,10 @@ namespace numl.Tests.DataTests
             g2.AddEdge(new Edge { ParentId = 2, ChildId = 3 });
             g2.AddEdge(new Edge { ParentId = 3, ChildId = 1 });
 
-            Assert.IsTrue(g1.Equals(g2));
+            Assert.True(g1.Equals(g2));
         }
 
-        [Test]
+        [Fact]
         public void NotEqualsTest()
         {
             Vertex.Reset();
@@ -254,10 +255,10 @@ namespace numl.Tests.DataTests
             g2.AddEdge(new Edge { ParentId = 2, ChildId = 3 });
             g2.AddEdge(new Edge { ParentId = 3, ChildId = 1 });
 
-            Assert.IsFalse(g1.Equals(g2));
+            Assert.False(g1.Equals(g2));
         }
 
-        [Test]
+        [Fact]
         public void TreeEqualTest()
         {
             Vertex.Reset();
@@ -298,10 +299,10 @@ namespace numl.Tests.DataTests
             g2.AddEdge(new Edge { ParentId = 3, ChildId = 6 });
             g2.AddEdge(new Edge { ParentId = 3, ChildId = 7 });
 
-            Assert.IsTrue(g1.Equals(g2));
+            Assert.True(g1.Equals(g2));
         }
 
-        [Test]
+        [Fact]
         public void TreeNotEqualTest()
         {
             Vertex.Reset();
@@ -342,7 +343,7 @@ namespace numl.Tests.DataTests
             g2.AddEdge(new Edge { ParentId = 1, ChildId = 6 });
             g2.AddEdge(new Edge { ParentId = 3, ChildId = 7 });
 
-            Assert.IsFalse(g1.Equals(g2));
+            Assert.False(g1.Equals(g2));
         }
 
 

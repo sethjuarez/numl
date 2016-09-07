@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NUnit.Framework;
+using Xunit;
 using numl.Supervised;
 using numl.Supervised.Regression;
 using numl.Model;
@@ -13,7 +13,7 @@ namespace numl.Tests.SerializationTests.ModelSerialization
     [TestFixture, Category("Serialization")]
     public class RegressionSerializationTests : BaseSerialization
     {
-        [Test]
+        [Fact]
         public void Linear_Regression_Save_And_Load()
         {
             var rnd = new Random();
@@ -38,7 +38,7 @@ namespace numl.Tests.SerializationTests.ModelSerialization
 
             var loadedModel = Deserialize<LinearRegressionModel>();
 
-            Assert.AreEqual(model.Theta, loadedModel.Theta);
+            Assert.Equal(model.Theta, loadedModel.Theta);
         }
     }
 

@@ -2,7 +2,7 @@
 using System.IO;
 using numl.Utils;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using System.Diagnostics;
 using System.Collections.Generic;
 using numl.Supervised;

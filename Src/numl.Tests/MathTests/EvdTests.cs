@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 
 namespace numl.Tests.MathTests
 {
-    [TestFixture, Category("Math")]
+    [Trait("Category", "Math")]
     public class EvdTests
     {
-        [TestCase(1)]
-        [TestCase(2)]
-        [TestCase(3)]
-        [TestCase(5)]
-        [TestCase(10)]
-        [TestCase(20)]
-        [TestCase(30)]
-        [TestCase(50)]
-        [TestCase(100)]
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(5)]
+        [InlineData(10)]
+        [InlineData(20)]
+        [InlineData(30)]
+        [InlineData(50)]
+        [InlineData(100)]
         public void CanFactorizeRandomSymmetricMatrix(int order)
         {
             // create random matrix
@@ -30,13 +31,13 @@ namespace numl.Tests.MathTests
             var eigenvectors = evd.Eigenvectors;
             var eigenvalues = evd.Eigenvalues;
 
-            Assert.AreEqual(order, eigenvectors.Rows);
-            Assert.AreEqual(order, eigenvectors.Cols);
-            Assert.AreEqual(order, eigenvalues.Length);
+            Assert.Equal(order, eigenvectors.Rows);
+            Assert.Equal(order, eigenvectors.Cols);
+            Assert.Equal(order, eigenvalues.Length);
 
             // make sure that A = V*λ*VT 
             var computed = eigenvectors * eigenvalues.Diag() * eigenvectors.T;
-            Assert.IsTrue(A.Equals(computed, 1e-10));
+            Assert.True(A.Equals(computed, 1e-10));
         }
     }
 }

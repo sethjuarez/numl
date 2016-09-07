@@ -6,7 +6,7 @@ using numl.Model;
 using numl.Supervised;
 using numl.Tests.Data;
 using numl.Utils;
-using NUnit.Framework;
+using Xunit;
 using numl.Math.Probability;
 
 namespace numl.Tests.SupervisedTests
@@ -153,7 +153,7 @@ namespace numl.Tests.SupervisedTests
             generator.Descriptor = description;
             var lmodel = Learner.Learn(data, .80, 10, generator);
             var prediction = lmodel.Model.Predict(item);
-            Assert.IsTrue(test(prediction));
+            Assert.True(test(prediction));
         }
 
         public static IModel Prediction<T>(IGenerator generator, IEnumerable<T> data, T item, Func<T, bool> test)
@@ -166,7 +166,7 @@ namespace numl.Tests.SupervisedTests
             var model = Learner.Learn(data, .7, 10, generator);
             Console.WriteLine($"{model}");
             var prediction = model.Model.Predict(item);
-            Assert.IsTrue(test(prediction));
+            Assert.True(test(prediction));
             return model.Model;
         }
 

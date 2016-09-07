@@ -1,7 +1,7 @@
 ﻿using System;
 using numl.Model;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using numl.Tests.Data;
 using numl.Unsupervised;
 using numl.Math.Metrics;
@@ -55,15 +55,15 @@ namespace numl.Tests.UnsupervisedTests
 
             KMeans model = new KMeans();
             var assignment = model.Generate(X, 2, new EuclidianDistance());
-            Assert.AreEqual(size * 2, assignment.Length);
+            Assert.Equal(size * 2, assignment.Length);
             var a1 = assignment.First();
             var a2 = assignment.Last();
             for (int i = 0; i < size * 2; i++)
             {
                 if (i < size)
-                    Assert.AreEqual(a1, assignment[i]);
+                    Assert.Equal(a1, assignment[i]);
                 else
-                    Assert.AreEqual(a2, assignment[i]);
+                    Assert.Equal(a2, assignment[i]);
             }
         }
 
@@ -82,12 +82,12 @@ namespace numl.Tests.UnsupervisedTests
 
             KMeans model = new KMeans();
             var clusters = model.Generate(descriptor, objects, 2, new EuclidianDistance());
-            Assert.AreEqual(2, clusters.Children.Length);
-            Assert.AreEqual(size, clusters[0].Members.Length);
-            Assert.AreEqual(size, clusters[1].Members.Length);
+            Assert.Equal(2, clusters.Children.Length);
+            Assert.Equal(size, clusters[0].Members.Length);
+            Assert.Equal(size, clusters[1].Members.Length);
         }
 
-        [Test]
+        [Fact]
         public void Test_Feed_KMeans()
         {
             int groups = 4;

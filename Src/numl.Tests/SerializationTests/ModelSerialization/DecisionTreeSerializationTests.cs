@@ -2,7 +2,7 @@
 using numl.Model;
 using System.Linq;
 using numl.Tests.Data;
-using NUnit.Framework;
+using Xunit;
 using System.Collections.Generic;
 using numl.Supervised.DecisionTree;
 
@@ -11,7 +11,7 @@ namespace numl.Tests.SerializationTests.ModelSerialization
     [TestFixture, Category("Serialization")]
     public class DecisionTreeSerializationTests : BaseSerialization
     {
-        [Test]
+        [Fact]
         public void Save_And_Load_HouseDT()
         {
             var data = House.GetData();
@@ -23,12 +23,12 @@ namespace numl.Tests.SerializationTests.ModelSerialization
             Serialize(model);
             var lmodel = Deserialize<DecisionTreeModel>();
 
-            Assert.AreEqual(model.Descriptor, lmodel.Descriptor);
-            Assert.AreEqual(model.Hint, lmodel.Hint);
-            Assert.AreEqual(model.Tree, lmodel.Tree);
+            Assert.Equal(model.Descriptor, lmodel.Descriptor);
+            Assert.Equal(model.Hint, lmodel.Hint);
+            Assert.Equal(model.Tree, lmodel.Tree);
         }
 
-        [Test]
+        [Fact]
         public void Save_And_Load_Iris_DT()
         {
             var data = Iris.Load();
@@ -38,9 +38,9 @@ namespace numl.Tests.SerializationTests.ModelSerialization
 
             Serialize(model);
             var lmodel = Deserialize<DecisionTreeModel>();
-            Assert.AreEqual(model.Descriptor, lmodel.Descriptor);
-            Assert.AreEqual(model.Hint, lmodel.Hint);
-            Assert.AreEqual(model.Tree, lmodel.Tree);
+            Assert.Equal(model.Descriptor, lmodel.Descriptor);
+            Assert.Equal(model.Hint, lmodel.Hint);
+            Assert.Equal(model.Tree, lmodel.Tree);
         }
     }
 }

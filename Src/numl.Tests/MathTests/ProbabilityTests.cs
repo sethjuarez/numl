@@ -1,6 +1,6 @@
 ﻿using numl.Math.LinearAlgebra;
 using numl.Math.Probability;
-using NUnit.Framework;
+using Xunit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,15 +9,16 @@ using System.Threading.Tasks;
 
 namespace numl.Tests.MathTests
 {
-    [TestFixture, Category("Math")]
+    [Trait("Category", "Math")]
     public class ProbabilityTests
     {
-        [TestCase(3, 10000)]
-        [TestCase(3, 100000)]
-        [TestCase(4, 10000)]
-        [TestCase(4, 100000)]
-        [TestCase(5, 10000)]
-        [TestCase(5, 100000)]
+        [Theory]
+        [InlineData(3, 10000)]
+        [InlineData(3, 100000)]
+        [InlineData(4, 10000)]
+        [InlineData(4, 100000)]
+        [InlineData(5, 10000)]
+        [InlineData(5, 100000)]
         public void Test_Normal_Estimation(int d, int n)
         {
             // generate mu and sigma
@@ -46,9 +47,11 @@ namespace numl.Tests.MathTests
             for (int i = 0; i < d; i++)
             {
                 // test mean (should be 0, but with 10% tolerance)
-                Assert.AreEqual(diff(means[i], dstrb.Mu[i]), 0, 0.1);
+                Assert.InRange(diff(means[i], dstrb.Mu[i]), -0.1, 0.1);
+                // Assert.Equal(diff(means[i], dstrb.Mu[i]), 0, 0.1);
                 // test covariance (should be 0, but with 10% tolerance)
-                Assert.AreEqual(diff(means[i], cov[i]), 0, 0.1);
+                Assert.InRange(diff(means[i], cov[i]), -0.1, 0.1);
+                // Assert.Equal(diff(means[i], cov[i]), 0, 0.1);
             }
         }
 

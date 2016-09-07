@@ -3,8 +3,8 @@
 
   "dependencies": {
     "numl": "1.0.0-*",
-    "NUnit": "3.2.1",
-    "dotnet-test-nunit": "3.4.0-*"
+    "xunit": "2.2.0-*",
+    "dotnet-test-xunit": "2.2.0-*"
   },
 
   "testRunner": "nunit",

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 using numl.Supervised.Perceptron;
@@ -10,7 +10,7 @@ namespace numl.Tests.SupervisedTests
     [TestFixture, Category("Supervised")]
     public class PerceptronTests
     {
-        [Test]
+        [Fact]
         public void Test_Perceptron_Simple()
         {
             PerceptronGenerator generator = new PerceptronGenerator();
@@ -33,10 +33,10 @@ namespace numl.Tests.SupervisedTests
             for (int i = 0; i < test.Rows; i++)
                 z[i] = model.Predict((Vector)test.Row(i)) <= 0 ? -1 : 1;
 
-            Assert.AreEqual(y, z);
+            Assert.Equal(y, z);
         }
 
-        [Test]
+        [Fact]
         public void Test_Perceptron_Simple_2()
         {
             PerceptronGenerator generator = new PerceptronGenerator();
@@ -65,7 +65,7 @@ namespace numl.Tests.SupervisedTests
             for (int i = 0; i < test.Rows; i++)
                 z[i] = model.Predict((Vector)test.Row(i)) <= 0 ? -1 : 1;
 
-            Assert.AreEqual(y, z);
+            Assert.Equal(y, z);
         }
     }
 }

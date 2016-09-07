@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using numl.Serialization;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ namespace numl.Tests.SerializationTests.BasicSerialization
     [TestFixture]
     public class SimpleJsonTests : BaseSerialization
     {
-        [Test]
+        [Fact]
         public void VectorSerializationTest()
         {
             Vector v = new[] {
@@ -27,10 +27,10 @@ namespace numl.Tests.SerializationTests.BasicSerialization
             using (var reader = GetReader())
             {
                 Vector v3 = reader.ReadVector();
-                Assert.AreEqual(v, v3);
+                Assert.Equal(v, v3);
             }
         }
-        [Test]
+        [Fact]
         public void MatrixSerializationTest()
         {
             Matrix m = new[,] {
@@ -46,7 +46,7 @@ namespace numl.Tests.SerializationTests.BasicSerialization
             using (var reader = GetReader())
             {
                 Matrix m3 = reader.ReadMatrix();
-                Assert.AreEqual(m, m3);
+                Assert.Equal(m, m3);
             }
         }
     }

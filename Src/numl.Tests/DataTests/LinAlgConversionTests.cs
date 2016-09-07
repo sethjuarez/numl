@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using System.Collections.Generic;
 using numl.Utils;
 using numl.Math;
@@ -8,10 +8,10 @@ using numl.Math.LinearAlgebra;
 
 namespace numl.Tests.DataTests
 {
-    [TestFixture, Category("Data")]
+    [Trait("Category", "Data")]
     public class LinAlgConversionTests
     {
-        [Test]
+        [Fact]
         public void Test_Dense_Matrix_Conversion()
         {
             IEnumerable<IEnumerable<double>> x =
@@ -35,10 +35,10 @@ namespace numl.Tests.DataTests
                         { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
                     };
 
-            Assert.AreEqual(truth, v);
+            Assert.Equal(truth, v);
         }
 
-        [Test]
+        [Fact]
         public void Test_Sparse_Matrix_Conversion()
         {
             IEnumerable<IEnumerable<double>> x =
@@ -63,10 +63,10 @@ namespace numl.Tests.DataTests
                         { 0, 2, 0, 0, 5, 6, 0, 8, 0, 0 },
                     };
 
-            Assert.AreEqual(truth, v);
+            Assert.Equal(truth, v);
         }
 
-        [Test]
+        [Fact]
         public void Test_Jagged_Matrix_Conversion()
         {
             IEnumerable<IEnumerable<double>> x =
@@ -90,10 +90,10 @@ namespace numl.Tests.DataTests
                         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                     };
 
-            Assert.AreEqual(truth, v);
+            Assert.Equal(truth, v);
         }
 
-        [Test]
+        [Fact]
         public void Test_Example_Conversion()
         {
             IEnumerable<IEnumerable<double>> x =
@@ -119,11 +119,11 @@ namespace numl.Tests.DataTests
 
             Vector v = new double[] { -1, 1, -1, 1, 1 };
 
-            Assert.AreEqual(m, tuple.Item1);
-            Assert.AreEqual(v, tuple.Item2);
+            Assert.Equal(m, tuple.Item1);
+            Assert.Equal(v, tuple.Item2);
         }
 
-        [Test]
+        [Fact]
         public void Test_Jagged_Example_Conversion()
         {
             IEnumerable<IEnumerable<double>> x =
@@ -151,8 +151,8 @@ namespace numl.Tests.DataTests
             Vector v = new double[] { 0, 10, 0, 0, 0 };
 
 
-            Assert.AreEqual(m, tuple.Item1);
-            Assert.AreEqual(v, tuple.Item2);
+            Assert.Equal(m, tuple.Item1);
+            Assert.Equal(v, tuple.Item2);
         }
     }
 }

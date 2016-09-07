@@ -2,7 +2,7 @@
 using numl.Model;
 using System.Linq;
 using numl.Tests.Data;
-using NUnit.Framework;
+using Xunit;
 using numl.Math.Linkers;
 using numl.Math.Metrics;
 using numl.Unsupervised;
@@ -13,7 +13,7 @@ namespace numl.Tests.UnsupervisedTests
     [TestFixture, Category("Unsupervised")]
     public class HierarchicalClusteringTests
     {
-        [Test]
+        [Fact]
         public void Cluster_Student()
         {
             Student[] students = Student.GetData().Take(20).ToArray();

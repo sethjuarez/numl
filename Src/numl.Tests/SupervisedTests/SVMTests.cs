@@ -1,7 +1,7 @@
 ﻿using System;
 using numl.Model;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using numl.Math.Kernels;
 using System.Collections.Generic;
 using numl.Math.LinearAlgebra;
@@ -11,7 +11,7 @@ namespace numl.Tests.SupervisedTests
     [TestFixture, Category("Supervised")]
     public class SVMTests : BaseSupervised
     {
-        [Test]
+        [Fact]
         public void Test_SVM_Classification()
         {
             var students = Data.Tennis.GetData();
@@ -30,7 +30,7 @@ namespace numl.Tests.SupervisedTests
             Console.WriteLine($"SVM Model\n: { model.Score }");
         }
 
-        //[Test]
+        //[Fact]
         public void Test_SVM_Email_Classification()
         {
             var training_Data = System.IO.File.ReadAllLines("Data\\Emails\\Training_Data.txt")
@@ -65,7 +65,7 @@ namespace numl.Tests.SupervisedTests
             Console.WriteLine($"SVM Model\n: { score }");
         }
 
-        [Test]
+        [Fact]
         public void Test_SVM_XOR_Classification()
         {
             var xor = new[]

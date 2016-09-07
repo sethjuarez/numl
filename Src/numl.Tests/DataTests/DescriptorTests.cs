@@ -1,118 +1,122 @@
 ﻿using System;
 using numl.Model;
 using System.Linq;
-using NUnit.Framework;
 using numl.Tests.Data;
 using System.Collections.Generic;
+using Xunit;
 
 namespace numl.Tests.DataTests
 {
-    [TestFixture, Category("Data")]
+    [Trait("Category", "Data")]
     public class DescriptorTests
     {
-        [TestCase(-1, "Nice", typeof(bool), typeof(Property))]
-        [TestCase(0, "Name", typeof(string), typeof(StringProperty))]
-        [TestCase(1, "Grade", typeof(Grade), typeof(Property))]
-        [TestCase(2, "GPA", typeof(double), typeof(Property))]
-        [TestCase(3, "Age", typeof(int), typeof(Property))]
-        [TestCase(4, "Friends", typeof(int), typeof(Property))]
+        [Theory]
+        [InlineData(-1, "Nice", typeof(bool), typeof(Property))]
+        [InlineData(0, "Name", typeof(string), typeof(StringProperty))]
+        [InlineData(1, "Grade", typeof(Grade), typeof(Property))]
+        [InlineData(2, "GPA", typeof(double), typeof(Property))]
+        [InlineData(3, "Age", typeof(int), typeof(Property))]
+        [InlineData(4, "Friends", typeof(int), typeof(Property))]
         public void Test_Student_Descriptor(int index, string name, Type type, Type propertyType)
         {
             var d = Descriptor.Create<Student>();
             var property = index < 0 ? d.Label : d.Features[index];
-            Assert.AreEqual(name, property.Name);
-            Assert.AreEqual(type, property.Type);
-            Assert.AreEqual(propertyType, property.GetType());
+            Assert.Equal(name, property.Name);
+            Assert.Equal(type, property.Type);
+            Assert.Equal(propertyType, property.GetType());
         }
 
-        [TestCase(0, "Date1", DateTimeFeature.Day)]
-        [TestCase(1, "Date2", DateTimeFeature.Day | DateTimeFeature.Year)]
-        [TestCase(2, "Date3", DateTimeFeature.Day | DateTimeFeature.DayOfYear | DateTimeFeature.Millisecond)]
-        [TestCase(3, "Date4", DateTimeFeature.Month | DateTimeFeature.Year | DateTimeFeature.Second | DateTimeFeature.Hour)]
+        [Theory]
+        [InlineData(0, "Date1", DateTimeFeature.Day)]
+        [InlineData(1, "Date2", DateTimeFeature.Day | DateTimeFeature.Year)]
+        [InlineData(2, "Date3", DateTimeFeature.Day | DateTimeFeature.DayOfYear | DateTimeFeature.Millisecond)]
+        [InlineData(3, "Date4", DateTimeFeature.Month | DateTimeFeature.Year | DateTimeFeature.Second | DateTimeFeature.Hour)]
         public void Test_Good_Date_Descriptor_With_Features(int index, string name, DateTimeFeature feature)
         {
             var desc = Descriptor.Create<FakeDate>();
-            Assert.AreEqual(name, desc.Features[index].Name);
-            Assert.AreEqual(new DateTimeProperty(feature).Features, ((DateTimeProperty)desc.Features[index]).Features);
+            Assert.Equal(name, desc.Features[index].Name);
+            Assert.Equal(new DateTimeProperty(feature).Features, ((DateTimeProperty)desc.Features[index]).Features);
         }
 
-        [Test]
+        [Fact]
         public void Test_Good_Date_Descriptor_With_Features_Fluent()
         {
             DateTimeFeature portion = DateTimeFeature.Month | DateTimeFeature.Year | DateTimeFeature.Second | DateTimeFeature.Hour;
             var d = Descriptor.For<FakeDate>()
                               .WithDateTime(f => f.Date1, portion);
 
-            Assert.AreEqual("Date1", d.Features[0].Name);
-            Assert.AreEqual(new DateTimeProperty(portion).Features, ((DateTimeProperty)d.Features[0]).Features);
+            Assert.Equal("Date1", d.Features[0].Name);
+            Assert.Equal(new DateTimeProperty(portion).Features, ((DateTimeProperty)d.Features[0]).Features);
         }
 
-        [TestCase(4, "Date5", DatePortion.Date)]
-        [TestCase(5, "Date6", DatePortion.Date | DatePortion.TimeExtended)]
-        [TestCase(6, "Date7", DatePortion.Time)]
-        [TestCase(7, "Date8", DatePortion.Date | DatePortion.DateExtended)]
+        [Theory]
+        [InlineData(4, "Date5", DatePortion.Date)]
+        [InlineData(5, "Date6", DatePortion.Date | DatePortion.TimeExtended)]
+        [InlineData(6, "Date7", DatePortion.Time)]
+        [InlineData(7, "Date8", DatePortion.Date | DatePortion.DateExtended)]
         public void Test_Good_Date_Descriptor_With_Portions(int index, string name, DatePortion portion)
         {
             var desc = Descriptor.Create<FakeDate>();
-            Assert.AreEqual(name, desc.Features[index].Name);
-            Assert.AreEqual(new DateTimeProperty(portion).Features, ((DateTimeProperty)desc.Features[index]).Features);
+            Assert.Equal(name, desc.Features[index].Name);
+            Assert.Equal(new DateTimeProperty(portion).Features, ((DateTimeProperty)desc.Features[index]).Features);
         }
 
-        [Test]
+        [Fact]
         public void Test_Good_Date_Descriptor_With_Portions_Fluent()
         {
             DatePortion portion = DatePortion.Date | DatePortion.DateExtended;
             var d = Descriptor.For<FakeDate>()
                               .WithDateTime(f => f.Date1, portion);
 
-            Assert.AreEqual("Date1", d.Features[0].Name);
-            Assert.AreEqual(new DateTimeProperty(portion).Features, ((DateTimeProperty)d.Features[0]).Features);
+            Assert.Equal("Date1", d.Features[0].Name);
+            Assert.Equal(new DateTimeProperty(portion).Features, ((DateTimeProperty)d.Features[0]).Features);
         }
 
-        [Test]
+        [Fact]
         public void Test_Bad_Date_Descriptor()
         {
             Assert.Throws<InvalidOperationException>(() => Descriptor.Create<FakeDateWithError>());
         }
 
-        [TestCase(0, "Numbers1", 20)]
-        [TestCase(1, "Numbers2", 5)]
-        [TestCase(2, "Numbers3", 46)]
+        [Theory]
+        [InlineData(0, "Numbers1", 20)]
+        [InlineData(1, "Numbers2", 5)]
+        [InlineData(2, "Numbers3", 46)]
         public void Test_Good_Enumerable_Descriptor(int index, string name, int length)
         {
             var desc = Descriptor.Create<FakeEnumerable>();
-            Assert.AreEqual(name, desc.Features[index].Name);
-            Assert.AreEqual(length, ((EnumerableProperty)desc.Features[index]).Length);
+            Assert.Equal(name, desc.Features[index].Name);
+            Assert.Equal(length, ((EnumerableProperty)desc.Features[index]).Length);
         }
 
 
-        [Test]
+        [Fact]
         public void Test_Good_Enumerable_Fluent()
         {
             var length = 10;
             var d = Descriptor.For<FakeEnumerable>()
                                .WithEnumerable(e => e.Numbers1, length);
 
-            Assert.AreEqual("Numbers1", d.Features[0].Name);
-            Assert.AreEqual(length, ((EnumerableProperty)d.Features[0]).Length);
+            Assert.Equal("Numbers1", d.Features[0].Name);
+            Assert.Equal(length, ((EnumerableProperty)d.Features[0]).Length);
         }
 
 
-        [Test]
+        [Fact]
         public void Test_Bad_Enumerable_Descriptor()
         {
             Assert.Throws<InvalidOperationException>(
                 () => Descriptor.Create<FakEnumerableWithError1>());
         }
 
-        [Test]
+        [Fact]
         public void Test_Bad_Enumerable_0_Descriptor()
         {
             Assert.Throws<InvalidOperationException>(
                 () => Descriptor.Create<FakEnumerableWithError2>());
         }
 
-        [Test]
+        [Fact]
         public void Test_Fluent_Api()
         {
             var d = Descriptor.New()
@@ -122,15 +126,15 @@ namespace numl.Tests.DataTests
                         .With("PetalWidth").As(typeof(int))
                         .Learn("Class").As(typeof(string));
 
-            Assert.AreEqual(4, d.Features.Length);
-            Assert.AreEqual(typeof(decimal), d.Features[0].Type);
-            Assert.AreEqual(typeof(double), d.Features[1].Type);
-            Assert.AreEqual(typeof(decimal), d.Features[2].Type);
-            Assert.AreEqual(typeof(int), d.Features[3].Type);
-            Assert.AreEqual("Class", d.Label.Name);
+            Assert.Equal(4, d.Features.Length);
+            Assert.Equal(typeof(decimal), d.Features[0].Type);
+            Assert.Equal(typeof(double), d.Features[1].Type);
+            Assert.Equal(typeof(decimal), d.Features[2].Type);
+            Assert.Equal(typeof(int), d.Features[3].Type);
+            Assert.Equal("Class", d.Label.Name);
         }
 
-        [Test]
+        [Fact]
         public void Test_Typed_Fluent_Api()
         {
             var d = Descriptor.For<Iris>()
@@ -140,27 +144,27 @@ namespace numl.Tests.DataTests
                                 .With(i => i.PetalWidth)
                                 .Learn(i => i.Class);
 
-            Assert.AreEqual(4, d.Features.Length);
-            Assert.AreEqual(typeof(decimal), d.Features[0].Type);
-            Assert.AreEqual(typeof(decimal), d.Features[1].Type);
-            Assert.AreEqual(typeof(decimal), d.Features[2].Type);
-            Assert.AreEqual(typeof(decimal), d.Features[3].Type);
-            Assert.AreEqual("Class", d.Label.Name);
-            Assert.AreEqual(1, d.Label.Length);
+            Assert.Equal(4, d.Features.Length);
+            Assert.Equal(typeof(decimal), d.Features[0].Type);
+            Assert.Equal(typeof(decimal), d.Features[1].Type);
+            Assert.Equal(typeof(decimal), d.Features[2].Type);
+            Assert.Equal(typeof(decimal), d.Features[3].Type);
+            Assert.Equal("Class", d.Label.Name);
+            Assert.Equal(1, d.Label.Length);
         }
 
-        [Test]
+        [Fact]
         public void Test_Attributes_Api()
         {
             var d = Descriptor.Create<Iris>();
 
-            Assert.AreEqual(4, d.Features.Length);
-            Assert.AreEqual(typeof(decimal), d.Features[0].Type);
-            Assert.AreEqual(typeof(decimal), d.Features[1].Type);
-            Assert.AreEqual(typeof(decimal), d.Features[2].Type);
-            Assert.AreEqual(typeof(decimal), d.Features[3].Type);
-            Assert.AreEqual("Class", d.Label.Name);
-            Assert.AreEqual(1, d.Label.Length);
+            Assert.Equal(4, d.Features.Length);
+            Assert.Equal(typeof(decimal), d.Features[0].Type);
+            Assert.Equal(typeof(decimal), d.Features[1].Type);
+            Assert.Equal(typeof(decimal), d.Features[2].Type);
+            Assert.Equal(typeof(decimal), d.Features[3].Type);
+            Assert.Equal("Class", d.Label.Name);
+            Assert.Equal(1, d.Label.Length);
         }
     }
 }

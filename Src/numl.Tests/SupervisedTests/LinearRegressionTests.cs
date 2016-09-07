@@ -1,7 +1,7 @@
 ﻿using System;
 using numl.Model;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using numl.Math.LinearAlgebra;
 using numl.Math.Functions.Cost;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ namespace numl.Tests.SupervisedTests
     [TestFixture, Category("Supervised")]
     public class LinearRegressionTests : BaseSupervised
     {
-        [Test]
+        [Fact]
         public void Linear_Regression_Test_CostFunction()
         {
             Vector theta = new Vector(new double[] { 1, 1 });
@@ -56,12 +56,12 @@ namespace numl.Tests.SupervisedTests
             double cost = costFunction.ComputeCost(theta);
             Vector grad = costFunction.ComputeGradient(theta);
 
-            Assert.AreEqual(303.95d, System.Math.Round(cost, 2));
+            Assert.Equal(303.95d, System.Math.Round(cost, 2));
 
-            Assert.AreEqual(new double[] { -15.3, 598.2 }, grad.Select(s => System.Math.Round(s, 1)).ToArray());
+            Assert.Equal(new double[] { -15.3, 598.2 }, grad.Select(s => System.Math.Round(s, 1)).ToArray());
         }
 
-        [Test]
+        [Fact]
         public void Linear_Regression_Test_CostFunction_Regularized()
         {
             Vector theta = new Vector(new double[] { 1, 1 });
@@ -107,12 +107,12 @@ namespace numl.Tests.SupervisedTests
             double cost = costFunction.ComputeCost(theta);
             Vector grad = costFunction.ComputeGradient(theta);
 
-            Assert.AreEqual(303.99, System.Math.Round(cost, 2));
+            Assert.Equal(303.99, System.Math.Round(cost, 2));
 
-            Assert.AreEqual(new double[] { -15.3, 598.3 }, grad.Select(s => System.Math.Round(s, 1)).ToArray());
+            Assert.Equal(new double[] { -15.3, 598.3 }, grad.Select(s => System.Math.Round(s, 1)).ToArray());
         }
 
-        [Test]
+        [Fact]
         public void Linear_Regression_Test_House_Predictions_Normal()
         {
             // test house prices based on ft-sq and no# bedrooms
@@ -151,10 +151,10 @@ namespace numl.Tests.SupervisedTests
             // CK 150929: increased due to improvements in optimisation
             double actualEqns = 295107.0d;
             
-            Assert.AreEqual(actualEqns, System.Math.Round(priceEqns, 0), 5000);
+            Assert.Equal(actualEqns, System.Math.Round(priceEqns, 0), 5000);
         }
 
-        [Test]
+        [Fact]
         public void Linear_Regression_Test_House_Predictions_Regularized()
         {
             // test house prices based on ft-sq and no# bedrooms
@@ -192,10 +192,10 @@ namespace numl.Tests.SupervisedTests
 
             double actualGrad = 296500.0d;
 
-            Assert.AreEqual(actualGrad, System.Math.Round(priceGrad, 0), 5000);
+            Assert.Equal(actualGrad, System.Math.Round(priceGrad, 0), 5000);
         }
 
-        [Test]
+        [Fact]
         public void Linear_Regression_Learner_Test()
         {
             var datum = new[]

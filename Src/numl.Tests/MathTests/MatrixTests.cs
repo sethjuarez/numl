@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using NUnit.Framework;
+using Xunit;
 using numl.Math.LinearAlgebra;
 using numl.Utils;
 using System.Diagnostics;
@@ -11,7 +11,7 @@ namespace numl.Tests.MathTests
     /// <summary>
     /// Summary description for MatrixTests
     /// </summary>
-    [TestFixture, Category("Math")]
+    [Trait("Category", "Math")]
     public class MatrixTests
     {
         private Matrix _test = new[,]
@@ -19,7 +19,7 @@ namespace numl.Tests.MathTests
              { 4, 5, 6},
              { 7, 8, 9}};
 
-        [Test]
+        [Fact]
         public void Test_Matrix_Vector_Enumeration_Row()
         {
             Vector[] a = new Vector[]
@@ -30,10 +30,10 @@ namespace numl.Tests.MathTests
             };
 
             for (int i = 0; i < 3; i++)
-                Assert.IsTrue(a[i] == _test[i, VectorType.Row]);
+                Assert.True(a[i] == _test[i, VectorType.Row]);
         }
 
-        [Test]
+        [Fact]
         public void Test_Matrix_Vector_Enumeration_Col()
         {
             Vector[] a = new Vector[]
@@ -44,10 +44,10 @@ namespace numl.Tests.MathTests
             };
 
             for (int i = 0; i < 3; i++)
-                Assert.IsTrue(a[i] == _test[i, VectorType.Col]);
+                Assert.True(a[i] == _test[i, VectorType.Col]);
         }
 
-        [Test]
+        [Fact]
         public void Test_Matrix_Vector_Enumeration_Row_Transpose()
         {
             Vector[] a = new Vector[]
@@ -58,10 +58,10 @@ namespace numl.Tests.MathTests
             };
 
             for (int i = 0; i < 3; i++)
-                Assert.IsTrue(a[i] == _test.T[i, VectorType.Row]);
+                Assert.True(a[i] == _test.T[i, VectorType.Row]);
         }
 
-        [Test]
+        [Fact]
         public void Test_Matrix_Vector_Enumeration_Col_Transpose()
         {
             Vector[] a = new Vector[]
@@ -72,10 +72,10 @@ namespace numl.Tests.MathTests
             };
 
             for (int i = 0; i < 3; i++)
-                Assert.AreEqual(a[i], _test.T[i, VectorType.Col]);
+                Assert.Equal(a[i], _test.T[i, VectorType.Col]);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Serialize_Test()
         {
             string path = string.Format(BaseSerialization.GetPath(GetType()), "matrix_serialize_test");
@@ -95,10 +95,10 @@ namespace numl.Tests.MathTests
             
             // deserialize
             Matrix m2 = Matrix.Load(path);
-            Assert.AreEqual(m1, m2);
+            Assert.Equal(m1, m2);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Equal_Test()
         {
             Matrix one = new[,]
@@ -111,11 +111,11 @@ namespace numl.Tests.MathTests
                  {4, 5, 6},
                  {7, 8, 9}};
 
-            Assert.AreEqual(true, one.Equals(two));
-            Assert.AreEqual(true, one == two);
+            Assert.Equal(true, one.Equals(two));
+            Assert.Equal(true, one == two);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Not_Equal_Test()
         {
             Matrix one = new[,]
@@ -128,12 +128,12 @@ namespace numl.Tests.MathTests
                  {4, 5, 6},
                  {7, 8, 9}};
 
-            Assert.AreEqual(false, one.Equals(two));
-            Assert.AreEqual(false, one == two);
-            Assert.AreEqual(true, one != two);
+            Assert.Equal(false, one.Equals(two));
+            Assert.Equal(false, one == two);
+            Assert.Equal(true, one != two);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Identity_Test()
         {
             Matrix eye1 = new[,]
@@ -152,12 +152,12 @@ namespace numl.Tests.MathTests
                  {0, 0, 1},
                  {0, 0, 0}};
 
-            Assert.AreEqual(eye1, Matrix.Identity(3));
-            Assert.AreEqual(eye2, Matrix.Identity(3, 4));
-            Assert.AreEqual(eye3, Matrix.Identity(4, 3));
+            Assert.Equal(eye1, Matrix.Identity(3));
+            Assert.Equal(eye2, Matrix.Identity(3, 4));
+            Assert.Equal(eye3, Matrix.Identity(4, 3));
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Trace_Test()
         {
             Matrix one = new[,]
@@ -176,12 +176,12 @@ namespace numl.Tests.MathTests
                  {7, 8, 10},
                  {11,12,13}};
 
-            Assert.AreEqual(16, one.Trace());
-            Assert.AreEqual(16, two.Trace());
-            Assert.AreEqual(16, three.Trace());
+            Assert.Equal(16, one.Trace());
+            Assert.Equal(16, two.Trace());
+            Assert.Equal(16, three.Trace());
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Zeros_Test()
         {
             Matrix one = new[,]
@@ -200,12 +200,12 @@ namespace numl.Tests.MathTests
                  {0, 0, 0},
                  {0, 0, 0}};
 
-            Assert.AreEqual(one, Matrix.Zeros(3));
-            Assert.AreEqual(two, Matrix.Zeros(3, 4));
-            Assert.AreEqual(three, Matrix.Zeros(4, 3));
+            Assert.Equal(one, Matrix.Zeros(3));
+            Assert.Equal(two, Matrix.Zeros(3, 4));
+            Assert.Equal(three, Matrix.Zeros(4, 3));
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Transpose_Test()
         {
             Matrix one = new[,]
@@ -229,17 +229,17 @@ namespace numl.Tests.MathTests
                  {3, 6, 10},
                  {9,12, 13}};
 
-            Assert.AreEqual(oneT, one.Transpose());
-            Assert.AreEqual(oneT, one.T);
-            Assert.AreEqual(one, oneT.Transpose());
-            Assert.AreEqual(one, oneT.T);
-            Assert.AreEqual(twoT, two.Transpose());
-            Assert.AreEqual(twoT, two.T);
-            Assert.AreEqual(two, twoT.Transpose());
-            Assert.AreEqual(two, twoT.T);
+            Assert.Equal(oneT, one.Transpose());
+            Assert.Equal(oneT, one.T);
+            Assert.Equal(one, oneT.Transpose());
+            Assert.Equal(one, oneT.T);
+            Assert.Equal(twoT, two.Transpose());
+            Assert.Equal(twoT, two.T);
+            Assert.Equal(two, twoT.Transpose());
+            Assert.Equal(two, twoT.T);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Assign_Value_Test()
         {
             Matrix one = new[,]
@@ -248,10 +248,10 @@ namespace numl.Tests.MathTests
                  {7, 8, 9}};
 
             one[1, 1] = 14.5;
-            Assert.AreEqual(14.5, one[1, 1]);
+            Assert.Equal(14.5, one[1, 1]);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Assign_Value_Bad_Index_Test()
         {
             Matrix one = new[,]
@@ -262,7 +262,7 @@ namespace numl.Tests.MathTests
             Assert.Throws<IndexOutOfRangeException>(() => one[5, 5] = 14.5);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Read_Value_Bad_Index_Test()
         {
             Matrix one = new[,]
@@ -273,7 +273,7 @@ namespace numl.Tests.MathTests
             Assert.Throws<IndexOutOfRangeException>(() => { var d = one[5, 5]; });
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Add_Aligned_Test()
         {
             Matrix one = new[,]
@@ -324,12 +324,12 @@ namespace numl.Tests.MathTests
                  {14, 16, 18},
                  {4, 4, 4}};
 
-            Assert.AreEqual(sum, one + two);
-            Assert.AreEqual(c, a + b);
-            Assert.AreEqual(f, d + e);
+            Assert.Equal(sum, one + two);
+            Assert.Equal(c, a + b);
+            Assert.Equal(f, d + e);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Add_Non_Aligned_Test_1()
         {
             Matrix a = new[,]
@@ -346,7 +346,7 @@ namespace numl.Tests.MathTests
                 () => { var x = a + b; });
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Add_Non_Aligned_Test_2()
         {
             Matrix a = new[,]
@@ -364,7 +364,7 @@ namespace numl.Tests.MathTests
                 () => { var x = a + b; });
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Subtract_Aligned_Test()
         {
             Matrix one = new[,]
@@ -415,12 +415,12 @@ namespace numl.Tests.MathTests
                  {0, 0, 0},
                  {-2, 0, 2}};
 
-            Assert.AreEqual(sum, one - two);
-            Assert.AreEqual(c, a - b);
-            Assert.AreEqual(f, d - e);
+            Assert.Equal(sum, one - two);
+            Assert.Equal(c, a - b);
+            Assert.Equal(f, d - e);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Subtract_Non_Aligned_Test_1()
         {
             Matrix a = new[,]
@@ -437,7 +437,7 @@ namespace numl.Tests.MathTests
                 () => { var x = a - b; });
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Subtract_Non_Aligned_Test_2()
         {
             Matrix a = new[,]
@@ -455,7 +455,7 @@ namespace numl.Tests.MathTests
                 () => { var x = a - b; });
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Multiply_Vector_Aligned_Test()
         {
             Matrix one = new[,]
@@ -469,11 +469,11 @@ namespace numl.Tests.MathTests
             Matrix s2 = (new Vector(new double[] { 12, 15, 18 }))
                             .ToMatrix(VectorType.Row);
 
-            Assert.AreEqual(s1, one * v);
-            Assert.AreEqual(s2, v * one);
+            Assert.Equal(s1, one * v);
+            Assert.Equal(s2, v * one);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Sum_Test()
         {
             Matrix one = new[,]
@@ -484,12 +484,12 @@ namespace numl.Tests.MathTests
             Vector row = new[] { 12, 15, 18, 15 };
             Vector col = new[] { 10, 20, 30 };
 
-            Assert.AreEqual(row, one.Sum(VectorType.Row));
-            Assert.AreEqual(col, one.Sum(VectorType.Col));
-            Assert.AreEqual(60, one.Sum());
+            Assert.Equal(row, one.Sum(VectorType.Row));
+            Assert.Equal(col, one.Sum(VectorType.Col));
+            Assert.Equal(60, one.Sum());
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Multiply_Aligned_Test()
         {
             Matrix one = new[,]
@@ -520,11 +520,11 @@ namespace numl.Tests.MathTests
                  { 96, 120, 144,  96}};
 
 
-            Assert.AreEqual(sol, one * one);
-            Assert.AreEqual(c, a * b);
+            Assert.Equal(sol, one * one);
+            Assert.Equal(c, a * b);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Multiply_Scalar_Test()
         {
             Matrix one = new[,]
@@ -537,11 +537,11 @@ namespace numl.Tests.MathTests
                  { 8, 10, 12},
                  {14, 16, 18}};
 
-            Assert.AreEqual(sol, 2 * one);
-            Assert.AreEqual(sol, one * 2);
+            Assert.Equal(sol, 2 * one);
+            Assert.Equal(sol, one * 2);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Sub_Matrix_Test()
         {
             Matrix one = new[,]
@@ -558,11 +558,11 @@ namespace numl.Tests.MathTests
                 {{ 5, 6 },
                  { 8, 9 }};
 
-            Assert.AreEqual(sol1, one.GetMatrix(1, 2, 0, 2));
-            Assert.AreEqual(sol2, one.GetMatrix(1, 2, 1, 2));
+            Assert.Equal(sol1, one.GetMatrix(1, 2, 0, 2));
+            Assert.Equal(sol2, one.GetMatrix(1, 2, 1, 2));
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Multiply_Non_Aligned_Test()
         {
             Matrix a = new[,]
@@ -580,7 +580,7 @@ namespace numl.Tests.MathTests
                 () => { var x = a * b; });
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Inverse_Test()
         {
             Matrix a = new[,]
@@ -601,12 +601,12 @@ namespace numl.Tests.MathTests
                  {  5.0/22,   3.0/22,  -5.0/22},
                  { -2.0/11,   1.0/11,   2.0/11}});
 
-            Assert.AreEqual(aInv, a ^ -1);
-            Assert.AreEqual(bInv.ToString(), (b ^ -1).ToString());
+            Assert.Equal(aInv, a ^ -1);
+            Assert.Equal(bInv.ToString(), (b ^ -1).ToString());
         }
 
 
-        [Test]
+        [Fact]
         public void Matrix_Cholesky_Test()
         {
             Matrix m = new[,]
@@ -619,11 +619,11 @@ namespace numl.Tests.MathTests
                  {  3, 3, 0},
                  { -1, 1, 3}};
 
-            Assert.AreEqual(sol, Matrix.Cholesky(m));
-            Assert.AreEqual(sol, m.Cholesky());
+            Assert.Equal(sol, Matrix.Cholesky(m));
+            Assert.Equal(sol, m.Cholesky());
         }
 
-        [Test]
+        [Fact]
         public void Matrix_LLS_Test()
         {
             Matrix A = new[,]
@@ -636,7 +636,7 @@ namespace numl.Tests.MathTests
 
             // LLS implementation
             Vector x = A / b;
-            Assert.AreEqual(sol, x);
+            Assert.Equal(sol, x);
 
             // this should fire regular inverse
             // need to be a bit smarter about using straight
@@ -644,10 +644,10 @@ namespace numl.Tests.MathTests
             // Cholesky if positive diagonal or
             // LU
             Vector y = (A.T * A) / (A.T * b).ToVector();
-            Assert.AreEqual(sol, y);
+            Assert.Equal(sol, y);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_QR_Test()
         {
             Matrix A = new[,] {{ 4,  1,  2},
@@ -660,10 +660,10 @@ namespace numl.Tests.MathTests
 
             // close enough...
             var diff = A.Norm() - (Q * R).Norm();
-            Assert.AreEqual(0, diff);
+            Assert.Equal(0, diff);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Doolittle_Pivot_Test()
         {
             Matrix A = new[,] {{ 1, 4, 2, 3 },
@@ -688,10 +688,10 @@ namespace numl.Tests.MathTests
 
 
             var I = Matrix.Pivot(B);
-            //Assert.AreEqual(P, I);
+            //Assert.Equal(P, I);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_LU_Test()
         {
             Matrix A = new[,] {{ 1, 2, 0 },
@@ -721,7 +721,7 @@ namespace numl.Tests.MathTests
             var T = Matrix.Stack(P, L).Stack(U);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Extract_Test()
         {
             Matrix A = new[,]
@@ -734,7 +734,7 @@ namespace numl.Tests.MathTests
                 {{ 6, 2},
                  { 1, 1}};
 
-            Assert.AreEqual(sol, A.Extract(1, 1, 2, 2));
+            Assert.Equal(sol, A.Extract(1, 1, 2, 2));
 
             Matrix B = new[,]
                 {{  1,  2,  4,  9 },
@@ -747,10 +747,10 @@ namespace numl.Tests.MathTests
                  {  1,  4 },
                  {  3,  2 }};
 
-            Assert.AreEqual(bSol, B.Extract(2, 1, 2, 3));
+            Assert.Equal(bSol, B.Extract(2, 1, 2, 3));
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Covariance_Test()
         {
             // from: http://www.itl.nist.gov/div898/handbook/pmc/section5/pmc541.htm
@@ -768,10 +768,10 @@ namespace numl.Tests.MathTests
                 { 0.00175, 0.00135, 0.00043 }};
 
             var cov = x.Covariance().Round(5);
-            Assert.AreEqual(covTruth, cov);
+            Assert.Equal(covTruth, cov);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Determinant_Test()
         {
 
@@ -780,7 +780,7 @@ namespace numl.Tests.MathTests
                 { -1, 1, 3 },
                 { 2, 0, 1 }};
 
-            Assert.AreEqual(6, x.Det());
+            Assert.Equal(6, x.Det());
 
             Matrix m = new[,]
                 {{ 1, 2,  2, 1 },
@@ -801,33 +801,33 @@ namespace numl.Tests.MathTests
             var qd = q.Det();
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Reshape_Rows_Test()
         {
             Vector v = new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
             Matrix x = v.Reshape(5, VectorType.Row);
 
-            Assert.AreEqual(v[7], x[2, 1]);
-            Assert.AreEqual(v[5], x[0, 1]);
-            Assert.AreEqual(v[4], x[4, 0]);
-            Assert.AreEqual(v[9], x[4, 1]);
+            Assert.Equal(v[7], x[2, 1]);
+            Assert.Equal(v[5], x[0, 1]);
+            Assert.Equal(v[4], x[4, 0]);
+            Assert.Equal(v[9], x[4, 1]);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Reshape_Cols_Test()
         {
             Vector v = new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
             Matrix y = v.Reshape(5, VectorType.Col, VectorType.Col);
 
-            Assert.AreEqual(v[2], y[0, 2]);
-            Assert.AreEqual(v[1], y[0, 1]);
-            Assert.AreEqual(v[5], y[1, 0]);
-            Assert.AreEqual(v[9], y[1, 4]);
+            Assert.Equal(v[2], y[0, 2]);
+            Assert.Equal(v[1], y[0, 1]);
+            Assert.Equal(v[5], y[1, 0]);
+            Assert.Equal(v[9], y[1, 4]);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Unshape_Test()
         {
             Vector v = new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -836,19 +836,19 @@ namespace numl.Tests.MathTests
             Matrix y = v.Reshape(5, VectorType.Col);
 
             Vector vx = x.Unshape();
-            Assert.AreEqual(v[1], vx[1]);
-            Assert.AreEqual(v[2], vx[2]);
-            Assert.AreEqual(v[8], vx[8]);
-            Assert.AreEqual(v[9], vx[9]);
+            Assert.Equal(v[1], vx[1]);
+            Assert.Equal(v[2], vx[2]);
+            Assert.Equal(v[8], vx[8]);
+            Assert.Equal(v[9], vx[9]);
 
             Vector vy = y.Unshape();
-            Assert.AreEqual(v[1], vy[1]);
-            Assert.AreEqual(v[2], vy[2]);
-            Assert.AreEqual(v[8], vy[8]);
-            Assert.AreEqual(v[9], vy[9]);
+            Assert.Equal(v[1], vy[1]);
+            Assert.Equal(v[2], vy[2]);
+            Assert.Equal(v[8], vy[8]);
+            Assert.Equal(v[9], vy[9]);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Sort_Rows_Test()
         {
             Matrix m1 = new[,]
@@ -866,26 +866,26 @@ namespace numl.Tests.MathTests
 
             Matrix m1s = m1.Sort(k => k[0], VectorType.Row, true, out indices);
 
-            Assert.AreEqual(m1[0, 0], m1s[0, 0]);
-            Assert.AreEqual(m1[3, 0], m1s[1, 0]);
-            Assert.AreEqual(m1[1, 0], m1s[2, 0]);
-            Assert.AreEqual(m1[2, 0], m1s[3, 0]);
-            Assert.AreEqual(m1[4, 0], m1s[4, 0]);
+            Assert.Equal(m1[0, 0], m1s[0, 0]);
+            Assert.Equal(m1[3, 0], m1s[1, 0]);
+            Assert.Equal(m1[1, 0], m1s[2, 0]);
+            Assert.Equal(m1[2, 0], m1s[3, 0]);
+            Assert.Equal(m1[4, 0], m1s[4, 0]);
 
-            Assert.AreEqual(m1[0, 1], m1s[0, 1]);
-            Assert.AreEqual(m1[3, 1], m1s[1, 1]);
-            Assert.AreEqual(m1[1, 1], m1s[2, 1]);
-            Assert.AreEqual(m1[2, 1], m1s[3, 1]);
-            Assert.AreEqual(m1[4, 1], m1s[4, 1]);
+            Assert.Equal(m1[0, 1], m1s[0, 1]);
+            Assert.Equal(m1[3, 1], m1s[1, 1]);
+            Assert.Equal(m1[1, 1], m1s[2, 1]);
+            Assert.Equal(m1[2, 1], m1s[3, 1]);
+            Assert.Equal(m1[4, 1], m1s[4, 1]);
 
-            Assert.AreEqual(v[0], indices[0]);
-            Assert.AreEqual(v[1], indices[1]);
-            Assert.AreEqual(v[2], indices[2]);
-            Assert.AreEqual(v[3], indices[3]);
-            Assert.AreEqual(v[4], indices[4]);
+            Assert.Equal(v[0], indices[0]);
+            Assert.Equal(v[1], indices[1]);
+            Assert.Equal(v[2], indices[2]);
+            Assert.Equal(v[3], indices[3]);
+            Assert.Equal(v[4], indices[4]);
         }
 
-        [Test]
+        [Fact]
         public void Matrix_Sort_Columns_Test()
         {
 
@@ -904,20 +904,20 @@ namespace numl.Tests.MathTests
             Vector indices;
             Matrix m1s = m1.Sort(k => k[0], VectorType.Col, true, out indices);
 
-            Assert.AreEqual(m1[0, 3], m1s[0, 1]);
-            Assert.AreEqual(m1[0, 0], m1s[0, 3]);
-            Assert.AreEqual(m1[0, 2], m1s[0, 2]);
-            Assert.AreEqual(m1[0, 1], m1s[0, 0]);
+            Assert.Equal(m1[0, 3], m1s[0, 1]);
+            Assert.Equal(m1[0, 0], m1s[0, 3]);
+            Assert.Equal(m1[0, 2], m1s[0, 2]);
+            Assert.Equal(m1[0, 1], m1s[0, 0]);
 
-            Assert.AreEqual(m1[1, 3], m1s[1, 1]);
-            Assert.AreEqual(m1[1, 0], m1s[1, 3]);
-            Assert.AreEqual(m1[1, 2], m1s[1, 2]);
-            Assert.AreEqual(m1[1, 1], m1s[1, 0]);
+            Assert.Equal(m1[1, 3], m1s[1, 1]);
+            Assert.Equal(m1[1, 0], m1s[1, 3]);
+            Assert.Equal(m1[1, 2], m1s[1, 2]);
+            Assert.Equal(m1[1, 1], m1s[1, 0]);
 
-            Assert.AreEqual(v[0], indices[0]);
-            Assert.AreEqual(v[1], indices[1]);
-            Assert.AreEqual(v[2], indices[2]);
-            Assert.AreEqual(v[3], indices[3]);
+            Assert.Equal(v[0], indices[0]);
+            Assert.Equal(v[1], indices[1]);
+            Assert.Equal(v[2], indices[2]);
+            Assert.Equal(v[3], indices[3]);
         }
     }
 }

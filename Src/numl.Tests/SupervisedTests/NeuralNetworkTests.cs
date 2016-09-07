@@ -1,7 +1,7 @@
 ﻿using System;
 using numl.Model;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 using numl.Supervised.NeuralNetwork;
@@ -11,25 +11,25 @@ namespace numl.Tests.SupervisedTests
     [TestFixture, Category("Supervised")]
     public class NeuralNetworkTests : BaseSupervised
     {
-        [Test]
+        [Fact]
         public void Tennis_Tests()
         {
             TennisPrediction(new NeuralNetworkGenerator());
         }
 
-        [Test]
+        [Fact]
         public void House_Tests()
         {
             HousePrediction(new NeuralNetworkGenerator());
         }
 
-        [Test]
+        [Fact]
         public void Iris_Tests()
         {
             IrisPrediction(new NeuralNetworkGenerator());
         }
 
-        [Test]
+        [Fact]
         public void XOR_Test_Learner()
         {
             var xor = new[]
@@ -81,7 +81,7 @@ namespace numl.Tests.SupervisedTests
             Console.WriteLine(string.Format("Neural Network XOR Test (score) =>\n{0}", score.RMSE));
         }
 
-        [Test]
+        [Fact]
         public void RNN_Unit_Test_1()
         {
             var input = new Supervised.NeuralNetwork.Neuron()
@@ -116,16 +116,16 @@ namespace numl.Tests.SupervisedTests
 
             double output = gru.Evaluate();
 
-            Assert.AreEqual(0.00422846, output, 0.002, "First pass");
+            Assert.Equal(0.00422846, output, 0.002, "First pass");
 
             gru.Output = 1.5;
 
             double output2 = gru.Evaluate();
 
-            Assert.AreEqual(0.00739980, output2, 0.002, "Second pass");
+            Assert.Equal(0.00739980, output2, 0.002, "Second pass");
         }
 
-        [Test]
+        [Fact]
         public void RNN_Unit_Test_2()
         {
             var input = new Supervised.NeuralNetwork.Neuron()
@@ -152,18 +152,18 @@ namespace numl.Tests.SupervisedTests
 
             double output = gru.Evaluate();
 
-            //Assert.AreEqual(0.24144242, output, 0.002, "First pass");
-            Assert.AreEqual(0.18775503, output, 0.002, "First pass");
+            //Assert.Equal(0.24144242, output, 0.002, "First pass");
+            Assert.Equal(0.18775503, output, 0.002, "First pass");
 
             input.Output = 20.0;
 
             double output2 = gru.Evaluate();
 
-            //Assert.AreEqual(0.40416686, output2, 0.002, "Second pass");
-            Assert.AreEqual(0.30399969, output2, 0.002, "Second pass");
+            //Assert.Equal(0.40416686, output2, 0.002, "Second pass");
+            Assert.Equal(0.30399969, output2, 0.002, "Second pass");
         }
 
-        [Test]
+        [Fact]
         public void Neural_Network_Study_Test()
         {
             var data = new[] {
@@ -193,7 +193,7 @@ namespace numl.Tests.SupervisedTests
 
             var test = model.PredictValue(new { Study = 7.0, Beer = 1.0, Passed = false });
 
-            Assert.AreEqual(true, test);
+            Assert.Equal(true, test);
         }
     }
 }

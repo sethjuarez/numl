@@ -1,7 +1,7 @@
 ﻿using System;
 using numl.Model;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using numl.Math.LinearAlgebra;
 using numl.Math.Functions.Cost;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace numl.Tests.SupervisedTests
     [TestFixture, Category("Supervised")]
     public class LogisticRegressionTests : BaseSupervised
     {
-        [Test]
+        [Fact]
         public void Logistic_Regression_Test_Generator()
         {
             Matrix m = new[,] {
@@ -69,10 +69,10 @@ namespace numl.Tests.SupervisedTests
             var model2 = generator.Generate(m, y);
             double p = model2.Predict(test);
 
-            Assert.AreEqual(1d, p);
+            Assert.Equal(1d, p);
         }
 
-        [Test]
+        [Fact]
         public void Logistic_Regression_Test_CostFunction_1()
         {
             Matrix X = new[,]
@@ -98,14 +98,14 @@ namespace numl.Tests.SupervisedTests
 
             theta = logisticCostFunction.ComputeGradient(theta.Copy());
 
-            Assert.AreEqual(2.2933d, System.Math.Round(cost, 4));
+            Assert.Equal(2.2933d, System.Math.Round(cost, 4));
 
-            Assert.AreEqual(1.6702d, System.Math.Round(theta[0], 4));
-            Assert.AreEqual(2.1483d, System.Math.Round(theta[1], 4));
-            Assert.AreEqual(1.0887d, System.Math.Round(theta[2], 4));
+            Assert.Equal(1.6702d, System.Math.Round(theta[0], 4));
+            Assert.Equal(2.1483d, System.Math.Round(theta[1], 4));
+            Assert.Equal(1.0887d, System.Math.Round(theta[2], 4));
         }
 
-        [Test]
+        [Fact]
         public void Logistic_Regression_Test_CostFunction_2_WithoutRegularization()
         {
             Matrix X = new[,] {
@@ -127,14 +127,14 @@ namespace numl.Tests.SupervisedTests
 
             theta = logisticCostFunction.ComputeGradient(theta.Copy());
 
-            Assert.AreEqual(3.1067d, System.Math.Round(cost, 4));
+            Assert.Equal(3.1067d, System.Math.Round(cost, 4));
 
-            Assert.AreEqual(0.6093d, System.Math.Round(theta[0], 4));
-            Assert.AreEqual(2.8988d, System.Math.Round(theta[1], 4));
-            Assert.AreEqual(0.1131d, System.Math.Round(theta[2], 4));
+            Assert.Equal(0.6093d, System.Math.Round(theta[0], 4));
+            Assert.Equal(2.8988d, System.Math.Round(theta[1], 4));
+            Assert.Equal(0.1131d, System.Math.Round(theta[2], 4));
         }
 
-        [Test]
+        [Fact]
         public void Logistic_Regression_Test_CostFunction_2_WithRegularization()
         {
             Matrix X = new[,] {
@@ -157,14 +157,14 @@ namespace numl.Tests.SupervisedTests
 
             theta = logisticCostFunction.ComputeGradient(theta.Copy());
 
-            Assert.AreEqual(3.6067d, System.Math.Round(cost, 4));
+            Assert.Equal(3.6067d, System.Math.Round(cost, 4));
 
-            Assert.AreEqual(0.6093d, System.Math.Round(theta[0], 4));
-            Assert.AreEqual(3.8988d, System.Math.Round(theta[1], 4));
-            Assert.AreEqual(0.1131d, System.Math.Round(theta[2], 4));
+            Assert.Equal(0.6093d, System.Math.Round(theta[0], 4));
+            Assert.Equal(3.8988d, System.Math.Round(theta[1], 4));
+            Assert.Equal(0.1131d, System.Math.Round(theta[2], 4));
         }
 
-        [Test]
+        [Fact]
         public void Logistic_Regression_XOR_Learner()
         {
             var xor = new[]

@@ -2,7 +2,7 @@
 using numl.Model;
 using numl.Supervised;
 using numl.Supervised.NeuralNetwork.Encoders;
-using NUnit.Framework;
+using Xunit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ namespace numl.Tests.SupervisedTests
     [TestFixture, Category("Supervised")]
     public class AutoencoderTests
     {
-        [Test]
+        [Fact]
         public void Autoencoder_Dense_Test()
         {
 

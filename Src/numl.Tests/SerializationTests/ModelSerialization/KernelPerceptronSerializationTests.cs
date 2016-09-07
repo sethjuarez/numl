@@ -2,7 +2,7 @@ using System;
 using numl.Model;
 using System.Linq;
 using numl.Tests.Data;
-using NUnit.Framework;
+using Xunit;
 using numl.Supervised.NaiveBayes;
 using System.Collections.Generic;
 using numl.Math.Kernels;
@@ -13,7 +13,7 @@ namespace numl.Tests.SerializationTests.ModelSerialization
     [TestFixture, Category("Serialization")]
     public class KernelPerceptronSerializationTests : BaseSerialization
     {
-        [Test]
+        [Fact]
         public void Basic_RBF_Kernel_Serialization_Test()
         {
             var data = new List<object>();

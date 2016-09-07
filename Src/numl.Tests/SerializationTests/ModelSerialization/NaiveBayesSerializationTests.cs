@@ -2,7 +2,7 @@
 using numl.Model;
 using System.Linq;
 using numl.Tests.Data;
-using NUnit.Framework;
+using Xunit;
 using numl.Supervised.NaiveBayes;
 using System.Collections.Generic;
 
@@ -11,7 +11,7 @@ namespace numl.Tests.SerializationTests.ModelSerialization
     [TestFixture, Category("Serialization")]
     public class NaiveBayesSerializationTests : BaseSerialization
     {
-        [Test]
+        [Fact]
         public void Tennis_Naive_Bayes_Save_And_Load_Test()
         {
             var data = Tennis.GetData();
@@ -22,10 +22,10 @@ namespace numl.Tests.SerializationTests.ModelSerialization
             Serialize(model);
 
             var lmodel = Deserialize<NaiveBayesModel>();
-            Assert.AreEqual(model.Root, lmodel.Root);
+            Assert.Equal(model.Root, lmodel.Root);
         }
 
-        [Test]
+        [Fact]
         public void Iris_Naive_Bayes_Save_And_Load_Test()
         {
             var data = Iris.Load();
@@ -36,7 +36,7 @@ namespace numl.Tests.SerializationTests.ModelSerialization
             Serialize(model);
 
             var lmodel = Deserialize<NaiveBayesModel>();
-            Assert.AreEqual(model.Root, lmodel.Root);
+            Assert.Equal(model.Root, lmodel.Root);
         }
     }
 }

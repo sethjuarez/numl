@@ -2,7 +2,7 @@
 using numl.Model;
 using numl.Utils;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using numl.Tests.Data;
 using System.Collections.Generic;
 using numl.Supervised.DecisionTree;
@@ -12,43 +12,43 @@ namespace numl.Tests.SupervisedTests
     [TestFixture, Category("Supervised")]
     public class DecisionTreeTests : BaseSupervised
     {
-        [Test]
+        [Fact]
         public void Tennis_Tests()
         {
             TennisPrediction(new DecisionTreeGenerator(50));
         }
 
-        [Test]
+        [Fact]
         public void House_Tests()
         {
             HousePrediction(new DecisionTreeGenerator(50));
         }
 
-        [Test]
+        [Fact]
         public void Iris_Tests()
         {
             IrisPrediction(new DecisionTreeGenerator(50));
         }
 
-        [Test]
+        [Fact]
         public void Tennis_Learner_Tests()
         {
             TennisLearnerPrediction(new DecisionTreeGenerator(50) { Hint = 0 });
         }
 
-        [Test]
+        [Fact]
         public void House_Learner_Tests()
         {
             HouseLearnerPrediction(new DecisionTreeGenerator(50) { Hint = 0 });
         }
 
-        [Test]
+        [Fact]
         public void Iris_Learner_Tests()
         {
             IrisLearnerPrediction(new DecisionTreeGenerator(50) { Hint = 0 });
         }
 
-        [Test]
+        [Fact]
         public void ValueObject_Test_With_Yield_Enumerator()
         {
             var o = new ValueObject() { V1 = 1, V2 = 60 };
@@ -61,7 +61,7 @@ namespace numl.Tests.SupervisedTests
             );
         }
 
-        [Test]
+        [Fact]
         public void ArbitraryPrediction_Test_With_Enum_Label()
         {
             ArbitraryPrediction minimumPredictionValue = new ArbitraryPrediction
@@ -93,7 +93,7 @@ namespace numl.Tests.SupervisedTests
             );
         }
 
-        [Test]
+        [Fact]
         public void ArbitraryPrediction_Test_With_Named_Iterator()
         {
             var data = ArbitraryPrediction.GetDataUsingNamedIterator();
@@ -118,8 +118,8 @@ namespace numl.Tests.SupervisedTests
             var expectedMinimum = model.Predict<ArbitraryPrediction>(minimumPredictionValue).OutcomeLabel;
             var expectedMaximum = model.Predict<ArbitraryPrediction>(maximumPredictionValue).OutcomeLabel;
 
-            Assert.AreEqual(ArbitraryPrediction.PredictionLabel.Minimum, expectedMinimum);
-            Assert.AreEqual(ArbitraryPrediction.PredictionLabel.Maximum, expectedMaximum);
+            Assert.Equal(ArbitraryPrediction.PredictionLabel.Minimum, expectedMinimum);
+            Assert.Equal(ArbitraryPrediction.PredictionLabel.Maximum, expectedMaximum);
         }
     }
 }

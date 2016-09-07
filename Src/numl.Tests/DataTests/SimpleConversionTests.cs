@@ -4,12 +4,12 @@ using numl.Model;
 using System.Linq;
 using System.Dynamic;
 using numl.Tests.Data;
-using NUnit.Framework;
+using Xunit;
 using System.Collections.Generic;
 
 namespace numl.Tests.DataTests
 {
-    [TestFixture, Category("Data")]
+    [Trait("Category", "Data")]
     public class SimpleConversionTests
     {
         public static IEnumerable<string> ShortStrings
@@ -34,89 +34,89 @@ namespace numl.Tests.DataTests
             }
         }
 
-        [Test]
+        [Fact]
         public void Test_Univariate_Conversions()
         {
             // boolean
-            Assert.AreEqual(1, Ject.Convert(true));
-            Assert.AreEqual(-1, Ject.Convert(false));
+            Assert.Equal(1, Ject.Convert(true));
+            Assert.Equal(-1, Ject.Convert(false));
 
             // numeric types
-            Assert.AreEqual(1d, Ject.Convert((Byte)1));                            // byte
-            Assert.AreEqual(1d, Ject.Convert((SByte)1));                           // sbyte
-            Assert.AreEqual(0.4d, Ject.Convert((Decimal)0.4m));                    // decimal
-            Assert.AreEqual(0.1d, Ject.Convert((Double)0.1d));                     // double
-            Assert.AreEqual(300d, Ject.Convert((Single)300f));                     // single
-            Assert.AreEqual(1d, Ject.Convert((Int16)1));                           // int16
-            Assert.AreEqual(2d, Ject.Convert((UInt16)2));                          // uint16
-            Assert.AreEqual(2323432, Ject.Convert((Int32)2323432));                // int32
-            Assert.AreEqual(2323432d, Ject.Convert((UInt32)2323432));              // uint32
-            Assert.AreEqual(1232323434345d, Ject.Convert((Int64)1232323434345));   // int64
-            Assert.AreEqual(1232323434345d, Ject.Convert((UInt64)1232323434345));  // uint64
-            Assert.AreEqual(1232323434345d, Ject.Convert((long)1232323434345));    // long
+            Assert.Equal(1d, Ject.Convert((Byte)1));                            // byte
+            Assert.Equal(1d, Ject.Convert((SByte)1));                           // sbyte
+            Assert.Equal(0.4d, Ject.Convert((Decimal)0.4m));                    // decimal
+            Assert.Equal(0.1d, Ject.Convert((Double)0.1d));                     // double
+            Assert.Equal(300d, Ject.Convert((Single)300f));                     // single
+            Assert.Equal(1d, Ject.Convert((Int16)1));                           // int16
+            Assert.Equal(2d, Ject.Convert((UInt16)2));                          // uint16
+            Assert.Equal(2323432, Ject.Convert((Int32)2323432));                // int32
+            Assert.Equal(2323432d, Ject.Convert((UInt32)2323432));              // uint32
+            Assert.Equal(1232323434345d, Ject.Convert((Int64)1232323434345));   // int64
+            Assert.Equal(1232323434345d, Ject.Convert((UInt64)1232323434345));  // uint64
+            Assert.Equal(1232323434345d, Ject.Convert((long)1232323434345));    // long
 
             // enum
-            Assert.AreEqual(0d, Ject.Convert(FakeEnum.Item0));
-            Assert.AreEqual(1d, Ject.Convert(FakeEnum.Item1));
-            Assert.AreEqual(2d, Ject.Convert(FakeEnum.Item2));
-            Assert.AreEqual(3d, Ject.Convert(FakeEnum.Item3));
-            Assert.AreEqual(4d, Ject.Convert(FakeEnum.Item4));
-            Assert.AreEqual(5d, Ject.Convert(FakeEnum.Item5));
-            Assert.AreEqual(6d, Ject.Convert(FakeEnum.Item6));
-            Assert.AreEqual(7d, Ject.Convert(FakeEnum.Item7));
-            Assert.AreEqual(8d, Ject.Convert(FakeEnum.Item8));
-            Assert.AreEqual(9d, Ject.Convert(FakeEnum.Item9));
+            Assert.Equal(0d, Ject.Convert(FakeEnum.Item0));
+            Assert.Equal(1d, Ject.Convert(FakeEnum.Item1));
+            Assert.Equal(2d, Ject.Convert(FakeEnum.Item2));
+            Assert.Equal(3d, Ject.Convert(FakeEnum.Item3));
+            Assert.Equal(4d, Ject.Convert(FakeEnum.Item4));
+            Assert.Equal(5d, Ject.Convert(FakeEnum.Item5));
+            Assert.Equal(6d, Ject.Convert(FakeEnum.Item6));
+            Assert.Equal(7d, Ject.Convert(FakeEnum.Item7));
+            Assert.Equal(8d, Ject.Convert(FakeEnum.Item8));
+            Assert.Equal(9d, Ject.Convert(FakeEnum.Item9));
 
             // char
-            Assert.AreEqual(65d, Ject.Convert('A'));
+            Assert.Equal(65d, Ject.Convert('A'));
 
             // timespan
-            Assert.AreEqual(300d, Ject.Convert(TimeSpan.FromSeconds(300)));
+            Assert.Equal(300d, Ject.Convert(TimeSpan.FromSeconds(300)));
         }
 
-        [Test]
+        [Fact]
         public void Test_Univariate_Back_Conversions()
         {
             // boolean
-            Assert.AreEqual(true, Ject.Convert(1, typeof(bool)));
-            Assert.AreEqual(false, Ject.Convert(0, typeof(bool)));
-            Assert.AreEqual(false, Ject.Convert(-1, typeof(bool)));
+            Assert.Equal(true, Ject.Convert(1, typeof(bool)));
+            Assert.Equal(false, Ject.Convert(0, typeof(bool)));
+            Assert.Equal(false, Ject.Convert(-1, typeof(bool)));
 
             // numeric types
 
-            Assert.AreEqual((Byte)1, Ject.Convert(1d, typeof(Byte)));                               // byte
-            Assert.AreEqual((SByte)1, Ject.Convert(1d, typeof(SByte)));                             // sbyte
-            Assert.AreEqual((Decimal)0.4m, Ject.Convert(0.4d, typeof(Decimal)));                    // decimal
-            Assert.AreEqual((Double)0.1d, Ject.Convert(0.1d, typeof(Double)));                      // double
-            Assert.AreEqual((Single)300f, Ject.Convert(300d, typeof(Single)));                      // single
-            Assert.AreEqual((Int16)1, Ject.Convert(1d, typeof(Int16)));                             // int16
-            Assert.AreEqual((UInt16)2, Ject.Convert(2d, typeof(UInt16)));                           // uint16
-            Assert.AreEqual((Int32)2323432, Ject.Convert(2323432, typeof(Int32)));                  // int32
-            Assert.AreEqual((UInt32)2323432, Ject.Convert(2323432d, typeof(UInt32)));               // uint32
-            Assert.AreEqual((Int64)1232323434345, Ject.Convert(1232323434345d, typeof(Int64)));     // int64
-            Assert.AreEqual((UInt64)1232323434345, Ject.Convert(1232323434345d, typeof(UInt64)));   // uint64
-            Assert.AreEqual((long)1232323434345, Ject.Convert(1232323434345d, typeof(long)));       // long
+            Assert.Equal((Byte)1, Ject.Convert(1d, typeof(Byte)));                               // byte
+            Assert.Equal((SByte)1, Ject.Convert(1d, typeof(SByte)));                             // sbyte
+            Assert.Equal((Decimal)0.4m, Ject.Convert(0.4d, typeof(Decimal)));                    // decimal
+            Assert.Equal((Double)0.1d, Ject.Convert(0.1d, typeof(Double)));                      // double
+            Assert.Equal((Single)300f, Ject.Convert(300d, typeof(Single)));                      // single
+            Assert.Equal((Int16)1, Ject.Convert(1d, typeof(Int16)));                             // int16
+            Assert.Equal((UInt16)2, Ject.Convert(2d, typeof(UInt16)));                           // uint16
+            Assert.Equal((Int32)2323432, Ject.Convert(2323432, typeof(Int32)));                  // int32
+            Assert.Equal((UInt32)2323432, Ject.Convert(2323432d, typeof(UInt32)));               // uint32
+            Assert.Equal((Int64)1232323434345, Ject.Convert(1232323434345d, typeof(Int64)));     // int64
+            Assert.Equal((UInt64)1232323434345, Ject.Convert(1232323434345d, typeof(UInt64)));   // uint64
+            Assert.Equal((long)1232323434345, Ject.Convert(1232323434345d, typeof(long)));       // long
 
             // enum
-            Assert.AreEqual(FakeEnum.Item0, Ject.Convert(0d, typeof(FakeEnum)));
-            Assert.AreEqual(FakeEnum.Item1, Ject.Convert(1d, typeof(FakeEnum)));
-            Assert.AreEqual(FakeEnum.Item2, Ject.Convert(2d, typeof(FakeEnum)));
-            Assert.AreEqual(FakeEnum.Item3, Ject.Convert(3d, typeof(FakeEnum)));
-            Assert.AreEqual(FakeEnum.Item4, Ject.Convert(4d, typeof(FakeEnum)));
-            Assert.AreEqual(FakeEnum.Item5, Ject.Convert(5d, typeof(FakeEnum)));
-            Assert.AreEqual(FakeEnum.Item6, Ject.Convert(6d, typeof(FakeEnum)));
-            Assert.AreEqual(FakeEnum.Item7, Ject.Convert(7d, typeof(FakeEnum)));
-            Assert.AreEqual(FakeEnum.Item8, Ject.Convert(8d, typeof(FakeEnum)));
-            Assert.AreEqual(FakeEnum.Item9, Ject.Convert(9d, typeof(FakeEnum)));
+            Assert.Equal(FakeEnum.Item0, Ject.Convert(0d, typeof(FakeEnum)));
+            Assert.Equal(FakeEnum.Item1, Ject.Convert(1d, typeof(FakeEnum)));
+            Assert.Equal(FakeEnum.Item2, Ject.Convert(2d, typeof(FakeEnum)));
+            Assert.Equal(FakeEnum.Item3, Ject.Convert(3d, typeof(FakeEnum)));
+            Assert.Equal(FakeEnum.Item4, Ject.Convert(4d, typeof(FakeEnum)));
+            Assert.Equal(FakeEnum.Item5, Ject.Convert(5d, typeof(FakeEnum)));
+            Assert.Equal(FakeEnum.Item6, Ject.Convert(6d, typeof(FakeEnum)));
+            Assert.Equal(FakeEnum.Item7, Ject.Convert(7d, typeof(FakeEnum)));
+            Assert.Equal(FakeEnum.Item8, Ject.Convert(8d, typeof(FakeEnum)));
+            Assert.Equal(FakeEnum.Item9, Ject.Convert(9d, typeof(FakeEnum)));
 
             // char
-            Assert.AreEqual('A', Ject.Convert(65d, typeof(char)));
+            Assert.Equal('A', Ject.Convert(65d, typeof(char)));
 
             // timespan
-            Assert.AreEqual(TimeSpan.FromSeconds(300), Ject.Convert(300d, typeof(TimeSpan)));
+            Assert.Equal(TimeSpan.FromSeconds(300), Ject.Convert(300d, typeof(TimeSpan)));
         }
 
-        [Test]
+        [Fact]
         public void Test_Char_Dictionary_Gen()
         {
             var d = StringHelpers.BuildCharDictionary(ShortStrings);
@@ -135,10 +135,10 @@ namespace numl.Tests.DataTests
                 { "R", 2 },
             };
 
-            Assert.AreEqual(dict, d);
+            Assert.Equal(dict, d);
         }
 
-        [Test]
+        [Fact]
         public void Test_Enum_Dictionary_Gen()
         {
             var d = StringHelpers.BuildEnumDictionary(ShortStrings);
@@ -151,10 +151,10 @@ namespace numl.Tests.DataTests
                 { "THREE", 2 },
             };
 
-            Assert.AreEqual(dict, d);
+            Assert.Equal(dict, d);
         }
 
-        [Test]
+        [Fact]
         public void Test_Word_Dictionary_Gen()
         {
             var d = StringHelpers.BuildWordDictionary(WordStrings);
@@ -171,10 +171,10 @@ namespace numl.Tests.DataTests
                 { "UGLY", 1 },
             };
 
-            Assert.AreEqual(dict, d);
+            Assert.Equal(dict, d);
         }
 
-        [Test]
+        [Fact]
         public void Test_Fast_Reflection_Get_Standard()
         {
             var o = new Student
@@ -189,22 +189,22 @@ namespace numl.Tests.DataTests
             };
 
             var age = Ject.Get(o, "Age");
-            Assert.AreEqual(23, (int)age);
+            Assert.Equal(23, (int)age);
             var friends = Ject.Get(o, "Friends");
-            Assert.AreEqual(12, (int)friends);
+            Assert.Equal(12, (int)friends);
             var gpa = Ject.Get(o, "GPA");
-            Assert.AreEqual(3.2, (double)gpa);
+            Assert.Equal(3.2, (double)gpa);
             var grade = Ject.Get(o, "Grade");
-            Assert.AreEqual(Grade.A, (Grade)grade);
+            Assert.Equal(Grade.A, (Grade)grade);
             var name = Ject.Get(o, "Name");
-            Assert.AreEqual("Jordan Spears", (string)name);
+            Assert.Equal("Jordan Spears", (string)name);
             var tall = Ject.Get(o, "Tall");
-            Assert.AreEqual(true, (bool)tall);
+            Assert.Equal(true, (bool)tall);
             var nice = Ject.Get(o, "Nice");
-            Assert.AreEqual(false, (bool)nice);
+            Assert.Equal(false, (bool)nice);
         }
 
-        [Test]
+        [Fact]
         public void Test_Fast_Reflection_Set_Standard()
         {
             var o = new Student
@@ -219,28 +219,28 @@ namespace numl.Tests.DataTests
             };
 
             Ject.Set(o, "Age", 25);
-            Assert.AreEqual(25, o.Age);
+            Assert.Equal(25, o.Age);
 
             Ject.Set(o, "Friends", 1);
-            Assert.AreEqual(1, o.Friends);
+            Assert.Equal(1, o.Friends);
 
             Ject.Set(o, "GPA", 1.2);
-            Assert.AreEqual(1.2, o.GPA);
+            Assert.Equal(1.2, o.GPA);
 
             Ject.Set(o, "Grade", Grade.C);
-            Assert.AreEqual(Grade.C, o.Grade);
+            Assert.Equal(Grade.C, o.Grade);
 
             Ject.Set(o, "Name", "Seth Juarez");
-            Assert.AreEqual("Seth Juarez", o.Name);
+            Assert.Equal("Seth Juarez", o.Name);
 
             Ject.Set(o, "Tall", false);
-            Assert.AreEqual(false, o.Tall);
+            Assert.Equal(false, o.Tall);
 
             Ject.Set(o, "Nice", true);
-            Assert.AreEqual(true, o.Nice);
+            Assert.Equal(true, o.Nice);
         }
 
-        [Test]
+        [Fact]
         public void Test_Fast_Reflection_Get_Dictionary()
         {
             var o = new Dictionary<string, object>();
@@ -253,22 +253,22 @@ namespace numl.Tests.DataTests
             o["Nice"] = false;
 
             var age = Ject.Get(o, "Age");
-            Assert.AreEqual(23, (int)age);
+            Assert.Equal(23, (int)age);
             var friends = Ject.Get(o, "Friends");
-            Assert.AreEqual(12, (int)friends);
+            Assert.Equal(12, (int)friends);
             var gpa = Ject.Get(o, "GPA");
-            Assert.AreEqual(3.2, (double)gpa);
+            Assert.Equal(3.2, (double)gpa);
             var grade = Ject.Get(o, "Grade");
-            Assert.AreEqual(Grade.A, (Grade)grade);
+            Assert.Equal(Grade.A, (Grade)grade);
             var name = Ject.Get(o, "Name");
-            Assert.AreEqual("Jordan Spears", (string)name);
+            Assert.Equal("Jordan Spears", (string)name);
             var tall = Ject.Get(o, "Tall");
-            Assert.AreEqual(true, (bool)tall);
+            Assert.Equal(true, (bool)tall);
             var nice = Ject.Get(o, "Nice");
-            Assert.AreEqual(false, (bool)nice);
+            Assert.Equal(false, (bool)nice);
         }
 
-        [Test]
+        [Fact]
         public void Test_Fast_Reflection_Set_Dictionary()
         {
             var o = new Dictionary<string, object>();
@@ -281,28 +281,28 @@ namespace numl.Tests.DataTests
             o["Nice"] = false;
 
             Ject.Set(o, "Age", 25);
-            Assert.AreEqual(25, o["Age"]);
+            Assert.Equal(25, o["Age"]);
 
             Ject.Set(o, "Friends", 1);
-            Assert.AreEqual(1, o["Friends"]);
+            Assert.Equal(1, o["Friends"]);
 
             Ject.Set(o, "GPA", 1.2);
-            Assert.AreEqual(1.2, o["GPA"]);
+            Assert.Equal(1.2, o["GPA"]);
 
             Ject.Set(o, "Grade", Grade.C);
-            Assert.AreEqual(Grade.C, o["Grade"]);
+            Assert.Equal(Grade.C, o["Grade"]);
 
             Ject.Set(o, "Name", "Seth Juarez");
-            Assert.AreEqual("Seth Juarez", o["Name"]);
+            Assert.Equal("Seth Juarez", o["Name"]);
 
             Ject.Set(o, "Tall", false);
-            Assert.AreEqual(false, o["Tall"]);
+            Assert.Equal(false, o["Tall"]);
 
             Ject.Set(o, "Nice", true);
-            Assert.AreEqual(true, o["Nice"]);
+            Assert.Equal(true, o["Nice"]);
         }
 
-        [Test]
+        [Fact]
         public void Test_Vector_Conversion_Simple_Numbers()
         {
             Descriptor d = new Descriptor();
@@ -318,10 +318,10 @@ namespace numl.Tests.DataTests
 
             var truths = new double[] { 23, 6.21, 220, -1 };
             var actual = d.Convert(o);
-            Assert.AreEqual(truths, actual);
+            Assert.Equal(truths, actual);
         }
 
-        //[Test]
+        //[Fact]
         //public void Test_Vector_DataRow_Conversion_Simple_Numbers()
         //{
         //    Descriptor d = new Descriptor();
@@ -347,10 +347,10 @@ namespace numl.Tests.DataTests
 
         //    var truths = new double[] { 23, 6.21, 220, -1 };
         //    var actual = d.Convert(row);
-        //    Assert.AreEqual(truths, actual);
+        //    Assert.Equal(truths, actual);
         //}
 
-        [Test]
+        [Fact]
         public void Test_Vector_Dictionary_Conversion_Simple_Numbers()
         {
             Descriptor d = new Descriptor();
@@ -370,10 +370,10 @@ namespace numl.Tests.DataTests
 
             var truths = new double[] { 23, 6.21, 220, -1 };
             var actual = d.Convert(item);
-            Assert.AreEqual(truths, actual);
+            Assert.Equal(truths, actual);
         }
 
-        [Test]
+        [Fact]
         public void Test_Vector_Expando_Conversion_Simple_Numbers()
         {
             Descriptor d = new Descriptor();
@@ -393,10 +393,10 @@ namespace numl.Tests.DataTests
 
             var truths = new double[] { 23, 6.21, 220, -1 };
             var actual = d.Convert(item);
-            Assert.AreEqual(truths, actual);
+            Assert.Equal(truths, actual);
         }
 
-        [Test]
+        [Fact]
         public void Test_Vector_Conversion_Simple_Numbers_And_Strings()
         {
             Descriptor d = new Descriptor();
@@ -427,13 +427,13 @@ namespace numl.Tests.DataTests
                                         /* END TEXT */
                                         220, -1 };
             var actual = d.Convert(o);
-            Assert.AreEqual(truths, actual);
+            Assert.Equal(truths, actual);
             // offset test
-            Assert.AreEqual(10, d.Features[3].Start);
-            Assert.AreEqual(11, d.Features[4].Start);
+            Assert.Equal(10, d.Features[3].Start);
+            Assert.Equal(11, d.Features[4].Start);
         }
 
-        [Test]
+        [Fact]
         public void Test_Vector_Conversion_Simple_Numbers_And_Strings_As_Enum()
         {
             Descriptor d = new Descriptor();
@@ -464,7 +464,7 @@ namespace numl.Tests.DataTests
                                         /* END TEXT */
                                         220, -1 };
             var actual = d.Convert(o);
-            Assert.AreEqual(truths, actual);
+            Assert.Equal(truths, actual);
 
 
             o = new { Age = 23, Height = 6.21d, Weight = 220m, Good = false, Words = "sUpEr" };
@@ -475,10 +475,10 @@ namespace numl.Tests.DataTests
                                         /* END TEXT */
                                         220, -1 };
             actual = d.Convert(o);
-            Assert.AreEqual(truths, actual);
+            Assert.Equal(truths, actual);
         }
 
-        [Test]
+        [Fact]
         public void Test_Vector_Conversion_Simple_Numbers_And_Chars()
         {
             Descriptor d = new Descriptor();
@@ -513,10 +513,10 @@ namespace numl.Tests.DataTests
                                         /* END CHARS */
                                         220, -1 };
             var actual = d.Convert(o);
-            Assert.AreEqual(truths, actual);
+            Assert.Equal(truths, actual);
         }
 
-        [Test]
+        [Fact]
         public void Test_Vector_Conversion_Simple_Numbers_And_Chars_As_Enum()
         {
             Descriptor d = new Descriptor();
@@ -553,7 +553,7 @@ namespace numl.Tests.DataTests
                                         220, -1 };
 
             var actual = d.Convert(o);
-            Assert.AreEqual(truths, actual);
+            Assert.Equal(truths, actual);
 
 
             o = new { Age = 23, Height = 6.21d, Chars = "!", Weight = 220m, Good = false, };
@@ -566,10 +566,10 @@ namespace numl.Tests.DataTests
                                     220, -1 };
 
             actual = d.Convert(o);
-            Assert.AreEqual(truths, actual);
+            Assert.Equal(truths, actual);
         }
 
-        [Test]
+        [Fact]
         public void Test_Matrix_Conversion_Simple()
         {
             Descriptor d = new Descriptor();
@@ -599,10 +599,10 @@ namespace numl.Tests.DataTests
             };
 
             var actual = d.Convert(o);
-            Assert.AreEqual(truths, actual);
+            Assert.Equal(truths, actual);
         }
 
-        [Test]
+        [Fact]
         public void Test_Matrix_Conversion_With_Label()
         {
             Descriptor d = new Descriptor();
@@ -634,7 +634,7 @@ namespace numl.Tests.DataTests
             };
 
             var actual = d.Convert(o);
-            Assert.AreEqual(truths, actual);
+            Assert.Equal(truths, actual);
         }
     }
 }

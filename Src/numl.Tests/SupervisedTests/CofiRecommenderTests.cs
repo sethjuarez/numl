@@ -1,7 +1,7 @@
 ﻿using System;
 using numl.Model;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using numl.Math.LinearAlgebra;
 using numl.Math.Functions.Cost;
 using System.Collections.Generic;
@@ -77,10 +77,10 @@ namespace numl.Tests.SupervisedTests
                 f => costFunction.ComputeCost(f),
                 Vector.Combine(X_ts.Unshape(), T_ts.Unshape()));
 
-            Assert.IsTrue(this.CheckNumericalGradient(numericalGrad, grad) < 0.0000000001);
+            Assert.True(this.CheckNumericalGradient(numericalGrad, grad) < 0.0000000001);
         }
 
-        [Test]
+        [Fact]
         public void Test_Cofi_CostFunction()
         {
             Matrix rMat = Y.ToBinary(i => i > 0d);
@@ -90,12 +90,12 @@ namespace numl.Tests.SupervisedTests
             double cost = costFunction.ComputeCost(Vector.Combine(X.Unshape(), Theta.Unshape()));
             Vector grad = costFunction.ComputeGradient(Vector.Combine(X.Unshape(), Theta.Unshape()));
 
-            Assert.AreEqual(39.796d, System.Math.Round(cost, 3), 0.001);
+            Assert.Equal(39.796d, System.Math.Round(cost, 3), 0.001);
 
             this.CheckCofiGradient(0);
         }
 
-        [Test]
+        [Fact]
         public void Test_Cofi_CostFunction_Regularized()
         {
             Matrix rMat = Y.ToBinary(i => i > 0d);
@@ -105,12 +105,12 @@ namespace numl.Tests.SupervisedTests
             double cost = costFunction.ComputeCost(Vector.Combine(X.Unshape(), Theta.Unshape()));
             Vector grad = costFunction.ComputeGradient(Vector.Combine(X.Unshape(), Theta.Unshape()));
 
-            Assert.AreEqual(55.172, System.Math.Round(cost, 3), 0.0011);
+            Assert.Equal(55.172, System.Math.Round(cost, 3), 0.0011);
 
             this.CheckCofiGradient(1.5);
         }
 
-        [Test]
+        [Fact]
         public void Test_Cofi_Recommender()
         {
             var movies = new[] {
@@ -145,14 +145,14 @@ namespace numl.Tests.SupervisedTests
             // get predictions for the movies of the first user
             var predictions = ((Recommendation.CofiRecommenderModel)model.Model).Predict(0);
 
-            Assert.AreEqual(1d, predictions[0]);
+            Assert.Equal(1d, predictions[0]);
 
             // due to random initialisation one is favoured over the other at certain times
-            Assert.IsTrue(5d == predictions[1] || 9d == predictions[1]);
-            Assert.IsTrue(5d == predictions[2] || 9d == predictions[2]);
+            Assert.True(5d == predictions[1] || 9d == predictions[1]);
+            Assert.True(5d == predictions[2] || 9d == predictions[2]);
             
-            Assert.AreEqual(3d, predictions[3]);
-            Assert.AreEqual(8d, predictions[4]);
+            Assert.Equal(3d, predictions[3]);
+            Assert.Equal(8d, predictions[4]);
         }
     }
 }

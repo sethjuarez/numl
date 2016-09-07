@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
-using NUnit.Framework;
 using System.Collections.Generic;
 using numl.AI;
+using Xunit;
 
 namespace numl.Tests.AITests
 {
-    [TestFixture, Category("AI")]
+    [Trait("Category", "AI")]
     public class SquareTests
     {
         private static int[] CreateSquare(int i)
@@ -32,7 +32,7 @@ namespace numl.Tests.AITests
             }
         }
 
-        [Test]
+        [Fact]
         public void Test_Square_Expansion()
         {
             for (int i = 0; i < 9; i++)
@@ -50,7 +50,7 @@ namespace numl.Tests.AITests
             }
         }
 
-        [Test]
+        [Fact]
         public void Test_Easy_Square_BFS()
         {
             IState init = new Square(new[] { 1, 4, 2, 3, 5, 8, 6, 0, 7 });
@@ -59,11 +59,11 @@ namespace numl.Tests.AITests
             var solution = bfs.Find(init);
 
             if (solution) PrintSolution(bfs.Solution);
-            Assert.IsTrue(solution);
+            Assert.True(solution);
         }
 
 
-        [Test]
+        [Fact]
         public void Test_Hard_AStar()
         {
             IState init = new Square(new[] { 1, 2, 3, 4, 5, 6, 7, 0, 8 });
@@ -76,8 +76,7 @@ namespace numl.Tests.AITests
             SimpleSearch a = new SimpleSearch(strategy);
             var solution = a.Find(init);
             if (solution) PrintSolution(a.Solution);
-            Assert.IsTrue(solution);
+            Assert.True(solution);
         }
-
     }
 }

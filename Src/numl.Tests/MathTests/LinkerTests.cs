@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
 using numl.Math.Linkers;
 using numl.Math.Metrics;
 using System.Collections.Generic;
 
 namespace numl.Tests.MathTests
 {
-    [TestFixture, Category("Math")]
+    [Trait("Category", "Math")]
     public class LinkerTests
     {
-        [Test]
+        [Fact]
         public void Average_Linker_Test()
         {
             // TODO: Finish linker tests

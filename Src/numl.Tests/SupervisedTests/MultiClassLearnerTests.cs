@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+﻿using Xunit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ namespace numl.Tests.SupervisedTests
     [TestFixture, Category("Supervised")]
     public class MultiClassLearnerTests
     {
-        [Test]
+        [Fact]
         public void Test_Digits_MultiClass_Classification()
         {
             var digits = Data.Digit.GetTrainingDigits();
@@ -43,7 +43,7 @@ namespace numl.Tests.SupervisedTests
             Assert.GreaterOrEqual(accuracy, model.Accuracy);
         }
 
-        [Test]
+        [Fact]
         public void Test_Digits_MultiClass_Classification_Autoencoded()
         {
             var digits = Data.Digit.GetTrainingDigits();
