@@ -8,7 +8,7 @@ using numl.Supervised.NeuralNetwork;
 
 namespace numl.Tests.SerializationTests.ModelSerialization
 {
-    [TestFixture, Category("Serialization")]
+    [Trait("Category", "Serialization")]
     public class NeuralNetworkSerializationTests : BaseSerialization
     {
         public static void AreEqual(Network n1, Network n2)

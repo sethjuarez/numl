@@ -11,7 +11,6 @@ using numl.Math.Probability;
 
 namespace numl.Tests.SupervisedTests
 {
-    [SetUpFixture]
     public class BaseSupervised
     {
 

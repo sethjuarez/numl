@@ -6,7 +6,7 @@ using numl.Supervised.NaiveBayes;
 
 namespace numl.Tests.SupervisedTests
 {
-    [TestFixture, Category("Supervised")]
+    [Trait("Category", "Supervised")]
     public class NaiveBayesTests : BaseSupervised
     {
         [Fact]

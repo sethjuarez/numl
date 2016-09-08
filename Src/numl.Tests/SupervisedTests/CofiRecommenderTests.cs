@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace numl.Tests.SupervisedTests
 {
-    [TestFixture, Category("Supervised")]
+    [Trait("Category", "Supervised")]
     public class CofiRecommenderTests : BaseSupervised
     {
         #region Test Data
@@ -90,7 +90,7 @@ namespace numl.Tests.SupervisedTests
             double cost = costFunction.ComputeCost(Vector.Combine(X.Unshape(), Theta.Unshape()));
             Vector grad = costFunction.ComputeGradient(Vector.Combine(X.Unshape(), Theta.Unshape()));
 
-            Assert.Equal(39.796d, System.Math.Round(cost, 3), 0.001);
+            Almost.Equal(39.796d, System.Math.Round(cost, 3), 0.001);
 
             this.CheckCofiGradient(0);
         }
@@ -105,7 +105,7 @@ namespace numl.Tests.SupervisedTests
             double cost = costFunction.ComputeCost(Vector.Combine(X.Unshape(), Theta.Unshape()));
             Vector grad = costFunction.ComputeGradient(Vector.Combine(X.Unshape(), Theta.Unshape()));
 
-            Assert.Equal(55.172, System.Math.Round(cost, 3), 0.0011);
+            Almost.Equal(55.172, System.Math.Round(cost, 3), 0.0011);
 
             this.CheckCofiGradient(1.5);
         }

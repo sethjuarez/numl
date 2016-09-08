@@ -10,7 +10,7 @@ using numl.Supervised.Perceptron;
 
 namespace numl.Tests.SerializationTests.ModelSerialization
 {
-    [TestFixture, Category("Serialization")]
+    [Trait("Category", "Serialization")]
     public class KernelPerceptronSerializationTests : BaseSerialization
     {
         [Fact]

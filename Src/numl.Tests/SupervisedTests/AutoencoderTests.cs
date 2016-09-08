@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace numl.Tests.SupervisedTests
 {
-    [TestFixture, Category("Supervised")]
+    [Trait("Category", "Supervised")]
     public class AutoencoderTests
     {
         [Fact]
@@ -66,7 +66,7 @@ namespace numl.Tests.SupervisedTests
             for (int i = 0; i < test.Rows; i++)
             {
                 var score = Score.ScorePredictions(encoder.PredictSequence(test[i, VectorType.Row]), avg);
-                Assert.LessOrEqual(score.MeanAbsError, 0.001);
+                Assert.True(score.MeanAbsError <= 0.001);
             }
 
         }

@@ -9,7 +9,7 @@ using numl.Supervised.Regression;
 
 namespace numl.Tests.SupervisedTests
 {
-    [TestFixture, Category("Supervised")]
+    [Trait("Category", "Supervised")]
     public class LinearRegressionTests : BaseSupervised
     {
         [Fact]
@@ -214,7 +214,7 @@ namespace numl.Tests.SupervisedTests
             var generator = new LinearRegressionGenerator() { Descriptor = d };
             var model = Learner.Learn(datum, 0.9, 5, generator);
 
-            Assert.GreaterOrEqual(0.8, model.Accuracy);
+            Assert.True(model.Accuracy >= 0.8);
         }
     }
 }

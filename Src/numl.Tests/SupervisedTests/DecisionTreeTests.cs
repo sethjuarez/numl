@@ -9,7 +9,7 @@ using numl.Supervised.DecisionTree;
 
 namespace numl.Tests.SupervisedTests
 {
-    [TestFixture, Category("Supervised")]
+    [Trait("Category", "Supervised")]
     public class DecisionTreeTests : BaseSupervised
     {
         [Fact]

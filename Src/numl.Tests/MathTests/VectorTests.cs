@@ -278,9 +278,7 @@ namespace numl.Tests.MathTests
             h = h / 1000;
 
             for (int i = 0; i < h.Length; i++)
-                Assert.InRange(h[i], 1d - .1, 1d + .1);
-                //Assert.Equal(1d, h[i], .1);
-
+                Almost.Equal(1d, h[i], .1);
         }
     }
 }

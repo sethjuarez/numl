@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace numl.Tests.SerializationTests.BasicSerialization
 {
-    [TestFixture]
+    [Trait("Category", "Serialization")]
     public class SerializerTests
     {
         /// <summary>

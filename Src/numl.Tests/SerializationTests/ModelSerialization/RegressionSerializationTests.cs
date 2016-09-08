@@ -10,7 +10,7 @@ using numl.Model;
 
 namespace numl.Tests.SerializationTests.ModelSerialization
 {
-    [TestFixture, Category("Serialization")]
+    [Trait("Category", "Serialization")]
     public class RegressionSerializationTests : BaseSerialization
     {
         [Fact]

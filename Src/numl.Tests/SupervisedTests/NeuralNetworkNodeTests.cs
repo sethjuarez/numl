@@ -10,7 +10,7 @@ using numl.Math.LinearAlgebra;
 
 namespace numl.Tests.SupervisedTests
 {
-    [TestFixture, Category("Supervised")]
+    [Trait("Category", "Supervised")]
     public class NeuralNetworkNodeTests : BaseSupervised
     {
 
@@ -199,7 +199,7 @@ namespace numl.Tests.SupervisedTests
 
                 for (int output = 0; output < net.Out.Length; output++)
                 {
-                    Assert.Equal(Output_Out_1Layer[row, output], net.Out[output].Output, 0.0001);
+                    Almost.Equal(Output_Out_1Layer[row, output], net.Out[output].Output, 0.0001);
                 }
             }
         }
@@ -220,26 +220,26 @@ namespace numl.Tests.SupervisedTests
 
                 for (int output = 0; output < net.Out.Count(); output++)
                 {
-                    Assert.Equal(Delta_Out_1Layer[row, output], net.Out.ElementAt(output).Delta, 0.0001);
+                    Almost.Equal(Delta_Out_1Layer[row, output], net.Out.ElementAt(output).Delta, 0.0001);
                 }
 
                 for (int hidden = 0; hidden < hiddenNodes.Count(); hidden++)
                 {
                     if (row == 0)
-                        Assert.Equal(Delta2_1Layer_Case1[hidden, VectorType.Col].Sum(), hiddenNodes.ElementAt(hidden).Delta, 0.0001,
+                        Almost.Equal(Delta2_1Layer_Case1[hidden, VectorType.Col].Sum(), hiddenNodes.ElementAt(hidden).Delta, 0.0001,
                             $"Node: {hiddenNodes.ElementAt(hidden).Label}");
                     else
-                        Assert.Equal(Delta2_1Layer_Case2[hidden, VectorType.Col].Sum(), hiddenNodes.ElementAt(hidden).Delta, 0.0001,
+                        Almost.Equal(Delta2_1Layer_Case2[hidden, VectorType.Col].Sum(), hiddenNodes.ElementAt(hidden).Delta, 0.0001,
                             $"Node: {hiddenNodes.ElementAt(hidden).Label}");
                 }
 
                 for (int input = 0; input < net.In.Length; input++)
                 {
                     if (row == 0)
-                        Assert.Equal(Delta1_1Layer_Case1[input, VectorType.Col].Sum(), net.In[input].Delta, 0.2,
+                        Almost.Equal(Delta1_1Layer_Case1[input, VectorType.Col].Sum(), net.In[input].Delta, 0.2,
                             $"Node: {net.In[input].Label}");
                     else
-                        Assert.Equal(Delta1_1Layer_Case2[input, VectorType.Col].Sum(), net.In[input].Delta, 0.2,
+                        Almost.Equal(Delta1_1Layer_Case2[input, VectorType.Col].Sum(), net.In[input].Delta, 0.2,
                             $"Node: {net.In[input].Label}");
                 }
             }
@@ -256,7 +256,7 @@ namespace numl.Tests.SupervisedTests
 
                 for (int output = 0; output < net.Out.Length; output++)
                 {
-                    Assert.Equal(Output_Out_2Layer[row, output], net.Out[output].Output, 0.0025);
+                    Almost.Equal(Output_Out_2Layer[row, output], net.Out[output].Output, 0.0025);
                 }
             }
         }
@@ -278,36 +278,36 @@ namespace numl.Tests.SupervisedTests
 
                 for (int output = 0; output < net.Out.Count(); output++)
                 {
-                    Assert.Equal(Delta_Out_2Layer[row, output], net.Out.ElementAt(output).Delta, 0.005);
+                    Almost.Equal(Delta_Out_2Layer[row, output], net.Out.ElementAt(output).Delta, 0.005);
                 }
 
                 for (int hidden = 0; hidden < hiddenNodes3.Count(); hidden++)
                 {
                     if (row == 0)
-                        Assert.Equal(Delta3_2Layer_Case1[hidden, VectorType.Col].Sum(), hiddenNodes3.ElementAt(hidden).Delta, 0.005,
+                        Almost.Equal(Delta3_2Layer_Case1[hidden, VectorType.Col].Sum(), hiddenNodes3.ElementAt(hidden).Delta, 0.005,
                             $"Node: {hiddenNodes3.ElementAt(hidden).Label}");
                     else
-                        Assert.Equal(Delta3_2Layer_Case2[hidden, VectorType.Col].Sum(), hiddenNodes3.ElementAt(hidden).Delta, 0.005,
+                        Almost.Equal(Delta3_2Layer_Case2[hidden, VectorType.Col].Sum(), hiddenNodes3.ElementAt(hidden).Delta, 0.005,
                             $"Node: {hiddenNodes3.ElementAt(hidden).Label}");
                 }
 
                 for (int hidden = 0; hidden < hiddenNodes2.Count(); hidden++)
                 {
                     if (row == 0)
-                        Assert.Equal(Delta2_2Layer_Case1[hidden, VectorType.Col].Sum(), hiddenNodes2.ElementAt(hidden).Delta, 0.05,
+                        Almost.Equal(Delta2_2Layer_Case1[hidden, VectorType.Col].Sum(), hiddenNodes2.ElementAt(hidden).Delta, 0.05,
                             $"Node: {hiddenNodes2.ElementAt(hidden).Label}");
                     else
-                        Assert.Equal(Delta2_2Layer_Case2[hidden, VectorType.Col].Sum(), hiddenNodes2.ElementAt(hidden).Delta, 0.05,
+                        Almost.Equal(Delta2_2Layer_Case2[hidden, VectorType.Col].Sum(), hiddenNodes2.ElementAt(hidden).Delta, 0.05,
                             $"Node: {hiddenNodes2.ElementAt(hidden).Label}");
                 }
 
                 for (int input = 0; input < net.In.Length; input++)
                 {
                     if (row == 0)
-                        Assert.Equal(Delta1_2Layer_Case1[input, VectorType.Col].Sum(), net.In[input].Delta, 0.8,
+                        Almost.Equal(Delta1_2Layer_Case1[input, VectorType.Col].Sum(), net.In[input].Delta, 0.8,
                             $"Node: {net.In[input].Label}");
                     else
-                        Assert.Equal(Delta1_2Layer_Case2[input, VectorType.Col].Sum(), net.In[input].Delta, 0.8,
+                        Almost.Equal(Delta1_2Layer_Case2[input, VectorType.Col].Sum(), net.In[input].Delta, 0.8,
                             $"Node: {net.In[input].Label}");
                 }
             }
@@ -379,12 +379,12 @@ namespace numl.Tests.SupervisedTests
 
             for (int output = 0; output < net.Out.Count(); output++)
             {
-                Assert.Equal(delta3[output], net.Out.ElementAt(output).Delta, 0.0001);
+                Almost.Equal(delta3[output], net.Out.ElementAt(output).Delta, 0.0001);
             }
 
             for (int hidden = 0; hidden < hiddenNodes.Count(); hidden++)
             {
-                Assert.Equal(delta2[hidden, VectorType.Col].Sum(), hiddenNodes.ElementAt(hidden).Delta, 0.0001,
+                Almost.Equal(delta2[hidden, VectorType.Col].Sum(), hiddenNodes.ElementAt(hidden).Delta, 0.0001,
                         $"Node: {hiddenNodes.ElementAt(hidden).Label}");
             }
         }

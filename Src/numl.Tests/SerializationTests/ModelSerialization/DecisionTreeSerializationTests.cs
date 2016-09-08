@@ -8,7 +8,7 @@ using numl.Supervised.DecisionTree;
 
 namespace numl.Tests.SerializationTests.ModelSerialization
 {
-    [TestFixture, Category("Serialization")]
+    [Trait("Category", "Serialization")]
     public class DecisionTreeSerializationTests : BaseSerialization
     {
         [Fact]

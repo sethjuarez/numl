@@ -14,8 +14,7 @@ namespace numl.Tests.SerializationTests
 {
     public class BaseSerialization
     {
-        [OneTimeSetUp]
-        public void RegisterTypes()
+        public BaseSerialization()
         {
             // Need to register external assemblies
             Register.Assembly(GetType().GetTypeInfo().Assembly);

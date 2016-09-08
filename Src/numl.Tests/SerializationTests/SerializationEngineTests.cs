@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace numl.Tests.SerializationTests
 {
-    [TestFixture, Category("Serialization")]
+    [Trait("Category", "Serialization")]
     public class SerializationEngineTests : BaseSerialization
     {
         [Fact]

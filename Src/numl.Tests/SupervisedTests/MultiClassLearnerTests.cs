@@ -8,7 +8,7 @@ using numl.Utils;
 
 namespace numl.Tests.SupervisedTests
 {
-    [TestFixture, Category("Supervised")]
+    [Trait("Category", "Supervised")]
     public class MultiClassLearnerTests
     {
         [Fact]
@@ -40,7 +40,7 @@ namespace numl.Tests.SupervisedTests
 
             Console.WriteLine($"Digit Test:\nOverall Accuracy => { accuracy }");
 
-            Assert.GreaterOrEqual(accuracy, model.Accuracy);
+            Assert.True(model.Accuracy >= accuracy);
         }
 
         [Fact]
@@ -83,7 +83,7 @@ namespace numl.Tests.SupervisedTests
 
             Console.WriteLine($"Digit Test:\nOverall Accuracy => { accuracy }");
 
-            Assert.GreaterOrEqual(model.Accuracy, 0.65);
+            Assert.True(model.Accuracy >= 0.65);
         }
     }
 }

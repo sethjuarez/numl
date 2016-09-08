@@ -25,7 +25,7 @@ namespace numl.Tests.UnsupervisedTests
         }
     }
 
-    [TestFixture, Category("Unsupervised")]
+    [Trait("Category", "Unsupervised")]
     public class KMeansTests
     {
         private static Matrix GenerateData(int size)
@@ -45,10 +45,11 @@ namespace numl.Tests.UnsupervisedTests
             return X;
         }
 
-        [TestCase(10)]
-        [TestCase(20)]
-        [TestCase(50)]
-        [TestCase(100)]
+        [Theory]
+        [InlineData(10)]
+        [InlineData(20)]
+        [InlineData(50)]
+        [InlineData(100)]
         public void Test_Numerical_KMeans(int size)
         {
             Matrix X = GenerateData(size);
@@ -67,10 +68,11 @@ namespace numl.Tests.UnsupervisedTests
             }
         }
 
-        [TestCase(10)]
-        [TestCase(20)]
-        [TestCase(50)]
-        [TestCase(100)]
+        [Theory]
+        [InlineData(10)]
+        [InlineData(20)]
+        [InlineData(50)]
+        [InlineData(100)]
         public void Test_Object_KMeans(int size)
         {
             Matrix X = GenerateData(size);

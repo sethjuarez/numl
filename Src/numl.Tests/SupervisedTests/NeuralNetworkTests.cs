@@ -8,7 +8,7 @@ using numl.Supervised.NeuralNetwork;
 
 namespace numl.Tests.SupervisedTests
 {
-    [TestFixture, Category("Supervised")]
+    [Trait("Category", "Supervised")]
     public class NeuralNetworkTests : BaseSupervised
     {
         [Fact]
@@ -116,13 +116,13 @@ namespace numl.Tests.SupervisedTests
 
             double output = gru.Evaluate();
 
-            Assert.Equal(0.00422846, output, 0.002, "First pass");
+            Almost.Equal(0.00422846, output, 0.002, "First pass");
 
             gru.Output = 1.5;
 
             double output2 = gru.Evaluate();
 
-            Assert.Equal(0.00739980, output2, 0.002, "Second pass");
+            Almost.Equal(0.00739980, output2, 0.002, "Second pass");
         }
 
         [Fact]
@@ -153,14 +153,14 @@ namespace numl.Tests.SupervisedTests
             double output = gru.Evaluate();
 
             //Assert.Equal(0.24144242, output, 0.002, "First pass");
-            Assert.Equal(0.18775503, output, 0.002, "First pass");
+            Almost.Equal(0.18775503, output, 0.002, "First pass");
 
             input.Output = 20.0;
 
             double output2 = gru.Evaluate();
 
             //Assert.Equal(0.40416686, output2, 0.002, "Second pass");
-            Assert.Equal(0.30399969, output2, 0.002, "Second pass");
+            Almost.Equal(0.30399969, output2, 0.002, "Second pass");
         }
 
         [Fact]

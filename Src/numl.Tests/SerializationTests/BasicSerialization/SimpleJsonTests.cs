@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace numl.Tests.SerializationTests.BasicSerialization
 {
-    [TestFixture]
+    [Trait("Category", "Serialization")]
     public class SimpleJsonTests : BaseSerialization
     {
         [Fact]

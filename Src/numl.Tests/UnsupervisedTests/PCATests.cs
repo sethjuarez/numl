@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace numl.Tests.UnsupervisedTests
 {
-    [TestFixture, Category("Unsupervised")]
+    [Trait("Category", "Unsupervised")]
     public class PCATests
     {
         [Fact]

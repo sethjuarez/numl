@@ -8,7 +8,7 @@ using numl.Serialization;
 
 namespace numl.Tests.SerializationTests.DescriptorSerialization
 {
-    [TestFixture, Category("Serialization")]
+    [Trait("Category", "Serialization")]
     public class PropertySerializationTests : BaseSerialization
     {
         [Fact]

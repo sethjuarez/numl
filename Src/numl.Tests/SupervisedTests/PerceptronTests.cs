@@ -7,7 +7,7 @@ using numl.Supervised.Perceptron;
 
 namespace numl.Tests.SupervisedTests
 {
-    [TestFixture, Category("Supervised")]
+    [Trait("Category", "Supervised")]
     public class PerceptronTests
     {
         [Fact]

@@ -10,7 +10,7 @@ using numl.Math.Functions.Regularization;
 
 namespace numl.Tests.SupervisedTests
 {
-    [TestFixture, Category("Supervised")]
+    [Trait("Category", "Supervised")]
     public class LogisticRegressionTests : BaseSupervised
     {
         [Fact]
@@ -214,7 +214,7 @@ namespace numl.Tests.SupervisedTests
 
             var scored = Supervised.Score.ScorePredictions(y, y_actual);
 
-            Assert.GreaterOrEqual(scored.Accuracy, 0.75);
+            Assert.True(scored.Accuracy >= 0.75);
 
             Console.WriteLine($"LR Model Score: { scored }");
         }

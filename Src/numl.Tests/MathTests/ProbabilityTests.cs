@@ -32,7 +32,7 @@ namespace numl.Tests.MathTests
                 means[i] = Sampling.GetUniform() * 10;
                 sigma[i] = sqrt(means[i]);
             }
-            
+
 
             Matrix data = Matrix.Zeros(n, d);
 
@@ -47,11 +47,9 @@ namespace numl.Tests.MathTests
             for (int i = 0; i < d; i++)
             {
                 // test mean (should be 0, but with 10% tolerance)
-                Assert.InRange(diff(means[i], dstrb.Mu[i]), -0.1, 0.1);
-                // Assert.Equal(diff(means[i], dstrb.Mu[i]), 0, 0.1);
+                Almost.Equal(diff(means[i], dstrb.Mu[i]), 0, 0.1);
                 // test covariance (should be 0, but with 10% tolerance)
-                Assert.InRange(diff(means[i], cov[i]), -0.1, 0.1);
-                // Assert.Equal(diff(means[i], cov[i]), 0, 0.1);
+                Almost.Equal(diff(means[i], cov[i]), 0, 0.1);
             }
         }
 
@@ -60,7 +58,7 @@ namespace numl.Tests.MathTests
         {
             return (x1 - x2) / x2;
         }
-        
+
         public static double sqrt(double x)
         {
             return System.Math.Sqrt(x);

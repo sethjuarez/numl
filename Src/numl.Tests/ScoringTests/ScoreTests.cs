@@ -1,4 +1,5 @@
 ﻿using numl.Supervised;
+using numl.Tests;
 using Xunit;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,6 @@ namespace numl.Tests.ScoringTests
     public class ScoreTests
     {
         private const double Delta = 0.001;
-        private void AreEqual(double expected, double actual, double tolerance, string message)
-        {
-            Assert.InRange(actual, expected - Delta, expected + Delta);
-            Console.WriteLine(message);
-        }
 
         [Fact]
         [InlineData(new[] { -1d, -1d, 1d, -1d, 1d, -1d, 1d, 1d, 1d, -1d },
@@ -32,13 +28,13 @@ namespace numl.Tests.ScoringTests
         {
             var scores = Score.ScorePredictions(test, actual);
 
-            AreEqual(truepos, scores.TruePositives, Delta, "True Positives");
-            AreEqual(trueneg, scores.TrueNegatives, Delta, "True Negatives");
-            AreEqual(accuracy, scores.Accuracy, Delta, "Accuracy");
-            AreEqual(precision, scores.Precision, Delta, "Precision");
-            AreEqual(recall, scores.Recall, Delta, "Recall");
-            AreEqual(auc, scores.AUC, Delta, "AUC");
-            AreEqual(fScore, scores.FScore, Delta, "FScore");
+            Almost.Equal(truepos, scores.TruePositives, Delta, "True Positives");
+            Almost.Equal(trueneg, scores.TrueNegatives, Delta, "True Negatives");
+            Almost.Equal(accuracy, scores.Accuracy, Delta, "Accuracy");
+            Almost.Equal(precision, scores.Precision, Delta, "Precision");
+            Almost.Equal(recall, scores.Recall, Delta, "Recall");
+            Almost.Equal(auc, scores.AUC, Delta, "AUC");
+            Almost.Equal(fScore, scores.FScore, Delta, "FScore");
         }
 
         [Fact]

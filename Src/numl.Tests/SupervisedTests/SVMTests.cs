@@ -8,7 +8,7 @@ using numl.Math.LinearAlgebra;
 
 namespace numl.Tests.SupervisedTests
 {
-    [TestFixture, Category("Supervised")]
+    [Trait("Category", "Supervised")]
     public class SVMTests : BaseSupervised
     {
         [Fact]
