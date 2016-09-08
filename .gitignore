@@ -22,4 +22,5 @@ _site/
 *.orig
 Docs/api/.manifest
 Docs/api/*.yml
+.vscode/
 *.GhostDoc.xml

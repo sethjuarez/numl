@@ -7,7 +7,7 @@
     "dotnet-test-xunit": "2.2.0-*"
   },
 
-  "testRunner": "nunit",
+  "testRunner": "xunit",
 
   "frameworks": {
     "netcoreapp1.0": {
