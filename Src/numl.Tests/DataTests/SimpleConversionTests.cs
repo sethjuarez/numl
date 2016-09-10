@@ -599,7 +599,9 @@ namespace numl.Tests.DataTests
             };
 
             var actual = d.Convert(o);
-            Assert.Equal(truths, actual);
+
+            var array = actual.Select(s => s.ToArray()).ToArray();
+            Assert.Equal(truths, array);
         }
 
         [Fact]
@@ -634,7 +636,8 @@ namespace numl.Tests.DataTests
             };
 
             var actual = d.Convert(o);
-            Assert.Equal(truths, actual);
+            var array = actual.Select(s => s.ToArray()).ToArray();
+            Assert.Equal(truths, array);
         }
     }
 }

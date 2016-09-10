@@ -198,7 +198,7 @@ namespace numl.Serialization
         {
             WriteStartObject();
             var first = true;
-            foreach (var pi in o.GetType().GetTypeInfo().GetProperties())
+            foreach (var pi in o.GetType().GetTypeInfo().DeclaredProperties)
             {
                 if (!first) WriteToken(JsonConstants.COMMA);
 

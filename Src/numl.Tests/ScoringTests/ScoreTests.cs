@@ -14,7 +14,7 @@ namespace numl.Tests.ScoringTests
     {
         private const double Delta = 0.001;
 
-        [Fact]
+        [Theory]
         [InlineData(new[] { -1d, -1d, 1d, -1d, 1d, -1d, 1d, 1d, 1d, -1d },
                   new[] { -1d, 1d, 1d, 1d, 1d, -1d, 1d, -1d, 1d, -1d },
                   4, 3, 0.7, 0.8, 0.667, 0.533, 0.727)]
@@ -37,7 +37,7 @@ namespace numl.Tests.ScoringTests
             Almost.Equal(fScore, scores.FScore, Delta, "FScore");
         }
 
-        [Fact]
+        [Theory]
         [InlineData(new[] { 74.98, 79.26, 75.26, 80.31, 82.68, 82.66, 77.49, 77.67, 77.14, 82.23,
                           80.31, 79.95, 78.46, 76.61, 73.87, 90.31, 89.95, 80.33, 78.38 },
                   new[] { 74.978733, 79.261027, 75.259871, 80.303349, 82.682547, 82.662863, 77.49019, 77.669849, 77.139804, 82.230296,

@@ -86,7 +86,7 @@ namespace numl.Serialization
             else
             {
                 var t = (T)Create();
-                foreach (var p in typeof(T).GetTypeInfo().GetProperties())
+                foreach (var p in typeof(T).GetTypeInfo().DeclaredProperties)
                 {
                     if (p.CanRead && p.CanWrite)
                     {

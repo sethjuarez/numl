@@ -6,6 +6,7 @@ using numl.Serialization;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using FluentAssertions;
 
 namespace numl.Tests.SerializationTests.BasicSerialization
 {
@@ -27,6 +28,7 @@ namespace numl.Tests.SerializationTests.BasicSerialization
             var sr = new StreamReader(stream);
             return new JsonReader(sr);
         }
+
 
         public static string JsonStringFromObject(object o)
         {
@@ -57,29 +59,30 @@ namespace numl.Tests.SerializationTests.BasicSerialization
             var b = JsonReaderFromString((-1 * System.Math.PI).ToString("r")).Read();
             Assert.Equal(-1 * System.Math.PI, b);
             var c = JsonReaderFromString((4354).ToString()).Read();
-            Assert.Equal(4354, c);
+            Assert.Equal(4354d, c);
             var d = JsonReaderFromString((-4354).ToString()).Read();
-            Assert.Equal(-4354, d);
+            Assert.Equal(-4354d, d);
             var e = JsonReaderFromString((double.MinValue).ToString("r")).Read();
             Assert.Equal(double.MinValue, e);
             var f = JsonReaderFromString((double.MaxValue).ToString("r")).Read();
             Assert.Equal(double.MaxValue, f);
         }
 
+        public void Test<T>(string s, T a)
+        {
+            var experiment = JsonReaderFromString($"\"{s}\"").Read();
+            Assert.Equal(a, experiment);
+        }
+
+
         [Fact]
         public void StringTest()
         {
-            Action<string, string> test = (s, a) =>
-            {
-                var experiment = JsonReaderFromString($"\"{s}\"").Read();
-                Assert.Equal(a, experiment);
-            };
-
-            test("little string example", "little string example");
-            test("with \\\"escape\\\" thingy", "with \"escape\" thingy");
-            test("others \\t \\n \\r \\b \\f test", "others \t \n \r \b \f test");
-            test("unicode \\u00A3 test", "unicode \u00A3 test");
-            test("slashes \\\\ \\/ test", "slashes \\ / test");
+            Test("little string example", "little string example");
+            Test("with \\\"escape\\\" thingy", "with \"escape\" thingy");
+            Test("others \\t \\n \\r \\b \\f test", "others \t \n \r \b \f test");
+            Test("unicode \\u00A3 test", "unicode \u00A3 test");
+            Test("slashes \\\\ \\/ test", "slashes \\ / test");
         }
 
         [Fact]
@@ -91,7 +94,7 @@ namespace numl.Tests.SerializationTests.BasicSerialization
                 Assert.Equal(a, experiment);
             };
 
-            test("[1   , 2,   3,   4,    5]", new object[] { 1, 2, 3, 4, 5});
+            test("[1   , 2,   3,   4,    5]", new object[] { 1d, 2d, 3d, 4d, 5d});
             test($"[{System.Math.PI.ToString("r")},{(-1 * System.Math.PI).ToString("r")}]",
                    new object[] { System.Math.PI, -1 * System.Math.PI });
 
@@ -115,34 +118,35 @@ namespace numl.Tests.SerializationTests.BasicSerialization
             test("[true   , false,   null,   true ]", new object[] { true, false, null, true });
         }
 
+        private void ObjectTest(string s, Dictionary<string, object> truth)
+        {
+            var d = JsonReaderFromString(s).Read() as Dictionary<string, object>;
+            Assert.NotNull(d);
+            d.Should().Equal(truth);
+        }
+
         [Fact]
         public void SimpleObjectTest()
         {
-            Action<string, Dictionary<string, object>> test = (s, a) =>
-            {
-                var experiment = JsonReaderFromString(s).Read();
-                Assert.Equal(a, experiment);
-            };
-
-
+            
             var s1 = "{\n\t\"prop1\"  :  123213,\n\t\"prop2\" : \"simple string\"\n}";
             var d1 = new Dictionary<string, object>()
             {
-                {"prop1", 123213 },
+                {"prop1", 123213d },
                 {"prop2", "simple string" } 
             };
 
-            test(s1, d1);
+            ObjectTest(s1, d1);
 
             var s2 = "{\n\t\"prop1\"  :  123213,\n\t\"prop2\" : \"simple string\",\n\t\"prop3\" : [1 ,  2]\n}";
             var d2 = new Dictionary<string, object>()
             {
-                {"prop1", 123213 },
+                {"prop1", 123213d },
                 {"prop2", "simple string" },
-                {"prop3", new object[] { 1, 2 } }
+                {"prop3", new object[] { 1d, 2d } }
             };
 
-            test(s2, d2);
+            ObjectTest(s2, d2);
         }
 
         [Fact]

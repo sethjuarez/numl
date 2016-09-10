@@ -192,7 +192,7 @@ namespace numl.Tests.SupervisedTests
 
             double actualGrad = 296500.0d;
 
-            Assert.Equal(actualGrad, System.Math.Round(priceGrad, 0), 5000);
+            Almost.Equal(actualGrad, System.Math.Round(priceGrad, 0), 5000);
         }
 
         [Fact]
