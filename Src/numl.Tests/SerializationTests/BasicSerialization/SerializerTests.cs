@@ -122,7 +122,9 @@ namespace numl.Tests.SerializationTests.BasicSerialization
         {
             var d = JsonReaderFromString(s).Read() as Dictionary<string, object>;
             Assert.NotNull(d);
-            d.Should().Equal(truth);
+            d.Keys.Should().Contain(truth.Keys);
+            foreach (var key in d.Keys)
+                Assert.Equal(truth[key], d[key]);
         }
 
         [Fact]
@@ -137,7 +139,11 @@ namespace numl.Tests.SerializationTests.BasicSerialization
             };
 
             ObjectTest(s1, d1);
+        }
 
+        [Fact]
+        public void SimpleObjectTestWithArrays()
+        {
             var s2 = "{\n\t\"prop1\"  :  123213,\n\t\"prop2\" : \"simple string\",\n\t\"prop3\" : [1 ,  2]\n}";
             var d2 = new Dictionary<string, object>()
             {

@@ -3,7 +3,9 @@ using numl.Model;
 using System.Linq;
 using numl.Tests.Data;
 using System.Collections.Generic;
+using FluentAssertions.Collections;
 using Xunit;
+using FluentAssertions;
 
 namespace numl.Tests.DataTests
 {
@@ -20,7 +22,16 @@ namespace numl.Tests.DataTests
         public void Test_Student_Descriptor(int index, string name, Type type, Type propertyType)
         {
             var d = Descriptor.Create<Student>();
-            var property = index < 0 ? d.Label : d.Features[index];
+            Property property;
+            if (index < 0) property = d.Label;
+            else
+            {
+
+                var q = d.Features.Where(p => p.Name == name);
+                q.Should().ContainSingle();
+                property = q.First();
+            }
+
             Assert.Equal(name, property.Name);
             Assert.Equal(type, property.Type);
             Assert.Equal(propertyType, property.GetType());
