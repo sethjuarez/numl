@@ -1,10 +1,29 @@
 ﻿{
-  "version": "1.0.0-*",
-
+  "version": "0.9.9-beta",
+  "title": "numl",
+  "description": "numl is a machine learning library intended to ease the use of using standard modeling techniques for both prediction and clustering",
+  "authors": [
+    "Seth Juarez",
+    "Chris Kalle"
+  ],
+  "copyright": "2016",
+  "packOptions": {
+    "summary": "numl is a machine learning library intended to ease the use of using standard modeling techniques for both prediction and clustering",
+    "owners": [
+      "Seth Juarez"
+    ],
+    "projectUrl": "http://numl.net",
+    "iconUrl": "http://numl.net/images/ico.png",
+    "licenseUrl": "https://github.com/sethjuarez/numl/blob/master/LICENSE.md",
+    "requireLicenseAcceptance": true,
+    "tags": [
+      "machine learning",
+      "framework"
+    ]
+  },
   "dependencies": {
     "NETStandard.Library": "1.6.0"
   },
-
   "frameworks": {
     "netstandard1.6": {
       "imports": "dnxcore50",

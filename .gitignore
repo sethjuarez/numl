@@ -2,8 +2,9 @@
 [Oo]bj/
 .cr/
 [Ww]orking*/
-Build/runbuild.txt
-Build/rundocs.txt
+Build/Ouput
+Build/Tools
+runbuild.txt
 TestResults/
 TestResult.xml
 packages/

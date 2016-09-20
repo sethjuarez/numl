@@ -1,189 +1,189 @@
-properties {
-	$majorVersion = "0.9"
-	$majorWithReleaseVersion = "0.9.9"
-	$nugetPrelease = "beta"
-	$packageId = "numl"
-	$version = GetVersion $majorWithReleaseVersion
-	$treatWarningsAsErrors = $true
-	$workingName = if ($workingName) {$workingName} else {"Working"}
-	$baseDir  = resolve-path ..
-	$buildDir = "$baseDir\Build"
-	$sourceDir = "$baseDir\Src"
-	$toolsDir = "$baseDir\Tools"
-	$docsDir = "$baseDir\Docs"
-	$workingDir = "$baseDir\$workingName"
-	$workingSourceDir = "$workingDir\Src"
-	$dnvmVersion = "1.0.0-rc1-update1"
-}
+##########################################################################
+# This is the Cake bootstrapper script for PowerShell.
+# This file was downloaded from https://github.com/cake-build/resources
+# Feel free to change this file to fit your needs.
+##########################################################################
 
-framework '4.6x86'
-include .\helpers.ps1
+<#
 
-task default -depends Docs
+.SYNOPSIS
+This is a Powershell script to bootstrap a Cake build.
 
-task Clean {
-	Write-Host "Setting location to $baseDir"
-	Set-Location $baseDir
-	
-	Write-Host "Clearing all project artifacts."
-	
-	# Define files and directories to delete
-	$include = @("_site", "artifacts", "bin", "obj", "Working", "packages", "TestResults", ".vs", "*.suo", "*.user", "*.orig", "*.dat", "*.lock.json", "*.nuget.props", "*.nuget.targets")
-	Write-Host -ForegroundColor Green "Clearing $include"
-	
-	# Define files and directories to exclude
-	$exclude = @()
-	
-	$items = Get-ChildItem $sourceDir -recurse -force -include $include -exclude $exclude
-	$count = $items.Count
-	Write-Host -ForegroundColor Green "Removing $count object(s)"
-	if ($items) {
-		foreach ($item in $items) {
-			Remove-Item $item.FullName -Force -Recurse -ErrorAction SilentlyContinue
-			Write-Host -ForegroundColor Green "Deleted" $item.FullName
-		}
-	}
-	
-	if (Test-Path -path $workingDir)
-	{
-		Write-Host "Deleting existing working directory $workingDir"
-		Execute-Command -command { del $workingDir -Recurse -Force }
-	}
-	
-	Write-Host "Creating working directory $workingDir"
-	New-Item -Path $workingDir -ItemType Directory
-}
+.DESCRIPTION
+This Powershell script will download NuGet if missing, restore NuGet tools (including Cake)
+and execute your Cake build script with the parameters you provide.
 
-task Build -depends Clean {
-	Write-Host "Copying source to working source directory $workingSourceDir"
-	robocopy $sourceDir $workingSourceDir /MIR /NP /XD bin obj TestResults packages $packageDirs .vs artifacts /XF *.suo *.user *.lock.json | Out-Default
-	
-	Write-Host -ForegroundColor Green "Updating assembly version"
-	Write-Host
-	Update-AssemblyInfoFiles $workingSourceDir ($majorVersion + '.0.0') $version
-	
-	Write-Host
-	Write-Host "Restoring $workingSourceDir\$packageId.sln" -ForegroundColor Green
-	[Environment]::SetEnvironmentVariable("EnableNuGetPackageRestore", "true", "Process")
-	exec { .\Tools\NuGet\NuGet.exe update -self }
-	exec { .\Tools\NuGet\NuGet.exe restore "$workingSourceDir\$packageId.sln" -verbosity detailed -configfile $workingSourceDir\nuget.config | Out-Default } "Error restoring $packageId"
-		
-	Write-Host
-	Write-Host "Building $workingSourceDir\$packageId.sln with docs=$doc" -ForegroundColor Green
-	
-	exec { msbuild "/t:Clean;Rebuild" /p:Configuration=Release /p:OutputPath=bin\Release "/p:TreatWarningsAsErrors=$treatWarningsAsErrors" "/p:VisualStudioVersion=14.0" "$workingSourceDir\$packageId.sln" | Out-Default } "Error building $packageId"
+.PARAMETER Script
+The build script to execute.
+.PARAMETER Target
+The build script target to run.
+.PARAMETER Configuration
+The build configuration to use.
+.PARAMETER Verbosity
+Specifies the amount of information to be displayed.
+.PARAMETER Experimental
+Tells Cake to use the latest Roslyn release.
+.PARAMETER WhatIf
+Performs a dry run of the build script.
+No tasks will be executed.
+.PARAMETER Mono
+Tells Cake to use the Mono scripting engine.
+.PARAMETER SkipToolPackageRestore
+Skips restoring of packages.
+.PARAMETER ScriptArgs
+Remaining arguments are added here.
 
-}
+.LINK
+http://cakebuild.net
 
-task Test -depends Build {
-	
-	$name = "$packageId.Tests"
-	$finalDir = $build.FinalDir
-	$framework = "net-4.0"
-	
-	Write-Host -ForegroundColor Green "Copying test assembly $name to deployed directory"
-	Write-Host
-	robocopy "$workingSourceDir\numl.Tests\bin\Release" $workingDir\Deployed\Bin /MIR /NFL /NDL /NJS /NC /NS /NP /XO | Out-Default
-	
-	Copy-Item -Path "$workingSourceDir\numl.Tests\bin\Release\numl.Tests.dll" -Destination $workingDir\Deployed\Bin\$finalDir\
-	
-	Write-Host -ForegroundColor Green "Running NUnit tests " $name
-	Write-Host
-	# exec { .\Tools\NUnit\nunit-console.exe "$workingDir\Deployed\Bin\numl.Tests.dll" /result=$workingDir\$name.xml /trace=Info /labels | Out-Default } "Error running $name tests"
-}
+#>
 
-task DnxBuild -depends Test {
-	
-	$p = Get-Location
-	Set-Location -Path $workingSourceDir\numl
-	$name = "$packageId.dotnet"
-	rename-item -path "$workingSourceDir\numl\numl.dotnet.project.json" -newname "$workingSourceDir\numl\project.json"
-	$projectPath = "$workingSourceDir\numl\project.json"
-	
-	exec { dnvm install $dnvmVersion -r clr | Out-Default }
-	exec { dnvm use $dnvmVersion -r clr | Out-Default }
-	
-	Write-Host -ForegroundColor Green "Restoring packages for $name"
-	Write-Host
-	exec { dnu restore $projectPath | Out-Default }
-	
-	Write-Host -ForegroundColor Green "Building $projectPath"
-	exec { dnu build --out $workingDir\DNXBuild --configuration Release  | Out-Default }
-	
-	New-Item -Path $workingDir\NuGet\lib -ItemType Directory
-	robocopy $workingDir\DNXBuild\Release $workingDir\NuGet\lib *.dll *.pdb *.xml /NFL /NDL /NJS /NC /NS /NP /XO /XF /S *.CodeAnalysisLog.xml | Out-Default
-	
-	Execute-Command -command { del  $workingDir\DNXBuild -Recurse -Force }
+[CmdletBinding()]
+Param(
+    [string]$Script = "build.cake",
+    [string]$Target = "Default",
+    [ValidateSet("Release", "Debug")]
+    [string]$Configuration = "Release",
+    [ValidateSet("Quiet", "Minimal", "Normal", "Verbose", "Diagnostic")]
+    [string]$Verbosity = "Verbose",
+    [switch]$Experimental,
+    [Alias("DryRun","Noop")]
+    [switch]$WhatIf,
+    [switch]$Mono,
+    [switch]$SkipToolPackageRestore,
+    [Parameter(Position=0,Mandatory=$false,ValueFromRemainingArguments=$true)]
+    [string[]]$ScriptArgs
+)
 
-	
-	Set-Location -Path $p
-}
-
-task Nuget -depends DnxBuild {
-	
-	$nugetVersion = $majorWithReleaseVersion
-	if ($nugetPrelease -ne $null)
-	{
-		$nugetVersion = $nugetVersion + "-" + $nugetPrelease
-	}
-
-	If (!(Test-Path $workingDir\NuGet)) {
-		New-Item -Path $workingDir\NuGet -ItemType Directory
-	}
-	
-	$nuspecPath = "$workingDir\NuGet\numl.nuspec"
-	Copy-Item -Path "$buildDir\numl.nuspec" -Destination $nuspecPath -recurse
-	
-	Write-Host "Updating nuspec file at $nuspecPath" -ForegroundColor Green
-	Write-Host
-	
-	$xml = [xml](Get-Content $nuspecPath)
-	Edit-XmlNodes -doc $xml -xpath "//*[local-name() = 'id']" -value $packageId
-	Edit-XmlNodes -doc $xml -xpath "//*[local-name() = 'version']" -value $nugetVersion
-	
-	Write-Host $xml.OuterXml
-	
-	$xml.save($nuspecPath)
-		
-	robocopy $workingSourceDir $workingDir\NuGet\src *.cs /S /NFL /NDL /NJS /NC /NS /NP /XD numl.Tests obj .vs artifacts | Out-Default
-	
-	Write-Host "Building NuGet package with ID $packageId and version $nugetVersion" -ForegroundColor Green
-	$p = Get-Location
-	
-	Set-Location -Path $toolsDir
-	
-	Write-Host
-	
-	exec { .\NuGet\NuGet.exe pack $nuspecPath -Symbols } | Out-Default
-	
-	Write-Host
-	Write-Host "Moving package to $workingDir\NuGet" -ForegroundColor Green
-	move -Path .\*.nupkg -Destination $workingDir\NuGet
-	
-	Set-Location -Path $p
-}
-
-task Docs -depends Nuget {
-	
-    $workingDocs = "$workingDir\Docs"
-    
-    if (Test-Path -path $workingDocs)
+[Reflection.Assembly]::LoadWithPartialName("System.Security") | Out-Null
+function MD5HashFile([string] $filePath)
+{
+    if ([string]::IsNullOrEmpty($filePath) -or !(Test-Path $filePath -PathType Leaf))
     {
-        Write-Host "Deleting existing docs directory $workingDocs"
-        Remove-Item $workingDocs -Force -Recurse -ErrorAction SilentlyContinue
+        return $null
     }
-    
-    Write-Host "Creating $workingDocs"
-    New-Item -Path $workingDocs -ItemType Directory
-    
-    robocopy $docsDir $workingDocs /MIR /NP /XD obj | Out-Default
 
-    Set-Location $workingDocs
-    
-	exec { .\..\..\Tools\docfx\docfx.exe --logLevel Verbose } | Out-Default
-
-    # maybe finalize site here...
-    Write-Host "Copying index.html over..."
-
-    exec { cp $docsDir\index.html $workingDocs\_site\index.html } | Out-Default
+    [System.IO.Stream] $file = $null;
+    [System.Security.Cryptography.MD5] $md5 = $null;
+    try
+    {
+        $md5 = [System.Security.Cryptography.MD5]::Create()
+        $file = [System.IO.File]::OpenRead($filePath)
+        return [System.BitConverter]::ToString($md5.ComputeHash($file))
+    }
+    finally
+    {
+        if ($file -ne $null)
+        {
+            $file.Dispose()
+        }
+    }
 }
+
+Write-Host "Preparing to run build script..."
+
+if(!$PSScriptRoot){
+    $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
+}
+
+$TOOLS_DIR = Join-Path $PSScriptRoot "tools"
+$NUGET_EXE = Join-Path $TOOLS_DIR "nuget.exe"
+$CAKE_EXE = Join-Path $TOOLS_DIR "Cake/Cake.exe"
+$NUGET_URL = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+$PACKAGES_CONFIG = Join-Path $TOOLS_DIR "packages.config"
+$PACKAGES_CONFIG_MD5 = Join-Path $TOOLS_DIR "packages.config.md5sum"
+
+# Should we use mono?
+$UseMono = "";
+if($Mono.IsPresent) {
+    Write-Verbose -Message "Using the Mono based scripting engine."
+    $UseMono = "-mono"
+}
+
+# Should we use the new Roslyn?
+$UseExperimental = "";
+if($Experimental.IsPresent -and !($Mono.IsPresent)) {
+    Write-Verbose -Message "Using experimental version of Roslyn."
+    $UseExperimental = "-experimental"
+}
+
+# Is this a dry run?
+$UseDryRun = "";
+if($WhatIf.IsPresent) {
+    $UseDryRun = "-dryrun"
+}
+
+# Make sure tools folder exists
+if ((Test-Path $PSScriptRoot) -and !(Test-Path $TOOLS_DIR)) {
+    Write-Verbose -Message "Creating tools directory..."
+    New-Item -Path $TOOLS_DIR -Type directory | out-null
+}
+
+# Make sure that packages.config exist.
+if (!(Test-Path $PACKAGES_CONFIG)) {
+    Write-Verbose -Message "Downloading packages.config..."
+    try { (New-Object System.Net.WebClient).DownloadFile("http://cakebuild.net/download/bootstrapper/packages", $PACKAGES_CONFIG) } catch {
+        Throw "Could not download packages.config."
+    }
+}
+
+# Try find NuGet.exe in path if not exists
+if (!(Test-Path $NUGET_EXE)) {
+    Write-Verbose -Message "Trying to find nuget.exe in PATH..."
+    $existingPaths = $Env:Path -Split ';' | Where-Object { (![string]::IsNullOrEmpty($_)) -and (Test-Path $_) }
+    $NUGET_EXE_IN_PATH = Get-ChildItem -Path $existingPaths -Filter "nuget.exe" | Select -First 1
+    if ($NUGET_EXE_IN_PATH -ne $null -and (Test-Path $NUGET_EXE_IN_PATH.FullName)) {
+        Write-Verbose -Message "Found in PATH at $($NUGET_EXE_IN_PATH.FullName)."
+        $NUGET_EXE = $NUGET_EXE_IN_PATH.FullName
+    }
+}
+
+# Try download NuGet.exe if not exists
+if (!(Test-Path $NUGET_EXE)) {
+    Write-Verbose -Message "Downloading NuGet.exe..."
+    try {
+        (New-Object System.Net.WebClient).DownloadFile($NUGET_URL, $NUGET_EXE)
+    } catch {
+        Throw "Could not download NuGet.exe."
+    }
+}
+
+# Save nuget.exe path to environment to be available to child processed
+$ENV:NUGET_EXE = $NUGET_EXE
+
+# Restore tools from NuGet?
+if(-Not $SkipToolPackageRestore.IsPresent) {
+    Push-Location
+    Set-Location $TOOLS_DIR
+
+    # Check for changes in packages.config and remove installed tools if true.
+    [string] $md5Hash = MD5HashFile($PACKAGES_CONFIG)
+    if((!(Test-Path $PACKAGES_CONFIG_MD5)) -Or
+      ($md5Hash -ne (Get-Content $PACKAGES_CONFIG_MD5 ))) {
+        Write-Verbose -Message "Missing or changed package.config hash..."
+        Remove-Item * -Recurse -Exclude packages.config,nuget.exe
+    }
+
+    Write-Verbose -Message "Restoring tools from NuGet..."
+    $NuGetOutput = Invoke-Expression "&`"$NUGET_EXE`" install -ExcludeVersion -OutputDirectory `"$TOOLS_DIR`""
+
+    if ($LASTEXITCODE -ne 0) {
+        Throw "An error occured while restoring NuGet tools."
+    }
+    else
+    {
+        $md5Hash | Out-File $PACKAGES_CONFIG_MD5 -Encoding "ASCII"
+    }
+    Write-Verbose -Message ($NuGetOutput | out-string)
+    Pop-Location
+}
+
+# Make sure that Cake has been installed.
+if (!(Test-Path $CAKE_EXE)) {
+    Throw "Could not find Cake.exe at $CAKE_EXE"
+}
+
+# Start Cake
+Write-Host "Running build script..."
+Invoke-Expression "& `"$CAKE_EXE`" `"$Script`" -target=`"$Target`" -configuration=`"$Configuration`" -verbosity=`"$Verbosity`" $UseMono $UseDryRun $UseExperimental $ScriptArgs"
+exit $LASTEXITCODE

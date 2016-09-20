@@ -4,13 +4,12 @@
   "dependencies": {
     "numl": "1.0.0-*",
     "xunit": "2.2.0-*",
-    "dotnet-test-xunit": "2.2.0-*",
-    "FluentAssertions": "4.14.0"
+    "FluentAssertions": "4.14.0",
+    "dotnet-test-xunit": "2.2.0-*"
   },
   "testRunner": "xunit",
   "frameworks": {
     "netcoreapp1.0": {
-      "imports": "dnxcore50",
       "dependencies": {
         "Microsoft.NETCore.App": {
           "version": "1.0.0-*",
