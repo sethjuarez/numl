@@ -3,9 +3,7 @@
     {
       "src": [
         {
-          "files": [
-            "Src/numl/numl.csproj"
-          ],
+          "files": [ "project.json" ],
           "exclude": [ "**/bin/**", "**/obj/**" ],
           "cwd" : "../.."
         }

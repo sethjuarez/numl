@@ -1,5 +1,8 @@
 #tool "nuget:?package=xunit.runner.console"
+#tool "docfx.msbuild"
 #addin "Newtonsoft.Json"
+#addin "Cake.DocFx"
+
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 //////////////////////////////////////////////////////////////////////
@@ -97,6 +100,17 @@ Task("Package")
     };
             
     DotNetCorePack("../Src/numl", settings);
+});
+
+Task("Docs")
+    .Does(() => 
+{
+    DocFx("../Docs/docfx.json", new DocFxSettings()
+    {
+        OutputPath = "./Output/Docs"
+    });
+
+    CopyFile("../Docs/index.html", "./Output/docs/_site/index.html");
 });
 
 //////////////////////////////////////////////////////////////////////
