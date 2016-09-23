@@ -25,7 +25,6 @@ var packageDir = Directory("./Output/Package");
 //////////////////////////////////////////////////////////////////////
 // Utility
 //////////////////////////////////////////////////////////////////////
-// utility function that patches project.json using json.net
 public static void UpdateProjectJsonVersion(string version, FilePath projectPath)
 {
     var project = Newtonsoft.Json.Linq.JObject.Parse(

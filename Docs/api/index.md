@@ -1,10 +1,2 @@
----
-_tocPath: api/toc.html
-_tocRel: toc.html
-_navPath: toc.html
-_navRel: ../toc.html
----
-
-# numl api reference
-
-This is supposed to help with code-y type stuff
+# PLACEHOLDER
+TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL** *API Documentation*!
