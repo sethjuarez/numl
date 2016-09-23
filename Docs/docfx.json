@@ -64,7 +64,8 @@
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
     "template": [
-      "default"
+      "default",
+      "numl"
     ],
     "postProcessors": [],
     "noLangKeyword": false
