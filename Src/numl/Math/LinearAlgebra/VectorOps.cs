@@ -102,7 +102,11 @@ namespace numl.Math.LinearAlgebra
         /// <returns>The result of the operation.</returns>
         public static Vector operator -(double s, Vector v)
         {
-            return v - s;
+            Vector result = v.Copy();
+            for (int i = 0; i < result.Length; i++)
+                result[i] = s - result[i];
+
+            return result;
         }
         /// <summary>Addition operator.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>

@@ -280,6 +280,27 @@ namespace numl.Tests.MathTests
             for (int i = 0; i < h.Length; i++)
                 Almost.Equal(1d, h[i], .1);
         }
+
+        [Test]
+        public void Vector_And_Scalar_Subtraction_Test()
+        {
+            Vector v = new Vector(new double[] { 1, 2, 3 });
+            double c = 2;
+            Vector expectedDifference = new Vector(new double[] { -1, 0, 1 });
+            Vector difference = v - c;
+
+            Assert.AreEqual(difference, expectedDifference);
+        }
+
+        [Test]
+        public void Vector_And_Scalar_Swapped_Subtraction_Test()
+        {
+            Vector v = new Vector(new double[] { 1, 2, 3 });
+            double c = 2;
+            Vector difference = v - c;
+            Vector swappedDifference = c - v;
+            Assert.AreEqual(difference, -swappedDifference);
+        }
     }
 }
 

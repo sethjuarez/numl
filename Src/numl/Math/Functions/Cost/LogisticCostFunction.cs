@@ -41,7 +41,7 @@ namespace numl.Math.Functions.Cost
 
             Vector slog = s.Copy().Each(v => System.Math.Log(System.Math.Abs(1.0 - v)));
 
-            j = (-1.0 / m) * ( (this.Y.Dot(s.Log())) + (-1.0 * ((1.0 - this.Y).Dot(slog))) );
+            j = (-1.0 / m) * ( (this.Y.Dot(s.Log())) + ((1.0 - this.Y).Dot(slog)) );
 
             if (this.Lambda != 0)
             {
