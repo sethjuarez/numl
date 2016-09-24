@@ -30,5 +30,16 @@ namespace numl.AI
         {
             return obj.GetHashCode();
         }
+
+        /// <summary>
+        /// Returns an int indicating whether the <paramref name="y"/> is less than, equal to or greater than <paramref name="x"/>.
+        /// </summary>
+        /// <param name="x">First state.</param>
+        /// <param name="y">Second state to compare.</param>
+        /// <returns>Int.</returns>
+        public static int Compare(IState x, IState y)
+        {
+            return Comparer<int>.Default.Compare(x.Id, y.Id);
+        }
     }
 }

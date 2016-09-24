@@ -2,12 +2,12 @@
 using System.Linq;
 using System.Collections.Generic;
 
-namespace numl.AI
+namespace numl.AI.Search
 {
     /// <summary>
     /// Class Minimax.
     /// </summary>
-    public class Minimax : AdversarialSearch
+    public class Minimax : AdversarialSearch<IState, ISuccessor>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Minimax"/> class.

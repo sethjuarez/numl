@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace numl.AI
+namespace numl.AI.Collections
 {
     class PriorityQueue<P, V>
     {

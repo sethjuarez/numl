@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace numl.Math
 {
     /// <summary>
-    /// FeatureProperties class.
+    /// Summary class.
     /// </summary>
     public class Summary
     {
@@ -34,5 +34,23 @@ namespace numl.Math
         /// Vector of all columns and the standard deviation for each.
         /// </summary>
         public Vector StandardDeviation { get; set; }
+
+        /// <summary>
+        /// Summarizes a given Matrix.
+        /// </summary>
+        /// <param name="matrix">Matrix to summarize.</param>
+        /// <param name="byVector">Indicates which direction to summarize, default is <see cref="VectorType.Row"/> indicating top-down.</param>
+        /// <returns></returns>
+        public static Summary Summarize(Matrix matrix, VectorType byVector = VectorType.Row)
+        {
+            return new Summary()
+            {
+                Average = matrix.Mean(byVector),
+                StandardDeviation = matrix.StdDev(byVector),
+                Minimum = matrix.Min(byVector),
+                Maximum = matrix.Max(byVector),
+                Median = matrix.Median(byVector)
+            };
+        }
     }
 }

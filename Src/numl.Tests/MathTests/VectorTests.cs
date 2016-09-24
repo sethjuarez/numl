@@ -281,7 +281,7 @@ namespace numl.Tests.MathTests
                 Almost.Equal(1d, h[i], .1);
         }
 
-        [Test]
+        [Fact]
         public void Vector_And_Scalar_Subtraction_Test()
         {
             Vector v = new Vector(new double[] { 1, 2, 3 });
@@ -289,17 +289,17 @@ namespace numl.Tests.MathTests
             Vector expectedDifference = new Vector(new double[] { -1, 0, 1 });
             Vector difference = v - c;
 
-            Assert.AreEqual(difference, expectedDifference);
+            Assert.Equal(difference, expectedDifference);
         }
 
-        [Test]
+        [Fact]
         public void Vector_And_Scalar_Swapped_Subtraction_Test()
         {
             Vector v = new Vector(new double[] { 1, 2, 3 });
             double c = 2;
             Vector difference = v - c;
             Vector swappedDifference = c - v;
-            Assert.AreEqual(difference, -swappedDifference);
+            Assert.Equal(difference, -swappedDifference);
         }
     }
 }

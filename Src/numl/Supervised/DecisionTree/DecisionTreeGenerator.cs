@@ -109,8 +109,8 @@ namespace numl.Supervised.DecisionTree
             {
                 Descriptor = Descriptor,
                 NormalizeFeatures = NormalizeFeatures,
-                Normalizer = FeatureNormalizer,
-                Summary = FeatureProperties,
+                FeatureNormalizer = FeatureNormalizer,
+                FeatureProperties = FeatureProperties,
                 Tree = tree,
                 Hint = Hint
             };

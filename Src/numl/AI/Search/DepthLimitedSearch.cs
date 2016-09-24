@@ -2,19 +2,22 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace numl.AI
+namespace numl.AI.Search
 {
     /// <summary>
-    /// Class DepthFirstSearch.
+    /// Class DepthLimitedSearch.
     /// </summary>
-    public class DepthFirstSearch : ISearchStrategy
+    public class DepthLimitedSearch : ISearchStrategy
     {
         readonly Stack<Node> _list;
+        private readonly int _limit;
         /// <summary>
-        /// Initializes a new instance of the <see cref="DepthFirstSearch"/> class.
+        /// Initializes a new instance of the <see cref="DepthLimitedSearch"/> class.
         /// </summary>
-        public DepthFirstSearch()
+        /// <param name="limit">The limit.</param>
+        public DepthLimitedSearch(int limit)
         {
+            _limit = limit;
             _list = new Stack<Node>();
         }
 
@@ -24,7 +27,8 @@ namespace numl.AI
         /// <param name="node">The node.</param>
         public void Add(Node node)
         {
-            _list.Push(node);
+            if (node.Depth <= _limit)
+                _list.Push(node);
         }
 
         /// <summary>

@@ -73,8 +73,8 @@ namespace numl.Supervised.Perceptron
                 Normalized = Normalize, 
                 Descriptor = Descriptor,
                 NormalizeFeatures = base.NormalizeFeatures,
-                Normalizer = base.FeatureNormalizer,
-                Summary = base.FeatureProperties
+                FeatureNormalizer = base.FeatureNormalizer,
+                FeatureProperties = base.FeatureProperties
             };
         }
     }

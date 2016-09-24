@@ -2,12 +2,12 @@
 using System.Linq;
 using System.Collections.Generic;
 
-namespace numl.AI
+namespace numl.AI.Search
 {
     /// <summary>
     /// Class AlphaBeta.
     /// </summary>
-    public class AlphaBeta : AdversarialSearch
+    public class AlphaBeta : AdversarialSearch<IState, ISuccessor>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="AlphaBeta"/> class.

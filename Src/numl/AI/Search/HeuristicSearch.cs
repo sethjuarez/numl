@@ -2,7 +2,9 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace numl.AI
+using numl.AI.Collections;
+
+namespace numl.AI.Search
 {
     /// <summary>
     /// Class HeuristicSearch.

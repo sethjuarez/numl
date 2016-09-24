@@ -186,8 +186,8 @@ namespace numl.Supervised.SVM
             return new SVMModel()
             {
                 Descriptor = this.Descriptor,
-                Normalizer = base.FeatureNormalizer,
-                Summary = base.FeatureProperties,
+                FeatureNormalizer = base.FeatureNormalizer,
+                FeatureProperties = base.FeatureProperties,
                 Theta = ((alpha * y) * X).ToVector(),
                 Alpha = alpha.Slice(fitness),
                 Bias = this.Bias,
