@@ -66,8 +66,8 @@ namespace numl.Supervised.Perceptron
                 X = x.Slice(indices),
                 Descriptor = this.Descriptor,
                 NormalizeFeatures = base.NormalizeFeatures,
-                Normalizer = base.FeatureNormalizer,
-                Summary = base.FeatureProperties
+                FeatureNormalizer = base.FeatureNormalizer,
+                FeatureProperties = base.FeatureProperties
             };
         }
     }

@@ -3,25 +3,27 @@ using numl.AI;
 using System.Linq;
 using System.Text;
 using System.Collections.Generic;
+using numl.Data;
 
 namespace numl.Tests.AITests
 {
     public class Square : IState
     {
-        public string Id { get; private set; }
+        private static int _Id = 0;
+
+        public int Id { get; set; }
         public bool IsTerminal { get; private set; }
 
         private readonly int[] _square = new int[9];
-        private readonly string[] _moves = new[] { "Left", "Right", "Up", "Down" };
+        private readonly Action[] _moves = new string[] { "Left", "Right", "Up", "Down" }
+                                                    .Select(s => new Action(s)).ToArray();
         private readonly int[] _modeIdx = new[] { -1, 1, -3, 3 };
         public Square(int[] square)
         {
             _square = square;
             IsTerminal = CalculateTerminal(_square);
-            Id = Guid.NewGuid().ToString();
+            Id = ++_Id;
         }
-
-
 
         private static bool CalculateTerminal(int[] square)
         {
@@ -45,15 +47,15 @@ namespace numl.Tests.AITests
             }
         }
                 
-        public static bool Test(int idx, string action)
+        public static bool Test(int idx, IAction action)
         {
-            if (action == "Left" && idx % 3 != 0)
+            if (action.Name == "Left" && idx % 3 != 0)
                 return true;
-            else if (action == "Right" && (idx + 1) % 3 != 0)
+            else if (action.Name == "Right" && (idx + 1) % 3 != 0)
                 return true;
-            else if (action == "Up" && idx > 2)
+            else if (action.Name == "Up" && idx > 2)
                 return true;
-            else if (action == "Down" && idx < 6)
+            else if (action.Name == "Down" && idx < 6)
                 return true;
             else
                 return false;
@@ -68,7 +70,7 @@ namespace numl.Tests.AITests
             return new Square(newSquare);
         }
         
-        public bool IsEqualTo(IState state)
+        public bool IsEqualTo(IVertex state)
         {
             if (state == null) return false;
             if (!(state is Square)) return false;
@@ -95,6 +97,11 @@ namespace numl.Tests.AITests
             return IsEqualTo(obj as IState);
         }
 
+        public int CompareTo(object obj)
+        {
+            return StateComparer.Compare(this, obj as IState);
+        }
+
         public override int GetHashCode()
         {
             return _square.GetHashCode();
@@ -113,14 +120,14 @@ namespace numl.Tests.AITests
     public class SquareMove : ISuccessor
     {
 
-        public SquareMove(IState state, string action)
+        public SquareMove(IState state, IAction action)
         {
             State = state;
             Action = action;
         }
 
         public double Cost { get { return 1; } }
-        public string Action { get; private set; }
+        public IAction Action { get; private set; }
         public IState State { get; private set; }
     }
 }

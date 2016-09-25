@@ -27,12 +27,12 @@ namespace numl.Supervised
         /// <summary>
         /// Feature normalizer to use over each item.
         /// </summary>
-        public INormalizer Normalizer { get; set; }
+        public INormalizer FeatureNormalizer { get; set; }
 
         /// <summary>
         /// Feature properties from the original item set.
         /// </summary>
-        public Summary Summary { get; set; }
+        public Summary FeatureProperties { get; set; }
 
         /// <summary>Predicts the given o.</summary>
         /// <param name="y">The Vector to process.</param>

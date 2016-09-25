@@ -53,6 +53,22 @@ namespace numl.Tests.MathTests
             }
         }
 
+        [Fact]
+        public void Test_Random_Bounds()
+        {
+            Random rnd = new Random();
+            for (int x = 0; x < 10000; x++)
+            {
+                double min = rnd.Next(0, x);
+                double max = rnd.Next((int)min + 1, x + 1);
+
+                double d = Sampling.GetUniform(min, max);
+
+                Assert.True(d >= min, $"[iter {x}]: {min} <-- {d} --> {max}");
+                Assert.True(d <= max, $"[iter {x}]: {min} <-- {d} --> {max}");
+            }
+        }
+
         // used to calculate pct difference
         public static double diff(double x1, double x2)
         {

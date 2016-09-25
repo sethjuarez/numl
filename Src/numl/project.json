@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "0.9.9-beta",
   "title": "numl",
   "description": "numl is a machine learning library intended to ease the use of using standard modeling techniques for both prediction and clustering",
@@ -14,7 +14,7 @@
     ],
     "projectUrl": "http://numl.net",
     "iconUrl": "http://numl.net/images/ico.png",
-    "licenseUrl": "https://github.com/sethjuarez/numl/blob/master/LICENSE.md",
+    "licenseUrl": "https://raw.githubusercontent.com/sethjuarez/numl/master/LICENSE.md",
     "requireLicenseAcceptance": true,
     "tags": [
       "machine learning",
@@ -38,9 +38,10 @@
         "System.IO.FileSystem": "4.0.1",
         "System.Reflection": "4.1.0",
         "System.Reflection.TypeExtensions": "4.1.0",
-        "System.Text.RegularExpressions": "4.1.0",
         "System.Runtime.Serialization.Primitives": "4.1.1",
-        "System.Text.Encoding": "4.0.11"
+        "System.Text.Encoding": "4.0.11",
+        "System.Text.RegularExpressions": "4.1.0",
+        "System.Threading.Tasks.Parallel": "4.0.1"
       }
     }
   }

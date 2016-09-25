@@ -33,8 +33,8 @@ namespace numl.Supervised.KNN
             {
                 Descriptor = Descriptor,
                 NormalizeFeatures = base.NormalizeFeatures,
-                Normalizer = base.FeatureNormalizer,
-                Summary = base.FeatureProperties,
+                FeatureNormalizer = base.FeatureNormalizer,
+                FeatureProperties = base.FeatureProperties,
                 X = x,
                 Y = y,
                 K = K

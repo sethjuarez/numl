@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+
 using numl.AI;
+using numl.AI.Search;
+
 using Xunit;
 
 namespace numl.Tests.AITests
@@ -55,7 +58,7 @@ namespace numl.Tests.AITests
         {
             IState init = new Square(new[] { 1, 4, 2, 3, 5, 8, 6, 0, 7 });
             Console.WriteLine(init);
-            SimpleSearch bfs = new SimpleSearch(new BreadthFirstSearch());
+            var bfs = new SimpleSearch<IState, ISuccessor>(new BreadthFirstSearch());
             var solution = bfs.Find(init);
 
             if (solution) PrintSolution(bfs.Solution);
@@ -68,15 +71,13 @@ namespace numl.Tests.AITests
         {
             IState init = new Square(new[] { 1, 2, 3, 4, 5, 6, 7, 0, 8 });
 
-            AStarSearch strategy = new AStarSearch()
-            {
-                Heuristic = s => s.Heuristic()
-            };
+            AStarSearch strategy = new AStarSearch();
 
-            SimpleSearch a = new SimpleSearch(strategy);
+            var a = new SimpleSearch<IState, ISuccessor>(strategy);
             var solution = a.Find(init);
             if (solution) PrintSolution(a.Solution);
             Assert.True(solution);
         }
+
     }
 }

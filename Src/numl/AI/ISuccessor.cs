@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
+using numl.Data;
+
 namespace numl.AI
 {
     /// <summary>
@@ -14,11 +16,13 @@ namespace numl.AI
         /// </summary>
         /// <value>The cost.</value>
         double Cost { get; }
+
         /// <summary>
         /// Gets the action.
         /// </summary>
         /// <value>The action.</value>
-        string Action { get; }
+        IAction Action { get; }
+
         /// <summary>
         /// Gets the state.
         /// </summary>

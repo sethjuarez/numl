@@ -773,6 +773,28 @@ namespace numl.Math.LinearAlgebra
 
             return m;
         }
+
+        /// <summary>
+        /// Reshapes the supplied matrix into a new matrix shape.
+        /// </summary>
+        /// <param name="m">Matrix to reshape.</param>
+        /// <param name="rows">Number of rows of the new matrix.</param>
+        /// <param name="cols">Number of columns of the new matrix.</param>
+        /// <returns>Matrix.</returns>
+        public static Matrix Reshape(Matrix m, int rows, int cols)
+        {
+            Matrix result = new Matrix(rows, cols);
+
+            int width = (rows > m.Rows ? m.Rows : rows);
+            int height = (cols > m.Cols ? m.Cols : cols);
+
+            for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
+                    result[y, x] = m[y, x];
+
+            return result;
+        }
+
         /// <summary>Extracts this object.</summary>
         /// <param name="m">Input Matrix.</param>
         /// <param name="x">Matrix x.</param>

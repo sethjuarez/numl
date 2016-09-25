@@ -10,10 +10,11 @@ using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 using numl.Math.Normalization;
 using numl.Math;
+
 namespace numl.Supervised
 {
     /// <summary>Interface for model.</summary>
-    public interface IModel
+    public interface IModel : IModelBase
     {
         /// <summary>Predicts the given o.</summary>
         /// <param name="y">The Vector to process.</param>
@@ -37,20 +38,6 @@ namespace numl.Supervised
         /// <param name="o">Object to predict</param>
         /// <returns>Predicted value</returns>
         object PredictValue(object o);
-
-        /// <summary>Gets or sets the descriptor.</summary>
-        /// <value>The descriptor.</value>
-        Descriptor Descriptor { get; set; }
-
-        /// <summary>
-        /// Feature normalizer to apply
-        /// </summary>
-        INormalizer Normalizer { get; set; }
-
-        /// <summary>
-        /// Feature properties of the original item set.
-        /// </summary>
-        Summary Summary { get; set; }
 
         /// <summary>Saves the given IModel to a file.</summary>
         /// <param name="file">The file to load.</param>

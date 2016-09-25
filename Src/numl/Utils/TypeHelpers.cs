@@ -42,6 +42,17 @@ namespace numl.Utils
 
             return p;
         }
+
+        /// <summary>
+        /// Returns the first property of the given type from the Properties source.
+        /// </summary>
+        /// <param name="properties">Properties source.</param>
+        /// <returns>Property</returns>
+        public static Property GetPropertyOfType<T>(this IEnumerable<Property> properties)
+        {
+            return properties.FirstOrDefault(f => f.Type.IsAssignableFrom(typeof(T)));
+        }
+
         /// <summary>Generates a label.</summary>
         /// <param name="type">The type.</param>
         /// <param name="name">The name.</param>

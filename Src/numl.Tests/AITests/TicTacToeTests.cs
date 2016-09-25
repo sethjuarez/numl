@@ -1,7 +1,10 @@
 ﻿using System;
-using numl.AI;
 using System.Linq;
 using System.Collections.Generic;
+
+using numl.AI;
+using numl.AI.Search;
+
 using Xunit;
 
 namespace numl.Tests.AITests
@@ -39,7 +42,7 @@ namespace numl.Tests.AITests
         [Fact]
         public void SuperSimpleWinMinimax()
         {
-            Minimax m = new Minimax();
+            var m = new Minimax<IState, ISuccessor>();
             m.Depth = 1;
             var initial = new TicTacToe(false, new[] { -1, 0, -1, -1, 1, 1, 1, 0, 1 });
             m.Find(initial);
