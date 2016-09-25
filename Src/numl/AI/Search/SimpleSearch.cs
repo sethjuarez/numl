@@ -7,7 +7,8 @@ namespace numl.AI.Search
     /// <summary>
     /// Class SimpleSearch.
     /// </summary>
-    public class SimpleSearch : Search
+    public class SimpleSearch<TState, TSuccessor> : SearchBase<TState> where TState : class, IState
+                                                                       where TSuccessor : class, ISuccessor
     {
         private readonly List<IState> _closed;
 
@@ -15,7 +16,7 @@ namespace numl.AI.Search
         /// Gets or sets the solution.
         /// </summary>
         /// <value>The solution.</value>
-        public List<ISuccessor> Solution { get; set; }
+        public List<TSuccessor> Solution { get; set; }
 
         /// <summary>
         /// Gets or sets the strategy.
@@ -24,7 +25,7 @@ namespace numl.AI.Search
         public ISearchStrategy Strategy { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SimpleSearch"/> class.
+        /// Initializes a new instance of the <see cref="SimpleSearch&lt;TState, TSuccessor&gt;"/> class.
         /// </summary>
         /// <param name="strategy">The strategy.</param>
         /// <param name="avoidRepetition">if set to <c>true</c> [avoid repetition].</param>
@@ -42,7 +43,7 @@ namespace numl.AI.Search
         /// </summary>
         /// <param name="initialState">The initial state.</param>
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-        public virtual bool Find(IState initialState)
+        public virtual bool Find(TState initialState)
         {
             if (Strategy == null) return false;
 
@@ -52,7 +53,7 @@ namespace numl.AI.Search
                 var n = Strategy.Remove();
                 if (n.Parent != null && n.Successor != null)
                 {
-                    var eventArgs = new StateExpansionEventArgs(n.Parent.State, n.Successor, n.Cost, n.Depth);
+                    var eventArgs = new StateExpansionEventArgs((TState)n.Parent.State, (TSuccessor)n.Successor, n.Cost, n.Depth);
                     OnSuccessorExpanded(this, eventArgs);
 
                     if (eventArgs.CancelExpansion)
@@ -78,11 +79,11 @@ namespace numl.AI.Search
 
         private void CreateSolution(Node n)
         {
-            if (Solution == null) Solution = new List<ISuccessor>();
+            if (Solution == null) Solution = new List<TSuccessor>();
             var node = n;
             while (!node.IsRoot)
             {
-                Solution.Add(node.Successor);
+                Solution.Add((TSuccessor)node.Successor);
                 node = node.Parent;
             }
             Solution.Reverse();

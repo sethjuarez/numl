@@ -190,7 +190,7 @@ namespace numl.Utils
         /// <returns></returns>
         public static T Random<T>(this IEnumerable<T> source)
         {
-            return source.ElementAt(Math.Probability.Sampling.GetUniform(0, source.Count()));
+            return source.ElementAt(Math.Probability.Sampling.GetUniform(0, source.Count() - 1));
         }
 
         /// <summary>

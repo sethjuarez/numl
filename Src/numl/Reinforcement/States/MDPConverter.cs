@@ -50,7 +50,7 @@ namespace numl.Reinforcement
 
         private static string GetActionKey(int stateId, int tStateId)
         {
-            return stateId.ToString() + ":" + tStateId.ToString();
+            return $"{stateId}:{tStateId}";
         }
 
         /// <summary>

@@ -19,7 +19,7 @@ namespace numl.AI.Search
             if (Heuristic == null)
                 throw new InvalidOperationException("Invalid Heuristic!");
 
-            var h = Heuristic(node.State);
+            var h = Heuristic.Compute(node.State);
             Add(node, h);
         }
     }

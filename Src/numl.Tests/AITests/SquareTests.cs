@@ -58,7 +58,7 @@ namespace numl.Tests.AITests
         {
             IState init = new Square(new[] { 1, 4, 2, 3, 5, 8, 6, 0, 7 });
             Console.WriteLine(init);
-            var bfs = new SimpleSearch(new BreadthFirstSearch());
+            var bfs = new SimpleSearch<IState, ISuccessor>(new BreadthFirstSearch());
             var solution = bfs.Find(init);
 
             if (solution) PrintSolution(bfs.Solution);
@@ -73,7 +73,7 @@ namespace numl.Tests.AITests
 
             AStarSearch strategy = new AStarSearch();
 
-            var a = new SimpleSearch(strategy);
+            var a = new SimpleSearch<IState, ISuccessor>(strategy);
             var solution = a.Find(init);
             if (solution) PrintSolution(a.Solution);
             Assert.True(solution);

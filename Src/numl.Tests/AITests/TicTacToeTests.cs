@@ -42,7 +42,7 @@ namespace numl.Tests.AITests
         [Fact]
         public void SuperSimpleWinMinimax()
         {
-            var m = new Minimax();
+            var m = new Minimax<IState, ISuccessor>();
             m.Depth = 1;
             var initial = new TicTacToe(false, new[] { -1, 0, -1, -1, 1, 1, 1, 0, 1 });
             m.Find(initial);

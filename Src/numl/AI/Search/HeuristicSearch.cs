@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 using numl.AI.Collections;
+using numl.AI.Functions;
 
 namespace numl.AI.Search
 {
@@ -12,11 +13,11 @@ namespace numl.AI.Search
     public abstract class HeuristicSearch : ISearchStrategy
     {
         private readonly PriorityQueue<double, Node> _queue;
+
         /// <summary>
-        /// Gets or sets the heuristic.
+        /// Gets or sets the heuristic function.
         /// </summary>
-        /// <value>The heuristic.</value>
-        public Func<IState, double> Heuristic { get; set; }
+        public IHeuristicFunction Heuristic { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HeuristicSearch"/> class.
@@ -24,6 +25,7 @@ namespace numl.AI.Search
         public HeuristicSearch()
         {
             _queue = new PriorityQueue<double, Node>();
+            this.Heuristic = new Heuristic();
         }
 
         /// <summary>

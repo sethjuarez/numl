@@ -7,10 +7,11 @@ namespace numl.AI.Search
     /// <summary>
     /// Class AlphaBeta.
     /// </summary>
-    public class AlphaBeta : AdversarialSearch<IState, ISuccessor>
+    public class AlphaBeta<TState, TSuccessor> : AdversarialSearch<TState, TSuccessor> where TState : class, IState
+                                                                                       where TSuccessor : class, ISuccessor
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AlphaBeta"/> class.
+        /// Initializes a new instance of the <see cref="AlphaBeta&lt;TState, TSuccessor&gt;"/> class.
         /// </summary>
         public AlphaBeta()
         {
@@ -22,7 +23,7 @@ namespace numl.AI.Search
         /// </summary>
         /// <param name="state">The state.</param>
         /// <returns>ISuccessor.</returns>
-        public override ISuccessor Find(IAdversarialState state)
+        public override TSuccessor Find(IAdversarialState state)
         {
             Root = new Node(state);
             Node a;
@@ -32,7 +33,7 @@ namespace numl.AI.Search
             else
                 a = Min(Root, double.NegativeInfinity, double.PositiveInfinity);
 
-            return a.Successor;
+            return a.Successor as TSuccessor;
         }
 
         /// <summary>
@@ -50,10 +51,10 @@ namespace numl.AI.Search
 
             foreach (var successor in (node.State as IAdversarialState).GetSuccessors())
             {
-                if (!ProcessEvent(node, successor)) return node;
+                if (!ProcessEvent(node, (TSuccessor)successor)) return node;
 
                 var s = successor.State as IAdversarialState;
-                var child = new Node(node, successor) { Cost = s.Utility, Depth = node.Depth + 1 };
+                var child = new Node(node, (TSuccessor)successor) { Cost = s.Utility, Depth = node.Depth + 1 };
                 node.AddChild(child);
 
 
@@ -88,10 +89,10 @@ namespace numl.AI.Search
 
             foreach (var successor in (node.State as IAdversarialState).GetSuccessors())
             {
-                if (!ProcessEvent(node, successor)) return node;
+                if (!ProcessEvent(node, (TSuccessor)successor)) return node;
 
                 var s = successor.State as IAdversarialState;
-                var child = new Node(node, successor) { Cost = s.Utility, Depth = node.Depth + 1 };
+                var child = new Node(node, (TSuccessor)successor) { Cost = s.Utility, Depth = node.Depth + 1 };
                 node.AddChild(child);
 
                 var g = Max(child, alpha, beta);

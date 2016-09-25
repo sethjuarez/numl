@@ -7,7 +7,7 @@ namespace numl.AI
     /// <summary>
     /// Class Search.
     /// </summary>
-    public abstract class SearchBase<IState>
+    public abstract class SearchBase<TState> where TState : class, IState
     {
         /// <summary>
         /// Occurs when [successor expanded].

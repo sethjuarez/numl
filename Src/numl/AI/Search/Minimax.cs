@@ -7,10 +7,11 @@ namespace numl.AI.Search
     /// <summary>
     /// Class Minimax.
     /// </summary>
-    public class Minimax : AdversarialSearch<IState, ISuccessor>
+    public class Minimax<TState, TSuccessor> : AdversarialSearch<TState, TSuccessor> where TState : class, IState
+                                                                                     where TSuccessor : class, ISuccessor
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Minimax"/> class.
+        /// Initializes a new instance of the <see cref="Minimax&lt;TState, TSuccessor&gt;"/> class.
         /// </summary>
         public Minimax()
         {
@@ -22,7 +23,7 @@ namespace numl.AI.Search
         /// </summary>
         /// <param name="state">The state.</param>
         /// <returns>ISuccessor.</returns>
-        public override ISuccessor Find(IAdversarialState state)
+        public override TSuccessor Find(IAdversarialState state)
         {
             Root = new Node(state);
             Node a;
@@ -32,7 +33,7 @@ namespace numl.AI.Search
             else
                 a = Min(Root);
 
-            return a.Successor;
+            return (TSuccessor)a.Successor;
         }
 
         /// <summary>
@@ -51,7 +52,7 @@ namespace numl.AI.Search
 
             foreach (var successor in (node.State as IAdversarialState).GetSuccessors())
             {
-                if (!ProcessEvent(node, successor)) return node;
+                if (!ProcessEvent(node, (TSuccessor)successor)) return node;
 
                 var s = successor.State as IAdversarialState;
                 var child = new Node(node, successor) { Cost = s.Utility, Depth = node.Depth + 1 };

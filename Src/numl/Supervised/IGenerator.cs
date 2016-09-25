@@ -10,11 +10,8 @@ using numl.Math.LinearAlgebra;
 namespace numl.Supervised
 {
     /// <summary>Interface for generator.</summary>
-    public interface IGenerator
+    public interface IGenerator : IModelBase
     {
-        /// <summary>Gets or sets the descriptor.</summary>
-        /// <value>The descriptor.</value>
-        Descriptor Descriptor { get; set; }
         /// <summary>Generates.</summary>
         /// <param name="descriptor">The descriptor.</param>
         /// <param name="examples">The examples.</param>
