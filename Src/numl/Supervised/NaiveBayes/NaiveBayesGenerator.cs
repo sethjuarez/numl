@@ -76,8 +76,8 @@ namespace numl.Supervised.NaiveBayes
             return new NaiveBayesModel {
                 Descriptor = Descriptor,
                 NormalizeFeatures = base.NormalizeFeatures,
-                Normalizer = base.FeatureNormalizer,
-                Summary = base.FeatureProperties,
+                FeatureNormalizer = base.FeatureNormalizer,
+                FeatureProperties = base.FeatureProperties,
                 Root = root
             };
         }

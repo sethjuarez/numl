@@ -44,7 +44,7 @@ namespace numl.Supervised.Regression
         public double PredictRaw(Vector x)
         {
             Vector xCopy = (NormalizeFeatures ?
-                                Normalizer.Normalize(IncreaseDimensions(x, PolynomialFeatures), Summary) :
+                                FeatureNormalizer.Normalize(IncreaseDimensions(x, PolynomialFeatures), FeatureProperties) :
                                 IncreaseDimensions(x, PolynomialFeatures));
 
             return LogisticFunction.Compute(xCopy.Insert(0, 1.0, false).Dot(Theta));

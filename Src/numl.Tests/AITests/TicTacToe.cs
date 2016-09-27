@@ -3,12 +3,15 @@ using numl.AI;
 using System.Linq;
 using System.Text;
 using System.Collections.Generic;
+using numl.Data;
 
 namespace numl.Tests.AITests
 {
     public class TicTacToe : IAdversarialState
     {
-        public string Id { get; private set; }
+        private static int _Id = 0;
+
+        public int Id { get; set; }
         public bool IsTerminal { get; private set; }
         public double Utility { get; private set; }
         public bool Player { get; private set; }
@@ -16,7 +19,7 @@ namespace numl.Tests.AITests
         private readonly int[] _board = new[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         public TicTacToe(bool player)
         {
-            Id = Guid.NewGuid().ToString();
+            Id = ++_Id;
             IsTerminal = false;
             Player = player;
         }
@@ -24,7 +27,7 @@ namespace numl.Tests.AITests
         public TicTacToe(bool player, int[] board)
             : this(player)
         {
-            Id = Guid.NewGuid().ToString();
+            Id = ++_Id;
             _board = board;
             Calculate();
         }
@@ -77,12 +80,12 @@ namespace numl.Tests.AITests
                     var play = Player ? 1 : -1;
                     var newBoard = (int[])_board.Clone();
                     newBoard[i] = play;
-                    yield return new TicTacToeMove(new TicTacToe(!Player, newBoard), i.ToString());
+                    yield return new TicTacToeMove(new TicTacToe(!Player, newBoard), new Action(i.ToString()));
                 }
             }
         }
 
-        public bool IsEqualTo(IState state)
+        public bool IsEqualTo(IVertex state)
         {
             if (state == null) return false;
             if (!(state is TicTacToe)) return false;
@@ -120,6 +123,11 @@ namespace numl.Tests.AITests
             return IsEqualTo(obj as IState);
         }
 
+        public int CompareTo(object obj)
+        {
+            return StateComparer.Compare(this, obj as IAdversarialState);
+        }
+
         public override int GetHashCode()
         {
             return _board.GetHashCode();
@@ -136,7 +144,7 @@ namespace numl.Tests.AITests
     public class TicTacToeMove : ISuccessor
     {
 
-        public TicTacToeMove(IState state, string action)
+        public TicTacToeMove(IState state, IAction action)
         {
             State = state;
             Action = action;
@@ -147,7 +155,7 @@ namespace numl.Tests.AITests
             get { return 1; }
         }
 
-        public string Action { get; private set; }
+        public IAction Action { get; private set; }
 
         public IState State { get; private set; }
 

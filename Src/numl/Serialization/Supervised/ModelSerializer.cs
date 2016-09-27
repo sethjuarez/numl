@@ -37,9 +37,9 @@ namespace numl.Serialization.Supervised
 
                 var normalizer = Ject.FindType(reader.ReadProperty().Value.ToString());
                 if(normalizer != null)
-                    model.Normalizer = (INormalizer)Activator.CreateInstance(normalizer);
+                    model.FeatureNormalizer = (INormalizer)Activator.CreateInstance(normalizer);
 
-                model.Summary = (Math.Summary)reader.ReadProperty().Value;
+                model.FeatureProperties = (Math.Summary)reader.ReadProperty().Value;
 
                 return model;
             }
@@ -58,8 +58,8 @@ namespace numl.Serialization.Supervised
                 var model = (numl.Supervised.Model)value;
                 writer.WriteProperty(nameof(model.Descriptor), model.Descriptor);
                 writer.WriteProperty(nameof(model.NormalizeFeatures), model.NormalizeFeatures);
-                writer.WriteProperty(nameof(model.Normalizer), model.Normalizer?.GetType().FullName);
-                writer.WriteProperty(nameof(model.Summary), model.Summary);
+                writer.WriteProperty(nameof(model.FeatureNormalizer), model.FeatureNormalizer?.GetType().FullName);
+                writer.WriteProperty(nameof(model.FeatureProperties), model.FeatureProperties);
             }
         }
     }
