@@ -6,14 +6,14 @@ body {
 }
 button,
 a {
-  color: #337ab7;
+  color: #f0854d;
   cursor: pointer;
 }
 button:hover,
 button:focus,
 a:hover,
 a:focus {
-  color: #23527c;
+  color: #fff;
   text-decoration: none;
 }
 a.disable,
@@ -260,6 +260,7 @@ article section {
 }
 #autocollapse .navbar-brand {
   margin-left: 0;
+  padding-top: 12px;
 }
 .collapse.in,
 .collapsing {
@@ -395,10 +396,6 @@ article section {
   margin-left: 0;
 }
 
-.sidenav, .fixed_header, .toc  {
-  background-color: #f1f1f1;
-}
-
 .sidetoc {
   position: fixed;
   width: 260px;
@@ -406,14 +403,10 @@ article section {
   bottom: 0;
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: #f1f1f1;
-  border-left: 1px solid #e7e7e7;
-  border-right: 1px solid #e7e7e7;
   z-index: 1;
 }
 
 body .toc{
-  background-color: #f1f1f1;
   overflow-x: hidden;
 }
 
@@ -449,7 +442,7 @@ body .toc{
   left: 0;
 }
 .toc .nav > li > a {
-  color: #666666;
+  color: #fff;
   display: inline;
   padding: 0;
 }
@@ -459,16 +452,16 @@ body .toc{
 }
 .toc .nav > li > a:hover,
 .toc .nav > li > a:focus {
-  color: #000000;
+  color: #f0854d;
   background: none;
   text-decoration: inherit;
 }
 .toc .nav > li.active > a {
-  color: #337ab7;
+  color: #f0854d;
 }
 .toc .nav > li.active > a:hover,
 .toc .nav > li.active > a:focus {
-  color: #23527c;
+  color: #fff;
 }
 
 .toc .nav > li> .expand-stub {
@@ -518,10 +511,7 @@ body .toc{
   position: fixed;
   top: 90px;
   width: 260px;
-  background-color: #f1f1f1;
   padding: 15px;
-  border-left: 1px solid #e7e7e7;
-  border-right: 1px solid #e7e7e7;
   z-index: 1;
 }
 .toc-filter {
@@ -588,7 +578,8 @@ body .toc{
   font-size: 14px;
 }
 .sideaffix > div.contribution > ul > li > a.contribution-link:hover {
-  background-color: #ffffff;
+  border: solid 1px #fff;
+  border-radius: 3px;
 }
 .sideaffix ul.nav > li > a:focus {
   background: none;
@@ -610,12 +601,11 @@ body .toc{
   position: absolute;
 }
 .affix ul > li > a:hover {
-  background: none;
-  color: #666666;
+  color: #fff;
 }
 .affix ul > li.active > a,
 .affix ul > li.active > a:before {
-  color: #337ab7;
+  color: #f0854d;
 }
 .affix ul > li > a {
   padding: 5px 12px;
@@ -632,7 +622,7 @@ body .toc{
 }
 .affix > ul > li.active > a,
 .affix > ul > li.active > a:before {
-  color: #337ab7;
+  color: #f0854d;
   font-weight: bold;
 }
 .affix ul ul > li > a {
@@ -697,8 +687,7 @@ footer {
   z-index: 1000;
 }
 .footer {
-  border-top: 1px solid #e7e7e7;
-  background-color: #f8f8f8;
+      background: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAICAgICAgICAgICAgICAwQDAgIDBAUEBAQEBAUGBQUFBQUFBgYHBwgHBwYJCQoKCQkMDAwMDAwMDAwMDAwMDAz/2wBDAQMDAwUEBQkGBgkNCwkLDQ8ODg4ODw8MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCAACBLADAREAAhEBAxEB/8QAGgABAQEAAwEAAAAAAAAAAAAAAAUEAQIDCf/EAB0QAQEBAQEAAgMAAAAAAAAAAAADQTEBQnECBMH/xAAXAQEBAQEAAAAAAAAAAAAAAAAAAwIB/8QAFhEBAQEAAAAAAAAAAAAAAAAAAAEC/9oADAMBAAIRAxEAPwD4Xg5874CpLEqtFWaVWinPE6tlUj3xKrxVl1KqxSliVXyqRS0tFSSdVypyxKr5VY59I1bKlHE9LZUpJVaKk8Sq0U5YnVsqUEqtFOWJVaKM06vlUlzxKrRSn3xKqxTl1KrZVI4jV8qck9LRSliWloozxKrRRn3xOrZUZo6WjfNOrR7joAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADp+fAYKtxKsFVYjpMt/FYhU6qsR0m1ViOkyysRqVbVYhpMr1WIVMr8lYnUuuqxDSbVWI1MtqsQqZXVYjpLrqsRqXVWI1MqrENJlvkpEalVViOkuuqxCpd1YjUuuqxHSZXVcoVJtqsSqXbnqsQ0l256rEdI/7HPPtXKGmRtgB//9k=') no-repeat top #000;
   padding: 15px 0;
 }
 @media (min-width: 768px) {

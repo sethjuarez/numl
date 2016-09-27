@@ -27,8 +27,6 @@
       },
       {
         "files": [
-          "articles/**.md",
-          "articles/**/toc.yml",
           "toc.yml",
           "*.md"
         ],
@@ -36,7 +34,26 @@
           "obj/**",
           "_site/**"
         ]
-      }
+      },
+      {
+          "files": [
+            "getting-started/*.md",
+            "about/*.md",
+            "docs/*.md",
+            "api/*.md",
+            "support/*.md"
+          ]
+        },
+        {
+          "files": [
+              "toc.yml",
+              "getting-started/toc.yml",
+              "about/toc.yml",
+              "docs/toc.yml",
+              "api/toc.yml",
+              "support/toc.yml"
+            ]
+        }
     ],
     "resource": [
       {

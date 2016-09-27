@@ -23,7 +23,11 @@
         {{>partials/searchResults}}
       </div>
       {{/_enableSearch}}
-      <div role="main" class="container body-content hide-when-search">
+      <div id="main-content" role="main" class="container body-content hide-when-search">
+            {{#main}}
+              {{>index}}
+            {{/main}}
+            {{^main}}
       {{^_disableToc}}
         {{>partials/toc}}
         <div class="article row grid-right">
@@ -47,6 +51,7 @@
           {{/_disableAffix}}
         </div>
       </div>
+      {{/main}}
       {{^_disableFooter}}
       {{>partials/footer}}
       {{/_disableFooter}}
