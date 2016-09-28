@@ -4,7 +4,12 @@ using System.Collections.Generic;
 
 namespace numl.AI.Collections
 {
-    class PriorityQueue<P, V>
+    /// <summary>
+    /// A priority queue.
+    /// </summary>
+    /// <typeparam name="P">Key type.</typeparam>
+    /// <typeparam name="V">Value type.</typeparam>
+    public class PriorityQueue<P, V>
     {
         private SortedDictionary<P, Queue<V>> list = new SortedDictionary<P, Queue<V>>();
         private int _count = 0;
