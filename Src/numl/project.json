@@ -1,5 +1,5 @@
-{
-  "version": "0.9.9-beta",
+﻿{
+  "version": "0.9.10-beta",
   "title": "numl",
   "description": "numl is a machine learning library intended to ease the use of using standard modeling techniques for both prediction and clustering",
   "authors": [

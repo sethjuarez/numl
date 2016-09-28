@@ -2,7 +2,7 @@
 [Oo]bj/
 .cr/
 [Ww]orking*/
-Build/Ouput/*
+Build/Ouput
 Build/Tools
 runbuild.txt
 TestResults/

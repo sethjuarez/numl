@@ -9,7 +9,7 @@
       <div class="row inner-footer">
             <div class="col-md-10">
                 &copy;2016 — <a href="http://sethjuarez.com">Seth Juarez</a><br>
-                <a href="https://www.nuget.org/packages/numl/">numl v0.9.9-beta</a>
+                <a href="https://www.nuget.org/packages/numl/">numl v{{_appId}}</a>
             </div>
             <div class="col-md-2">
                 <a href="http://opensource.org/licenses/MIT">MIT License</a><br>
@@ -19,11 +19,4 @@
       {{/_appFooter}}
     </div>
   </div>
-</footer>
-
-
-<footer>
-    <div class="container">
-        
-    </div>
 </footer>

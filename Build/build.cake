@@ -6,7 +6,7 @@
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 //////////////////////////////////////////////////////////////////////
-var release = "0.9.9";
+var release = "0.9.10";
 var suffix = "-beta";
 var testFailOk = true;
 var copyright = string.Format("©{0}, Seth Juarez", DateTime.Now.Year);
@@ -25,11 +25,11 @@ var packageDir = Directory("./Output/Package");
 //////////////////////////////////////////////////////////////////////
 // Utility
 //////////////////////////////////////////////////////////////////////
-public static void UpdateProjectJsonVersion(string version, FilePath projectPath)
+public static void UpdateProjectJsonVersion(string version, FilePath projectPath, string node)
 {
     var project = Newtonsoft.Json.Linq.JObject.Parse(
         System.IO.File.ReadAllText(projectPath.FullPath, Encoding.UTF8));
-    project["version"].Replace(version);
+    project[node].Replace(version);
     System.IO.File.WriteAllText(projectPath.FullPath, project.ToString(), Encoding.UTF8);
 }
 
@@ -61,7 +61,7 @@ Task("Version")
     // update assembly version
     CreateAssemblyInfo("../Src/numl/Properties/AssemblyInfo.cs", assemblyInfo);
     // update project.json build
-    UpdateProjectJsonVersion(release + suffix, "../Src/numl/project.json");
+    UpdateProjectJsonVersion(release + suffix, "../Src/numl/project.json", "version");
 });
 
 Task("Restore")
@@ -102,21 +102,27 @@ Task("Package")
 });
 
 Task("Docs")
+    .IsDependentOn("Package")
     .Does(() => 
 {
+    // write out version in prep for doc gen
+    UpdateProjectJsonVersion(release + suffix, "../Docs/version.json", "_appId");
+
     DocFx("../Docs/docfx.json", new DocFxSettings()
     {
         OutputPath = "./Output/Docs"
     });
 
-    CopyFile("../Docs/index.html", "./Output/docs/_site/index.html");
+    // move to site repo
+    CopyDirectory("./Output/docs/_site", "../../numl.web");
+    
 });
 
 //////////////////////////////////////////////////////////////////////
 // TASK TARGETS
 //////////////////////////////////////////////////////////////////////
 Task("Default")
-    .IsDependentOn("Package");
+    .IsDependentOn("Docs");
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION

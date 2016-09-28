@@ -8,8 +8,8 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyDescription("numl is a machine learning library intended to ease the use of using standard modeling techniques for both prediction and clustering")]
 [assembly: AssemblyProduct("numl")]
-[assembly: AssemblyVersion("0.9.9")]
-[assembly: AssemblyFileVersion("0.9.9")]
+[assembly: AssemblyVersion("0.9.10")]
+[assembly: AssemblyFileVersion("0.9.10")]
 [assembly: AssemblyCopyright("©2016, Seth Juarez")]
 [assembly: Guid("554363c6-5979-4c9a-90e6-e70af2d5cc09")]
 [assembly: ComVisible(false)]

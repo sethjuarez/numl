@@ -6,5 +6,6 @@ exports.transform = function (model) {
   model.docurl = model.docurl || common.getViewSourceHref(model, model._gitContribute, model._gitUrlPattern);
   // check for main page
   model.main = model._path === "index.html";
+
   return model;
 }

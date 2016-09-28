@@ -58,7 +58,8 @@
     "resource": [
       {
         "files": [
-          "images/**"
+          "images/**",
+          "data/**"
         ],
         "exclude": [
           "obj/**",
@@ -78,7 +79,7 @@
       }
     ],
     "dest": "_site",
-    "globalMetadataFiles": [],
+    "globalMetadataFiles": [ "version.json" ],
     "fileMetadataFiles": [],
     "template": [
       "default",

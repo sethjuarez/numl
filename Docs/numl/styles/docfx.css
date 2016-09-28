@@ -453,7 +453,7 @@ body .toc{
 .toc .nav > li > a:hover,
 .toc .nav > li > a:focus {
   color: #f0854d;
-  background: none;
+  background: transparent;
   text-decoration: inherit;
 }
 .toc .nav > li.active > a {
@@ -579,6 +579,7 @@ body .toc{
 }
 .sideaffix > div.contribution > ul > li > a.contribution-link:hover {
   border: solid 1px #fff;
+  background: transparent;
   border-radius: 3px;
 }
 .sideaffix ul.nav > li > a:focus {
@@ -602,6 +603,7 @@ body .toc{
 }
 .affix ul > li > a:hover {
   color: #fff;
+  background: transparent;
 }
 .affix ul > li.active > a,
 .affix ul > li.active > a:before {
