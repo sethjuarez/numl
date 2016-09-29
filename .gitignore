@@ -2,8 +2,8 @@
 [Oo]bj/
 .cr/
 [Ww]orking*/
-Build/Ouput
-Build/Tools
+Ouput/
+Tools/
 runbuild.txt
 TestResults/
 TestResult.xml
@@ -27,3 +27,5 @@ Docs/api/*.yml
 *.GhostDoc.xml
 .vs/*
 *.lock.*
+.DS_Store
+
