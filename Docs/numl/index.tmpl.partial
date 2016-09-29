@@ -14,7 +14,7 @@
                 <p>
                     <img src="images/main/learning.png" alt="Learning" style="float: left; margin-right: 1em;" width="150" height="150">
                     The purpose of machine learning is to find (and exploit) patterns in data. Traditionally developers,
-                    when faced with a problem, develop and algorithm and write code. Certain classes of problems, however,
+                    when faced with a problem, develop an algorithm and write code. Certain classes of problems, however,
                     do not lend themselves to this approach. With machine learning, the developer instead supplies relevant
                     data to the machine and allows the computer to create the appropriate algorithm.
                 </p>
