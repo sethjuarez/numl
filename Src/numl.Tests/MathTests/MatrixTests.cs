@@ -78,7 +78,7 @@ namespace numl.Tests.MathTests
         [Fact]
         public void Matrix_Serialize_Test()
         {
-            string path = string.Format(BaseSerialization.GetPath(GetType()), "matrix_serialize_test");
+            string path = Path.Combine(BaseSerialization.GetPath(GetType()), "matrix_serialize_test.json");
 
             Matrix m1 = new[,] {
                 { System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2, System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2 },

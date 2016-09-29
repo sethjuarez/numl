@@ -22,21 +22,23 @@ namespace numl.Tests.SerializationTests
 
         internal static string GetPath(Type t)
         {
-            var basePath = String.Format("{0}\\{1}\\{2}", 
+            var basePath = Path.Combine(new[]{
                 Directory.GetCurrentDirectory(),
                 "TestResults", 
-                t.Name);
+                t.Name
+            });
 
             if (!Directory.Exists(basePath))
                 Directory.CreateDirectory(basePath);
-            basePath += "\\{0}.json";
+
             return basePath;
         }
 
         internal void Serialize(object o)
         {
             var caller = GetCaller();
-            string file = string.Format(GetPath(GetType()), caller);
+            string file = Path.Combine(GetPath(GetType()), $"{caller}.json");
+
             if (File.Exists(file)) File.Delete(file);
 
             using (var fs = new FileStream(file, FileMode.CreateNew))
@@ -47,7 +49,7 @@ namespace numl.Tests.SerializationTests
         internal T Deserialize<T>()
         {
             var caller = GetCaller();
-            string file = string.Format(GetPath(GetType()), caller);
+            string file = Path.Combine(GetPath(GetType()), $"{caller}.json");
 
             using (var fs = new FileStream(file, FileMode.Open))
             using (var f = new StreamReader(fs))
@@ -60,7 +62,7 @@ namespace numl.Tests.SerializationTests
         internal object Deserialize()
         {
             var caller = GetCaller();
-            string file = string.Format(GetPath(GetType()), caller);
+            string file = Path.Combine(GetPath(GetType()), $"{caller}.json");
 
             using (var fs = new FileStream(file, FileMode.Open))
             using (var f = new StreamReader(fs))
@@ -70,7 +72,7 @@ namespace numl.Tests.SerializationTests
         internal JsonWriter GetWriter()
         {
             var caller = GetCaller();
-            string file = string.Format(GetPath(GetType()), caller);
+            string file = Path.Combine(GetPath(GetType()), $"{caller}.json");
             if (File.Exists(file)) File.Delete(file);
 
             var fs = new FileStream(file, FileMode.CreateNew);
@@ -81,7 +83,7 @@ namespace numl.Tests.SerializationTests
         internal JsonReader GetReader()
         {
             var caller = GetCaller();
-            string file = string.Format(GetPath(GetType()), caller);
+            string file = Path.Combine(GetPath(GetType()), $"{caller}.json");
 
             var fs = new FileStream(file, FileMode.Open);
             var f = new StreamReader(fs);
