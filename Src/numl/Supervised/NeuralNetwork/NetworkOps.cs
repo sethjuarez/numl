@@ -11,7 +11,7 @@ using System.Collections.Generic;
 namespace numl.Supervised.NeuralNetwork
 {
     /// <summary>A network.</summary>
-    public partial class Network
+    public static class NetworkOps
     {
         /// <summary>Defaults.</summary>
         /// <param name="d">The Descriptor to process.</param>
@@ -21,10 +21,8 @@ namespace numl.Supervised.NeuralNetwork
         /// <param name="outputFunction">The ouput function for hidden nodes (Optional).</param>
         /// <param name="epsilon">epsilon</param>
         /// <returns>A Network.</returns>
-        public static Network Default(Descriptor d, Matrix x, Vector y, IFunction activationFunction, IFunction outputFunction = null, double epsilon = double.NaN)
+        public static Network Create(this Network network, Descriptor d, Matrix x, Vector y, IFunction activationFunction, IFunction outputFunction = null, double epsilon = double.NaN)
         {
-            Network nn = new Network();
-
             // set output to number of choices of available
             // 1 if only two choices
             int distinct = y.Distinct().Count();
@@ -36,34 +34,46 @@ namespace numl.Supervised.NeuralNetwork
             int hidden = (int)System.Math.Ceiling((double)(x.Cols + output) * 2.0 / 3.0);
 
             // creating input nodes
-            nn.In = new Neuron[x.Cols + 1];
-            nn.In[0] = new Neuron(true) { Label = "B0", ActivationFunction = ident, NodeId = 0, LayerId = 0 };
+            network.In = new Neuron[x.Cols + 1];
+            network.In[0] = network.AddVertex(new Neuron(true) { Label = "B0", ActivationFunction = ident, NodeId = 0, LayerId = 0 });
             for (int i = 1; i < x.Cols + 1; i++)
-                nn.In[i] = new Neuron { Label = d.ColumnAt(i - 1), ActivationFunction = ident, NodeId = i, LayerId = 0 };
+                network.In[i] = network.AddVertex(new Neuron { Label = d.ColumnAt(i - 1), ActivationFunction = ident, NodeId = i, LayerId = 0 });
 
             // creating hidden nodes
             Neuron[] h = new Neuron[hidden + 1];
-            h[0] = new Neuron(true) { Label = "B1", ActivationFunction = ident, NodeId = 0, LayerId = 1 };
+            h[0] = network.AddVertex(new Neuron(true) { Label = "B1", ActivationFunction = ident, NodeId = 0, LayerId = 1 });
             for (int i = 1; i < hidden + 1; i++)
-                h[i] = new Neuron { Label = String.Format("H{0}", i), ActivationFunction = activationFunction, OutputFunction = outputFunction, NodeId = i, LayerId = 1 };
+                h[i] = network.AddVertex(new Neuron {
+                    Label = String.Format("H{0}", i),
+                    ActivationFunction = activationFunction,
+                    OutputFunction = outputFunction,
+                    NodeId = i,
+                    LayerId = 1
+                });
 
             // creating output nodes
-            nn.Out = new Neuron[output];
+            network.Out = new Neuron[output];
             for (int i = 0; i < output; i++)
-                nn.Out[i] = new Neuron { Label = GetLabel(i, d), ActivationFunction = activationFunction, OutputFunction = outputFunction, NodeId = i, LayerId = 2 };
+                network.Out[i] = network.AddVertex(new Neuron {
+                    Label = Network.GetLabel(i, d),
+                    ActivationFunction = activationFunction,
+                    OutputFunction = outputFunction,
+                    NodeId = i,
+                    LayerId = 2
+                });
 
             // link input to hidden. Note: there are
             // no inputs to the hidden bias node
             for (int i = 1; i < h.Length; i++)
-                for (int j = 0; j < nn.In.Length; j++)
-                    Edge.Create(nn.In[j], h[i], epsilon: epsilon);
+                for (int j = 0; j < network.In.Length; j++)
+                    network.AddEdge(Edge.Create(network.In[j], h[i], epsilon: epsilon));
 
             // link from hidden to output (full)
-            for (int i = 0; i < nn.Out.Length; i++)
+            for (int i = 0; i < network.Out.Length; i++)
                 for (int j = 0; j < h.Length; j++)
-                    Edge.Create(h[j], nn.Out[i], epsilon: epsilon);
+                    network.AddEdge(Edge.Create(h[j], network.Out[i], epsilon: epsilon));
 
-            return nn;
+            return network;
         }
 
         /// <summary>
@@ -79,11 +89,9 @@ namespace numl.Supervised.NeuralNetwork
         /// <param name="epsilon">Weight initialization parameter for random weight selection.  Weight will be in the range of: -epsilon to +epsilon.</param>
         /// <param name="hiddenLayers">An array of hidden neuron dimensions, where each element is the size of each layer (excluding bias nodes).</param>
         /// <returns>Returns an untrained neural network model.</returns>
-        public static Network Create(int inputLayer, int outputLayer, IFunction activationFunction, IFunction outputFunction = null, Func<int, int, Neuron> fnNodeInitializer = null, 
+        public static Network Create(this Network network, int inputLayer, int outputLayer, IFunction activationFunction, IFunction outputFunction = null, Func<int, int, Neuron> fnNodeInitializer = null, 
             Func<int, int, int, double> fnWeightInitializer = null, double epsilon = double.NaN, params int[] hiddenLayers)
         {
-            Network network = new Network();
-
             IFunction ident = new Ident();
 
             if (fnNodeInitializer == null)
@@ -94,8 +102,7 @@ namespace numl.Supervised.NeuralNetwork
 
             // creating input nodes
             network.In = new Neuron[inputLayer + 1];
-            network.In[0] = new Neuron(true) { Label = "B0", ActivationFunction = ident, LayerId = 0 };
-            network.In[0].LayerId = network.In[0].NodeId = 0;
+            network.In[0] = network.AddVertex(new Neuron(true) { Label = "B0", ActivationFunction = ident, NodeId = 0, LayerId = 0 });
 
             for (int i = 1; i < inputLayer + 1; i++)
             {
@@ -104,6 +111,8 @@ namespace numl.Supervised.NeuralNetwork
                 network.In[i].ActivationFunction = (network.In[i].ActivationFunction ?? ident);
                 network.In[i].LayerId = 0;
                 network.In[i].NodeId = i;
+
+                network.AddVertex(network.In[i]);
             }
 
             Neuron[] last = null;
@@ -111,8 +120,7 @@ namespace numl.Supervised.NeuralNetwork
             {
                 // creating hidden nodes
                 Neuron[] layer = new Neuron[hiddenLayers[layerIdx] + 1];
-                layer[0] = new Neuron(true) { Label = "B1", ActivationFunction = ident, LayerId = layerIdx + 1 };
-                layer[0].NodeId = 0;
+                layer[0] = network.AddVertex(new Neuron(true) { Label = "B1", ActivationFunction = ident, LayerId = layerIdx + 1, NodeId = 0 });
                 for (int i = 1; i < layer.Length; i++)
                 {
                     layer[i] = fnNodeInitializer(layerIdx + 1, i);
@@ -121,6 +129,8 @@ namespace numl.Supervised.NeuralNetwork
                     layer[i].OutputFunction = layer[i].OutputFunction;
                     layer[i].LayerId = layerIdx + 1;
                     layer[i].NodeId = i;
+
+                    network.AddVertex(layer[i]);
                 }
 
                 if (layerIdx > 0 && layerIdx < hiddenLayers.Length)
@@ -128,14 +138,14 @@ namespace numl.Supervised.NeuralNetwork
                     // create hidden to hidden (full)
                     for (int i = 0; i < last.Length; i++)
                         for (int x = 1; x < layer.Length; x++)
-                            Edge.Create(last[i], layer[x], weight: fnWeightInitializer(layerIdx, i, x), epsilon: epsilon);
+                            network.AddEdge(Edge.Create(last[i], layer[x], weight: fnWeightInitializer(layerIdx, i, x), epsilon: epsilon));
                 }
                 else if (layerIdx == 0)
                 {
                     // create input to hidden (full)
                     for (int i = 0; i < network.In.Length; i++)
                         for (int j = 1; j < layer.Length; j++)
-                            Edge.Create(network.In[i], layer[j], weight: fnWeightInitializer(layerIdx, i, j), epsilon: epsilon);
+                            network.AddEdge(Edge.Create(network.In[i], layer[j], weight: fnWeightInitializer(layerIdx, i, j), epsilon: epsilon));
                 }
 
                 last = layer;
@@ -151,12 +161,14 @@ namespace numl.Supervised.NeuralNetwork
                 network.Out[i].OutputFunction = (network.Out[i].OutputFunction ?? outputFunction);
                 network.Out[i].LayerId = hiddenLayers.Length + 1;
                 network.Out[i].NodeId = i;
+
+                network.AddVertex(network.Out[i]);
             }
 
             // link from (last) hidden to output (full)
             for (int i = 0; i < network.Out.Length; i++)
                 for (int j = 0; j < last.Length; j++)
-                    Edge.Create(last[j], network.Out[i], weight: fnWeightInitializer(hiddenLayers.Length, j, i), epsilon: epsilon);
+                    network.AddEdge(Edge.Create(last[j], network.Out[i], weight: fnWeightInitializer(hiddenLayers.Length, j, i), epsilon: epsilon));
 
             return network;
         }
@@ -171,9 +183,8 @@ namespace numl.Supervised.NeuralNetwork
         /// <param name="outputFunction">Ouput Function for each output layer.</param>
         /// <param name="hiddenLayers">The intermediary (hidden) layers / ensembles in the network.</param>
         /// <returns>A Deep Neural Network</returns>
-        public static Network Create(Descriptor d, Matrix X, Vector y, IFunction activationFunction, IFunction outputFunction = null, params NetworkLayer[] hiddenLayers)
+        public static Network Create(this Network network, Descriptor d, Matrix X, Vector y, IFunction activationFunction, IFunction outputFunction = null, params NetworkLayer[] hiddenLayers)
         {
-            Network nn = new Network();
             // set output to number of choices of available
             // 1 if only two choices
             int distinct = y.Distinct().Count();
@@ -182,15 +193,15 @@ namespace numl.Supervised.NeuralNetwork
             IFunction ident = new Ident();
 
             // creating input nodes
-            nn.In = new Neuron[X.Cols + 1];
-            nn.In[0] = new Neuron { Label = "B0", ActivationFunction = ident };
+            network.In = new Neuron[X.Cols + 1];
+            network.In[0] = new Neuron { Label = "B0", ActivationFunction = ident };
             for (int i = 1; i < X.Cols + 1; i++)
-                nn.In[i] = new Neuron { Label = d.ColumnAt(i - 1), ActivationFunction = ident };
+                network.In[i] = new Neuron { Label = d.ColumnAt(i - 1), ActivationFunction = ident };
 
             // creating output nodes
-            nn.Out = new Neuron[output];
+            network.Out = new Neuron[output];
             for (int i = 0; i < output; i++)
-                nn.Out[i] = new Neuron { Label = GetLabel(i, d), ActivationFunction = activationFunction, OutputFunction = outputFunction };
+                network.Out[i] = new Neuron { Label = Network.GetLabel(i, d), ActivationFunction = activationFunction, OutputFunction = outputFunction };
 
             for (int layer = 0; layer < hiddenLayers.Count(); layer++)
             {
@@ -214,7 +225,7 @@ namespace numl.Supervised.NeuralNetwork
             //    for (int j = 0; j < h.Length; j++)
             //        Edge.Create(h[j], nn.Out[i]);
 
-            return nn;
+            return network;
         }
 
         /// <summary>
@@ -222,37 +233,41 @@ namespace numl.Supervised.NeuralNetwork
         /// </summary>
         /// <param name="nodes">An array of nodes in the network</param>
         /// <param name="edges">An array of edges between the nodes in the network.</param>
-        public static Network LinkNodes(IEnumerable<Neuron> nodes, IEnumerable<Edge> edges)
+        public static Network LinkNodes(this Network network, IEnumerable<Neuron> nodes, IEnumerable<Edge> edges)
         {
-            Network network = new Network();
-
             int inputLayerId = nodes.Min(m => m.LayerId);
             int outputLayerId = nodes.Max(m => m.LayerId);
 
             network.In = nodes.Where(w => w.LayerId == inputLayerId).ToArray();
 
-            int hiddenLayers = (1 - outputLayerId) - inputLayerId;
+            foreach (var node in network.In)
+                network.AddVertex(node);
 
+            int hiddenLayer = inputLayerId + 1;
             // relink nodes
             Neuron[] last = null;
-            for (int layerIdx = 0; layerIdx < hiddenLayers; layerIdx++)
+            for (int layerIdx = hiddenLayer; layerIdx < outputLayerId; layerIdx++)
             {
-                Neuron[] layer = nodes.Where(w => w.LayerId == (layerIdx + inputLayerId)).ToArray();
-                if (layerIdx > 0 && layerIdx < hiddenLayers)
+                Neuron[] layer = nodes.Where(w => w.LayerId == layerIdx).ToArray();
+
+                foreach (var node in layer)
+                    network.AddVertex(node);
+
+                if (layerIdx > hiddenLayer)
                 {
                     // create hidden to hidden (full)
                     for (int i = 0; i < last.Length; i++)
                         for (int x = 1; x < layer.Length; x++)
-                            Edge.Create(last[i], layer[x], 
-                                weight: edges.First(f => f.ParentId == last[i].Id && f.ChildId == layer[x].Id).Weight);
+                            network.AddEdge(Edge.Create(last[i], layer[x], 
+                                weight: edges.First(f => f.ParentId == last[i].Id && f.ChildId == layer[x].Id).Weight));
                 }
-                else if (layerIdx == 0)
+                else if (layerIdx == hiddenLayer)
                 {
                     // create input to hidden (full)
                     for (int i = 0; i < network.In.Length; i++)
                         for (int j = 1; j < layer.Length; j++)
-                            Edge.Create(network.In[i], layer[j], 
-                                weight: edges.First(f => f.ParentId == network.In[i].Id && f.ChildId == layer[j].Id).Weight);
+                            network.AddEdge(Edge.Create(network.In[i], layer[j], 
+                                weight: edges.First(f => f.ParentId == network.In[i].Id && f.ChildId == layer[j].Id).Weight));
                 }
 
                 last = layer;
@@ -260,10 +275,13 @@ namespace numl.Supervised.NeuralNetwork
 
             network.Out = nodes.Where(w => w.LayerId == outputLayerId).ToArray();
 
+            foreach (var node in network.Out)
+                network.AddVertex(node);
+
             for (int i = 0; i < network.Out.Length; i++)
                 for (int j = 0; j < last.Length; j++)
-                    Edge.Create(last[j], network.Out[i], 
-                        weight: edges.First(f => f.ParentId == last[j].Id && f.ChildId == network.Out[i].Id).Weight);
+                    network.AddEdge(Edge.Create(last[j], network.Out[i], 
+                        weight: edges.First(f => f.ParentId == last[j].Id && f.ChildId == network.Out[i].Id).Weight));
 
             return network;
         }

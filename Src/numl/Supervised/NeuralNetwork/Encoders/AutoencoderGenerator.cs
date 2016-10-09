@@ -61,7 +61,7 @@ namespace numl.Supervised.NeuralNetwork.Encoders
             if (this.MaxIterations <= 0) MaxIterations = X.Rows * 500; // because Seth said so...
             else MaxIterations = X.Rows * MaxIterations; // because it's batched.
 
-            Network network = Network.Create(X.Cols, X.Cols, this.Activation, this.OutputFunction,
+            Network network = Network.New.Create(X.Cols, X.Cols, this.Activation, this.OutputFunction,
                                         (i, j) => new AutoencoderNeuron() { Sparsity = this.Sparsity }, epsilon: this.Epsilon, hiddenLayers: new int[] { this.Density });
 
             var model = new AutoencoderModel

@@ -2,11 +2,12 @@
 //
 // summary:	Implements the network class
 using System;
-using numl.Model;
 using System.Linq;
-using numl.Math.Functions;
-using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
+
+using numl.Math.LinearAlgebra;
+using numl.Model;
+using numl.Data;
 
 namespace numl.Supervised.NeuralNetwork
 {
@@ -105,6 +106,41 @@ namespace numl.Supervised.NeuralNetwork
 
         #endregion
 
+        #region Graph
+
+        /// <summary>
+        /// Adds the Neuron to the underlying graph.
+        /// </summary>
+        /// <param name="node">Neuron to add.</param>
+        /// <returns></returns>
+        public Neuron AddVertex(Neuron node)
+        {
+            base.AddVertex(node);
+
+            return node;
+        }
+
+        /// <summary>
+        /// Adds the Edge to the underlying graph.
+        /// </summary>
+        /// <param name="edge">Edge to add.</param>
+        /// <returns></returns>
+        public Edge AddEdge(Edge edge)
+        {
+            base.AddEdge(edge);
+
+            return edge;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Returns a new Network instance.
+        /// </summary>
+        public static Network New
+        {
+            get { return new Network(); }
+        }
 
         /// <summary>
         /// Returns the Nodes from the specified layer, where 0 is the Input layer.

@@ -95,7 +95,7 @@ namespace numl.Supervised.NeuralNetwork
         /// <value>The label.</value>
         public string Label { get; set; }
 
-        /// <summary>Gets or sets the identifier.</summary>
+        /// <summary>Gets or sets the unique identifier.</summary>
         /// <value>The identifier.</value>
         public int Id { get; set; }
 

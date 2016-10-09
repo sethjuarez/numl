@@ -69,7 +69,7 @@ namespace numl.Supervised.NeuralNetwork
             if (MaxIterations == -1) MaxIterations = X.Rows * 500;
             else MaxIterations = X.Rows * MaxIterations; // because it's batched.
 
-            var network = Network.Default(Descriptor, X, y, Activation, OutputFunction, epsilon: Epsilon);
+            var network = Network.New.Create(Descriptor, X, y, Activation, OutputFunction, epsilon: Epsilon);
 
             var model = new NeuralNetworkModel
             {

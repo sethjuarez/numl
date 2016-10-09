@@ -171,7 +171,7 @@ namespace numl.Tests.SupervisedTests
 
         private Network Get_1Layer_Network()
         {
-            return Network.Create(4, 3, new Math.Functions.Logistic(), null, null, (l, i, j) =>
+            return Network.New.Create(4, 3, new Math.Functions.Logistic(), null, null, (l, i, j) =>
             {
                 if (l == 0) return Theta1[j - 1, i];
                 else return Theta2[j, i];
@@ -180,7 +180,7 @@ namespace numl.Tests.SupervisedTests
 
         private Network Get_2Layer_Network()
         {
-            return Network.Create(4, 3, new Math.Functions.Logistic(), null, null, (l, i, j) =>
+            return Network.New.Create(4, 3, new Math.Functions.Logistic(), null, null, (l, i, j) =>
             {
                 if (l == 0) return Theta1[j - 1, i];
                 else if (l == 1) return Theta2[j - 1, i];
@@ -360,7 +360,7 @@ namespace numl.Tests.SupervisedTests
 
             Vector delta3 = new[] { 0.888659,  0.907427,  0.923305,  -0.063351 };
 
-            Network net = Network.Create(2, 4, new numl.Math.Functions.Logistic(), fnWeightInitializer: (l, i, j) =>
+            Network net = Network.New.Create(2, 4, new numl.Math.Functions.Logistic(), fnWeightInitializer: (l, i, j) =>
             {
                 if (l == 1)
                 {

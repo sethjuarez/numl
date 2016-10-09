@@ -24,8 +24,8 @@ namespace numl.Serialization.Supervised.NeuralNetwork
             {
                 var edge = (Edge)this.Create();
 
-                edge.ParentId = (int)reader.ReadProperty().Value;
-                edge.ChildId = (int)reader.ReadProperty().Value;
+                edge.ParentId = (int)(double)reader.ReadProperty().Value;
+                edge.ChildId = (int)(double)reader.ReadProperty().Value;
                 edge.Weight = (double)reader.ReadProperty().Value;
                 
                 return edge;
