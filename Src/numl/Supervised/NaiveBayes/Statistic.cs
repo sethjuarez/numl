@@ -87,7 +87,7 @@ namespace numl.Supervised.NaiveBayes
                 Label = label,
                 Discrete = true,
                 Count = count,
-                X = Range.Make(val)
+                X = new Range(val)
             };
         }
         /// <summary>Tests if this object is considered equal to another.</summary>

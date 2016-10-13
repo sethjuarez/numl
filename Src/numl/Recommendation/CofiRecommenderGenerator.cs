@@ -74,7 +74,7 @@ namespace numl.Recommendation
             // inputs are ratings from each user (X = entities x ratings), y = entity id.
             // create rating range in case we don't have one already
             if (this.Ratings == null)
-                this.Ratings = new Range() { Min = X.Min(), Max = X.Max() };
+                this.Ratings = new Range(X.Min(), X.Max());
 
             // indicator matrix of 1's where rating was provided otherwise 0's.
             Matrix R = X.ToBinary(f => this.Ratings.Test(f));
