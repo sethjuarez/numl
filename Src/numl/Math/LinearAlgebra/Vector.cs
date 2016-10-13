@@ -62,11 +62,8 @@ namespace numl.Math.LinearAlgebra
         /// this is when the values are actually referencing a vector in an existing matrix.
         /// </summary>
         /// <param name="contents">The contents.</param>
-        public Vector(IEnumerable<double> contents)
+        public Vector(IEnumerable<double> contents) : this(contents.ToArray())
         {
-            _asCol = false;
-            _asMatrixRef = false;
-            _vector = contents.ToArray();
         }
         /// <summary>
         /// this is when the values are actually referencing a vector in an existing matrix.
