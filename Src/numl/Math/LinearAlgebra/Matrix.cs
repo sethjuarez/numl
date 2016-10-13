@@ -56,8 +56,6 @@ namespace numl.Math.LinearAlgebra
             for (int i = 0; i < n; i++)
             {
                 _matrix[i] = new double[d];
-                for (int j = 0; j < d; j++)
-                    _matrix[i][j] = 0;
             }
 
         }
