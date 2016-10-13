@@ -57,8 +57,6 @@ namespace numl.Math.LinearAlgebra
             _asCol = false;
             _asMatrixRef = false;
             _vector = new double[n];
-            for (int i = 0; i < n; i++)
-                _vector[i] = 0;
         }
         /// <summary>
         /// this is when the values are actually referencing a vector in an existing matrix.
