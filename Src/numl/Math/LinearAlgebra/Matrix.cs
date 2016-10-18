@@ -697,11 +697,14 @@ namespace numl.Math.LinearAlgebra
         /// <returns></returns>
         public Matrix Insert(Vector v, int index, VectorType t, bool insertAfter = true)
         {
-            if (t == VectorType.Col && v.Length != this.Rows) throw new ArgumentException("Column vector does not match matrix height");
-            if (t == VectorType.Row && v.Length != this.Cols) throw new ArgumentException("Row vector does not match matrix width");
+            if (t == VectorType.Col && v.Length != Rows) throw new ArgumentException("Column vector does not match matrix height");
+            if (t == VectorType.Row && v.Length != Cols) throw new ArgumentException("Row vector does not match matrix width");
 
-            var temp = this.ToArray().ToList();
-            if (t == VectorType.Row)
+            if (t == VectorType.Col && (index >= Cols || index < 0)) throw new ArgumentException("Column index does not match matrix width");
+            if (t == VectorType.Row && (index >= Rows || index < 0)) throw new ArgumentException("Row index does not match matrix height");
+
+            var temp = ToArray().ToList();
+            if ((t == VectorType.Row && !_asTransposeRef) || (t == VectorType.Col && _asTransposeRef))
             {
                 if (index == temp.Count - 1 && insertAfter)
                 {
@@ -734,7 +737,8 @@ namespace numl.Math.LinearAlgebra
                 }
             }
 
-            return new Matrix(temp.ToArray());
+            var result = new Matrix(temp.ToArray());
+            return _asTransposeRef ? result.T : result;
         }
 
         /// <summary>Removes this object.</summary>
