@@ -165,10 +165,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>A Vector.</returns>
         public Vector Copy()
         {
-            var v = new Vector(Length);
-            for (int i = 0; i < Length; i++)
-                v[i] = this[i];
-            return v;
+            return new Vector(ToArray());
         }
         /// <summary>Convert this object into an array representation.</summary>
         /// <returns>An array that represents the data in this object.</returns>
