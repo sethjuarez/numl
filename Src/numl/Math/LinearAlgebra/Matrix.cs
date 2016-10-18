@@ -57,7 +57,6 @@ namespace numl.Math.LinearAlgebra
             {
                 _matrix[i] = new double[d];
             }
-
         }
         /// <summary>Create new matrix with prepopulated vals.</summary>
         /// <param name="m">initial matrix.</param>
@@ -293,7 +292,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>The matrix.</returns>
         public Matrix GetMatrix(int d1, int d2, int n1, int n2)
         {
-            Matrix m = Matrix.Zeros(n2 - n1 + 1, d2 - d1 + 1);
+            Matrix m = Zeros(n2 - n1 + 1, d2 - d1 + 1);
             for (int i = 0; i < m.Rows; i++)
                 for (int j = 0; j < m.Cols; j++)
                     m[i, j] = this[i + n1, j + d1];
@@ -362,7 +361,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>Matrix.</returns>
         public Matrix Copy()
         {
-            var m = Matrix.Zeros(Rows, Cols);
+            var m = Zeros(Rows, Cols);
             for (int i = 0; i < Rows; i++)
                 for (int j = 0; j < Cols; j++)
                     m[i, j] = this[i, j];
@@ -430,7 +429,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns></returns>
         public double[][] ToArray()
         {
-            return this._matrix.Select(s => s.ToArray()).ToArray();
+            return _matrix.Select(s => s.ToArray()).ToArray();
         }
 
         /// <summary>Returns a string that represents the current object.</summary>
@@ -533,7 +532,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>n x d Matrix.</returns>
         public static Matrix Rand(int n, double min = 0)
         {
-            return Matrix.Rand(n, n, min);
+            return Rand(n, n, min);
         }
         /// <summary>Normalise random.</summary>
         /// <param name="n">Size.</param>
@@ -558,7 +557,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>A Matrix.</returns>
         public static Matrix NormRand(int n, double min = 0)
         {
-            return Matrix.NormRand(n, n, min);
+            return NormRand(n, n, min);
         }
         /// <summary>Normalise random.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
