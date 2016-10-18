@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using FluentAssertions;
+using System.Globalization;
 
 namespace numl.Tests.SerializationTests.BasicSerialization
 {
@@ -54,17 +55,17 @@ namespace numl.Tests.SerializationTests.BasicSerialization
         [Fact]
         public void NumberTest()
         {
-            var a = JsonReaderFromString(System.Math.PI.ToString("r")).Read();
+            var a = JsonReaderFromString(System.Math.PI.ToString("r", CultureInfo.InvariantCulture)).Read();
             Assert.Equal(System.Math.PI, a);
-            var b = JsonReaderFromString((-1 * System.Math.PI).ToString("r")).Read();
+            var b = JsonReaderFromString((-1 * System.Math.PI).ToString("r", CultureInfo.InvariantCulture)).Read();
             Assert.Equal(-1 * System.Math.PI, b);
             var c = JsonReaderFromString((4354).ToString()).Read();
             Assert.Equal(4354d, c);
             var d = JsonReaderFromString((-4354).ToString()).Read();
             Assert.Equal(-4354d, d);
-            var e = JsonReaderFromString((double.MinValue).ToString("r")).Read();
+            var e = JsonReaderFromString((double.MinValue).ToString("r", CultureInfo.InvariantCulture)).Read();
             Assert.Equal(double.MinValue, e);
-            var f = JsonReaderFromString((double.MaxValue).ToString("r")).Read();
+            var f = JsonReaderFromString((double.MaxValue).ToString("r", CultureInfo.InvariantCulture)).Read();
             Assert.Equal(double.MaxValue, f);
         }
 
@@ -95,7 +96,7 @@ namespace numl.Tests.SerializationTests.BasicSerialization
             };
 
             test("[1   , 2,   3,   4,    5]", new object[] { 1d, 2d, 3d, 4d, 5d});
-            test($"[{System.Math.PI.ToString("r")},{(-1 * System.Math.PI).ToString("r")}]",
+            test($"[{System.Math.PI.ToString("r", CultureInfo.InvariantCulture)},{(-1 * System.Math.PI).ToString("r", CultureInfo.InvariantCulture)}]",
                    new object[] { System.Math.PI, -1 * System.Math.PI });
 
             var arr = "[\"little string example\",";
@@ -165,7 +166,7 @@ namespace numl.Tests.SerializationTests.BasicSerialization
 
             double x = double.MinValue;
             var xo = JsonStringFromObject(x);
-            Assert.Equal(x.ToString("r"), xo);
+            Assert.Equal(x.ToString("r", CultureInfo.InvariantCulture), xo);
         }
 
         [Fact]
@@ -186,7 +187,7 @@ namespace numl.Tests.SerializationTests.BasicSerialization
         public void SimpleObjectSerializationTests()
         {
             var val = double.MaxValue;
-            var valS = val.ToString("r");
+            var valS = val.ToString("r", CultureInfo.InvariantCulture);
 
             var x1 = new { a = "one", b = val, c = false };
             var x1o = JsonStringFromObject(x1);
