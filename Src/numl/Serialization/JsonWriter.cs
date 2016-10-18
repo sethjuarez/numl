@@ -4,6 +4,7 @@ using numl.Utils;
 using System.Reflection;
 using System.Collections;
 using numl.Math.LinearAlgebra;
+using System.Globalization;
 
 namespace numl.Serialization
 {
@@ -57,7 +58,7 @@ namespace numl.Serialization
         /// <param name="value"></param>
         private void WriteSimpleType(object value)
         {
-            _writer.Write(Ject.Convert(value).ToString("r"));
+            _writer.Write(Ject.Convert(value).ToString("r", CultureInfo.InvariantCulture));
         }
 
         /// <summary>
