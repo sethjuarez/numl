@@ -112,9 +112,9 @@ namespace numl.Math.LinearAlgebra
             {
                 result[i] = new double[m.Cols];
                 for (int j = 0; j < m.Cols; j++)
-                    m[i][j] += s;
+                    result[i][j] = m[i][j] + s;
             }
-            return m;
+            return result;
         }
         /// <summary>Addition operator.</summary>
         /// <param name="s">The double to process.</param>
@@ -135,9 +135,9 @@ namespace numl.Math.LinearAlgebra
             {
                 result[i] = new double[m.Cols];
                 for (int j = 0; j < m.Cols; j++)
-                    m[i, j] -= s;
+                    result[i][j] = m[i, j] - s;
             }
-            return m;
+            return result;
         }
         /// <summary>Subtraction operator.</summary>
         /// <param name="s">The double to process.</param>
@@ -256,7 +256,7 @@ namespace numl.Math.LinearAlgebra
             {
                 result[i] = new double[A.Cols];
                 for (int j = 0; j < A.Cols; j++)
-                    result[i][j] /= b;
+                    result[i][j] = A[i, j] / b;
             }
             return result;
         }
