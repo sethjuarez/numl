@@ -2,9 +2,7 @@
 //
 // summary:	Implements the matrix ops class
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace numl.Math.LinearAlgebra
 {
@@ -22,18 +20,15 @@ namespace numl.Math.LinearAlgebra
         /// <param name="m">Matrix.</param>
         public static implicit operator Matrix(int[,] m)
         {
-            Matrix matrix = new Matrix();
-            matrix._asTransposeRef = false;
-            matrix.Rows = m.GetLength(0);
-            matrix.Cols = m.GetLength(1);
-            matrix._matrix = new double[matrix.Rows][];
-            for (int i = 0; i < matrix.Rows; i++)
+            var rows = m.GetLength(0);
+            var cols = m.GetLength(1);
+            var matrix = new double[rows][];
+            for (int i = 0; i < rows; i++)
             {
-                matrix._matrix[i] = new double[matrix.Cols];
-                for (int j = 0; j < matrix.Cols; j++)
-                    matrix._matrix[i][j] = m[i, j];
+                matrix[i] = new double[cols];
+                for (int j = 0; j < cols; j++)
+                    matrix[i][j] = m[i, j];
             }
-
             return matrix;
         }
 
@@ -54,7 +49,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>The result of the operation.</returns>
         public static bool operator ==(Matrix m1, Matrix m2)
         {
-            return (object.ReferenceEquals(m1, null) && object.ReferenceEquals(m2, null) || m1.Equals(m2));
+            return (ReferenceEquals(m1, null) && ReferenceEquals(m2, null) || m1.Equals(m2));
         }
         /// <summary>Inequality operator.</summary>
         /// <param name="m1">The first Matrix.</param>
@@ -75,10 +70,13 @@ namespace numl.Math.LinearAlgebra
             if (m1.Rows != m2.Rows || m1.Cols != m2.Cols)
                 throw new InvalidOperationException("Dimensions do not match");
 
-            var result = Matrix.Zeros(m1.Rows, m1.Cols);
+            var result = new double[m1.Rows][];
             for (int i = 0; i < m1.Rows; i++)
+            {
+                result[i] = new double[m1.Cols];
                 for (int j = 0; j < m1.Cols; j++)
-                    result[i, j] = m1[i, j] + m2[i, j];
+                    result[i][j] = m1[i, j] + m2[i, j];
+            }
 
             return result;
         }
@@ -92,10 +90,13 @@ namespace numl.Math.LinearAlgebra
             if (m1.Rows != m2.Rows || m1.Cols != m2.Cols)
                 throw new InvalidOperationException("Dimensions do not match");
 
-            var result = Matrix.Zeros(m1.Rows, m1.Cols);
+            var result = new double[m1.Rows][];
             for (int i = 0; i < m1.Rows; i++)
+            {
+                result[i] = new double[m1.Cols];
                 for (int j = 0; j < m1.Cols; j++)
-                    result[i, j] = m1[i, j] - m2[i, j];
+                    result[i][j] = m1[i, j] - m2[i, j];
+            }
 
             return result;
         }
@@ -106,9 +107,13 @@ namespace numl.Math.LinearAlgebra
         /// <returns>The result of the operation.</returns>
         public static Matrix operator +(Matrix m, double s)
         {
+            var result = new double[m.Rows][];
             for (int i = 0; i < m.Rows; i++)
+            {
+                result[i] = new double[m.Cols];
                 for (int j = 0; j < m.Cols; j++)
-                    m[i, j] += s;
+                    m[i][j] += s;
+            }
             return m;
         }
         /// <summary>Addition operator.</summary>
@@ -125,9 +130,13 @@ namespace numl.Math.LinearAlgebra
         /// <returns>The result of the operation.</returns>
         public static Matrix operator -(Matrix m, double s)
         {
+            var result = new double[m.Rows][];
             for (int i = 0; i < m.Rows; i++)
+            {
+                result[i] = new double[m.Cols];
                 for (int j = 0; j < m.Cols; j++)
                     m[i, j] -= s;
+            }
             return m;
         }
         /// <summary>Subtraction operator.</summary>
@@ -150,11 +159,14 @@ namespace numl.Math.LinearAlgebra
             if (m1.Cols != m2.Rows)
                 throw new InvalidOperationException("Invalid multiplication dimenstion");
 
-            var result = Matrix.Zeros(m1.Rows, m2.Cols);
+            var result = new double[m1.Rows][];
             for (int i = 0; i < m1.Rows; i++)
+            {
+                result[i] = new double[m2.Cols];
                 for (int j = 0; j < m2.Cols; j++)
                     for (int k = 0; k < m1.Cols; k++)
-                        result[i, j] += m1[i, k] * m2[k, j];
+                        result[i][j] += m1[i, k] * m2[k, j];
+            }
 
             return result;
         }
@@ -164,10 +176,13 @@ namespace numl.Math.LinearAlgebra
         /// <returns>matrix.</returns>
         public static Matrix operator *(double s, Matrix m)
         {
-            var result = Matrix.Zeros(m.Rows, m.Cols);
+            var result = new double[m.Rows][];
             for (int i = 0; i < m.Rows; i++)
+            {
+                result[i] = new double[m.Cols];
                 for (int j = 0; j < m.Cols; j++)
-                    result[i, j] = s * m[i, j];
+                    result[i][j] = s * m[i, j];
+            }
 
             return result;
         }
@@ -236,10 +251,14 @@ namespace numl.Math.LinearAlgebra
         /// <returns>The result of the operation.</returns>
         public static Matrix operator /(Matrix A, double b)
         {
+            var result = new double[A.Rows][];
             for (int i = 0; i < A.Rows; i++)
+            {
+                result[i] = new double[A.Cols];
                 for (int j = 0; j < A.Cols; j++)
-                    A[i, j] /= b;
-            return A;
+                    result[i][j] /= b;
+            }
+            return result;
         }
         /// <summary>
         /// Matrix inverse using pivoted Gauss-Jordan elimination with partial pivoting
@@ -255,7 +274,7 @@ namespace numl.Math.LinearAlgebra
                 throw new InvalidOperationException("Can only find powers of square matrices!");
 
             if (n == 0)
-                return Matrix.Identity(mat.Rows, mat.Cols);
+                return Identity(mat.Rows, mat.Cols);
             if (n == 1)
                 return mat.Copy();
             if (n == -1)
@@ -284,7 +303,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns></returns>
         public Matrix Inverse()
         {
-            return Matrix.Inverse(this);
+            return Inverse(this);
         }
 
         /// <summary>Inverses the given matrix.</summary>
