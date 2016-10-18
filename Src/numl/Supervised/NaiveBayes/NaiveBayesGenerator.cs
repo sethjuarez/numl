@@ -6,6 +6,7 @@ using numl.Model;
 using System.Linq;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
+using numl.Data;
 
 namespace numl.Supervised.NaiveBayes
 {
@@ -72,8 +73,11 @@ namespace numl.Supervised.NaiveBayes
                     cond.Conditionals[j].Normalize();
             }
 
+            // label ids
+            LabelIds(root);
 
-            return new NaiveBayesModel {
+            return new NaiveBayesModel
+            {
                 Descriptor = Descriptor,
                 NormalizeFeatures = base.NormalizeFeatures,
                 FeatureNormalizer = base.FeatureNormalizer,
@@ -136,6 +140,21 @@ namespace numl.Supervised.NaiveBayes
             for (int i = 0; i < m.Length; i++)
                 m[i] = measures[i].Clone();
             return m;
+        }
+
+        private int _vertexId = 0;
+        private void LabelIds(Measure m)
+        {
+            m.Id = ++_vertexId;
+            if (m.Probabilities != null)
+            {
+                foreach (var s in m.Probabilities)
+                    s.Id = ++_vertexId;
+                foreach (var s in m.Probabilities)
+                    if (s.Conditionals != null)
+                        foreach (var measure in s.Conditionals)
+                            LabelIds(measure);
+            }
         }
     }
 }
