@@ -4,7 +4,6 @@
 using System;
 using System.Linq;
 using numl.Math.Probability;
-using System.Collections.Generic;
 
 namespace numl.Math.LinearAlgebra
 {
@@ -26,10 +25,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>A double.</returns>
         public static double Sum(Vector v)
         {
-            double sum = 0;
-            for (int i = 0; i < v.Length; i++)
-                sum += v[i];
-            return sum;
+            return v.ToArray().Sum();
         }
         /// <summary>Outers.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
@@ -69,7 +65,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>A Vector.</returns>
         public static Vector Calc(Vector v, Func<double, double> f)
         {
-            var result = v.Copy();
+            var result = v.ToArray();
             for (int i = 0; i < v.Length; i++)
                 result[i] = f(result[i]);
             return result;
@@ -80,7 +76,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>A Vector.</returns>
         public static Vector Calc(Vector v, Func<int, double, double> f)
         {
-            var result = v.Copy();
+            var result = v.ToArray();
             for (int i = 0; i < v.Length; i++)
                 result[i] = f(i, result[i]);
             return result;
@@ -153,7 +149,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>A double.</returns>
         public static double Norm(Vector x)
         {
-            return Vector.Norm(x, 2);
+            return Norm(x, 2);
         }
         /// <summary>Normals.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
@@ -261,25 +257,21 @@ namespace numl.Math.LinearAlgebra
                     .Select(t => t.Item1)
                     .ToArray();
         }
-        /// <summary>Query if 'vector' contains na n.</summary>
+        /// <summary>Query if 'vector' contains NaN.</summary>
         /// <param name="vector">The vector.</param>
         /// <returns>true if it succeeds, false if it fails.</returns>
         public static bool ContainsNaN(Vector vector)
         {
-            for (int i = 0; i < vector.Length; i++)
-                if(double.IsNaN(vector[i]))
-                    return true;
-            return false;
+            var v = vector.ToArray();
+            return v.Any(e => double.IsNaN(e));
         }
         /// <summary>Query if 'vector' is NaN.</summary>
         /// <param name="vector">The vector.</param>
         /// <returns>true if NaN, false if not.</returns>
         public static bool IsNaN(Vector vector)
         {
-            bool nan = true;
-            for (int i = 0; i < vector.Length; i++)
-                nan = nan && double.IsNaN(vector[i]);
-            return nan;
+            var v = vector.ToArray();
+            return v.All(e => double.IsNaN(e));
         }
     }
 }

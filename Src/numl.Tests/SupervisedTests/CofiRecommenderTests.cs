@@ -134,7 +134,7 @@ namespace numl.Tests.SupervisedTests
 
             var generator = new Recommendation.CofiRecommenderGenerator()
             {
-                Ratings = new Math.Range() { Min = 1, Max = 5 },
+                Ratings = new Math.Range(1, 5),
                 CollaborativeFeatures = 7,
                 Descriptor = descriptor,
                 LearningRate = 0.1,

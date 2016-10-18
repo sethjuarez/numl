@@ -622,17 +622,18 @@ namespace numl.Math.LinearAlgebra
             var ranges = new Range[segments];
 
             // first element starts with min
-            ranges[0] = Range.Make(min, min + range);
+            ranges[0] = new Range(min, min + range);
 
             // each subsequent element is max
             // of previous and max of previous
             // plus the appropriate range
             for (int i = 1; i < segments; i++)
-                ranges[i] = Range.Make(ranges[i - 1].Max, ranges[i - 1].Max + range);
+                ranges[i] = new Range(ranges[i - 1].Max, ranges[i - 1].Max + range);
 
             // make last range slightly larger 
             // to maintain r.Min <= d < r.Max
-            ranges[ranges.Length - 1].Max += .01;
+            var lastRange = ranges[ranges.Length - 1];
+            ranges[ranges.Length - 1] = new Range(lastRange.Min, lastRange.Max + .01);
 
             return ranges;
         }

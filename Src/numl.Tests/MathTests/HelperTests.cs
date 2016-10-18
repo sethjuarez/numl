@@ -120,8 +120,8 @@ namespace numl.Tests.MathTests
             var ranges = x.Segment(2);
             var truth = new Range[] 
             {
-                Range.Make(1, 5),
-                Range.Make(5, 9.01),
+                new Range(1, 5),
+                new Range(5, 9.01),
             };
 
             Assert.Equal(truth.Length, ranges.Length);
@@ -140,9 +140,9 @@ namespace numl.Tests.MathTests
             var segmentsize = 8d / 3d;
             var truth = new Range[] 
             {
-                Range.Make(1, 1 + segmentsize),
-                Range.Make(1 + segmentsize, 1 + 2 * segmentsize),
-                Range.Make(1 + 2 * segmentsize, 9.01),
+                new Range(1, 1 + segmentsize),
+                new Range(1 + segmentsize, 1 + 2 * segmentsize),
+                new Range(1 + 2 * segmentsize, 9.01),
             };
 
             Assert.Equal(truth.Length, ranges.Length);
@@ -161,10 +161,10 @@ namespace numl.Tests.MathTests
             var segmentsize = 8d / 4d;
             var truth = new Range[] 
             {
-                Range.Make(1, 1 + segmentsize),
-                Range.Make(1 + segmentsize, 1 + 2 * segmentsize),
-                Range.Make(1 + 2 * segmentsize, 1 + 3 * segmentsize),
-                Range.Make( 1 + 3 * segmentsize, 9.01)
+                new Range(1, 1 + segmentsize),
+                new Range(1 + segmentsize, 1 + 2 * segmentsize),
+                new Range(1 + 2 * segmentsize, 1 + 3 * segmentsize),
+                new Range( 1 + 3 * segmentsize, 9.01)
             };
 
             Assert.Equal(truth.Length, ranges.Length);
@@ -181,7 +181,7 @@ namespace numl.Tests.MathTests
             for (int i = 0; i < 10000; i++)
             {
                 var t = Sampling.GetUniform();
-                Assert.True(Range.Make(t).Test(t));
+                Assert.True(new Range(t).Test(t));
             }
         }
 
@@ -197,7 +197,7 @@ namespace numl.Tests.MathTests
                 // scale test to allowable range
                 var t = ((b - a) * test) + a;
 
-                Assert.True(Range.Make(a, b).Test(t));
+                Assert.True(new Range(a, b).Test(t));
             }
         }
     }

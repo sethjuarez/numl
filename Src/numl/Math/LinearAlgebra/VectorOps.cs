@@ -26,31 +26,21 @@ namespace numl.Math.LinearAlgebra
         /// <param name="array">The array.</param>
         public static implicit operator Vector(int[] array)
         {
-            Vector vector = new Vector
-            {
-                _asMatrixRef = false,
-                _vector = new double[array.Length]
-            };
-
+            var vector = new double[array.Length];
             for (int i = 0; i < array.Length; i++)
-                vector._vector[i] = array[i];
+                vector[i] = array[i];
 
-            return vector;
+            return new Vector(vector);
         }
         /// <summary>Vector casting operator.</summary>
         /// <param name="array">The array.</param>
         public static implicit operator Vector(float[] array)
         {
-            Vector vector = new Vector
-            {
-                _asMatrixRef = false,
-                _vector = new double[array.Length]
-            };
-
+            var vector = new double[array.Length];
             for (int i = 0; i < array.Length; i++)
-                vector._vector[i] = array[i];
+                vector[i] = array[i];
 
-            return vector;
+            return new Vector(vector);
         }
         /// <summary>Equality operator.</summary>
         /// <param name="one">The one.</param>
@@ -58,7 +48,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>The result of the operation.</returns>
         public static bool operator ==(Vector one, Vector two)
         {
-            return (object.ReferenceEquals(one, null) && object.ReferenceEquals(two, null) || one.Equals(two));
+            return (ReferenceEquals(one, null) && ReferenceEquals(two, null) || one.Equals(two));
         }
         /// <summary>Inequality operator.</summary>
         /// <param name="one">The one.</param>
@@ -78,11 +68,11 @@ namespace numl.Math.LinearAlgebra
             if (one.Length != two.Length)
                 throw new InvalidOperationException("Dimensions do not match!");
 
-            Vector result = one.Copy();
+            var result = one.ToArray();
             for (int i = 0; i < result.Length; i++)
                 result[i] -= two[i];
 
-            return result;
+            return new Vector(result);
         }
         /// <summary>Subtraction operator.</summary>
         /// <param name="v">The Vector to process.</param>
@@ -90,11 +80,11 @@ namespace numl.Math.LinearAlgebra
         /// <returns>The result of the operation.</returns>
         public static Vector operator -(Vector v, double s)
         {
-            Vector result = v.Copy();
+            var result = v.ToArray();
             for (int i = 0; i < result.Length; i++)
                 result[i] -= s;
 
-            return result;
+            return new Vector(result);
         }
         /// <summary>Subtraction operator.</summary>
         /// <param name="s">The double to process.</param>
@@ -102,11 +92,11 @@ namespace numl.Math.LinearAlgebra
         /// <returns>The result of the operation.</returns>
         public static Vector operator -(double s, Vector v)
         {
-            Vector result = v.Copy();
+            var result = v.ToArray();
             for (int i = 0; i < result.Length; i++)
                 result[i] = s - result[i];
 
-            return result;
+            return new Vector(result);
         }
         /// <summary>Addition operator.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
@@ -118,11 +108,11 @@ namespace numl.Math.LinearAlgebra
             if (one.Length != two.Length)
                 throw new InvalidOperationException("Dimensions do not match!");
 
-            Vector result = one.Copy();
+            var result = one.ToArray();
             for (int i = 0; i < result.Length; i++)
                 result[i] += two[i];
 
-            return result;
+            return new Vector(result);
         }
         /// <summary>Addition operator.</summary>
         /// <param name="v">The Vector to process.</param>
@@ -130,10 +120,11 @@ namespace numl.Math.LinearAlgebra
         /// <returns>The result of the operation.</returns>
         public static Vector operator +(Vector v, double s)
         {
-            for (int i = 0; i < v.Length; i++)
-                v[i] += s;
+            var result = v.ToArray();
+            for (int i = 0; i < result.Length; i++)
+                result[i] += s;
 
-            return v;
+            return new Vector(result);
         }
         /// <summary>Addition operator.</summary>
         /// <param name="s">The double to process.</param>
@@ -148,11 +139,11 @@ namespace numl.Math.LinearAlgebra
         /// <returns>The result of the operation.</returns>
         public static Vector operator -(Vector one)
         {
-            Vector result = one.Copy();
+            var result = one.ToArray();
             for (int i = 0; i < result.Length; i++)
                 result[i] *= -1;
 
-            return result;
+            return new Vector(result);
         }
         /// <summary>Multiplication operator.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
@@ -163,10 +154,11 @@ namespace numl.Math.LinearAlgebra
         {
             if (one.Length != two.Length)
                 throw new InvalidOperationException("Dimensions do not match!");
-            var result = one.Copy();
+
+            var result = one.ToArray();
             for (int i = 0; i < one.Length; i++)
                 result[i] *= two[i];
-            return result;
+            return new Vector(result);
         }
 
         /// <summary>Multiplication operator.</summary>
@@ -175,10 +167,10 @@ namespace numl.Math.LinearAlgebra
         /// <returns>The result of the operation.</returns>
         public static Vector operator *(Vector one, double two)
         {
-            Vector result = one.Copy();
+            var result = one.ToArray();
             for (int i = 0; i < one.Length; i++)
                 result[i] *= two;
-            return result;
+            return new Vector(result);
         }
         /// <summary>Multiplication operator.</summary>
         /// <param name="one">The one.</param>
@@ -186,10 +178,10 @@ namespace numl.Math.LinearAlgebra
         /// <returns>The result of the operation.</returns>
         public static Vector operator *(Vector one, int two)
         {
-            Vector result = one.Copy();
+            var result = one.ToArray();
             for (int i = 0; i < one.Length; i++)
                 result[i] *= two;
-            return result;
+            return new Vector(result);
         }
         /// <summary>Multiplication operator.</summary>
         /// <param name="one">The one.</param>
@@ -205,10 +197,10 @@ namespace numl.Math.LinearAlgebra
         /// <returns>The result of the operation.</returns>
         public static Vector operator /(Vector one, double two)
         {
-            Vector result = one.Copy();
+            var result = one.ToArray();
             for (int i = 0; i < one.Length; i++)
                 result[i] /= two;
-            return result;
+            return new Vector(result);
         }
         /// <summary>Division operator.</summary>
         /// <param name="one">The one.</param>
@@ -216,11 +208,11 @@ namespace numl.Math.LinearAlgebra
         /// <returns>The result of the operation.</returns>
         public static Vector operator /(Vector one, int two)
         {
-            Vector result = one.Copy();
+            var result = one.ToArray();
             for (int i = 0; i < one.Length; i++)
                 result[i] /= two;
 
-            return result;
+            return new Vector(result);
         }
         /// <summary>
         /// Mod operator.
