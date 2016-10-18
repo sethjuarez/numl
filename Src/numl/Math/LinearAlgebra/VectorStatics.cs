@@ -25,10 +25,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>A double.</returns>
         public static double Sum(Vector v)
         {
-            double sum = 0;
-            for (int i = 0; i < v.Length; i++)
-                sum += v[i];
-            return sum;
+            return v.ToArray().Sum();
         }
         /// <summary>Outers.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
