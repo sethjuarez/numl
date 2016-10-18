@@ -260,25 +260,21 @@ namespace numl.Math.LinearAlgebra
                     .Select(t => t.Item1)
                     .ToArray();
         }
-        /// <summary>Query if 'vector' contains na n.</summary>
+        /// <summary>Query if 'vector' contains NaN.</summary>
         /// <param name="vector">The vector.</param>
         /// <returns>true if it succeeds, false if it fails.</returns>
         public static bool ContainsNaN(Vector vector)
         {
-            for (int i = 0; i < vector.Length; i++)
-                if(double.IsNaN(vector[i]))
-                    return true;
-            return false;
+            var v = vector.ToArray();
+            return v.Any(e => double.IsNaN(e));
         }
         /// <summary>Query if 'vector' is NaN.</summary>
         /// <param name="vector">The vector.</param>
         /// <returns>true if NaN, false if not.</returns>
         public static bool IsNaN(Vector vector)
         {
-            bool nan = true;
-            for (int i = 0; i < vector.Length; i++)
-                nan = nan && double.IsNaN(vector[i]);
-            return nan;
+            var v = vector.ToArray();
+            return v.All(e => double.IsNaN(e));
         }
     }
 }
