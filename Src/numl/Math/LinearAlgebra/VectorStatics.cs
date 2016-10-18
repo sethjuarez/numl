@@ -4,7 +4,6 @@
 using System;
 using System.Linq;
 using numl.Math.Probability;
-using System.Collections.Generic;
 
 namespace numl.Math.LinearAlgebra
 {
@@ -69,7 +68,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>A Vector.</returns>
         public static Vector Calc(Vector v, Func<double, double> f)
         {
-            var result = v.Copy();
+            var result = v.ToArray();
             for (int i = 0; i < v.Length; i++)
                 result[i] = f(result[i]);
             return result;
@@ -80,7 +79,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>A Vector.</returns>
         public static Vector Calc(Vector v, Func<int, double, double> f)
         {
-            var result = v.Copy();
+            var result = v.ToArray();
             for (int i = 0; i < v.Length; i++)
                 result[i] = f(i, result[i]);
             return result;
@@ -153,7 +152,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>A double.</returns>
         public static double Norm(Vector x)
         {
-            return Vector.Norm(x, 2);
+            return Norm(x, 2);
         }
         /// <summary>Normals.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
