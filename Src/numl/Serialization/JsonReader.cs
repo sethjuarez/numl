@@ -106,7 +106,7 @@ namespace numl.Serialization
             StringBuilder sb = new StringBuilder();
             while (_reader.Peek() > -1 && JsonConstants.NUMBER.Contains((char)_reader.Peek()))
                 sb.Append((char)ReadChar());
-            return double.Parse(sb.ToString());
+            return double.Parse(sb.ToString(), CultureInfo.InvariantCulture);
         }
 
         internal object ReadLiteral()
