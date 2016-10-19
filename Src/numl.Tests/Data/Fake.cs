@@ -31,13 +31,26 @@ namespace numl.Tests.Data
         public DateTime Date8 { get; set; }
     }
 
+
     public class FakeDateWithError
     {
         [DateFeature(DatePortion.Date)]
         public int NotADate { get; set; }
     }
 
-    public class FakeEnumerable
+	public class FakeGuid
+	{
+		[GuidFeature]
+		public Guid Guid1 { get; set; }
+	}
+
+	public class FakeGuidWithError
+	{
+		[GuidFeature]
+		public int NotAGuid { get; set; }
+	}
+
+	public class FakeEnumerable
     {
         [EnumerableFeature(20)]
         public IEnumerable<int> Numbers1 { get; set; }

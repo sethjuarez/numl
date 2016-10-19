@@ -535,12 +535,27 @@ namespace numl.Model
 
             AddProperty(p, false);
             return this;
-        }
-        /// <summary>With enumerable.</summary>
-        /// <param name="property">The property.</param>
-        /// <param name="length">The length.</param>
-        /// <returns>A Descriptor&lt;T&gt;</returns>
-        public Descriptor<T> WithEnumerable(Expression<Func<T, IEnumerable>> property, int length)
+		}
+		/// <summary>With guid.</summary>
+		/// <param name="property">The property.</param>
+		/// <returns>A Descriptor&lt;T&gt;</returns>
+		public Descriptor<T> WithGuid(Expression<Func<T, Guid>> property)
+		{
+			var pi = GetPropertyInfo<Guid>(property);
+			var p = new GuidProperty()
+			{
+				Discrete = true,
+				Name = pi.Name
+			};
+
+			AddProperty(p, false);
+			return this;
+		}
+		/// <summary>With enumerable.</summary>
+		/// <param name="property">The property.</param>
+		/// <param name="length">The length.</param>
+		/// <returns>A Descriptor&lt;T&gt;</returns>
+		public Descriptor<T> WithEnumerable(Expression<Func<T, IEnumerable>> property, int length)
         {
             var pi = GetPropertyInfo<IEnumerable>(property);
             var p = new EnumerableProperty(length)

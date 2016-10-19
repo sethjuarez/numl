@@ -109,12 +109,23 @@ namespace numl.Model
             AddProperty(p);
             return _descriptor;
         }
-        /// <summary>Adds DateTime property to descriptor with previously chained name.</summary>
-        /// <exception cref="DescriptorException">Thrown when a Descriptor error condition occurs.</exception>
-        /// <param name="features">Which date features to use (can pipe: DateTimeFeature.Year |
-        /// DateTimeFeature.DayOfWeek)</param>
-        /// <returns>descriptor with added property.</returns>
-        public Descriptor AsDateTime(DateTimeFeature features)
+
+		/// <summary>Adds guid property to descriptor with previously chained name.</summary>
+		/// <returns>descriptor with added property.</returns>
+		public Descriptor AsGuid()
+		{
+			GuidProperty p = new GuidProperty();
+			p.Name = _name;
+			AddProperty(p);
+			return _descriptor;
+		}
+
+		/// <summary>Adds DateTime property to descriptor with previously chained name.</summary>
+		/// <exception cref="DescriptorException">Thrown when a Descriptor error condition occurs.</exception>
+		/// <param name="features">Which date features to use (can pipe: DateTimeFeature.Year |
+		/// DateTimeFeature.DayOfWeek)</param>
+		/// <returns>descriptor with added property.</returns>
+		public Descriptor AsDateTime(DateTimeFeature features)
         {
             if (_label)
                 throw new DescriptorException("Cannot use a DateTime property as a label");

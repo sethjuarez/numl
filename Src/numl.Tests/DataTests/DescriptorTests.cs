@@ -88,8 +88,30 @@ namespace numl.Tests.DataTests
         {
             Assert.Throws<InvalidOperationException>(() => Descriptor.Create<FakeDateWithError>());
         }
+		
+		[Fact]
+		public void Test_Good_Guid_Descriptor()
+		{
+			var desc = Descriptor.Create<FakeGuid>();
+			Assert.Equal("Guid1", desc.Features[0].Name);
+		}
 
-        [Theory]
+		[Fact]
+		public void Test_Good_Guid_Descriptor_Fluent()
+		{
+			var d = Descriptor.For<FakeGuid>()
+							  .WithGuid(f => f.Guid1);
+
+			Assert.Equal("Guid1", d.Features[0].Name);
+		}
+		
+		[Fact]
+		public void Test_Bad_Guid_Descriptor()
+		{
+			Assert.Throws<InvalidOperationException>(() => Descriptor.Create<FakeGuidWithError>());
+		}
+
+		[Theory]
         [InlineData(0, "Numbers1", 20)]
         [InlineData(1, "Numbers2", 5)]
         [InlineData(2, "Numbers3", 46)]

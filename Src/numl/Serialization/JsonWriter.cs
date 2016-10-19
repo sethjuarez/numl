@@ -225,7 +225,8 @@ namespace numl.Serialization
                 else if (Ject.CanUseSimpleType(type)) // TODO: This might take some refactoring..
                 {
                     if (value is string) WriteString((string)value);
-                    else WriteSimpleType(value);
+					else if (value is Guid) WriteString(value.ToString());
+					else WriteSimpleType(value);
                 }
                 else if (type == typeof(Vector))
                     WriteVector((Vector)value);
