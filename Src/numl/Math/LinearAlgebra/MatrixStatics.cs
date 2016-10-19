@@ -154,7 +154,7 @@ namespace numl.Math.LinearAlgebra
         public static Tuple<Vector, Matrix> Evd(Matrix A)
         {
             Evd eigs = new Evd(A);
-            eigs.compute();
+            eigs.Compute();
             return new Tuple<Vector, Matrix>(eigs.Eigenvalues, eigs.Eigenvectors);
         }
         /// <summary>Singular Value Decomposition.</summary>
