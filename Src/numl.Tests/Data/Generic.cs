@@ -52,15 +52,14 @@ namespace numl.Tests.Data
         public FakeEnum VarEnum { get; set; }
         [Feature]
         public TimeSpan VarTimeSpan { get; set; }
-
-        // default ignore types
-        public Guid VarGuid { get; set; }
-
+		
         // implicit multivariate types
         [Feature]
         public String VarString { get; set; }
         [DateFeature(DatePortion.Date | DatePortion.Time)]
         public DateTime VarDateTime { get; set; }
+		[GuidFeature]
+		public Guid VarGuid { get; set; }
 
         // explicit multivariate types
         [EnumerableFeature(10)]

@@ -25,7 +25,9 @@ namespace numl.Utils
                 p = new StringProperty();
             else if (type == typeof(DateTime))
                 p = new DateTimeProperty();
-            else if (type.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IEnumerable)))
+			else if (type == typeof(Guid))
+				p = new GuidProperty();
+			else if (type.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IEnumerable)))
                 throw new InvalidOperationException(
                     string.Format("Property {0} needs to be labeled as an EnumerableFeature", name));
             else
@@ -34,7 +36,8 @@ namespace numl.Utils
             p.Discrete = type.GetTypeInfo().BaseType == typeof(Enum) ||
                          type == typeof(bool) ||
                          type == typeof(string) ||
-                         type == typeof(char) ||
+						 type == typeof(Guid) ||
+						 type == typeof(char) ||
                          type == typeof(DateTime);
 
             p.Type = type;
@@ -82,7 +85,8 @@ namespace numl.Utils
                     t == typeof(TimeSpan) ||
                     t == typeof(int) ||
                     t == typeof(double) ||
-                    t == typeof(decimal) ||
+					t == typeof(Guid) ||
+					t == typeof(decimal) ||
                     t == typeof(byte) ||
                     t == typeof(sbyte) ||
                     t == typeof(Single) ||

@@ -1,14 +1,10 @@
-﻿using System;
-using numl.Model;
-using System.Linq;
-using numl.Tests.Data;
+﻿using numl.Model;
+using System;
 using Xunit;
-using System.Collections.Generic;
-using numl.Serialization;
 
 namespace numl.Tests.SerializationTests.DescriptorSerialization
 {
-    [Trait("Category", "Serialization")]
+	[Trait("Category", "Serialization")]
     public class PropertySerializationTests : BaseSerialization
     {
         [Fact]
@@ -69,5 +65,19 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
             var property = Deserialize<DateTimeProperty>();
             Assert.Equal(p, property);
         }
-    }
+		
+		[Fact]
+		public void Guid_Property_Save_And_Load()
+		{
+			GuidProperty p = new GuidProperty();
+			p.Name = "MyProp";
+			p.Categories = new Guid[] { Guid.NewGuid() };
+			p.Discrete = false;
+			p.Start = 5;
+
+			Serialize(p);
+			var property = Deserialize<GuidProperty>();
+			Assert.Equal(p, property);
+		}
+	}
 }

@@ -103,17 +103,20 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
             var dictionary = StringHelpers.BuildWordDictionary(WordStrings)
                                           .Select(k => k.Key)
                                           .ToArray();
+			var guidCategories = new Guid[] { Guid.NewGuid(), Guid.NewGuid() };
 
             Descriptor description = Descriptor.New("MyDescriptor")
                                      .With("NumberProp").As(typeof(double))
                                      .With("EnumerableProp").AsEnumerable(5)
                                      .With("DateTimeProp").AsDateTime(DatePortion.Date | DatePortion.Time)
-                                     .With("StringProp").AsString(StringSplitType.Word)
+									 .With("GuidProp").AsGuid()
+									 .With("StringProp").AsString(StringSplitType.Word)
                                      .With("StringEnumProp").AsStringEnum()
                                      .Learn("TargetProp").As(typeof(bool));
 
             ((StringProperty)description["StringProp"]).Dictionary = dictionary;
             ((StringProperty)description["StringEnumProp"]).Dictionary = dictionary;
+			((GuidProperty)description["GuidProp"]).Categories = guidCategories;
 
             Serialize(description);
             var d = Deserialize<Descriptor>();
