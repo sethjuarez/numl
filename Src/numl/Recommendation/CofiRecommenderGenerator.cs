@@ -69,7 +69,7 @@ namespace numl.Recommendation
         /// <returns></returns>
         public override IModel Generate(Matrix X, Vector y)
         {
-            this.Preprocess(X.Copy(), y.Copy());
+            this.Preprocess(X.Copy());
 
             // inputs are ratings from each user (X = entities x ratings), y = entity id.
             // create rating range in case we don't have one already
@@ -80,14 +80,15 @@ namespace numl.Recommendation
             Matrix R = X.ToBinary(f => this.Ratings.Test(f));
 
             // The mean needs to be values within rating range only.
-            Vector mean = (from i in X.GetRows()
-                           select i.Where(w => this.Ratings.Test(w)).Sum() / 
-                           i.Where(w => this.Ratings.Test(w)).Count()).ToVector();
+            Vector mean = X.GetRows().Select(s => 
+                                        s.Where(w => this.Ratings.Test(w)).Sum() / 
+                                        s.Where(w => this.Ratings.Test(w)).Count()
+                                    ).ToVector();
 
             // update feature averages before preprocessing features.
             this.FeatureProperties.Average = mean;
 
-            this.Preprocess(X, y);
+            this.Preprocess(X);
 
             // where references could be user ratings and entities are movies / books, etc.
             int references = X.Cols, entities = X.Rows;

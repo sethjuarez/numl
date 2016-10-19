@@ -11,6 +11,16 @@ namespace numl.Math.Functions
     /// <summary>Interface for function.</summary>
     public interface IFunction
     {
+        /// <summary>
+        /// Returns the minimum value from the function curve.
+        /// </summary>
+        double Minimum { get; }
+        
+        /// <summary>
+        /// Returns the maximum value from the function curve.
+        /// </summary>
+        double Maximum { get; }
+
         /// <summary>Computes the given x coordinate.</summary>
         /// <param name="x">The Vector to process.</param>
         /// <returns>A Vector.</returns>

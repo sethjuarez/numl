@@ -16,16 +16,36 @@ namespace numl.Supervised.NeuralNetwork
     {
         /// <summary>Gets or sets the in.</summary>
         /// <value>The in.</value>
-        public Neuron[] In { get; set; } //TODO: Sync with graph
+        public Neuron[] In { get; set; }
 
         /// <summary>Gets or sets the out.</summary>
         /// <value>The out.</value>
-        public Neuron[] Out { get; set; } //TODO: Sync with graph
+        public Neuron[] Out { get; set; }
 
         /// <summary>
         /// Gets or sets the current loss of the network.
         /// </summary>
         public double Cost { get; set; } = 0d;
+
+        /// <summary>
+        /// Returns the number of layers in the network.
+        /// </summary>
+        public int Layers
+        {
+            get
+            {
+                return this.GetVertices().OfType<Neuron>()
+                                         .Select(s => s.LayerId).Distinct().Count();
+            }
+        }
+
+        /// <summary>
+        /// Returns a new Network instance.
+        /// </summary>
+        public static Network New()
+        {
+            return new Network();
+        }
 
         /// <summary>Gets a label.</summary>
         /// <param name="n">The Node to process.</param>
@@ -76,7 +96,7 @@ namespace numl.Supervised.NeuralNetwork
 
             // propagate error gradients
             for (int i = 0; i < Out.Length; i++)
-                Out[i].Error(y);
+                Out[i].Error(y, properties);
 
             // reset weights
             for (int i = 0; i < Out.Length; i++)
@@ -94,13 +114,25 @@ namespace numl.Supervised.NeuralNetwork
             // CK
             // propagate error gradients
             for (int i = 0; i < Out.Length; i++)
-                Out[i].Error(y[i]);
+                Out[i].Error(y[i], properties);
 
             if (update)
             {
                 // reset weights
                 for (int i = 0; i < Out.Length; i++)
                     Out[i].Update(properties);
+            }
+        }
+
+        /// <summary>
+        /// Resets the neurons in the entire graph (see <see cref="Neuron.Reset(NetworkTrainingProperties)"/>). 
+        /// </summary>
+        /// <param name="properties">Network training properties object.</param>
+        public void ResetStates(NetworkTrainingProperties properties)
+        {
+            foreach (var node in this.GetVertices().OfType<Neuron>())
+            {
+                node.Reset(properties);
             }
         }
 
@@ -113,11 +145,49 @@ namespace numl.Supervised.NeuralNetwork
         /// </summary>
         /// <param name="node">Neuron to add.</param>
         /// <returns></returns>
-        public Neuron AddVertex(Neuron node)
+        public Neuron AddNode(Neuron node)
         {
             base.AddVertex(node);
 
             return node;
+        }
+
+        /// <summary>
+        /// Removes the specified node from the network, including any connections.
+        /// </summary>
+        /// <param name="node">Neuron to remove from the network.</param>
+        public void RemoveNode(Neuron node)
+        {
+            // remove this node from parent edges
+            for (int i = 0; i < node.In.Count; i++)
+            {
+                Neuron inode = node.In.ElementAt(i).Source;
+                for (int j = inode.Out.Count - 1; j >= 0; j--)
+                {
+                    if (inode.Out.ElementAt(j).Target == node)
+                    {
+                        inode.Out.RemoveAt(j);
+                    }
+                }
+            }
+
+            // remove this node from child edges
+            for (int j = 0; j < node.Out.Count; j++)
+            {
+                Neuron onode = node.Out.ElementAt(j).Target;
+                for (int i = onode.In.Count - 1; i >= 0; i--)
+                {
+                    if (onode.In.ElementAt(i).Source == node)
+                    {
+                        onode.In.RemoveAt(i);
+                    }
+                }
+            }
+
+            node.In?.Clear();
+            node.Out?.Clear();
+
+            base.RemoveVertex(node);
         }
 
         /// <summary>
@@ -135,22 +205,13 @@ namespace numl.Supervised.NeuralNetwork
         #endregion
 
         /// <summary>
-        /// Returns a new Network instance.
-        /// </summary>
-        public static Network New
-        {
-            get { return new Network(); }
-        }
-
-        /// <summary>
         /// Returns the Nodes from the specified layer, where 0 is the Input layer.
         /// </summary>
         /// <param name="layer">The layer index to retrieve Nodes from.</param>
         /// <returns></returns>
         public IEnumerable<Neuron> GetNodes(int layer)
         {
-            return GetVertices().Where(n => ((Neuron)n).LayerId == layer)
-                                .Select(n => (Neuron)n);
+            return GetVertices().OfType<Neuron>().Where(n => n.LayerId == layer).ToArray();
         }
     }
 }

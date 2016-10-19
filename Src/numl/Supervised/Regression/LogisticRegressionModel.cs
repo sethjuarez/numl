@@ -43,11 +43,11 @@ namespace numl.Supervised.Regression
         /// <returns></returns>
         public double PredictRaw(Vector x)
         {
-            Vector xCopy = (NormalizeFeatures ?
-                                FeatureNormalizer.Normalize(IncreaseDimensions(x, PolynomialFeatures), FeatureProperties) :
-                                IncreaseDimensions(x, PolynomialFeatures));
+            x = IncreaseDimensions(x, this.PolynomialFeatures);
 
-            return LogisticFunction.Compute(xCopy.Insert(0, 1.0, false).Dot(Theta));
+            this.Preprocess(x);
+
+            return LogisticFunction.Compute(x.Insert(0, 1.0, false).Dot(Theta));
         }
 
         /// <summary>

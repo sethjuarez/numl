@@ -13,7 +13,7 @@ using System.Collections.Generic;
 namespace numl.Supervised
 {
     /// <summary>A model.</summary>
-    public abstract class Model : IModel
+    public abstract class Model : IModel, IModelBase
     {
         /// <summary>Gets or sets the descriptor.</summary>
         /// <value>The descriptor.</value>
@@ -33,6 +33,22 @@ namespace numl.Supervised
         /// Feature properties from the original item set.
         /// </summary>
         public Summary FeatureProperties { get; set; }
+
+        /// <summary>
+        /// Preprocessed the input vector.
+        /// </summary>
+        /// <param name="x">Input vector.</param>
+        /// <returns>Vector.</returns>
+        protected void Preprocess(Vector x)
+        {
+            if (this.NormalizeFeatures)
+            {
+                Vector xp = this.FeatureNormalizer.Normalize(x, this.FeatureProperties);
+
+                for (int i = 0; i < x.Length; i++)
+                    x[i] = xp[i];
+            }
+        }
 
         /// <summary>Predicts the given o.</summary>
         /// <param name="y">The Vector to process.</param>

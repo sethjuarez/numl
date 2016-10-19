@@ -28,11 +28,11 @@ namespace numl.Supervised.Perceptron
         }
         /// <summary>Generate model based on a set of examples.</summary>
         /// <param name="X">The Matrix to process.</param>
-        /// <param name="Y">The Vector to process.</param>
+        /// <param name="y">The Vector to process.</param>
         /// <returns>Model.</returns>
-        public override IModel Generate(Matrix X, Vector Y)
+        public override IModel Generate(Matrix X, Vector y)
         {
-            this.Preprocess(X, Y);
+            this.Preprocess(X);
 
             Vector w = Vector.Zeros(X.Cols);
             Vector a = Vector.Zeros(X.Cols);
@@ -51,15 +51,15 @@ namespace numl.Supervised.Perceptron
                 for (int j = 0; j < X.Rows; j++)
                 {
                     var x = X[j];
-                    var y = Y[j];
+                    var yi = y[j];
 
                     // perceptron update
-                    if (y * (w.Dot(x) + wb) <= 0)
+                    if (yi * (w.Dot(x) + wb) <= 0)
                     {
-                        w = w + y * x;
-                        wb += y;
-                        a = (a + y * x) + n;
-                        ab += y * n;
+                        w = w + yi * x;
+                        wb += yi;
+                        a = (a + yi * x) + n;
+                        ab += yi * n;
                     }
 
                     n += 1;

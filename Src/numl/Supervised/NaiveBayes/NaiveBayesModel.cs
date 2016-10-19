@@ -20,6 +20,8 @@ namespace numl.Supervised.NaiveBayes
         /// <returns>An object.</returns>
         public override double Predict(Vector y)
         {
+            this.Preprocess(y);
+
             if (Root == null || Descriptor == null)
                 throw new InvalidOperationException("Invalid Model - Missing information");
 

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Reflection;
+
 namespace numl.Supervised.NeuralNetwork
 {
     /// <summary>
@@ -12,6 +14,8 @@ namespace numl.Supervised.NeuralNetwork
     /// </summary>
     public class NetworkTrainingProperties
     {
+        private readonly Dictionary<string, object> _Parameters;
+
         /// <summary>
         /// Gets or sets a reference to the network being optimized.
         /// </summary>
@@ -57,15 +61,32 @@ namespace numl.Supervised.NeuralNetwork
         /// </summary>
         public int MaxIterations { get; private set; }
 
+        /// <summary>
+        /// Gets or sets the specified parameter for use in training.
+        /// </summary>
+        public object this[string name]
+        {
+            get
+            {
+                return this._Parameters[name];
+            }
+            set
+            {
+                this._Parameters[name] = value;
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NetworkTrainingProperties"/> class.
+        /// <param name="parameters">Optional custom properties used in training.</param>
         /// </summary>
-        public NetworkTrainingProperties()
+        public NetworkTrainingProperties(Dictionary<string, object> parameters = null)
         {
             this.LearningRate = 0.1;
             this.Momentum = 0.9;
             this.Epsilon = 0.9;
+
+            this._Parameters = parameters;
         }
 
         /// <summary>
@@ -77,11 +98,23 @@ namespace numl.Supervised.NeuralNetwork
         /// <param name="learningRate">Learning rate.</param>
         /// <param name="lambda">Lambda (weight decay).</param>
         /// <param name="maxIterations">Maximum number of iterations.</param>
+        /// <param name="parameters">Optional parameters object used when training networks.
+        ///     <para>Usage: parameters = new { Obj1, Obj2, Obj3... }</para>
+        /// </param>
         /// <returns></returns>
         public static NetworkTrainingProperties Create(Network network, int examples, int features, double learningRate, 
-            double lambda, int maxIterations)
+            double lambda, int maxIterations, object parameters = null)
         {
-            return new NetworkTrainingProperties
+            Dictionary<string, object> props = new Dictionary<string, object>();
+            if (parameters != null)
+            {
+                foreach (var prop in parameters.GetType().GetProperties())
+                {
+                    props[prop.Name] = prop.GetValue(parameters);
+                }
+            }
+
+            return new NetworkTrainingProperties(props)
             {
                 Network = network,
                 Examples = examples,

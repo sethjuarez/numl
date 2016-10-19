@@ -7,6 +7,7 @@ using System.Linq;
 using numl.Math.Functions;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
+using numl.Utils;
 
 namespace numl.Supervised.NeuralNetwork
 {
@@ -33,47 +34,13 @@ namespace numl.Supervised.NeuralNetwork
             // set number of hidden units to (Input + Hidden) * 2/3 as basic best guess. 
             int hidden = (int)System.Math.Ceiling((double)(x.Cols + output) * 2.0 / 3.0);
 
-            // creating input nodes
-            network.In = new Neuron[x.Cols + 1];
-            network.In[0] = network.AddVertex(new Neuron(true) { Label = "B0", ActivationFunction = ident, NodeId = 0, LayerId = 0 });
-            for (int i = 1; i < x.Cols + 1; i++)
-                network.In[i] = network.AddVertex(new Neuron { Label = d.ColumnAt(i - 1), ActivationFunction = ident, NodeId = i, LayerId = 0 });
-
-            // creating hidden nodes
-            Neuron[] h = new Neuron[hidden + 1];
-            h[0] = network.AddVertex(new Neuron(true) { Label = "B1", ActivationFunction = ident, NodeId = 0, LayerId = 1 });
-            for (int i = 1; i < hidden + 1; i++)
-                h[i] = network.AddVertex(new Neuron {
-                    Label = String.Format("H{0}", i),
-                    ActivationFunction = activationFunction,
-                    OutputFunction = outputFunction,
-                    NodeId = i,
-                    LayerId = 1
-                });
-
-            // creating output nodes
-            network.Out = new Neuron[output];
-            for (int i = 0; i < output; i++)
-                network.Out[i] = network.AddVertex(new Neuron {
-                    Label = Network.GetLabel(i, d),
-                    ActivationFunction = activationFunction,
-                    OutputFunction = outputFunction,
-                    NodeId = i,
-                    LayerId = 2
-                });
-
-            // link input to hidden. Note: there are
-            // no inputs to the hidden bias node
-            for (int i = 1; i < h.Length; i++)
-                for (int j = 0; j < network.In.Length; j++)
-                    network.AddEdge(Edge.Create(network.In[j], h[i], epsilon: epsilon));
-
-            // link from hidden to output (full)
-            for (int i = 0; i < network.Out.Length; i++)
-                for (int j = 0; j < h.Length; j++)
-                    network.AddEdge(Edge.Create(h[j], network.Out[i], epsilon: epsilon));
-
-            return network;
+            return network.Create(x.Cols, output, activationFunction, outputFunction,
+                fnNodeInitializer: new Func<int, int, Neuron>((l, i) =>
+                {
+                    if (l == 0) return new Neuron(false) { Label = d.ColumnAt(i - 1), ActivationFunction = activationFunction, NodeId = i, LayerId = l };
+                    else if (l == 2) return new Neuron(false) { Label = Network.GetLabel(i, d), ActivationFunction = activationFunction, NodeId = i, LayerId = l };
+                    else return new Neuron(false) { ActivationFunction = activationFunction, NodeId = i, LayerId = l };
+                }), hiddenLayers: hidden);
         }
 
         /// <summary>
@@ -94,15 +61,29 @@ namespace numl.Supervised.NeuralNetwork
         {
             IFunction ident = new Ident();
 
+            if (hiddenLayers == null || hiddenLayers.Length == 0)
+                hiddenLayers = new int[] { (int) System.Math.Ceiling((inputLayer + outputLayer + 1) * (2.0 / 3.0)) };
+
+            List<double> layers = new List<double>();
+            layers.Add(inputLayer);
+            foreach (int l in hiddenLayers)
+                layers.Add(l + 1);
+            layers.Add(outputLayer);
+
             if (fnNodeInitializer == null)
                 fnNodeInitializer = new Func<int, int, Neuron>((i, j) => new Neuron());
 
             if (fnWeightInitializer == null)
-                fnWeightInitializer = new Func<int, int, int, double>((l, i, j) => double.NaN);
+                fnWeightInitializer = new Func<int, int, int, double>((l, i, j) => {
+                    double inputs = (l > 0 ? layers[l - 1] : 0);
+                    double outputs = (l < layers.Count - 1 ? layers[l + 1] : 0);
+                    double eps = (double.IsNaN(epsilon) ? Edge.GetEpsilon(activationFunction.Minimum, activationFunction.Maximum, inputs, outputs) : epsilon);
+                    return Edge.GetWeight(eps);
+                });
 
             // creating input nodes
             network.In = new Neuron[inputLayer + 1];
-            network.In[0] = network.AddVertex(new Neuron(true) { Label = "B0", ActivationFunction = ident, NodeId = 0, LayerId = 0 });
+            network.In[0] = network.AddNode(new Neuron(true) { Label = "B0", ActivationFunction = ident, NodeId = 0, LayerId = 0 });
 
             for (int i = 1; i < inputLayer + 1; i++)
             {
@@ -112,7 +93,7 @@ namespace numl.Supervised.NeuralNetwork
                 network.In[i].LayerId = 0;
                 network.In[i].NodeId = i;
 
-                network.AddVertex(network.In[i]);
+                network.AddNode(network.In[i]);
             }
 
             Neuron[] last = null;
@@ -120,7 +101,7 @@ namespace numl.Supervised.NeuralNetwork
             {
                 // creating hidden nodes
                 Neuron[] layer = new Neuron[hiddenLayers[layerIdx] + 1];
-                layer[0] = network.AddVertex(new Neuron(true) { Label = "B1", ActivationFunction = ident, LayerId = layerIdx + 1, NodeId = 0 });
+                layer[0] = network.AddNode(new Neuron(true) { Label = $"B{layerIdx + 1}", ActivationFunction = ident, LayerId = layerIdx + 1, NodeId = 0 });
                 for (int i = 1; i < layer.Length; i++)
                 {
                     layer[i] = fnNodeInitializer(layerIdx + 1, i);
@@ -130,7 +111,7 @@ namespace numl.Supervised.NeuralNetwork
                     layer[i].LayerId = layerIdx + 1;
                     layer[i].NodeId = i;
 
-                    network.AddVertex(layer[i]);
+                    network.AddNode(layer[i]);
                 }
 
                 if (layerIdx > 0 && layerIdx < hiddenLayers.Length)
@@ -162,7 +143,7 @@ namespace numl.Supervised.NeuralNetwork
                 network.Out[i].LayerId = hiddenLayers.Length + 1;
                 network.Out[i].NodeId = i;
 
-                network.AddVertex(network.Out[i]);
+                network.AddNode(network.Out[i]);
             }
 
             // link from (last) hidden to output (full)
@@ -229,6 +210,94 @@ namespace numl.Supervised.NeuralNetwork
         }
 
         /// <summary>
+        /// Adds new connections for the specified node for the parent and child nodes.
+        /// </summary>
+        /// <param name="network">Current network.</param>
+        /// <param name="node">Neuron being added.</param>
+        /// <param name="parentNodes">Parent nodes that this neuron is connected with.</param>
+        /// <param name="childNodes">Child nodes that this neuron is connected to.</param>
+        /// <param name="epsilon">Weight initialization parameter.</param>
+        /// <returns></returns>
+        public static Network AddConnections(this Network network, Neuron node, IEnumerable<Neuron> parentNodes, IEnumerable<Neuron> childNodes, double epsilon = double.NaN)
+        {
+            if (epsilon == double.NaN)
+                epsilon = Edge.GetEpsilon(node.ActivationFunction.Minimum, node.ActivationFunction.Maximum, parentNodes.Count(), childNodes.Count());
+
+            if (parentNodes != null)
+            {
+                for (int i = 0; i < parentNodes.Count(); i++)
+                    network.AddEdge(Edge.Create(parentNodes.ElementAt(i), node, epsilon: epsilon));
+            }
+
+            if (childNodes != null)
+            {
+                for (int j = 0; j < childNodes.Count(); j++)
+                    network.AddEdge(Edge.Create(node, childNodes.ElementAt(j), epsilon: epsilon));
+            }
+
+            return network;
+        }
+
+        /// <summary>
+        /// Gets the weight values as an [i x j] weight matrix.  Where i represents the node in the next layer (layer + 1) and j represents the node in the specified <paramref name="layer"/>.
+        /// </summary>
+        /// <param name="network">Current network.</param>
+        /// <param name="layer">The layer to retrieve weights for.  The layer should be between 0 and the last hidden layer.</param>
+        /// <param name="includeBiases">Indicates whether bias weights are included in the output.</param>
+        /// <returns>Matrix.</returns>
+        public static Matrix GetWeights(this Network network, int layer = 0, bool includeBiases = false)
+        {
+            if (layer >= network.Layers - 1)
+                throw new ArgumentOutOfRangeException(nameof(layer), $"There are no weights from the output layer [{layer}].");
+
+            var nodes = network.GetNodes(layer + 1).ToArray();
+            int pos = ((network.Layers - 1 == layer + 1) ? 0 : 1);
+            int bpos = (includeBiases ? 0 : 1);
+
+            Matrix weights = Matrix.Zeros(nodes.Length - pos, network.GetNodes(layer).Count() - bpos);
+
+            for (int i = pos; i < nodes.Length; i++)
+            {
+                for (int j = bpos; j < nodes[i].In.Count; j++)
+                {
+                    if (!nodes[i].In[j].Source.IsBias || (nodes[i].In[j].Source.IsBias && includeBiases))
+                    {
+                        weights[i - pos, j - bpos] = nodes[i].In[j].Weight;
+                    }
+                }
+            }
+
+            return weights;
+        }
+
+        /// <summary>
+        /// Gets a bias input vector for the specified layer.  Each item is the bias weight on the connecting node in the next layer.
+        /// </summary>
+        /// <param name="network">Current network.</param>
+        /// <param name="layer">Forward layer of biases and their weights.  The layer should be between 0 (first hidden layer) and the last hidden layer.</param>
+        /// <returns>Vector.</returns>
+        public static Vector GetBiases(this Network network, int layer = 0)
+        {
+            if (layer > network.Layers - 1)
+                throw new ArgumentOutOfRangeException(nameof(layer), $"There are no bias nodes from the output layer [{layer}].");
+
+            var nodes = network.GetNodes(layer + 1).ToArray();
+
+            Vector biases = Vector.Zeros(nodes.Where(w => !w.IsBias).Count());
+
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                if (!nodes[i].IsBias)
+                {
+                    var bias = nodes[i].In.FirstOrDefault(f => f.Source.IsBias);
+                    biases[i] = bias.Weight;
+                }
+            }
+
+            return biases;
+        }
+
+        /// <summary>
         /// Links a Network from nodes and edges.
         /// </summary>
         /// <param name="nodes">An array of nodes in the network</param>
@@ -241,7 +310,7 @@ namespace numl.Supervised.NeuralNetwork
             network.In = nodes.Where(w => w.LayerId == inputLayerId).ToArray();
 
             foreach (var node in network.In)
-                network.AddVertex(node);
+                network.AddNode(node);
 
             int hiddenLayer = inputLayerId + 1;
             // relink nodes
@@ -251,7 +320,7 @@ namespace numl.Supervised.NeuralNetwork
                 Neuron[] layer = nodes.Where(w => w.LayerId == layerIdx).ToArray();
 
                 foreach (var node in layer)
-                    network.AddVertex(node);
+                    network.AddNode(node);
 
                 if (layerIdx > hiddenLayer)
                 {
@@ -276,7 +345,7 @@ namespace numl.Supervised.NeuralNetwork
             network.Out = nodes.Where(w => w.LayerId == outputLayerId).ToArray();
 
             foreach (var node in network.Out)
-                network.AddVertex(node);
+                network.AddNode(node);
 
             for (int i = 0; i < network.Out.Length; i++)
                 for (int j = 0; j < last.Length; j++)
@@ -284,6 +353,224 @@ namespace numl.Supervised.NeuralNetwork
                         weight: edges.First(f => f.ParentId == last[j].Id && f.ChildId == network.Out[i].Id).Weight));
 
             return network;
+        }
+
+        /// <summary>
+        /// Constrains the weights in the specified layer from being updated.  This prevents weights in pretrained layers from being updated.
+        /// </summary>
+        /// <param name="network">Current network.</param>
+        /// <param name="layer">The layer of weights to constrain.  To prevent all weights from being changed specify the global value of -1.</param>
+        /// <param name="constrain">Sets the <see cref="Neuron.Constrained"/> value to true/false.</param>
+        /// <returns></returns>
+        public static Network Constrain(this Network network, int layer = -1, bool constrain = true)
+        {
+            var nodes = (layer >= 0 ? network.GetNodes(layer) : network.GetVertices());
+            
+            foreach (Neuron node in nodes)
+            {
+                node.Constrained = constrain;
+            }
+
+            return network;
+        }
+
+        /// <summary>
+        /// Reindexes each node's layer and label in the network, starting from 0 (input layer).
+        /// </summary>
+        /// <param name="network">Network to reindex.</param>
+        /// <returns></returns>
+        public static Network Reindex(this Network network)
+        {
+            var nodes = network.GetVertices().OfType<Neuron>()
+                                             .GroupBy(g => g.LayerId)
+                                             .OrderBy(o => o.Key)
+                                             .ToArray();
+
+            int layer = 0;
+
+            foreach (var group in nodes)
+            {
+                int count = 0;
+
+                foreach (var node in group)
+                {
+                    node.LayerId = layer;
+
+                    // update labels.
+                    if (node.IsInput) node.Label = $"I{count}";
+                    if (node.IsBias) node.Label = $"B{layer}";
+                    if (node.IsHidden) node.Label = $"H{layer}.{count}";
+                    if (node.IsOutput) node.Label = $"O{count}";
+
+                    count++;
+                }
+
+                layer++;
+            }
+
+            return network;
+        }
+
+        /// <summary>
+        /// Prunes the network in the given direction for the specified number of layers.
+        /// </summary>
+        /// <param name="network">Current network.</param>
+        /// <param name="backwards">If true, removes layer by layer in reverse order (i.e. output layer first).</param>
+        /// <param name="layers">Number of layers to prune from the network.</param>
+        public static Network Prune(this Network network, bool backwards = true, int layers = 1)
+        {
+            int count = layers;
+            int layer = (backwards ? (network.Layers - 1) : 0);
+
+            while (count > 0)
+            {
+                count--;
+
+                var nodes = network.GetNodes(layer);
+
+                for (int i = 0; i < nodes.Count(); i++)
+                    network.RemoveNode(nodes.ElementAt(i));
+
+                layer = (backwards ? --layer : ++layer);
+            }
+
+            network.Reindex();
+
+            // remove bias outputs
+            var outputs = network.GetNodes(network.Layers - 1).Where(w => w.IsBias);
+            for (int x = 0; x < outputs.Count(); x++)
+                network.RemoveNode(outputs.ElementAt(x));
+
+            for (int i = 0; i < network.GetNodes(0).Count(); i++)
+                network.GetNodes(0).ElementAt(i).In.Clear();
+
+            network.In = network.GetNodes(0).ToArray();
+
+            for (int i = 0; i < network.GetNodes(network.Layers - 1).Count(); i++)
+                network.GetNodes(network.Layers - 1).ElementAt(i).Out.Clear();
+
+            network.Out = network.GetNodes(network.Layers - 1).ToArray();
+
+            return network;
+        }
+
+        /// <summary>
+        /// Stacks the given networks in order, on top of the current network, to create a fully connected deep neural network.
+        /// <para>This is useful in building pretrained multi-layered neural networks, where each layer is partially trained prior to stacking.</para>
+        /// </summary>
+        /// <param name="network">Current network.</param>
+        /// <param name="removeInputs">If true, the input nodes in additional layers are removed prior to stacking.
+        ///     <para>This will link the previous network's output layer with the hidden units of the next layer.</para>
+        /// </param>
+        /// <param name="removeOutputs">If true, output nodes in the input and middle layers are removed prior to stacking.
+        ///     <para>This will link the previous network's hidden or output layer with the input or hidden units (when <paramref name="removeInputs"/> is true) in the next layer.</para>
+        /// </param>
+        /// <param name="addBiases">If true, missing bias nodes are automatically added within new hidden layers.</param>
+        /// <param name="constrain">If true, the weights within each network are constrained leaving the new interconnecting network weights for training.</param>
+        /// <param name="networks">Network objects to stack on top of the current network.  Each network is added downstream from the input nodes.</param>
+        public static Network Stack(this Network network, bool removeInputs = false, bool removeOutputs = false, bool addBiases = true, 
+                                        bool constrain = true, params Network[] networks)
+        {
+            IFunction ident = new Ident();
+
+            // prune output layer on first (if pruning)
+            Network deep = (removeOutputs ? network.Prune(true, 1) : network);
+
+            if (constrain) deep.Constrain();
+
+            // get the current network's output layer
+            List<Neuron> prevOutput = deep.Out.ToList();
+
+            for (int x = 0; x < networks.Length; x++)
+            {
+                Network net = networks[x];
+
+                if (constrain) net.Constrain();
+                // remove input layer on next network (if pruning)
+                if (removeInputs) net = net.Prune(false, 1);
+                // remove output layer on next (middle) network (if pruning)
+                if (removeOutputs && x < networks.Length - 1) net = net.Prune(true, 1);
+
+                // add biases (for hidden network layers)
+                if (addBiases)
+                {
+                    if (!prevOutput.Any(a => a.IsBias == true))
+                    {
+                        int layerId = prevOutput.First().LayerId;
+                        var bias = new Neuron(true)
+                        {
+                            Label = $"B{layerId}",
+                            ActivationFunction = ident,
+                            NodeId = 0,
+                            LayerId = layerId
+                        };
+
+                        // add to graph
+                        deep.AddNode(bias);
+                        // copy to previous network's output layer (for reference)
+                        prevOutput.Insert(0, bias);
+                    }
+                }
+
+                int deepLayers = deep.Layers;
+                Neuron[] prevLayer = null;
+                var layers = net.GetVertices().OfType<Neuron>()
+                                              .GroupBy(g => g.LayerId)
+                                              .ToArray();
+
+                for (int layer = 0; layer < layers.Count(); layer++)
+                {
+                    // get nodes in current layer of current network
+                    var nodes = layers.ElementAt(layer).ToArray();
+                    // set new layer ID (relative to pos. in resulting graph)
+                    int layerId = layer + deepLayers;
+
+                    foreach (var node in nodes)
+                    {
+                        // set the new layer ID
+                        node.LayerId = layerId;
+                        // add to graph
+                        deep.AddNode(node);
+
+                        if (!node.IsBias)
+                        {
+                            // if not input layer in current network
+                            if (layer > 0)
+                            {
+                                // add afferent edges to graph for current node
+                                deep.AddEdges(net.GetInEdges(node).ToArray());
+                            }
+                            else
+                            {
+                                // add connections from previous network output layer to next input layer
+                                foreach (var onode in prevOutput)
+                                    deep.AddEdge(Edge.Create(onode, node));
+                            }
+                        }
+                    }
+                    // nodes in last layer
+                    if (prevLayer != null)
+                    {
+                        // add outgoing connections for each node in previous layer
+                        foreach (var inode in prevLayer)
+                        {
+                            deep.AddEdges(net.GetOutEdges(inode).ToArray());
+                        }
+                    }
+
+                    // remember last layer
+                    prevLayer = nodes.ToArray();
+                }
+                // remember last network output nodes
+                prevOutput = deep.GetNodes(deep.Layers - 1).ToList();
+            }
+
+            deep.Reindex();
+
+            deep.In = deep.GetNodes(0).ToArray();
+            deep.Out = deep.GetNodes(deep.Layers - 1).ToArray();
+
+            return deep;
         }
     }
 }

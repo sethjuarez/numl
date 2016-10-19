@@ -4,12 +4,18 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using numl.Data;
 
 namespace numl.Supervised.NaiveBayes
 {
     /// <summary>A measure.</summary>
-    public class Measure
+    public class Measure : IVertex
     {
+        /// <summary>
+        /// Vertex identifier
+        /// </summary>
+        public int Id { get; set; }
+
         /// <summary>Gets or sets the label.</summary>
         /// <value>The label.</value>
         public string Label { get; set; }
@@ -19,6 +25,7 @@ namespace numl.Supervised.NaiveBayes
         /// <summary>Gets or sets the probabilities.</summary>
         /// <value>The probabilities.</value>
         public Statistic[] Probabilities { get; set; }
+
         /// <summary>Increments.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
         /// <param name="x">The x coordinate.</param>

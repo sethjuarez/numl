@@ -19,7 +19,7 @@ namespace numl.Serialization.Supervised.NeuralNetwork
 
         public override object Create()
         {
-            return Network.New;
+            return Network.New();
         }
 
         /// <summary>

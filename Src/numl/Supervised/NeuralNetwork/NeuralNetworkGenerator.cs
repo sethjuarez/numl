@@ -11,7 +11,7 @@ using numl.Math.Functions;
 namespace numl.Supervised.NeuralNetwork
 {
     /// <summary>A neural network generator.</summary>
-    public class NeuralNetworkGenerator : Generator
+    public class NeuralNetworkGenerator : Generator, ISequenceGenerator
     {
         /// <summary>Gets or sets the learning rate.</summary>
         /// <value>The learning rate.</value>
@@ -24,11 +24,7 @@ namespace numl.Supervised.NeuralNetwork
 
         /// <summary>Gets or sets the maximum iterations.</summary>
         /// <value>The maximum iterations.</value>
-        public int MaxIterations
-        {
-            get;
-            set;
-        }
+        public int MaxIterations { get; set; }
 
         /// <summary>Gets or sets the activation.</summary>
         /// <value>The activation.</value>
@@ -50,7 +46,7 @@ namespace numl.Supervised.NeuralNetwork
         {
             LearningRate = 0.1;
             MaxIterations = -1;
-            Epsilon = 0.5;
+            Epsilon = double.NaN;
             Activation = new Tanh();
         }
 
@@ -60,16 +56,16 @@ namespace numl.Supervised.NeuralNetwork
         /// <returns>Model.</returns>
         public override IModel Generate(Matrix X, Vector y)
         {
-            // store max iterations so it can be reset
-            // after training (just in case the generator
-            // is reused)
-            var maxIterations = MaxIterations;
-            this.Preprocess(X, y);
-            // because I said so...
-            if (MaxIterations == -1) MaxIterations = X.Rows * 500;
-            else MaxIterations = X.Rows * MaxIterations; // because it's batched.
+            return this.Generate(X, y.ToMatrix(VectorType.Col));
+        }
 
-            var network = Network.New.Create(Descriptor, X, y, Activation, OutputFunction, epsilon: Epsilon);
+        public virtual ISequenceModel Generate(Matrix X, Matrix Y)
+        {
+            this.Preprocess(X);
+            // because I said so...
+            if (MaxIterations == -1) MaxIterations = 500;
+
+            var network = Network.New().Create(X.Cols, Y.Cols, Activation, OutputFunction, epsilon: Epsilon);
 
             var model = new NeuralNetworkModel
             {
@@ -88,19 +84,16 @@ namespace numl.Supervised.NeuralNetwork
             {
                 properties.Iteration = i;
 
-                int idx = i % X.Rows;
-                network.Forward(X[idx, VectorType.Row]);
-                //OnModelChanged(this, ModelEventArgs.Make(model, "Forward"));
-                network.Back(y[idx], properties);
+                for (int x = 0; x < X.Rows; x++)
+                {
+                    network.Forward(X[x, VectorType.Row]);
+                    //OnModelChanged(this, ModelEventArgs.Make(model, "Forward"));
+                    network.Back(Y[x, VectorType.Row], properties);
+                }
 
                 var output = String.Format("Run ({0}/{1}): {2}", i, MaxIterations, network.Cost);
                 OnModelChanged(this, ModelEventArgs.Make(model, output));
             }
-
-            // restore original iteration
-            // variable (just in case the
-            // generator is reused)
-            MaxIterations = maxIterations;
 
             return model;
         }
