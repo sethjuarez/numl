@@ -6,7 +6,7 @@
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 //////////////////////////////////////////////////////////////////////
-var release = "0.9.10";
+var release = "0.9.12";
 var suffix = "-beta";
 var testFailOk = true;
 var copyright = string.Format("©{0}, Seth Juarez", DateTime.Now.Year);
@@ -29,7 +29,19 @@ public static void UpdateProjectJsonVersion(string version, FilePath projectPath
 {
     var project = Newtonsoft.Json.Linq.JObject.Parse(
         System.IO.File.ReadAllText(projectPath.FullPath, Encoding.UTF8));
-    project[node].Replace(version);
+
+    if (node.Contains("+"))
+    {
+        // for nested entries use a "+"
+        var entries = node.Split('+');
+        var n = project[entries[0]];
+        for (int i = 1; i < entries.Length; i++)
+            n = n[entries[i]];
+        n.Replace(version);
+    }
+    else
+        project[node].Replace(version);
+
     System.IO.File.WriteAllText(projectPath.FullPath, project.ToString(), Encoding.UTF8);
 }
 
@@ -59,9 +71,14 @@ Task("Version")
         Copyright = copyright
     };
     // update assembly version
+    Information("Updating AssembyInfo");
     CreateAssemblyInfo("../Src/numl/Properties/AssemblyInfo.cs", assemblyInfo);
     // update project.json build
+    Information("Updating numl project.json to " + release+suffix);
     UpdateProjectJsonVersion(release + suffix, "../Src/numl/project.json", "version");
+    // update test assembly project.json to match new version
+    Information("Updating numl.Tests reference to numl in project.json to " + release+suffix);
+    UpdateProjectJsonVersion(release + suffix, "../Src/numl.Tests/project.json", "dependencies+numl");
 });
 
 Task("Restore")
