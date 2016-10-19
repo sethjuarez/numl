@@ -61,7 +61,42 @@ namespace numl.Tests.SupervisedTests
             );
         }
 
-        [Fact]
+		[Fact]
+		public void Decision_Tree_Study_Category_Test()
+		{
+			var categoryA = Guid.NewGuid();
+			var categoryB = Guid.NewGuid();
+
+			var data = new[] {
+				new { Study = 2.0, Category = categoryA, Passed = false},
+				new { Study = 3.0, Category = categoryA, Passed = false},
+				new { Study = 1.0, Category = categoryB, Passed = false},
+				new { Study = 4.0, Category = categoryA, Passed = false},
+				new { Study = 6.0, Category = categoryA, Passed = true},
+				new { Study = 8.0, Category = categoryB, Passed = true},
+				new { Study = 12.0, Category = categoryA, Passed = true},
+				new { Study = 3.0, Category = categoryB, Passed = true}
+			};
+
+			var descriptor = Descriptor.New("Student")
+				.With("Study").As(typeof(double))
+				.With("Category").AsGuid()
+				.Learn("Passed").As(typeof(bool));
+
+			DecisionTreeGenerator generator = new DecisionTreeGenerator()
+			{
+				Descriptor = descriptor,
+				NormalizeFeatures = true
+			};
+
+			var model = Learner.Learn(data, 0.8, 10, generator).Model;
+
+			var test = model.PredictValue(new { Study = 7.0, Category = categoryA, Passed = false });
+
+			Assert.Equal(true, test);
+		}
+
+		[Fact]
         public void ArbitraryPrediction_Test_With_Enum_Label()
         {
             ArbitraryPrediction minimumPredictionValue = new ArbitraryPrediction
