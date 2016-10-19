@@ -12,6 +12,16 @@ namespace numl.Math.Functions
     public class Softplus : Function
     {
         /// <summary>
+        /// Returns the minimum value from the function curve, equal to 0.0.
+        /// </summary>
+        public override double Minimum { get { return 0; } }
+
+        /// <summary>
+        /// Returns the maximum value from the function curve, equal to infinity.
+        /// </summary>
+        public override double Maximum { get { return double.PositiveInfinity; } }
+
+        /// <summary>
         /// Computes the softplus function on the given input.
         /// </summary>
         /// <param name="x">The double to process.</param>

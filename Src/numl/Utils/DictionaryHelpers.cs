@@ -55,10 +55,24 @@ namespace numl.Utils
                 dictionary[key] = value(seed);
         }
 
+        /// <summary>
+        /// Adds or updates the value at the specified location.
+        /// </summary>
+        /// <typeparam name="K">Key type.</typeparam>
+        /// <typeparam name="V">Value type.</typeparam>
+        /// <param name="dictionary">The dictionary to act on.</param>
+        /// <param name="key1">The parent key.</param>
+        /// <param name="key2">The child key.</param>
+        /// <param name="value">The value to add or update.</param>
         public static void AddOrUpdate<K, V>(this Dictionary<K, Dictionary<K, V>> dictionary, K key1, K key2, V value)
         {
             if (dictionary.ContainsKey(key1))
-                dictionary[key1].Add(key2, value);
+            {
+                if (dictionary[key1].ContainsKey(key2))
+                    dictionary[key1][key2] = value;
+                else
+                    dictionary[key1].Add(key2, value);
+            }
             else
                 dictionary.Add(key1, new Dictionary<K, V> { { key2, value } });
         }

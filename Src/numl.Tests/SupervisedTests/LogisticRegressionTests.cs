@@ -64,7 +64,7 @@ namespace numl.Tests.SupervisedTests
 
             Vector test = new Vector(new double[] { 0.1319100, -0.513890 });
 
-            var generator = new LogisticRegressionGenerator() { Lambda = 1, LearningRate = 0.01, PolynomialFeatures = 6, MaxIterations = 400, NormalizeFeatures = true };
+            var generator = new LogisticRegressionGenerator() { Lambda = 1, LearningRate = 0.1, PolynomialFeatures = 6, MaxIterations = 400, NormalizeFeatures = true };
 
             var model2 = generator.Generate(m, y);
             double p = model2.Predict(test);

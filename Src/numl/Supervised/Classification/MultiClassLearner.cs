@@ -60,7 +60,7 @@ namespace numl
         {
             Descriptor descriptor = generator.Descriptor;
 
-            object[] examples = truthExamples.Union(falseExamples).ToArray(); // changed from .Shuffle()
+            object[] examples = truthExamples.Union(falseExamples).Shuffle().ToArray(); // changed from .Shuffle()
 
             int total = examples.Count();
 
@@ -68,33 +68,30 @@ namespace numl
 
             //// 100 - trainingPercentage for testing
             int[] testingSlice = Learner.GetTestPoints(total - trainingCount, total).ToArray();
+            int[] trainingSlice = Learner.GetTrainingPoints(testingSlice, total).ToArray();
 
-            var dataset = generator.Descriptor.Convert(examples, true).ToExamples();
-
-            Matrix X = dataset.Item1;
-            Vector y = dataset.Item2;
+            var training = generator.Descriptor.Convert(examples.Slice(trainingSlice).ToArray(), true).ToExamples();
 
             // convert label to 1's and 0's
-            y = MultiClassLearner.ChangeClassLabels(examples.ToArray(), descriptor, truthLabel);
+            Vector y = MultiClassLearner.ChangeClassLabels(examples.ToArray(), descriptor, truthLabel);
 
-            IModel model = generator.Generate(X, y);
+            IModel model = generator.Generate(training.Item1, y.Slice(trainingSlice));
 
             Score score = new Score();
 
             if (testingSlice.Count() > 0)
             {
-                object[] testExamples = Learner.GetTestExamples(testingSlice, examples);
-
+                object[] testExamples = examples.Slice(testingSlice).ToArray();
+                var testing = generator.Descriptor.Convert(testExamples, true).ToExamples();
+                
                 Vector y_pred = new Vector(testExamples.Length);
-                Matrix x_test = X.Slice(testingSlice, VectorType.Row);
-                Vector y_test = y.Slice(testingSlice);
 
                 // make sure labels are 1 / 0 based
-                y_test = MultiClassLearner.ChangeClassLabels(testExamples.ToArray(), descriptor, truthLabel);
+                Vector y_test = MultiClassLearner.ChangeClassLabels(testExamples.ToArray(), descriptor, truthLabel);
 
-                for (int i = 0; i < (int)testExamples.Length; i++)
+                for (int i = 0; i < testExamples.Length; i++)
                 {
-                    double result = model.Predict(x_test[i]);
+                    double result = model.Predict(testing.Item1[i, VectorType.Row]);
 
                     y_pred[i] = result;
                 }

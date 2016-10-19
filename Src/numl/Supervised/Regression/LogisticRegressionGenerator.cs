@@ -50,29 +50,29 @@ namespace numl.Supervised.Regression
         }
 
         /// <summary>Generate Logistic Regression model based on a set of examples.</summary>
-        /// <param name="x">The Matrix to process.</param>
+        /// <param name="X">The Matrix to process.</param>
         /// <param name="y">The Vector to process.</param>
         /// <returns>Model.</returns>
-        public override IModel Generate(Matrix x, Vector y)
+        public override IModel Generate(Matrix X, Vector y)
         {
-            Matrix copy = IncreaseDimensions(x.Copy(), this.PolynomialFeatures);
+            X = IncreaseDimensions(X, this.PolynomialFeatures);
 
-            this.Preprocess(copy, y);
+            this.Preprocess(X);
 
             // guarantee 1/0 based label vector
             y = y.ToBinary(f => f == 1d, falseValue: 0d);
 
             // add intercept term
-            copy = copy.Insert(Vector.Ones(copy.Rows), 0, VectorType.Col, false);
+            X = X.Insert(Vector.Ones(X.Rows), 0, VectorType.Col, false);
 
-            Vector theta = Vector.Rand(copy.Cols);
+            Vector theta = Vector.Rand(X.Cols);
 
             // run gradient descent
             var optimizer = new numl.Math.Optimization.Optimizer(theta, this.MaxIterations, this.LearningRate)
             {
                 CostFunction = new numl.Math.Functions.Cost.LogisticCostFunction()
                 {
-                    X = copy,
+                    X = X,
                     Y = y,
                     Lambda = this.Lambda,
                     Regularizer = new numl.Math.Functions.Regularization.L2Regularizer(),

@@ -23,10 +23,10 @@ namespace numl.Supervised.NaiveBayes
         }
         /// <summary>Generate model based on a set of examples.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
-        /// <param name="x">The Matrix to process.</param>
+        /// <param name="X">The Matrix to process.</param>
         /// <param name="y">The Vector to process.</param>
         /// <returns>Model.</returns>
-        public override IModel Generate(Matrix x, Vector y)
+        public override IModel Generate(Matrix X, Vector y)
         {
             if (Descriptor == null)
                 throw new InvalidOperationException("Cannot build naive bayes model without type knowledge!");
@@ -35,7 +35,7 @@ namespace numl.Supervised.NaiveBayes
             if (!Descriptor.Label.Discrete)
                 throw new InvalidOperationException("Need to use regression for non-discrete labels!");
 
-            this.Preprocess(x, y);
+            this.Preprocess(X);
 
             // compute Y probabilities
             Statistic[] statistics = GetLabelStats(y);
@@ -48,7 +48,7 @@ namespace numl.Supervised.NaiveBayes
             };
 
             // collect feature ranges
-            Measure[] features = GetBaseConditionals(x);
+            Measure[] features = GetBaseConditionals(X);
 
             // compute conditional counts
             for (int i = 0; i < y.Length; i++)
@@ -57,10 +57,10 @@ namespace numl.Supervised.NaiveBayes
                 if (stat.Conditionals == null)
                     stat.Conditionals = CloneMeasure(features);
 
-                for (int j = 0; j < x.Cols; j++)
+                for (int j = 0; j < X.Cols; j++)
                 {
                     var s = stat.Conditionals[j];
-                    s.Increment(x[i, j]);
+                    s.Increment(X[i, j]);
                 }
             }
 

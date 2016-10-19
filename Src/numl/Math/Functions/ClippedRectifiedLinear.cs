@@ -16,6 +16,16 @@ namespace numl.Math.Functions
         public double MaxValue { get; set; }
 
         /// <summary>
+        /// Returns the minimum value from the function curve.
+        /// </summary>
+        public override double Minimum { get { return 0; } }
+
+        /// <summary>
+        /// Returns the maximum value from the function curve.  Default is <see cref="MaxValue"/>.
+        /// </summary>
+        public override double Maximum { get { return this.MaxValue; } }
+
+        /// <summary>
         /// Initializes a new Clipped Rectified Linear function with default maximum of 5.
         /// </summary>
         public ClippedRectifiedLinear()

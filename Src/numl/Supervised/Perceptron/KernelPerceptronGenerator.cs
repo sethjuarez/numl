@@ -22,18 +22,18 @@ namespace numl.Supervised.Perceptron
             Kernel = kernel;
         }
         /// <summary>Generate model based on a set of examples.</summary>
-        /// <param name="x">The Matrix to process.</param>
+        /// <param name="X">The Matrix to process.</param>
         /// <param name="y">The Vector to process.</param>
         /// <returns>Model.</returns>
-        public override IModel Generate(Matrix x, Vector y)
+        public override IModel Generate(Matrix X, Vector y)
         {
-            this.Preprocess(x, y);
+            this.Preprocess(X);
 
             int N = y.Length;
             Vector a = Vector.Zeros(N);
 
             // compute kernel
-            Matrix K = Kernel.Compute(x);
+            Matrix K = Kernel.Compute(X);
 
             int n = 1;
 
@@ -63,7 +63,7 @@ namespace numl.Supervised.Perceptron
                 Kernel = Kernel,
                 A = a.Slice(indices),
                 Y = y.Slice(indices),
-                X = x.Slice(indices),
+                X = X.Slice(indices),
                 Descriptor = this.Descriptor,
                 NormalizeFeatures = base.NormalizeFeatures,
                 FeatureNormalizer = base.FeatureNormalizer,

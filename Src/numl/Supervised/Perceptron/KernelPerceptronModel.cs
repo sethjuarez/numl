@@ -29,6 +29,8 @@ namespace numl.Supervised.Perceptron
         /// <returns>An object.</returns>
         public override double Predict(Vector y)
         {
+            this.Preprocess(y);
+
             var K = Kernel.Project(X, y);
             double v = 0;
             for (int i = 0; i < A.Length; i++)

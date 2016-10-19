@@ -9,12 +9,13 @@ using numl.Utils;
 
 namespace numl.Supervised.NeuralNetwork
 {
-    
+
     /// <summary>An Artifical Neuron.</summary>
     public class Neuron : Data.IVertex
     {
         private static int _id = -1;
-        private double _DeltaL = 0;
+
+        protected double _DeltaL = 0;
 
         public Neuron()
         {
@@ -146,8 +147,9 @@ namespace numl.Supervised.NeuralNetwork
 
         /// <summary>Calculates and returns the error derivative (<see cref="Delta"/>) of this node.</summary>
         /// <param name="t">Error derivative from the previous layer (n + 1).</param>
+        /// <param name="properties">Network training properties.</param>
         /// <returns>A double.</returns>
-        public virtual double Error(double t)
+        public virtual double Error(double t, NetworkTrainingProperties properties)
         {
             _DeltaL = Delta;
 
@@ -169,7 +171,7 @@ namespace numl.Supervised.NeuralNetwork
             {
                 for (int edge = 0; edge < this.In.Count; edge++)
                 {
-                    this.In[edge].Source.Error(this.Delta);
+                    this.In[edge].Source.Error(this.Delta, properties);
                 }
             }
 
@@ -200,11 +202,36 @@ namespace numl.Supervised.NeuralNetwork
             }
         }
 
+        /// <summary>
+        /// Propogates a reset event downstream through the network.
+        /// </summary>
+        /// <param name="properties">Network training properties.</param>
+        public virtual void Reset(NetworkTrainingProperties properties) { }
+
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
             return string.Format("{0} ({1} | {2})", Label, Input, Output);
+        }
+
+        /// <summary>
+        /// Sets the starting identifier used when creating new nodes.
+        /// <para>When rebuilding networks across sessions it is recommended that the identifier is set to the last used identifier.</para>
+        /// </summary>
+        /// <param name="startId"></param>
+        public static void SetId(int startId)
+        {
+            Neuron._id = startId;
+        }
+
+        /// <summary>
+        /// Gets the current identifier assigned when creating new nodes.
+        /// </summary>
+        /// <returns></returns>
+        public static int GetId()
+        {
+            return Neuron._id;
         }
     }
 }

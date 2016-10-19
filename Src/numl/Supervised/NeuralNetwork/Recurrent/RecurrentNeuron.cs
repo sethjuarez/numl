@@ -15,6 +15,11 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
     public class RecurrentNeuron : Neuron
     {
         /// <summary>
+        /// Vector of H state deltas from previous time steps.
+        /// </summary>
+        public Vector DeltaH { get; set; }
+
+        /// <summary>
         /// Gets or Sets the hidden (internal) state of the neuron.
         /// </summary>
         public double H { get; set; }
@@ -124,12 +129,13 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
         /// <summary>
         /// Returns the error given the supplied error derivative.
         /// </summary>
-        /// <param name="t"></param>
+        /// <param name="t">The error from the next layer.</param>
+        /// <param name="properties">Network training properties object.</param>
         /// <returns></returns>
-        public override double Error(double t)
+        public override double Error(double t, NetworkTrainingProperties properties)
         {
             //TODO: Return the correct error.
-            base.Error(t);
+            base.Error(t, properties);
 
             return this.Delta;
         }
@@ -140,7 +146,21 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
         /// <param name="properties">Network training properties.</param>
         public override void Update(NetworkTrainingProperties properties)
         {
+            // TODO: Update recurrent weights.
             base.Update(properties);
+        }
+
+        /// <summary>
+        /// Resets the state of the current neuron.
+        /// </summary>
+        /// <param name="properties">Network training properties.</param>
+        public override void Reset(NetworkTrainingProperties properties)
+        {
+            this.H = 0;
+
+            this.DeltaH = Vector.Zeros((int)properties[nameof(GatedRecurrentGenerator.SequenceLength)]);
+
+            base.Reset(properties);
         }
     }
 }

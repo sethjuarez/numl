@@ -30,6 +30,8 @@ namespace numl.Supervised.DecisionTree
         /// <returns>A double.</returns>
         public override double Predict(Vector y)
         {
+            this.Preprocess(y);
+
             return WalkNode(y, (Node)Tree.Root);
         }
 

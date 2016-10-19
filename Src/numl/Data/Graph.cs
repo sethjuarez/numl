@@ -32,6 +32,16 @@ namespace numl.Data
         }
 
         /// <summary>
+        /// Adds the enumerable of IVertex objects to the current Graph.
+        /// </summary>
+        /// <param name="vertices">Collection of IVertex objects to add.</param>
+        public void AddVertices(IEnumerable<IVertex> vertices)
+        {
+            foreach (var vertex in vertices)
+                this.AddVertex(vertex);
+        }
+
+        /// <summary>
         /// Gets the IVertex associated with the specified identifier.
         /// </summary>
         /// <param name="id">Identifier of the IVertex to return.</param>
@@ -39,6 +49,16 @@ namespace numl.Data
         public IVertex GetVertex(int id)
         {
             return this[id];
+        }
+
+        /// <summary>
+        /// Returns True if the specified vertex exists in the graph.
+        /// </summary>
+        /// <param name="v">IVertex to check exists.</param>
+        /// <returns></returns>
+        public bool ContainsVertex(IVertex v)
+        {
+            return _vertices.ContainsKey(v.Id);
         }
 
         /// <summary>
@@ -87,6 +107,17 @@ namespace numl.Data
             else
                 throw new InvalidOperationException("Invalid vertex index specified in edge");
         }
+
+        /// <summary>
+        /// Inserts the enumerable of Edge objects to the Graph.
+        /// <para>Connecting IVertex objects should already be present in the graph before attempting to add a connection.</para>
+        /// </summary>
+        /// <param name="edges">Collection of IEdge objects to add.</param>
+        public void AddEdges(IEnumerable<IEdge> edges)
+        {
+            foreach (var edge in edges)
+                this.AddEdge(edge);
+        }
         
         /// <summary>
         /// Removes the Edge object from the graph.
@@ -98,7 +129,7 @@ namespace numl.Data
         }
 
         /// <summary>
-        /// Gets the efferent or outbound connections from the specified IVertex object. 
+        /// Gets the efferent or outbound connections for the specified IVertex object. 
         /// </summary>
         /// <param name="v">IVertex object to return edges for.</param>
         /// <returns>IEnumerable&lt;IEdge&gt;</returns>
@@ -109,7 +140,7 @@ namespace numl.Data
         }
 
         /// <summary>
-        /// Gets the afferent or inbound connections from the specified IVertex object. 
+        /// Gets the afferent or inbound connections for the specified IVertex object. 
         /// </summary>
         /// <param name="v">IVertex object to return edges for.</param>
         /// <returns>IEnumerable&lt;IEdge&gt;</returns>
@@ -122,7 +153,7 @@ namespace numl.Data
         }
 
         /// <summary>
-        /// Gets the efferent or child vertices from the specified IVertex object. 
+        /// Gets the child vertices for the specified IVertex object. 
         /// </summary>
         /// <param name="v">IVertex object to return child vertices for.</param>
         /// <returns>IEnumerable&lt;IVertex&gt;</returns>
@@ -133,7 +164,7 @@ namespace numl.Data
         }
 
         /// <summary>
-        /// Gets the afferent or parent vertices from the specified IVertex object. 
+        /// Gets the parent vertices for the specified IVertex object. 
         /// </summary>
         /// <param name="v">IVertex object to return parent vertices for.</param>
         /// <returns>IEnumerable&lt;IVertex&gt;</returns>

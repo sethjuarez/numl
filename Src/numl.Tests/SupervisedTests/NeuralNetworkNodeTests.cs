@@ -171,7 +171,7 @@ namespace numl.Tests.SupervisedTests
 
         private Network Get_1Layer_Network()
         {
-            return Network.New.Create(4, 3, new Math.Functions.Logistic(), null, null, (l, i, j) =>
+            return Network.New().Create(4, 3, new Math.Functions.Logistic(), null, null, (l, i, j) =>
             {
                 if (l == 0) return Theta1[j - 1, i];
                 else return Theta2[j, i];
@@ -180,12 +180,38 @@ namespace numl.Tests.SupervisedTests
 
         private Network Get_2Layer_Network()
         {
-            return Network.New.Create(4, 3, new Math.Functions.Logistic(), null, null, (l, i, j) =>
+            return Network.New().Create(4, 3, new Math.Functions.Logistic(), null, null, (l, i, j) =>
             {
                 if (l == 0) return Theta1[j - 1, i];
                 else if (l == 1) return Theta2[j - 1, i];
                 else return Theta3[j, i];
             }, hiddenLayers: new int[] { 3, 3 });
+        }
+
+        [Fact]
+        public void Network_1Layer_Extract_Weights_Test()
+        {
+            var net = Get_1Layer_Network();
+
+            Matrix[] W = new Matrix[]
+            {
+                Theta1, Theta2
+            };
+
+            for (int l = 0; l < net.Layers - 1; l++)
+            {
+                var weights = net.GetWeights(l, true);
+
+                for (int i = 0; i < weights.Rows; i++)
+                    for (int j = 0; j < weights.Cols; j++)
+                        Assert.Equal(weights[i, j], W[l][i, j]);
+
+                var weightsNoBias = net.GetWeights(l, false);
+
+                for (int i = 0; i < weightsNoBias.Rows; i++)
+                    for (int j = 0; j < weightsNoBias.Cols; j++)
+                        Assert.Equal(weightsNoBias[i, j], W[l][i, j + 1]);
+            }
         }
 
         [Fact]
@@ -242,6 +268,32 @@ namespace numl.Tests.SupervisedTests
                         Almost.Equal(Delta1_1Layer_Case2[input, VectorType.Col].Sum(), net.In[input].Delta, 0.2,
                             $"Node: {net.In[input].Label}");
                 }
+            }
+        }
+
+        [Fact]
+        public void Network_2Layer_Extract_Weights_Test()
+        {
+            var net = Get_2Layer_Network();
+
+            Matrix[] W = new Matrix[]
+            {
+                Theta1, Theta2, Theta3
+            };
+
+            for (int l = 0; l < net.Layers - 1; l++)
+            {
+                var weights = net.GetWeights(l, true);
+
+                for (int i = 0; i < weights.Rows; i++)
+                    for (int j = 0; j < weights.Cols; j++)
+                        Assert.Equal(weights[i, j], W[l][i, j]);
+
+                var weightsNoBias = net.GetWeights(l, false);
+
+                for (int i = 0; i < weightsNoBias.Rows; i++)
+                    for (int j = 0; j < weightsNoBias.Cols; j++)
+                        Assert.Equal(weightsNoBias[i, j], W[l][i, j + 1]);
             }
         }
 
@@ -360,7 +412,7 @@ namespace numl.Tests.SupervisedTests
 
             Vector delta3 = new[] { 0.888659,  0.907427,  0.923305,  -0.063351 };
 
-            Network net = Network.New.Create(2, 4, new numl.Math.Functions.Logistic(), fnWeightInitializer: (l, i, j) =>
+            Network net = Network.New().Create(2, 4, new numl.Math.Functions.Logistic(), fnWeightInitializer: (l, i, j) =>
             {
                 if (l == 1)
                 {
