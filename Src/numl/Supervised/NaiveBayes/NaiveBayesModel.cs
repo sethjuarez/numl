@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
+using numl.Data;
 
 namespace numl.Supervised.NaiveBayes
 {
@@ -14,6 +15,12 @@ namespace numl.Supervised.NaiveBayes
         /// <summary>Gets or sets the root.</summary>
         /// <value>The root.</value>
         public Measure Root { get; set; }
+
+        /// <summary>
+        /// The tree decision structure
+        /// </summary>
+        public Tree Tree { get; set; }
+
         /// <summary>Predicts the given o.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
         /// <param name="y">The Vector to process.</param>
