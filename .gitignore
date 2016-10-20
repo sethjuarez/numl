@@ -3,6 +3,7 @@
 .cr/
 [Ww]orking*/
 Build/Ouput/*
+Build/Output
 Build/Tools
 runbuild.txt
 TestResults/
