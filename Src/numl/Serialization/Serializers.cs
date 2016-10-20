@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using numl.Utils;
 
 namespace numl.Serialization
 {
-    public static class Serializers
+	public static class Serializers
     {
-        private static List<ISerializer> _serializers = new List<ISerializer>();
+        private static Lazy<List<ISerializer>> _serializers = new Lazy<List<ISerializer>>(loadSerializers);
         private static Dictionary<Type, ISerializer> _mapping = new Dictionary<Type, ISerializer>();
 
         public static ISerializer GetSerializer(this Type t)
@@ -24,7 +23,6 @@ namespace numl.Serialization
                 if (HasSerializer(t)) return _mapping[t];
                 else return null;
             }
-
         }
 
         public static bool HasSerializer(this Type t)
@@ -32,11 +30,8 @@ namespace numl.Serialization
             if (_mapping.ContainsKey(t)) return true;
             else
             {
-                if (_serializers.Count() == 0)
-                    ReloadSerializers();
-
                 List<ISerializer> s = new List<ISerializer>();
-                foreach (var serializer in _serializers)
+                foreach (var serializer in _serializers.Value)
                     if (serializer.CanConvert(t))
                         s.Add(serializer);
 
@@ -57,10 +52,16 @@ namespace numl.Serialization
             }
         }
 
-        internal static void ReloadSerializers()
+		internal static void ReloadSerializers()
+		{
+			_serializers = new Lazy<List<ISerializer>>(loadSerializers);
+		}
+		
+		private static List<ISerializer> loadSerializers()
         {
-            // this will take some time....
-            foreach (var a in Ject.GetLoadedAssemblies())
+			// this will take some time....
+			var serializers = new List<ISerializer>();
+			foreach (var a in Ject.GetLoadedAssemblies())
             {
                 foreach (var type in a.GetTypes())
                 {
@@ -70,12 +71,13 @@ namespace numl.Serialization
                         if (info.IsClass && !info.IsAbstract && !info.IsInterface)
                         {
                             var s = (ISerializer)Activator.CreateInstance(type);
-                            if (!_serializers.Contains(s))
-                                _serializers.Add(s);
+							if (!serializers.Contains(s))
+                                serializers.Add(s);
                         }
                     }
                 }
             }
+			return serializers;
         }
     }
 }
