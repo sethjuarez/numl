@@ -216,36 +216,47 @@ namespace numl.Serialization
         /// <param name="value"></param>
         public void Write(object value)
         {
-            if (value == null)
-                WriteNull();
-            else
-            {
-                var type = value.GetType();
-                if (type == typeof(bool))
-                    WriteBool((bool)value);
-                else if (Ject.CanUseSimpleType(type)) // TODO: This might take some refactoring..
-                {
-                    if (value is string) WriteString((string)value);
-					else if (value is Guid) WriteString(value.ToString());
-					else WriteSimpleType(value);
-                }
-                else if (type == typeof(Vector))
-                    WriteVector((Vector)value);
-                else if (type == typeof(Matrix))
-                    WriteMatrix((Matrix)value);
-                else if (type.HasSerializer())
-                {
-                    var serializer = type.GetSerializer();
-                    serializer.PreWrite(this);
-                    serializer.Write(this, value);
-                    serializer.PostWrite(this);
-                }
-                else if (value is IEnumerable)
-                    WriteArray(value as IEnumerable);
-                else
-                    WriteObject(value);
-            }
+			var action = determineWriteAction(value, value?.GetType());
+			action.Invoke();
         }
+
+		private Action determineWriteAction(object value, Type type)
+		{
+			if (value == null)
+				return WriteNull;
+
+			if (type == typeof(bool))
+				return new Action(() => WriteBool((bool)value));
+
+			if (value is string)
+				return new Action(() => WriteString((string)value));
+
+			if (value is Guid)
+				return new Action(() => WriteString(value.ToString()));
+
+			if (Ject.CanUseSimpleType(type))
+				return new Action(() => WriteSimpleType(value));
+
+			if (type == typeof(Vector))
+				return new Action(() => WriteVector((Vector)value));
+
+			if (type == typeof(Matrix))
+				return new Action(() => WriteMatrix((Matrix)value));
+
+			if (type.HasSerializer())
+				return new Action(() =>
+				{
+					var serializer = type.GetSerializer();
+					serializer.PreWrite(this);
+					serializer.Write(this, value);
+					serializer.PostWrite(this);
+				});
+
+			if (value is IEnumerable)
+				return new Action(() => WriteArray(value as IEnumerable));
+
+			return new Action(() => WriteObject(value));
+		}
 
         /// <summary>
         /// Disposes the current JSON writer object.
