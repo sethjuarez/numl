@@ -132,39 +132,28 @@ namespace numl.Math.LinearAlgebra
         {
             get
             {
-                var rows = Rows;
-                var columns = Cols;
-                // switch it up if using a transposed version
-                if (_asTransposeRef)
-                {
-                    t = t == VectorType.Row ? VectorType.Col : VectorType.Row;
-                    rows = Cols;
-                    columns = Rows;
-                }
-
+                var dim = t == VectorType.Row ? Rows : Cols;
+                if (i >= dim || i < 0)
+                    throw new IndexOutOfRangeException();
 
                 if (t == VectorType.Row)
                 {
-                    if (i >= rows)
-                        throw new IndexOutOfRangeException();
-                    if (!_asTransposeRef)
-                        return new Vector(_matrix[i].ToArray());
+                    if (_asTransposeRef)
+                        return new Vector(_matrix, i);
                     else
-                        return new Vector(_matrix, i, true);
+                        return new Vector(_matrix[i].ToArray());
                 }
                 else
                 {
-                    if (i >= columns)
-                        throw new IndexOutOfRangeException();
-                    if (!_asTransposeRef)
+                    if (_asTransposeRef)
+                        return new Vector(_matrix, i, true);
+                    else
                     {
-                        double[] cols = new double[rows];
-                        for (int j = 0; j < rows; j++) cols[j] = _matrix[j][i];
+                        double[] cols = new double[Rows];
+                        for (int j = 0; j < Rows; j++) cols[j] = _matrix[j][i];
 
                         return new Vector(cols);
-                    }
-                    else
-                        return new Vector(_matrix, i);
+                    };
                 }
             }
             set
@@ -172,26 +161,22 @@ namespace numl.Math.LinearAlgebra
                 if (_asTransposeRef)
                     throw new InvalidOperationException("Cannot modify matrix in read-only transpose mode!");
 
+                var dim1 = t == VectorType.Row ? Rows : Cols;
+                var dim2 = t == VectorType.Row ? Cols : Rows;
+
+                if (i >= dim1 || i < 0)
+                    throw new IndexOutOfRangeException();
+
+                if (value.Length > dim2)
+                    throw new InvalidOperationException(string.Format("Vector has lenght larger then {0}", dim2));
+
                 if (t == VectorType.Row)
                 {
-                    if (i >= Rows)
-                        throw new IndexOutOfRangeException();
-
-                    if (value.Length > Cols)
-                        throw new InvalidOperationException(string.Format("Vector has lenght larger then {0}", Cols));
-
                     for (int k = 0; k < Cols; k++)
                         _matrix[i][k] = value[k];
                 }
                 else
                 {
-                    if (i >= Cols)
-                        throw new IndexOutOfRangeException();
-
-                    if (value.Length > Rows)
-                        throw new InvalidOperationException(string.Format("Vector has lenght larger then {0}", Cols));
-
-
                     for (int k = 0; k < Rows; k++)
                         _matrix[k][i] = value[k];
                 }
