@@ -19,12 +19,12 @@ namespace numl.Math.LinearAlgebra
         /// <returns>A Matrix.</returns>
         public static Matrix Each(Matrix m, Func<double, double> fnElementWiseOp)
         {
-            var copy = m.Copy();
+            var copy = m.ToArray();
             for (int i = 0; i < m.Rows; i++)
             {
                 for (int j = 0; j < m.Cols; j++)
                 {
-                    copy[i, j] = fnElementWiseOp(copy[i, j]);
+                    copy[i][j] = fnElementWiseOp(copy[i][j]);
                 }
             }
             return copy;
@@ -38,12 +38,12 @@ namespace numl.Math.LinearAlgebra
         /// <returns>A Matrix.</returns>
         public static Matrix Each(Matrix m, Func<double, int, int, double> fnElementWiseOp)
         {
-            var copy = m.Copy();
+            var copy = m.ToArray();
             for (int i = 0; i < m.Rows; i++)
             {
                 for (int j = 0; j < m.Cols; j++)
                 {
-                    copy[i, j] = fnElementWiseOp(copy[i, j], i, j);
+                    copy[i][j] = fnElementWiseOp(copy[i][j], i, j);
                 }
             }
             return copy;
@@ -63,12 +63,12 @@ namespace numl.Math.LinearAlgebra
             if (m1.Cols != m2.Cols)
                 throw new InvalidOperationException("The column dimensions do not match");
 
-            var copy = m1.Copy();
+            var copy = m1.ToArray();
             for (int i = 0; i < m1.Rows; i++)
             {
                 for (int j = 0; j < m1.Cols; j++)
                 {
-                    copy[i, j] = fnElementWiseOp(m1[i, j], m2[i, j]);
+                    copy[i][j] = fnElementWiseOp(m1[i, j], m2[i, j]);
                 }
             }
             return copy;
