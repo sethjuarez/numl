@@ -15,18 +15,18 @@ namespace numl.Tests.MathTests
     public class MatrixTests
     {
         private Matrix _test = new[,]
-            {{ 1, 2, 3},
-             { 4, 5, 6},
-             { 7, 8, 9}};
+            {{ 1, 2, 3, 4},
+             { 4, 5, 6, 7},
+             { 7, 8, 9, 10}};
 
         [Fact]
         public void Test_Matrix_Vector_Enumeration_Row()
         {
             Vector[] a = new Vector[]
             {
-                new[] { 1, 2, 3 },
-                new[] { 4, 5, 6 },
-                new[] { 7, 8, 9 },
+                new[] { 1, 2, 3, 4 },
+                new[] { 4, 5, 6, 7 },
+                new[] { 7, 8, 9, 10},
             };
 
             for (int i = 0; i < 3; i++)
@@ -41,9 +41,10 @@ namespace numl.Tests.MathTests
                 new[] { 1, 4, 7 },
                 new[] { 2, 5, 8 },
                 new[] { 3, 6, 9 },
+                new[] { 4, 7, 10}
             };
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 4; i++)
                 Assert.True(a[i] == _test[i, VectorType.Col]);
         }
 
@@ -55,9 +56,10 @@ namespace numl.Tests.MathTests
                 new[] { 1, 4, 7 },
                 new[] { 2, 5, 8 },
                 new[] { 3, 6, 9 },
+                new[] { 4, 7, 10}
             };
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 4; i++)
                 Assert.True(a[i] == _test.T[i, VectorType.Row]);
         }
 
@@ -66,9 +68,9 @@ namespace numl.Tests.MathTests
         {
             Vector[] a = new Vector[]
             {
-                new[] { 1, 2, 3 },
-                new[] { 4, 5, 6 },
-                new[] { 7, 8, 9 },
+                new[] { 1, 2, 3, 4 },
+                new[] { 4, 5, 6, 7 },
+                new[] { 7, 8, 9, 10 },
             };
 
             for (int i = 0; i < 3; i++)
@@ -102,14 +104,14 @@ namespace numl.Tests.MathTests
         public void Matrix_Equal_Test()
         {
             Matrix one = new[,]
-                {{1, 2, 3},
-                 {4, 5, 6},
-                 {7, 8, 9}};
+                {{1, 2, 3, 4},
+                 {4, 5, 6, 7},
+                 {7, 8, 9, 10}};
 
             Matrix two = new[,]
-                {{1, 2, 3},
-                 {4, 5, 6},
-                 {7, 8, 9}};
+                {{1, 2, 3, 4},
+                 {4, 5, 6, 7},
+                 {7, 8, 9, 10}};
 
             Assert.Equal(true, one.Equals(two));
             Assert.Equal(true, one == two);
@@ -119,14 +121,14 @@ namespace numl.Tests.MathTests
         public void Matrix_Not_Equal_Test()
         {
             Matrix one = new[,]
-                {{1, 2, 3},
-                 {4, 5, 6},
-                 {7, 8, 10}};
+                {{1, 2, 3, 4},
+                 {4, 5, 6, 7},
+                 {7, 8, 10, 9}};
 
             Matrix two = new[,]
-                {{1, 2, 3},
-                 {4, 5, 6},
-                 {7, 8, 9}};
+                {{1, 2, 3, 4},
+                 {4, 5, 6, 7},
+                 {7, 8, 9, 10}};
 
             Assert.Equal(false, one.Equals(two));
             Assert.Equal(false, one == two);
@@ -251,6 +253,16 @@ namespace numl.Tests.MathTests
             Assert.Equal(14.5, one[1, 1]);
         }
 
+        public void Matrix_Assign_Value_Transpose_Test()
+        {
+            Matrix one = new[,]
+                {{1, 2, 3},
+                 {4, 5, 6},
+                 {7, 8, 9}};
+
+            Assert.Throws<InvalidOperationException>(() => one[1, 1] = 14.5);
+        }
+
         [Fact]
         public void Matrix_Assign_Value_Bad_Index_Test()
         {
@@ -260,6 +272,29 @@ namespace numl.Tests.MathTests
                  {7, 8, 9}};
 
             Assert.Throws<IndexOutOfRangeException>(() => one[5, 5] = 14.5);
+        }
+
+        [Fact]
+        public void Matrix_Read_Value_Test()
+        {
+            Matrix one = new[,]
+                {{1, 2, 3, 4},
+                 {4, 5, 6, 7},
+                 {7, 8, 9, 10}};
+
+            Assert.Equal(8, one[2, 1]);
+        }
+
+        [Fact]
+        public void Matrix_Read_Value_Transpose_Test()
+        {
+            Matrix one = new[,]
+                {{1, 2, 3, 4},
+                 {4, 5, 6, 7},
+                 {7, 8, 9, 10}};
+
+            Assert.Equal(one[1, 2], one.T[2, 1]);
+            Assert.Equal(6, one.T[2, 1]);
         }
 
         [Fact]

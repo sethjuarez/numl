@@ -132,14 +132,20 @@ namespace numl.Math.LinearAlgebra
         {
             get
             {
+                var rows = Rows;
+                var columns = Cols;
                 // switch it up if using a transposed version
                 if (_asTransposeRef)
+                {
                     t = t == VectorType.Row ? VectorType.Col : VectorType.Row;
+                    rows = Cols;
+                    columns = Rows;
+                }
 
 
                 if (t == VectorType.Row)
                 {
-                    if (i >= Rows)
+                    if (i >= rows)
                         throw new IndexOutOfRangeException();
                     if (!_asTransposeRef)
                         return new Vector(_matrix[i].ToArray());
@@ -148,12 +154,12 @@ namespace numl.Math.LinearAlgebra
                 }
                 else
                 {
-                    if (i >= Cols)
+                    if (i >= columns)
                         throw new IndexOutOfRangeException();
                     if (!_asTransposeRef)
                     {
-                        double[] cols = new double[Rows];
-                        for (int j = 0; j < Rows; j++) cols[j] = _matrix[j][i];
+                        double[] cols = new double[rows];
+                        for (int j = 0; j < rows; j++) cols[j] = _matrix[j][i];
 
                         return new Vector(cols);
                     }
@@ -427,9 +433,28 @@ namespace numl.Math.LinearAlgebra
         /// Performs a deep copy of the underlying matrix and returns a 2D array.
         /// </summary>
         /// <returns></returns>
-        public double[][] ToArray()
+        private double[][] ToArray()
         {
+            //if (_asTransposeRef)
+            //{
+            //    return ToTransposeArray();
+            //}
+                
             return _matrix.Select(s => s.ToArray()).ToArray();
+        }
+
+        private double [][] ToTransposeArray()
+        {
+            var matrix = new double[Rows][];
+            for (var i = 0; i < Rows; i++)
+            {
+                matrix[i] = new double[Cols];
+                for (var j = 0; j < Cols; j++)
+                {
+                    matrix[i][j] = _matrix[j][i];
+                }
+            }
+            return matrix;
         }
 
         /// <summary>Returns a string that represents the current object.</summary>
@@ -700,8 +725,8 @@ namespace numl.Math.LinearAlgebra
             if (t == VectorType.Col && v.Length != Rows) throw new ArgumentException("Column vector does not match matrix height");
             if (t == VectorType.Row && v.Length != Cols) throw new ArgumentException("Row vector does not match matrix width");
 
-            if (t == VectorType.Col && (index >= Cols || index < 0)) throw new ArgumentException("Column index does not match matrix width");
-            if (t == VectorType.Row && (index >= Rows || index < 0)) throw new ArgumentException("Row index does not match matrix height");
+            if (t == VectorType.Col && (index >= Cols || index < 0) && (index != -1 || !insertAfter)) throw new ArgumentException("Column index does not match matrix width");
+            if (t == VectorType.Row && (index >= Rows || index < 0) && (index != -1 || !insertAfter)) throw new ArgumentException("Row index does not match matrix height");
 
             var temp = ToArray().ToList();
             if ((t == VectorType.Row && !_asTransposeRef) || (t == VectorType.Col && _asTransposeRef))
