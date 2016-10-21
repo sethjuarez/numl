@@ -919,5 +919,84 @@ namespace numl.Tests.MathTests
             Assert.Equal(v[2], indices[2]);
             Assert.Equal(v[3], indices[3]);
         }
+
+        [Theory]
+        [InlineData(0, false, VectorType.Row, false)]
+        [InlineData(1, false, VectorType.Row, false)]
+        [InlineData(2, false, VectorType.Row, false)]
+        [InlineData(0, true, VectorType.Row, false)]
+        [InlineData(1, true, VectorType.Row, false)]
+        [InlineData(2, true, VectorType.Row, false)]
+        [InlineData(0, false, VectorType.Col, false)]
+        [InlineData(1, false, VectorType.Col, false)]
+        [InlineData(2, false, VectorType.Col, false)]
+        [InlineData(3, false, VectorType.Col, false)]
+        [InlineData(0, true, VectorType.Col, false)]
+        [InlineData(1, true, VectorType.Col, false)]
+        [InlineData(2, true, VectorType.Col, false)]
+        [InlineData(3, true, VectorType.Col, false)]
+        [InlineData(0, false, VectorType.Row, true)]
+        [InlineData(1, false, VectorType.Row, true)]
+        [InlineData(2, false, VectorType.Row, true)]
+        [InlineData(3, false, VectorType.Row, true)]
+        [InlineData(0, true, VectorType.Row, true)]
+        [InlineData(1, true, VectorType.Row, true)]
+        [InlineData(2, true, VectorType.Row, true)]
+        [InlineData(3, true, VectorType.Row, true)]
+        [InlineData(0, false, VectorType.Col, true)]
+        [InlineData(1, false, VectorType.Col, true)]
+        [InlineData(2, false, VectorType.Col, true)]
+        [InlineData(0, true, VectorType.Col, true)]
+        [InlineData(1, true, VectorType.Col, true)]
+        [InlineData(2, true, VectorType.Col, true)]
+        public void Matrix_Insert_Test(int index, bool insertAfter, VectorType vectorType, bool isTransposed)
+        {
+            Vector v = (vectorType == VectorType.Row) ^ isTransposed ?
+                            new double[] { 1, 3, 2, 0 } :
+                            new double[] { 2, 1, 0 };
+
+            Matrix A = new[,]
+            {
+                { 4, 1, 3, 2 },
+                { 1, 2, 3, 4 },
+                { 7, 9, 8, 6 }
+            };
+
+            if (isTransposed)
+                A = A.T;
+
+            var rows = A.Rows;
+            var columns = A.Cols;
+
+            var B = A.Insert(v, index, vectorType, insertAfter);
+
+            Assert.Equal(A.Rows, rows);
+            Assert.Equal(A.Cols, columns);
+
+            if (vectorType == VectorType.Row)
+            {
+                Assert.Equal(B.Rows, rows + 1);
+                Assert.Equal(B.Cols, columns);
+            }
+            else
+            {
+                Assert.Equal(B.Rows, rows);
+                Assert.Equal(B.Cols, columns + 1);
+            }
+
+            var dimension = vectorType == VectorType.Row ? rows : columns;
+
+            for (var i = 0; i < dimension + 1; i++)
+            {
+                if (index == dimension - 1 && insertAfter)
+                    Assert.Equal(v, B[dimension, vectorType]);
+                else if (i == index)
+                    Assert.Equal(v, B[i, vectorType]);
+                else if(i < index)
+                    Assert.Equal(A[i, vectorType], B[i, vectorType]);
+                else
+                    Assert.Equal(A[i - 1, vectorType], B[i, vectorType]);
+            }
+        }
     }
 }
