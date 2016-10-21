@@ -420,14 +420,18 @@ namespace numl.Math.LinearAlgebra
         /// <returns></returns>
         private double[][] ToArray()
         {
-            //if (_asTransposeRef)
-            //{
-            //    return ToTransposeArray();
-            //}
-                
+            if (_asTransposeRef)
+            {
+                return ToTransposeArray();
+            }
+
             return _matrix.Select(s => s.ToArray()).ToArray();
         }
 
+        /// <summary>
+        /// Performs a deep copy of the underlying matrix, transpose it and returns a 2D array.
+        /// </summary>
+        /// <returns></returns>
         private double [][] ToTransposeArray()
         {
             var matrix = new double[Rows][];
@@ -714,7 +718,7 @@ namespace numl.Math.LinearAlgebra
             if (t == VectorType.Row && (index >= Rows || index < 0) && (index != -1 || !insertAfter)) throw new ArgumentException("Row index does not match matrix height");
 
             var temp = ToArray().ToList();
-            if ((t == VectorType.Row && !_asTransposeRef) || (t == VectorType.Col && _asTransposeRef))
+            if (t == VectorType.Row)
             {
                 if (index == temp.Count - 1 && insertAfter)
                 {
@@ -747,8 +751,7 @@ namespace numl.Math.LinearAlgebra
                 }
             }
 
-            var result = new Matrix(temp.ToArray());
-            return _asTransposeRef ? result.T : result;
+            return new Matrix(temp.ToArray());
         }
 
         /// <summary>Removes this object.</summary>
