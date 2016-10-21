@@ -8,7 +8,6 @@ using System.Linq;
 using System.Globalization;
 using numl.Math.Probability;
 using System.Collections.Generic;
-using numl.Utils;
 using numl.Serialization;
 
 namespace numl.Math.LinearAlgebra
@@ -283,10 +282,15 @@ namespace numl.Math.LinearAlgebra
         /// <returns>The matrix.</returns>
         public Matrix GetMatrix(int d1, int d2, int n1, int n2)
         {
-            Matrix m = Zeros(n2 - n1 + 1, d2 - d1 + 1);
-            for (int i = 0; i < m.Rows; i++)
-                for (int j = 0; j < m.Cols; j++)
-                    m[i, j] = this[i + n1, j + d1];
+            var rows = n2 - n1 + 1;
+            var cols = d2 - d1 + 1;
+            var m = new double[rows][];
+            for (int i = 0; i < rows; i++)
+            {
+                m[i] = new double[cols];
+                for (int j = 0; j < cols; j++)
+                    m[i][j] = this[i + n1, j + d1];
+            }
             return m;
         }
         /// <summary>Gets the rows in this collection.</summary>
