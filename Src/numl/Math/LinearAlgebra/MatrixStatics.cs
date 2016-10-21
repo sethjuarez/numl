@@ -4,7 +4,6 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace numl.Math.LinearAlgebra
 {
@@ -180,8 +179,8 @@ namespace numl.Math.LinearAlgebra
             Matrix P = Pivot(A);
             Matrix M = P * A;
 
-            Matrix L = Matrix.Identity(n);
-            Matrix U = Matrix.Zeros(n);
+            Matrix L = Identity(n);
+            Matrix U = Zeros(n);
 
             for (int j = 0; j < n; j++)
             {
@@ -220,7 +219,7 @@ namespace numl.Math.LinearAlgebra
                 throw new InvalidOperationException("Factorization requires a symmetric positive semidefinite matrix!");
 
             var m = M.Rows;
-            var P = Matrix.Identity(m);
+            var P = Identity(m);
             Tuple<int, double> row = new Tuple<int, double>(0, 0);
             for (int j = 0; j < m; j++)
             {
@@ -287,7 +286,7 @@ namespace numl.Math.LinearAlgebra
         public static Tuple<Matrix, Matrix> QR(Matrix A)
         {
             int n = A.Rows;
-            Matrix R = Matrix.Zeros(n);
+            Matrix R = Zeros(n);
             Matrix Q = A.Copy();
             for (int k = 0; k < n; k++)
             {
@@ -538,7 +537,7 @@ namespace numl.Math.LinearAlgebra
         /// </returns>
         public static IEnumerable<int> Indices(Matrix source, Func<Vector, bool> f)
         {
-            return Matrix.Indices(source, f, VectorType.Row);
+            return Indices(source, f, VectorType.Row);
         }
         /// <summary>Enumerates indices in this collection.</summary>
         /// <param name="source">Source for the.</param>
@@ -566,7 +565,7 @@ namespace numl.Math.LinearAlgebra
         public static Matrix Sort(Matrix source, Func<Vector, double> keySelector, VectorType t, bool ascending = true)
         {
             Vector v;
-            return Matrix.Sort(source, keySelector, t, ascending, out v);
+            return Sort(source, keySelector, t, ascending, out v);
         }
         /// <summary>
         /// Sorts the given Matrix by the specified row or column selector and returns the new Matrix
@@ -616,7 +615,7 @@ namespace numl.Math.LinearAlgebra
             int n = type == VectorType.Row ? vectors.Length : vectors[0].Length;
             int d = type == VectorType.Row ? vectors[0].Length : vectors.Length;
 
-            Matrix m = Matrix.Zeros(n, d);
+            Matrix m = Zeros(n, d);
             for (int i = 0; i < vectors.Length; i++)
                 m[i, type] = vectors[i];
 
@@ -634,7 +633,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>A Matrix.</returns>
         public static Matrix VStack(params Vector[] vectors)
         {
-            return Matrix.Stack(VectorType.Col, vectors);
+            return Stack(VectorType.Col, vectors);
         }
         /// <summary>Stack a set of vectors into a matrix.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
@@ -735,7 +734,7 @@ namespace numl.Math.LinearAlgebra
         {
             int x = (dimensionType == VectorType.Row ? dimension : v.Length / dimension);
             int y = (dimensionType == VectorType.Col ? dimension : v.Length / dimension);
-            return Matrix.Reshape(v, x, y, byVector);
+            return Reshape(v, x, y, byVector);
         }
         /// <summary>
         /// Reshapes the supplied Vector into a Matrix form.
@@ -805,7 +804,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>A Matrix.</returns>
         public static Matrix Extract(Matrix m, int x, int y, int width, int height, bool safe = true)
         {
-            Matrix m2 = Matrix.Zeros(height, width);
+            Matrix m2 = Zeros(height, width);
             for (int i = y; i < y + height; i++)
                 for (int j = x; j < x + width; j++)
                     if (safe && i < m.Rows && j < m.Cols)
@@ -875,7 +874,7 @@ namespace numl.Math.LinearAlgebra
                 //       product of its diagonals
                 // also: det(AB) = det(A) * det(B)
                 // that's how we come up with this crazy thing
-                var qr = Matrix.QR(x);
+                var qr = QR(x);
                 return qr.Item1.Diag().Prod() * qr.Item2.Diag().Prod();
                 
             }
