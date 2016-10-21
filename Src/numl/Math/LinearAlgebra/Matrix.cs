@@ -342,22 +342,13 @@ namespace numl.Math.LinearAlgebra
         /// <returns>Matrix.</returns>
         public Matrix Transpose()
         {
-            var m = new Matrix(Cols, Rows);
-            for (int i = 0; i < Rows; i++)
-                for (int j = 0; j < Cols; j++)
-                    m[j, i] = this[i, j];
-            return m;
+            return ToTransposeArray();
         }
         /// <summary>create deep copy of matrix.</summary>
         /// <returns>Matrix.</returns>
         public Matrix Copy()
         {
-            var m = Zeros(Rows, Cols);
-            for (int i = 0; i < Rows; i++)
-                for (int j = 0; j < Cols; j++)
-                    m[i, j] = this[i, j];
-            return m;
-
+            return ToArray();
         }
         /// <summary>Serves as a hash function for a particular type.</summary>
         /// <returns>A hash code for the current <see cref="T:System.Object" />.</returns>
@@ -434,11 +425,13 @@ namespace numl.Math.LinearAlgebra
         /// <returns></returns>
         private double [][] ToTransposeArray()
         {
-            var matrix = new double[Rows][];
-            for (var i = 0; i < Rows; i++)
+            int rows = _asTransposeRef ? Rows : Cols;
+            int cols = _asTransposeRef ? Cols : Rows;
+            var matrix = new double[rows][];
+            for (var i = 0; i < rows; i++)
             {
-                matrix[i] = new double[Cols];
-                for (var j = 0; j < Cols; j++)
+                matrix[i] = new double[cols];
+                for (var j = 0; j < cols; j++)
                 {
                     matrix[i][j] = _matrix[j][i];
                 }
