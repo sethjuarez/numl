@@ -112,27 +112,13 @@ namespace numl.Utils
         /// <returns>An array of double.</returns>
         public static double[] GetWordCount(string item, StringProperty property)
         {
-            double[] counts = new double[property.Dictionary.Length];
-            var d = new Dictionary<string, int>();
+			// get list of words (or chars) from source
+			IEnumerable<string> words = property.SplitType == StringSplitType.Character ?
+												 GetChars(item) :
+												 GetWords(item, property.Separator);
 
-            for (int i = 0; i < counts.Length; i++)
-            {
-                counts[i] = 0;
-                // for quick index lookup
-                d.Add(property.Dictionary[i], i);
-            }
-
-            // get list of words (or chars) from source
-            IEnumerable<string> words = property.SplitType == StringSplitType.Character ?
-                                                 GetChars(item) :
-                                                 GetWords(item, property.Separator);
-
-            // TODO: this is not too efficient. Perhaps reconsider how to do this
-            foreach (var s in words)
-                if (property.Dictionary.Contains(s))
-                    counts[d[s]]++;
-
-            return counts;
+			var groupedWords = words.ToLookup(w => w);
+			return property.Dictionary.Select(d => (double)groupedWords[d].Count()).ToArray();
         }
         /// <summary>Gets word position.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
@@ -142,16 +128,14 @@ namespace numl.Utils
         /// <returns>The word position.</returns>
         public static int GetWordPosition(string item, string[] dictionary, bool checkNumber = true)
         {
-            //string[] dictionary = property.Dictionary;
             if (dictionary == null || dictionary.Length == 0)
                 throw new InvalidOperationException("Cannot get word position with an empty dictionary");
 
             item = Sanitize(item, checkNumber);
-
-            // is this the smartest thing?
-            for (int i = 0; i < dictionary.Length; i++)
-                if (dictionary[i] == item)
-                    return i;
+			
+			var index = Array.IndexOf<string>(dictionary, item);
+			if (index > -1)
+				return index;
 
             throw new InvalidOperationException(
                 string.Format("\"{0}\" does not exist in the property dictionary", item));
