@@ -1,11 +1,17 @@
 {
-  "metadata" : [
+  "metadata": [
     {
       "src": [
         {
-          "files": [ "project.json" ],
-          "exclude": [ "**/bin/**", "**/obj/**" ],
-          "cwd" : "../.."
+          "files": [
+            "project.json"
+          ],
+          "exclude": [
+            "**/obj/**",
+            "**/bin/**",
+            "_site/**"
+          ],
+          "cwd" : "../Src/numl"
         }
       ],
       "dest": "api"
@@ -13,10 +19,23 @@
   ],
   "build": {
     "content": [
-        {
-          "files": ["api/**/*.yml"]
-        },
-        {
+      {
+        "files": [
+          "api/**.yml",
+          "api/index.md"
+        ]
+      },
+      {
+        "files": [
+          "toc.yml",
+          "*.md"
+        ],
+        "exclude": [
+          "obj/**",
+          "_site/**"
+        ]
+      },
+      {
           "files": [
             "getting-started/*.md",
             "about/*.md",
@@ -41,14 +60,32 @@
         "files": [
           "images/**",
           "data/**"
+        ],
+        "exclude": [
+          "obj/**",
+          "_site/**"
         ]
       }
     ],
-    "externalReference": [],
-    "globalMetadata" : {
-        "_appTitle": "numl"
-    },
+    "overwrite": [
+      {
+        "files": [
+          "apidoc/**.md"
+        ],
+        "exclude": [
+          "obj/**",
+          "_site/**"
+        ]
+      }
+    ],
     "dest": "_site",
-    "template": [ "default", "template"]
+    "globalMetadataFiles": [ "version.json" ],
+    "fileMetadataFiles": [],
+    "template": [
+      "default",
+      "numl"
+    ],
+    "postProcessors": [],
+    "noLangKeyword": false
   }
 }

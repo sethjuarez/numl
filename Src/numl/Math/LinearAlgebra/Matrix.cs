@@ -56,10 +56,7 @@ namespace numl.Math.LinearAlgebra
             for (int i = 0; i < n; i++)
             {
                 _matrix[i] = new double[d];
-                for (int j = 0; j < d; j++)
-                    _matrix[i][j] = 0;
             }
-
         }
         /// <summary>Create new matrix with prepopulated vals.</summary>
         /// <param name="m">initial matrix.</param>
@@ -295,7 +292,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>The matrix.</returns>
         public Matrix GetMatrix(int d1, int d2, int n1, int n2)
         {
-            Matrix m = Matrix.Zeros(n2 - n1 + 1, d2 - d1 + 1);
+            Matrix m = Zeros(n2 - n1 + 1, d2 - d1 + 1);
             for (int i = 0; i < m.Rows; i++)
                 for (int j = 0; j < m.Cols; j++)
                     m[i, j] = this[i + n1, j + d1];
@@ -364,7 +361,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>Matrix.</returns>
         public Matrix Copy()
         {
-            var m = Matrix.Zeros(Rows, Cols);
+            var m = Zeros(Rows, Cols);
             for (int i = 0; i < Rows; i++)
                 for (int j = 0; j < Cols; j++)
                     m[i, j] = this[i, j];
@@ -432,7 +429,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns></returns>
         public double[][] ToArray()
         {
-            return this._matrix.Select(s => s.ToArray()).ToArray();
+            return _matrix.Select(s => s.ToArray()).ToArray();
         }
 
         /// <summary>Returns a string that represents the current object.</summary>
@@ -535,7 +532,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>n x d Matrix.</returns>
         public static Matrix Rand(int n, double min = 0)
         {
-            return Matrix.Rand(n, n, min);
+            return Rand(n, n, min);
         }
         /// <summary>Normalise random.</summary>
         /// <param name="n">Size.</param>
@@ -560,7 +557,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>A Matrix.</returns>
         public static Matrix NormRand(int n, double min = 0)
         {
-            return Matrix.NormRand(n, n, min);
+            return NormRand(n, n, min);
         }
         /// <summary>Normalise random.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
@@ -700,11 +697,14 @@ namespace numl.Math.LinearAlgebra
         /// <returns></returns>
         public Matrix Insert(Vector v, int index, VectorType t, bool insertAfter = true)
         {
-            if (t == VectorType.Col && v.Length != this.Rows) throw new ArgumentException("Column vector does not match matrix height");
-            if (t == VectorType.Row && v.Length != this.Cols) throw new ArgumentException("Row vector does not match matrix width");
+            if (t == VectorType.Col && v.Length != Rows) throw new ArgumentException("Column vector does not match matrix height");
+            if (t == VectorType.Row && v.Length != Cols) throw new ArgumentException("Row vector does not match matrix width");
 
-            var temp = this.ToArray().ToList();
-            if (t == VectorType.Row)
+            if (t == VectorType.Col && (index >= Cols || index < 0)) throw new ArgumentException("Column index does not match matrix width");
+            if (t == VectorType.Row && (index >= Rows || index < 0)) throw new ArgumentException("Row index does not match matrix height");
+
+            var temp = ToArray().ToList();
+            if ((t == VectorType.Row && !_asTransposeRef) || (t == VectorType.Col && _asTransposeRef))
             {
                 if (index == temp.Count - 1 && insertAfter)
                 {
@@ -737,7 +737,8 @@ namespace numl.Math.LinearAlgebra
                 }
             }
 
-            return new Matrix(temp.ToArray());
+            var result = new Matrix(temp.ToArray());
+            return _asTransposeRef ? result.T : result;
         }
 
         /// <summary>Removes this object.</summary>

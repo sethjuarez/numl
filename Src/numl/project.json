@@ -1,5 +1,5 @@
-{
-  "version": "0.9.9-beta",
+﻿{
+  "version": "0.9.12-beta",
   "title": "numl",
   "description": "numl is a machine learning library intended to ease the use of using standard modeling techniques for both prediction and clustering",
   "authors": [
@@ -25,7 +25,7 @@
     "NETStandard.Library": "1.6.0"
   },
   "frameworks": {
-    "netstandard1.6": {
+    "netstandard1.3": {
       "imports": "dnxcore50",
       "dependencies": {
         "System.Collections": "4.0.11",

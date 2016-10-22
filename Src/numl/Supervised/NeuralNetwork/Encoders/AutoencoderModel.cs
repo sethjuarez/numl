@@ -25,13 +25,11 @@ namespace numl.Supervised.NeuralNetwork.Encoders
         public IFunction OutputFunction { get; set; }
 
         /// <summary>Predicts the given o.</summary>
-        /// <param name="y">The Vector to process.</param>
+        /// <param name="x">The Vector to process.</param>
         /// <returns>An object.</returns>
-        public override double Predict(Vector y)
+        public override double Predict(Vector x)
         {
-            this.Network.Forward(y);
-
-            Vector output = Network.Out.Select(n => n.Output).ToVector();
+            Vector output = this.PredictSequence(x);
 
             return (this.OutputFunction != null ? this.OutputFunction.Minimize(output) : output.Sum());
         }
@@ -43,11 +41,13 @@ namespace numl.Supervised.NeuralNetwork.Encoders
         /// <returns></returns>
         public Vector PredictSequence(Vector x)
         {
+            this.Preprocess(x);
+
             this.Network.Forward(x);
 
-            return (this.OutputFunction != null ? 
-                            this.OutputFunction.Compute(Network.Out.Select(n => n.Output).ToVector())
-                            : Network.Out.Select(n => n.Output).ToVector());
+            Vector output = Network.Out.Select(n => n.Output).ToVector();
+
+            return (this.OutputFunction != null ? this.OutputFunction.Compute(output) : output);
         }
     }
 }

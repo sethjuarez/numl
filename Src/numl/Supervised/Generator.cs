@@ -29,7 +29,12 @@ namespace numl.Supervised
         /// <summary>Gets or sets the descriptor.</summary>
         /// <value>The descriptor.</value>
         public Descriptor Descriptor { get; set; }
-        
+
+        /// <summary>
+        /// If <c>True</c>, examples will keep their original ordering from the set.
+        /// </summary>
+        public bool PreserveOrder { get; set; }
+
         /// <summary>
         /// Gets or sets whether to perform feature normalisation using the specified Feature Normalizer.
         /// </summary>
@@ -57,9 +62,8 @@ namespace numl.Supervised
         /// Override to perform custom pre-processing steps on the raw Matrix data.
         /// </summary>
         /// <param name="X">Matrix of examples.</param>
-        /// <param name="y">Vector of values.</param>
         /// <returns></returns>
-        public virtual void Preprocess(Matrix X, Vector y)
+        public virtual void Preprocess(Matrix X)
         {
             this.FeatureProperties = new numl.Math.Summary()
             {

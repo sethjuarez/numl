@@ -50,7 +50,7 @@ namespace numl.Math.Discretization
                 if (States[idx] >= 2.0)
                     this.Ranges[idx] = rows[idx, VectorType.Col].Segment((int) States[idx]);
                 else
-                    this.Ranges[idx] = new Range[] { Range.Make(summary.Minimum[idx], summary.Maximum[idx]) };
+                    this.Ranges[idx] = new Range[] { new Range(summary.Minimum[idx], summary.Maximum[idx]) };
             }
         }
 

@@ -10,7 +10,7 @@ namespace numl.Supervised
     /// <summary>
     /// Implements a Sequence model.
     /// </summary>
-    public interface ISequenceModel
+    public interface ISequenceModel : IModel
     {
         /// <summary>
         /// Predicts the given example.

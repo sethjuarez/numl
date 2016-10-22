@@ -3,6 +3,7 @@
 .cr/
 [Ww]orking*/
 Build/Ouput/*
+Build/Output
 Build/Tools
 runbuild.txt
 TestResults/
@@ -25,3 +26,7 @@ Docs/api/.manifest
 Docs/api/*.yml
 .vscode/
 *.GhostDoc.xml
+.vs/*
+*.lock.*
+.DS_Store
+

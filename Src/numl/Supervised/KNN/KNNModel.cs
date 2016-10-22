@@ -25,6 +25,8 @@ namespace numl.Supervised.KNN
         /// <returns>An object.</returns>
         public override double Predict(Vector y)
         {
+            this.Preprocess(y);
+
             Tuple<int, double>[] distances = new Tuple<int, double>[X.Rows];
 
             // happens per slot so we are good to parallelize

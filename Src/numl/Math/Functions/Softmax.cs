@@ -12,6 +12,16 @@ namespace numl.Math.Functions
     public class Softmax : IFunction
     {
         /// <summary>
+        /// Returns the minimum value from the function curve, equal to 0.0.
+        /// </summary>
+        public double Minimum { get { return 0; } }
+
+        /// <summary>
+        /// Returns the maximum value from the function curve, equal to 1.0.
+        /// </summary>
+        public double Maximum { get { return 1; } }
+
+        /// <summary>
         /// Returns a softmax function vector from the supplied inputs.
         /// </summary>
         /// <param name="x"></param>

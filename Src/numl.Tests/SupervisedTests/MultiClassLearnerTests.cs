@@ -22,7 +22,8 @@ namespace numl.Tests.SupervisedTests
                                                     {
                                                         Descriptor = descriptor,
                                                         Lambda = 0.1,
-                                                        PolynomialFeatures = 0
+                                                        PolynomialFeatures = 0,
+                                                        LearningRate = 0.1
                                                     },
                                                 digits, 0.8, 0.5);
 
@@ -50,7 +51,11 @@ namespace numl.Tests.SupervisedTests
 
             var descriptor = Model.Descriptor.Create<Data.Digit>();
 
-            var autogen = new Supervised.NeuralNetwork.Encoders.AutoencoderGenerator() { Descriptor = descriptor, OutputFunction = new Math.Functions.Logistic(), MaxIterations = 200 };
+            var autogen = new Supervised.NeuralNetwork.Encoders.AutoencoderGenerator() {
+                Descriptor = descriptor,
+                OutputFunction = new Math.Functions.Logistic(),
+                MaxIterations = 200
+            };
 
             var encoder = autogen.Generate(digits) as Supervised.NeuralNetwork.Encoders.AutoencoderModel;
 

@@ -25,6 +25,8 @@ namespace numl.Supervised.Perceptron
         /// <returns>An object.</returns>
         public override double Predict(Vector y)
         {
+            this.Preprocess(y);
+
             if (Normalized)
                 y = y / y.Norm();
 

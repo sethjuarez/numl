@@ -6,7 +6,7 @@
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 //////////////////////////////////////////////////////////////////////
-var release = "0.9.9";
+var release = "0.9.12";
 var suffix = "-beta";
 var testFailOk = true;
 var copyright = string.Format("©{0}, Seth Juarez", DateTime.Now.Year);
@@ -25,12 +25,23 @@ var packageDir = Directory("./Output/Package");
 //////////////////////////////////////////////////////////////////////
 // Utility
 //////////////////////////////////////////////////////////////////////
-// utility function that patches project.json using json.net
-public static void UpdateProjectJsonVersion(string version, FilePath projectPath)
+public static void UpdateProjectJsonVersion(string version, FilePath projectPath, string node)
 {
     var project = Newtonsoft.Json.Linq.JObject.Parse(
         System.IO.File.ReadAllText(projectPath.FullPath, Encoding.UTF8));
-    project["version"].Replace(version);
+
+    if (node.Contains("+"))
+    {
+        // for nested entries use a "+"
+        var entries = node.Split('+');
+        var n = project[entries[0]];
+        for (int i = 1; i < entries.Length; i++)
+            n = n[entries[i]];
+        n.Replace(version);
+    }
+    else
+        project[node].Replace(version);
+
     System.IO.File.WriteAllText(projectPath.FullPath, project.ToString(), Encoding.UTF8);
 }
 
@@ -60,9 +71,14 @@ Task("Version")
         Copyright = copyright
     };
     // update assembly version
+    Information("Updating AssembyInfo");
     CreateAssemblyInfo("../Src/numl/Properties/AssemblyInfo.cs", assemblyInfo);
     // update project.json build
-    UpdateProjectJsonVersion(release + suffix, "../Src/numl/project.json");
+    Information("Updating numl project.json to " + release+suffix);
+    UpdateProjectJsonVersion(release + suffix, "../Src/numl/project.json", "version");
+    // update test assembly project.json to match new version
+    Information("Updating numl.Tests reference to numl in project.json to " + release+suffix);
+    UpdateProjectJsonVersion(release + suffix, "../Src/numl.Tests/project.json", "dependencies+numl");
 });
 
 Task("Restore")
@@ -103,21 +119,27 @@ Task("Package")
 });
 
 Task("Docs")
+    .IsDependentOn("Package")
     .Does(() => 
 {
+    // write out version in prep for doc gen
+    UpdateProjectJsonVersion(release + suffix, "../Docs/version.json", "_appId");
+
     DocFx("../Docs/docfx.json", new DocFxSettings()
     {
         OutputPath = "./Output/Docs"
     });
 
-    CopyFile("../Docs/index.html", "./Output/docs/_site/index.html");
+    // move to site repo
+    CopyDirectory("./Output/docs/_site", "../../numl.web");
+    
 });
 
 //////////////////////////////////////////////////////////////////////
 // TASK TARGETS
 //////////////////////////////////////////////////////////////////////
 Task("Default")
-    .IsDependentOn("Package");
+    .IsDependentOn("Docs");
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION

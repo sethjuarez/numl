@@ -104,7 +104,7 @@ namespace numl.Math.Information
 
             var values = x.Distinct().OrderBy(z => z);  // distinct values to split on
 
-            Segments = values.Select(z => Range.Make(z, z)).ToArray();
+            Segments = values.Select(z => new Range(z, z)).ToArray();
             Discrete = true;
 
             

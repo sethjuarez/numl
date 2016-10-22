@@ -38,7 +38,7 @@ namespace numl.Math.LinearAlgebra
         /// <summary>Offs the given a.</summary>
         /// <param name="a">The int to process.</param>
         /// <returns>A double.</returns>
-        public double off(Matrix a)
+        private double Off(Matrix a)
         {
             double sum = 0;
             for (int i = 0; i < a.Rows; i++)
@@ -52,10 +52,14 @@ namespace numl.Math.LinearAlgebra
         /// <param name="p">The int to process.</param>
         /// <param name="q">The int to process.</param>
         /// <returns>A Tuple&lt;double,double&gt;</returns>
-        private Tuple<double, double> schur(Matrix a, int p, int q)
+        private Tuple<double, double> Schur(Matrix a, int p, int q)
         {
             double c, s = 0;
-            if (a[p, q] != 0)
+            if (a[q, q] == a[p, p])
+            {
+                s = c = sqrt(2) / 2;
+            }
+            else if (a[p, q] != 0)
             {
                 var tau = (a[q, q] - a[p, p]) / (2 * a[p, q]);
                 var t = 0d;
@@ -78,10 +82,10 @@ namespace numl.Math.LinearAlgebra
         /// <summary>Sweeps.</summary>
         /// <param name="p">The int to process.</param>
         /// <param name="q">The int to process.</param>
-        private void sweep(int p, int q)
+        private void Sweep(int p, int q)
         {
             // set jacobi rotation matrix
-            var cs = schur(A, p, q);
+            var cs = Schur(A, p, q);
             double c = cs.Item1;
             double s = cs.Item2;
 
@@ -127,7 +131,7 @@ namespace numl.Math.LinearAlgebra
         }
 
         /// <summary>Parallels this object.</summary>
-        public void parallel()
+        private void Parallel()
         {
             int N = A.Cols;
             // make even pairings
@@ -155,7 +159,7 @@ namespace numl.Math.LinearAlgebra
 
                     // are we in a buy week?
                     if (p >= 0)
-                        sweep(p, q);
+                        Sweep(p, q);
 
                 }
             }
@@ -167,35 +171,33 @@ namespace numl.Math.LinearAlgebra
 
 
         /// <summary>Factorizes this object.</summary>
-        private void factorize()
+        private void Factorize()
         {
             int N = A.Cols;
             for (int p = 0; p < N - 1; p++)
                 for (int q = p + 1; q < N; q++)
-                    sweep(p, q);
+                    Sweep(p, q);
         }
         /// <summary>Computes the given tolerance.</summary>
         /// <param name="tol">(Optional) the tolerance.</param>
-        public void compute(double tol = 1.0e-10)
+        public void Compute(double tol = 1.0e-10)
         {
-            int s = 0;
             do
             {
-                s++;
-                factorize();
+                Factorize();
                 // TODO: Fix parallelization
                 //if (A.Cols <= 300) // small enough
-                //    factorize();
+                //    Factorize();
                 //else          // parallelize
-                //    parallel();
+                //    Parallel();
 
-            } while (off(A) > tol);
+            } while (Off(A) > tol);
 
-            sort();
+            Sort();
         }
 
         /// <summary>Sorts this object.</summary>
-        private void sort()
+        private void Sort()
         {
             //ordering
             var eigs = A.Diag()

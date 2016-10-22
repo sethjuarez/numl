@@ -57,18 +57,13 @@ namespace numl.Math.LinearAlgebra
             _asCol = false;
             _asMatrixRef = false;
             _vector = new double[n];
-            for (int i = 0; i < n; i++)
-                _vector[i] = 0;
         }
         /// <summary>
         /// this is when the values are actually referencing a vector in an existing matrix.
         /// </summary>
         /// <param name="contents">The contents.</param>
-        public Vector(IEnumerable<double> contents)
+        public Vector(IEnumerable<double> contents) : this(contents.ToArray())
         {
-            _asCol = false;
-            _asMatrixRef = false;
-            _vector = contents.ToArray();
         }
         /// <summary>
         /// this is when the values are actually referencing a vector in an existing matrix.
@@ -170,10 +165,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>A Vector.</returns>
         public Vector Copy()
         {
-            var v = new Vector(Length);
-            for (int i = 0; i < Length; i++)
-                v[i] = this[i];
-            return v;
+            return new Vector(ToArray());
         }
         /// <summary>Convert this object into an array representation.</summary>
         /// <returns>An array that represents the data in this object.</returns>

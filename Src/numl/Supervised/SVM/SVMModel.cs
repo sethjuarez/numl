@@ -56,9 +56,7 @@ namespace numl.Supervised.SVM
         {
             double prediction = 0d;
 
-            x = (NormalizeFeatures ?
-                    FeatureNormalizer.Normalize(x, FeatureProperties) :
-                    x);
+            this.Preprocess(x);
 
             if (KernelFunction.IsLinear)
             {

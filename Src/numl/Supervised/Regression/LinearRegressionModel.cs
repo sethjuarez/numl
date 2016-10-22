@@ -27,11 +27,9 @@ namespace numl.Supervised.Regression
         /// <returns></returns>
         public override double Predict(Vector x)
         {
-            Vector xCopy = (this.NormalizeFeatures ?
-                                this.FeatureNormalizer.Normalize(x, this.FeatureProperties)
-                                : x);
+            this.Preprocess(x);
 
-            return xCopy.Insert(0, 1.0, false).Dot(Theta);
+            return x.Insert(0, 1.0, false).Dot(Theta);
         }
     }
 }

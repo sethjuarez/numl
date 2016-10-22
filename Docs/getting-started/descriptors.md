@@ -1,10 +1,3 @@
----
-_tocPath: getting-started/toc.html
-_tocRel: toc.html
-_navPath: toc.html
-_navRel: ../toc.html
----
-
 # Descriptors
 
 Descriptors are the primary means of converting standard .net types into their representative 
@@ -41,9 +34,11 @@ There are several feature and label attributes that can be applied to a class:
 - @numl.Model.FeatureAttribute
 - @numl.Model.StringFeatureAttribute
 - @numl.Model.DateFeatureAttribute
+- @numl.Model.GuidFeatureAttribute
 - @numl.Model.EnumerableFeatureAttribute
 - @numl.Model.LabelAttribute
 - @numl.Model.StringLabelAttribute
+- @numl.Model.GuidLabelAttribute
 
 While this approach is the simplest, it creates a very strong dependency on this library.
 
@@ -67,6 +62,7 @@ variants of the With method that allow further customization:
 - @numl.Model.Descriptor`1.With(System.Linq.Expressions.Expression{System.Func{`0,System.Object}}) - Standard approach infers property name and type
 - @numl.Model.Descriptor`1.WithString(System.Linq.Expressions.Expression{System.Func{`0,System.String}},numl.Model.StringSplitType,System.String,System.Boolean,System.String) - Assumes properties of type string and allows additional settings for expansion
 - @numl.Model.Descriptor`1.WithDateTime(System.Linq.Expressions.Expression{System.Func{`0,System.DateTime}},numl.Model.DatePortion) - Assumes properties of type DateTime and allows additional settings for expansion
+- @numl.Model.Descriptor`1.WithGuid(System.Linq.Expressions.Expression{System.Func{`0,System.Guid}}) - Assumes properties of type Guid
 - @numl.Model.Descriptor`1.WithEnumerable(System.Linq.Expressions.Expression{System.Func{`0,System.Collections.IEnumerable}},System.Int32) - Assumes list properties and allows additional settings for expansion
 
 This approach is less intrusive as it only relies on the structure of your already existing data types.
@@ -100,6 +96,7 @@ There are sevaral As methods available:
 - @numl.Model.DescriptorProperty.As(System.Type)
 - @numl.Model.DescriptorProperty.AsString
 - @numl.Model.DescriptorProperty.AsDateTime(numl.Model.DatePortion)
+- @numl.Model.DescriptorProperty.AsGuid
 - @numl.Model.DescriptorProperty.AsEnumerable(System.Int32)
 
 ## Properties
@@ -114,6 +111,7 @@ available properties:
 - @numl.Model.Property (base)
 - @numl.Model.StringProperty (multi- or single-valued depending on use)
 - @numl.Model.DateTimeProperty (multi- or single-valued depending on use)
+- @numl.Model.GuidProperty
 - @numl.Model.EnumerableProperty (multi-valued)
 
 One could also create their own property by deriving from the Property class and 

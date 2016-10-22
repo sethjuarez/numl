@@ -62,7 +62,7 @@ namespace numl.Supervised.SVM
         /// <returns>Model.</returns>
         public override IModel Generate(Matrix X, Vector y)
         {
-            this.Preprocess(X, y);
+            this.Preprocess(X);
 
             // expect truth = 1 and false = -1
             y = y.ToBinary(k => k == 1d, falseValue: -1.0);

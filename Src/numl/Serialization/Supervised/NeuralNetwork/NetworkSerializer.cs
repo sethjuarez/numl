@@ -19,7 +19,7 @@ namespace numl.Serialization.Supervised.NeuralNetwork
 
         public override object Create()
         {
-            return new Network();
+            return Network.New();
         }
 
         /// <summary>
@@ -37,10 +37,7 @@ namespace numl.Serialization.Supervised.NeuralNetwork
                 var nodes = reader.ReadArrayProperty().Value.OfType<Neuron>();
                 var edges = reader.ReadArrayProperty().Value.OfType<Edge>();
 
-                var linked = Network.LinkNodes(nodes, edges);
-
-                network.In = linked.In;
-                network.Out = linked.Out;
+                network.LinkNodes(nodes, edges);
 
                 return network;
             }

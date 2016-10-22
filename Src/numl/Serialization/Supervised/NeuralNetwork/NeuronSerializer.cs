@@ -28,9 +28,9 @@ namespace numl.Serialization.Supervised.NeuralNetwork
 
                 node.Label = reader.ReadProperty().Value.ToString();
 
-                node.Id = (int)reader.ReadProperty().Value;
-                node.NodeId = (int)reader.ReadProperty().Value;
-                node.LayerId = (int)reader.ReadProperty().Value;
+                node.Id = (int)(double)reader.ReadProperty().Value;
+                node.NodeId = (int)(double)reader.ReadProperty().Value;
+                node.LayerId = (int)(double)reader.ReadProperty().Value;
                 node.IsBias = (bool)reader.ReadProperty().Value;
 
                 var activation = reader.ReadProperty().Value;

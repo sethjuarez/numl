@@ -32,7 +32,7 @@ namespace numl.Reinforcement
                 IState s = this.Keys.FirstOrDefault(f => f.Id == state);
                 IAction a = this.GetKeys(s).FirstOrDefault(f => f.Id == action);
 
-                return this[s, a];
+                return base[s, a];
             }
             set
             {

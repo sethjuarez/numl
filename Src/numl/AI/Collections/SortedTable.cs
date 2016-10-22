@@ -9,6 +9,9 @@ namespace numl.AI.Collections
     /// <summary>
     /// A sorted data table.
     /// </summary>
+    /// <typeparam name="TKey1">Parent key type.</typeparam>
+    /// <typeparam name="TKey2">Child key type.</typeparam>
+    /// <typeparam name="TValue">Value type.</typeparam>
     public class SortedTable<TKey1, TKey2, TValue>
     {
         private readonly SortedDictionary<TKey1, SortedDictionary<TKey2, TValue>> _Table;

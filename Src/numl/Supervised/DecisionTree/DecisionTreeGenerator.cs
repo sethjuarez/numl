@@ -84,18 +84,19 @@ namespace numl.Supervised.DecisionTree
 
         /// <summary>Generates.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
-        /// <param name="x">The Matrix to process.</param>
+        /// <param name="X">The Matrix to process.</param>
         /// <param name="y">The Vector to process.</param>
         /// <returns>An IModel.</returns>
-        public override IModel Generate(Matrix x, Vector y)
+        public override IModel Generate(Matrix X, Vector y)
         {
             if (Descriptor == null)
                 throw new InvalidOperationException("Cannot build decision tree without type knowledge!");
 
-            Preprocess(x, y);
+            this.Preprocess(X);
+
             var tree = new Tree();
             //var n = BuildUglyTree(x, y, Depth, new List<int>(x.Cols));
-            tree.Root = BuildTree(x, y, Depth, new List<int>(x.Cols), tree);
+            tree.Root = BuildTree(X, y, Depth, new List<int>(X.Cols), tree);
 
             // have to guess something....
             // especially when automating

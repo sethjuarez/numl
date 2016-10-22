@@ -22,12 +22,12 @@ namespace numl.Supervised.KNN
             K = k;
         }
         /// <summary>Generate model based on a set of examples.</summary>
-        /// <param name="x">The Matrix to process.</param>
+        /// <param name="X">The Matrix to process.</param>
         /// <param name="y">The Vector to process.</param>
         /// <returns>Model.</returns>
-        public override IModel Generate(Matrix x, Vector y)
+        public override IModel Generate(Matrix X, Vector y)
         {
-            this.Preprocess(x, y);
+            this.Preprocess(X);
 
             return new KNNModel
             {
@@ -35,7 +35,7 @@ namespace numl.Supervised.KNN
                 NormalizeFeatures = base.NormalizeFeatures,
                 FeatureNormalizer = base.FeatureNormalizer,
                 FeatureProperties = base.FeatureProperties,
-                X = x,
+                X = X,
                 Y = y,
                 K = K
             };

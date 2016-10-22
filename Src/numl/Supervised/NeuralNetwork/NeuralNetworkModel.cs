@@ -11,7 +11,7 @@ using System.Collections.Generic;
 namespace numl.Supervised.NeuralNetwork
 {
     /// <summary>A data Model for the neural network.</summary>
-    public class NeuralNetworkModel : Model
+    public class NeuralNetworkModel : Model, ISequenceModel
     {
         /// <summary>Gets or sets the network.</summary>
         /// <value>The network.</value>
@@ -21,18 +21,35 @@ namespace numl.Supervised.NeuralNetwork
         /// Gets or sets the output layer function (i.e. Softmax).
         /// </summary>
         public IFunction OutputFunction { get; set; }
-        // TODO: should likely think about this in the case of multiple outputs
+
         /// <summary>Predicts the given o.</summary>
         /// <param name="y">The Vector to process.</param>
         /// <returns>An object.</returns>
-        public override double Predict(Vector y)
+        public override double Predict(Vector x)
         {
-            Network.Forward(y);
+            this.Preprocess(x);
+
+            Network.Forward(x);
 
             Vector output = Network.Out.Select(n => n.Output).ToVector();
 
-            return (this.OutputFunction != null ? this.OutputFunction.Compute(output).Max() : output.Max());
+            return (this.OutputFunction != null ? this.OutputFunction.Minimize(output) : output.Max());
         }
 
+        /// <summary>
+        /// Predicts the given x.
+        /// </summary>
+        /// <param name="x">Vector of features.</param>
+        /// <returns>Vector.</returns>
+        public Vector PredictSequence(Vector x)
+        {
+            this.Preprocess(x);
+
+            this.Network.Forward(x);
+
+            Vector output = Network.Out.Select(n => n.Output).ToVector();
+
+            return (this.OutputFunction != null ? this.OutputFunction.Compute(output) : output);
+        }
     }
 }

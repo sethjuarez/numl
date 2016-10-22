@@ -64,7 +64,7 @@ namespace numl.Utils
         {
             var p = GenerateFeature(type, name);
             if (p is StringProperty) // if it is a label, must be enum
-                ((StringProperty)p).AsEnum = true;
+                ((StringProperty) p).AsEnum = true;
             return p;
         }
 
@@ -107,7 +107,7 @@ namespace numl.Utils
         {
             if (type == null) throw new ArgumentNullException("The supplied type parameter was not specified");
 
-            return (T)Activator.CreateInstance(type) ?? default(T);
+            return (T) Activator.CreateInstance(type) ?? default(T);
         }
     }
 }

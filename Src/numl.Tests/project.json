@@ -1,8 +1,7 @@
-{
+﻿{
   "version": "1.0.0-*",
-
   "dependencies": {
-    "numl": "0.9.9-*",
+    "numl": "0.9.12-beta",
     "xunit": "2.2.0-*",
     "FluentAssertions": "4.14.0",
     "dotnet-test-xunit": "2.2.0-*"

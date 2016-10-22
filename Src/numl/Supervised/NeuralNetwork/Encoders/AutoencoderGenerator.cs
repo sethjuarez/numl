@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using numl.Math.LinearAlgebra;
 using numl.Math.Functions;
+using numl.Math.Normalization;
 
 namespace numl.Supervised.NeuralNetwork.Encoders
 {
@@ -12,7 +13,7 @@ namespace numl.Supervised.NeuralNetwork.Encoders
     /// An Autoencoding Network Generator.
     /// <para>By default this works as a (linear) denoising autoencoder.  If the features used are within [0, 1] range then try specifying a different Output Function such as Logistic or Tanh.</para>
     /// </summary>
-    public class AutoencoderGenerator : NeuralNetworkGenerator
+    public class AutoencoderGenerator : NeuralNetworkGenerator, ISequenceGenerator
     {
         /// <summary>
         /// Gets or sets the density of the encoder. Higher values will learn the identity function more easily but may not denoise features as well.
@@ -37,11 +38,13 @@ namespace numl.Supervised.NeuralNetwork.Encoders
         public AutoencoderGenerator()
         {
             this.Density = -1;
-            this.Sparsity = 1.0;
+            this.Sparsity = 0.2;
+            this.SparsityWeight = 1.0;
             this.LearningRate = 0.01;
-            this.Epsilon = 0.5;
+            this.Epsilon = double.NaN;
             this.Activation = new SteepLogistic();
             this.OutputFunction = new Ident();
+            this.NormalizeFeatures = false;
         }
 
         /// <summary>
@@ -52,17 +55,23 @@ namespace numl.Supervised.NeuralNetwork.Encoders
         /// <returns></returns>
         public override IModel Generate(Matrix X, Vector y)
         {
+            return this.Generate(X, X);
+        }
+
+        public override ISequenceModel Generate(Matrix X, Matrix Y)
+        {
             // dense autoencoders learn the approximation identity function so ignore labels.
             // the output layer is the number of columns in X
 
             // default hidden layer to 2/3 of the input
-            if (this.Density <= 0) this.Density = (int)System.Math.Ceiling(((double)X.Cols * 2.0) / 3.0);
+            this.Preprocess(X);
 
-            if (this.MaxIterations <= 0) MaxIterations = X.Rows * 500; // because Seth said so...
-            else MaxIterations = X.Rows * MaxIterations; // because it's batched.
+            if (this.Density <= 0) this.Density = (int) System.Math.Ceiling(X.Cols * (2.0 / 3.0));
 
-            Network network = Network.Create(X.Cols, X.Cols, this.Activation, this.OutputFunction,
-                                        (i, j) => new AutoencoderNeuron() { Sparsity = this.Sparsity }, epsilon: this.Epsilon, hiddenLayers: new int[] { this.Density });
+            if (this.MaxIterations <= 0) MaxIterations = 400; // because Seth said so...
+
+            Network network = Network.New().Create(X.Cols, X.Cols, this.Activation, this.OutputFunction,
+                                        (i, j) => new AutoencoderNeuron(), epsilon: this.Epsilon, hiddenLayers: new int[] { this.Density });
 
             var model = new AutoencoderModel
             {
@@ -76,16 +85,19 @@ namespace numl.Supervised.NeuralNetwork.Encoders
 
             OnModelChanged(this, ModelEventArgs.Make(model, "Initialized"));
 
-            NetworkTrainingProperties properties = NetworkTrainingProperties.Create(network, X.Rows, X.Cols, this.LearningRate, this.Lambda, this.MaxIterations);
+            NetworkTrainingProperties properties = NetworkTrainingProperties.Create(network, X.Rows, X.Cols, this.LearningRate,
+                this.Lambda, this.MaxIterations, new { this.Density, this.Sparsity, this.SparsityWeight });
 
             for (int i = 0; i < this.MaxIterations; i++)
             {
                 properties.Iteration = i;
 
-                int idx = i % X.Rows;
-                network.Forward(X[idx, VectorType.Row]);
-                //OnModelChanged(this, ModelEventArgs.Make(model, "Forward"));
-                network.Back(X[idx, VectorType.Row], properties);
+                for (int x = 0; x < X.Rows; x++)
+                {
+                    network.Forward(X[x, VectorType.Row]);
+                    //OnModelChanged(this, ModelEventArgs.Make(model, "Forward"));
+                    network.Back(X[x, VectorType.Row], properties);
+                }
 
                 var result = String.Format("Run ({0}/{1}): {2}", i, MaxIterations, network.Cost);
                 OnModelChanged(this, ModelEventArgs.Make(model, result));

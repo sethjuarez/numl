@@ -1,0 +1,22 @@
+{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
+
+<footer>
+  <div class="grad-bottom"></div>
+  <div class="footer">
+    <div class="container">
+      {{{_appFooter}}}
+      {{^_appFooter}}
+      <div class="row inner-footer">
+            <div class="col-md-10">
+                &copy;2016 — <a href="http://sethjuarez.com">Seth Juarez</a><br>
+                <a href="https://www.nuget.org/packages/numl/">numl v{{_appId}}</a>
+            </div>
+            <div class="col-md-2">
+                <a href="http://opensource.org/licenses/MIT">MIT License</a><br>
+                docs by <a href="http://dotnet.github.io/docfx/index.html">docfx</a>
+            </div>
+        </div>
+      {{/_appFooter}}
+    </div>
+  </div>
+</footer>
