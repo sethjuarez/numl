@@ -156,75 +156,44 @@ namespace numl.Utils
             throw new InvalidOperationException(
                 string.Format("\"{0}\" does not exist in the property dictionary", item));
         }
-        /// <summary>Builds character dictionary.</summary>
+        /// <summary>Builds character array.</summary>
         /// <param name="examples">The examples.</param>
         /// <param name="exclusion">(Optional) the exclusion.</param>
-        /// <returns>A Dictionary&lt;string,double&gt;</returns>
-        public static Dictionary<string, double> BuildCharDictionary(IEnumerable<string> examples, string[] exclusion = null)
+        /// <returns>A string array.</returns>
+        public static string[] BuildCharArray(IEnumerable<string> examples, string[] exclusion = null)
         {
-            Dictionary<string, double> d = new Dictionary<string, double>();
-
-            foreach (string o in examples)
-            {
-                foreach (string key in GetChars(o, exclusion))
-                {
-                    if (d.ContainsKey(key))
-                        d[key] += 1;
-                    else
-                        d.Add(key, 1);
-                }
-            }
-
-            return d;
+			return examples.SelectMany(o => GetChars(o, exclusion)).Distinct().ToArray();
         }
-        /// <summary>Builds enum dictionary.</summary>
+        /// <summary>Builds enum array.</summary>
         /// <param name="examples">The examples.</param>
-        /// <returns>A Dictionary&lt;string,double&gt;</returns>
-        public static Dictionary<string, double> BuildEnumDictionary(IEnumerable<string> examples)
+        /// <returns>A string array</returns>
+        public static string[] BuildEnumArray(IEnumerable<string> examples)
         {
-            // TODO: Really need to consider this as an enum builder
-            Dictionary<string, double> d = new Dictionary<string, double>();
+			// TODO: Really need to consider this as an enum builder
 
-            // for holding string
-            string s = string.Empty;
+			return examples.Select(o =>
+			{
+				var s = o.Trim().ToUpperInvariant();
 
-            foreach (string o in examples)
-            {
-                s = o.Trim().ToUpperInvariant();
+				// kill inlined stuff that creates noise
+				// (like punctuation etc.)
+				s = new string(s.ToCharArray().Where(c => (!Char.IsSymbol(c) && !Char.IsPunctuation(c) && !Char.IsSeparator(c))).ToArray());
 
-                // kill inlined stuff that creates noise
-                // (like punctuation etc.)
-                s = new string(s.ToCharArray().Where(c => (!Char.IsSymbol(c) && !Char.IsPunctuation(c) && !Char.IsSeparator(c))).ToArray());
+				// null or whitespace
+				if (string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s))
+					s = EMPTY_STRING;
 
-                // null or whitespace
-                if (string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s))
-                    s = EMPTY_STRING;
-
-                if (d.ContainsKey(s))
-                    d[s] += 1;
-                else
-                    d.Add(s, 1);
-            }
-
-            return d;
+				return s;
+			}).Distinct().ToArray();
         }
-        /// <summary>Builds word dictionary.</summary>
+        /// <summary>Builds distinct word array.</summary>
         /// <param name="examples">The examples.</param>
         /// <param name="separator">(Optional) separator string.</param>
         /// <param name="exclusion">(Optional) the exclusion.</param>
-        /// <returns>A Dictionary&lt;string,double&gt;</returns>
-        public static Dictionary<string, double> BuildWordDictionary(IEnumerable<string> examples, string separator = " ", string[] exclusion = null)
+        /// <returns>A string array</returns>
+        public static string[] BuildDistinctWordArray(IEnumerable<string> examples, string separator = " ", string[] exclusion = null)
         {
-            Dictionary<string, double> d = new Dictionary<string, double>();
-
-            foreach (string s in examples)
-                foreach (string key in GetWords(s, separator, exclusion))
-                    if (d.ContainsKey(key))
-                        d[key] += 1;
-                    else
-                        d.Add(key, 1);
-
-            return d;
+			return examples.SelectMany(s => GetWords(s, separator, exclusion)).Distinct().ToArray();
         }
     }
 }
