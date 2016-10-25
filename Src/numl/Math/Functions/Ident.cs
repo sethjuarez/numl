@@ -11,14 +11,14 @@ namespace numl.Math.Functions
     public class Ident : Function
     {
         /// <summary>
-        /// Returns the minimum value from the function curve (-1.7976e^308).
+        /// Returns the minimum value from the function curve.
         /// </summary>
-        public override double Minimum { get { return double.MinValue; } }
+        public override double Minimum { get { return double.NegativeInfinity; } }
 
         /// <summary>
-        /// Returns the maximum value from the function curve (1.7976e^308).
+        /// Returns the maximum value from the function curve.
         /// </summary>
-        public override double Maximum { get { return double.MaxValue; } }
+        public override double Maximum { get { return double.PositiveInfinity; } }
 
         /// <summary>Computes the given x coordinate.</summary>
         /// <param name="x">The Vector to process.</param>
