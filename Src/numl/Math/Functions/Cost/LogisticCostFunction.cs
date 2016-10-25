@@ -32,8 +32,7 @@ namespace numl.Math.Functions.Cost
             int m = X.Rows;
 
             Vector s = (X * theta).ToVector();
-
-            s = s.Calc(v => LogisticFunction.Compute(v));
+            s = LogisticFunction.Compute(s);
 
             Vector slog = s.Calc(v => System.Math.Log(1.0 - v));
 
@@ -58,8 +57,7 @@ namespace numl.Math.Functions.Cost
             Vector gradient = Vector.Zeros(theta.Length);
 
             Vector s = (X * theta).ToVector();
-
-            s = s.Each(v => LogisticFunction.Compute(v));
+            s = LogisticFunction.Compute(s);
 
             for (int i = 0; i < theta.Length; i++)
             {
