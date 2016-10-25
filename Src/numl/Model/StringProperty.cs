@@ -82,16 +82,16 @@ namespace numl.Model
                     select Ject.Get(s, Name).ToString();
 
             if (AsEnum)
-                Dictionary = StringHelpers.BuildEnumDictionary(q).Select(kv => kv.Key).ToArray();
+                Dictionary = StringHelpers.BuildEnumArray(q);
             else
             {
                 switch (SplitType)
                 {
                     case StringSplitType.Character:
-                        Dictionary = StringHelpers.BuildCharDictionary(q, Exclude).Select(kv => kv.Key).ToArray();
+                        Dictionary = StringHelpers.BuildCharArray(q, Exclude);
                         break;
                     case StringSplitType.Word:
-                        Dictionary = StringHelpers.BuildWordDictionary(q, Separator, Exclude).Select(kv => kv.Key).ToArray();
+                        Dictionary = StringHelpers.BuildDistinctWordArray(q, Separator, Exclude);
                         break;
                 }
             }
