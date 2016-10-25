@@ -1,9 +1,6 @@
 // file:	Math\Functions\Logistic.cs
 //
 // summary:	Implements the logistic class
-using System;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace numl.Math.Functions
 {

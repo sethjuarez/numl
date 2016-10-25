@@ -1,9 +1,6 @@
 // file:	Math\Functions\Tanh.cs
 //
 // summary:	Implements the hyperbolic tangent class
-using System;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace numl.Math.Functions
 {
