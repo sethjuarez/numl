@@ -1,9 +1,6 @@
 // file:	Math\Functions\RectifiedLinear.cs
 //
 // summary:	Implements the rectified linear class
-using System;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace numl.Math.Functions
 {
@@ -16,7 +13,7 @@ namespace numl.Math.Functions
         public override double Minimum { get { return 0; } }
 
         /// <summary>
-        /// Returns the maximum value from the function curve, equal to <see cref="double.MaxValue"/>.
+        /// Returns the maximum value from the function curve, equal to infinity.
         /// </summary>
         public override double Maximum { get { return double.MaxValue; } }
 
@@ -32,7 +29,7 @@ namespace numl.Math.Functions
         /// <returns>A double.</returns>
         public override double Derivative(double x)
         {
-            return 1 - Compute(x);
+            return (x > 0d ? 1 : 0);
         }
     }
 }

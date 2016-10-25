@@ -1,9 +1,6 @@
 // file:	Math\Functions\Logistic.cs
 //
 // summary:	Implements the logistic class
-using System;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace numl.Math.Functions
 {
@@ -33,7 +30,7 @@ namespace numl.Math.Functions
         public override double Derivative(double x)
         {
             var c = Compute(x);
-            return c * (1d - c);
+            return System.Math.PI * c * (1d - c);
         }
     }
 }
