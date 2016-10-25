@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using numl.Math.LinearAlgebra;
-using System.Collections.Generic;
+﻿using numl.Math.LinearAlgebra;
 using numl.Math.Functions.Regularization;
 namespace numl.Math.Functions.Cost
 {

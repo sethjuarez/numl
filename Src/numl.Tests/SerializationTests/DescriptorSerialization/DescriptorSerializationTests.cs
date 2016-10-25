@@ -77,9 +77,7 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
         {
             Descriptor description = new Descriptor();
 
-            var dictionary = StringHelpers.BuildWordDictionary(WordStrings)
-                                          .Select(k => k.Key)
-                                          .ToArray();
+            var dictionary = StringHelpers.BuildDistinctWordArray(WordStrings);
 
             description.Features = new Property[]
             {
@@ -100,9 +98,7 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
         [Fact]
         public void Descriptor_Full_Serialization_Test()
         {
-            var dictionary = StringHelpers.BuildWordDictionary(WordStrings)
-                                          .Select(k => k.Key)
-                                          .ToArray();
+            var dictionary = StringHelpers.BuildDistinctWordArray(WordStrings);
 			var guidCategories = new Guid[] { Guid.NewGuid(), Guid.NewGuid() };
 
             Descriptor description = Descriptor.New("MyDescriptor")

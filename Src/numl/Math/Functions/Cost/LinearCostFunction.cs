@@ -1,7 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using numl.Math.LinearAlgebra;
-using System.Collections.Generic;
 
 namespace numl.Math.Functions.Cost
 {
@@ -23,11 +21,11 @@ namespace numl.Math.Functions.Cost
 
             Vector s = (X * theta).ToVector();
 
-            j = 1.0 / (2.0 * m) * ((s - this.Y) ^ 2.0).Sum();
+            j = 1.0 / (2.0 * m) * ((s - Y) ^ 2.0).Sum();
 
-            if (this.Lambda != 0)
+            if (Lambda != 0)
             {
-                j = this.Regularizer.Regularize(j, theta, m, this.Lambda);
+                j = Regularizer.Regularize(j, theta, m, Lambda);
             }
 
             return j;
@@ -47,12 +45,12 @@ namespace numl.Math.Functions.Cost
 
             for (int i = 0; i < theta.Length; i++)
             {
-                gradient[i] = 1.0 / m * ((s - this.Y) * X[i, VectorType.Col]).Sum();
+                gradient[i] = 1.0 / m * ((s - Y) * X[i, VectorType.Col]).Sum();
             }
 
-            if (this.Lambda != 0)
+            if (Lambda != 0)
             {
-                gradient = this.Regularizer.Regularize(theta, gradient, m, this.Lambda);
+                gradient = Regularizer.Regularize(gradient, theta, m, Lambda);
             }
 
             return gradient;

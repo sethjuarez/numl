@@ -8,7 +8,6 @@ using System.Linq;
 using System.Globalization;
 using numl.Math.Probability;
 using System.Collections.Generic;
-using numl.Utils;
 using numl.Serialization;
 
 namespace numl.Math.LinearAlgebra
@@ -132,33 +131,28 @@ namespace numl.Math.LinearAlgebra
         {
             get
             {
-                // switch it up if using a transposed version
-                if (_asTransposeRef)
-                    t = t == VectorType.Row ? VectorType.Col : VectorType.Row;
-
+                var dim = t == VectorType.Row ? Rows : Cols;
+                if (i >= dim || i < 0)
+                    throw new IndexOutOfRangeException();
 
                 if (t == VectorType.Row)
                 {
-                    if (i >= Rows)
-                        throw new IndexOutOfRangeException();
-                    if (!_asTransposeRef)
-                        return new Vector(_matrix[i].ToArray());
+                    if (_asTransposeRef)
+                        return new Vector(_matrix, i);
                     else
-                        return new Vector(_matrix, i, true);
+                        return new Vector(_matrix[i].ToArray());
                 }
                 else
                 {
-                    if (i >= Cols)
-                        throw new IndexOutOfRangeException();
-                    if (!_asTransposeRef)
+                    if (_asTransposeRef)
+                        return new Vector(_matrix, i, true);
+                    else
                     {
                         double[] cols = new double[Rows];
                         for (int j = 0; j < Rows; j++) cols[j] = _matrix[j][i];
 
                         return new Vector(cols);
-                    }
-                    else
-                        return new Vector(_matrix, i);
+                    };
                 }
             }
             set
@@ -166,26 +160,22 @@ namespace numl.Math.LinearAlgebra
                 if (_asTransposeRef)
                     throw new InvalidOperationException("Cannot modify matrix in read-only transpose mode!");
 
+                var dim1 = t == VectorType.Row ? Rows : Cols;
+                var dim2 = t == VectorType.Row ? Cols : Rows;
+
+                if (i >= dim1 || i < 0)
+                    throw new IndexOutOfRangeException();
+
+                if (value.Length > dim2)
+                    throw new InvalidOperationException(string.Format("Vector has lenght larger then {0}", dim2));
+
                 if (t == VectorType.Row)
                 {
-                    if (i >= Rows)
-                        throw new IndexOutOfRangeException();
-
-                    if (value.Length > Cols)
-                        throw new InvalidOperationException(string.Format("Vector has lenght larger then {0}", Cols));
-
                     for (int k = 0; k < Cols; k++)
                         _matrix[i][k] = value[k];
                 }
                 else
                 {
-                    if (i >= Cols)
-                        throw new IndexOutOfRangeException();
-
-                    if (value.Length > Rows)
-                        throw new InvalidOperationException(string.Format("Vector has lenght larger then {0}", Cols));
-
-
                     for (int k = 0; k < Rows; k++)
                         _matrix[k][i] = value[k];
                 }
@@ -292,10 +282,15 @@ namespace numl.Math.LinearAlgebra
         /// <returns>The matrix.</returns>
         public Matrix GetMatrix(int d1, int d2, int n1, int n2)
         {
-            Matrix m = Zeros(n2 - n1 + 1, d2 - d1 + 1);
-            for (int i = 0; i < m.Rows; i++)
-                for (int j = 0; j < m.Cols; j++)
-                    m[i, j] = this[i + n1, j + d1];
+            var rows = n2 - n1 + 1;
+            var cols = d2 - d1 + 1;
+            var m = new double[rows][];
+            for (int i = 0; i < rows; i++)
+            {
+                m[i] = new double[cols];
+                for (int j = 0; j < cols; j++)
+                    m[i][j] = this[i + n1, j + d1];
+            }
             return m;
         }
         /// <summary>Gets the rows in this collection.</summary>
@@ -351,22 +346,13 @@ namespace numl.Math.LinearAlgebra
         /// <returns>Matrix.</returns>
         public Matrix Transpose()
         {
-            var m = new Matrix(Cols, Rows);
-            for (int i = 0; i < Rows; i++)
-                for (int j = 0; j < Cols; j++)
-                    m[j, i] = this[i, j];
-            return m;
+            return ToTransposeArray();
         }
         /// <summary>create deep copy of matrix.</summary>
         /// <returns>Matrix.</returns>
         public Matrix Copy()
         {
-            var m = Zeros(Rows, Cols);
-            for (int i = 0; i < Rows; i++)
-                for (int j = 0; j < Cols; j++)
-                    m[i, j] = this[i, j];
-            return m;
-
+            return ToArray();
         }
         /// <summary>Serves as a hash function for a particular type.</summary>
         /// <returns>A hash code for the current <see cref="T:System.Object" />.</returns>
@@ -427,9 +413,34 @@ namespace numl.Math.LinearAlgebra
         /// Performs a deep copy of the underlying matrix and returns a 2D array.
         /// </summary>
         /// <returns></returns>
-        public double[][] ToArray()
+        private double[][] ToArray()
         {
+            if (_asTransposeRef)
+            {
+                return ToTransposeArray();
+            }
+
             return _matrix.Select(s => s.ToArray()).ToArray();
+        }
+
+        /// <summary>
+        /// Performs a deep copy of the underlying matrix, transpose it and returns a 2D array.
+        /// </summary>
+        /// <returns></returns>
+        private double [][] ToTransposeArray()
+        {
+            int rows = _asTransposeRef ? Rows : Cols;
+            int cols = _asTransposeRef ? Cols : Rows;
+            var matrix = new double[rows][];
+            for (var i = 0; i < rows; i++)
+            {
+                matrix[i] = new double[cols];
+                for (var j = 0; j < cols; j++)
+                {
+                    matrix[i][j] = _matrix[j][i];
+                }
+            }
+            return matrix;
         }
 
         /// <summary>Returns a string that represents the current object.</summary>
@@ -700,11 +711,11 @@ namespace numl.Math.LinearAlgebra
             if (t == VectorType.Col && v.Length != Rows) throw new ArgumentException("Column vector does not match matrix height");
             if (t == VectorType.Row && v.Length != Cols) throw new ArgumentException("Row vector does not match matrix width");
 
-            if (t == VectorType.Col && (index >= Cols || index < 0)) throw new ArgumentException("Column index does not match matrix width");
-            if (t == VectorType.Row && (index >= Rows || index < 0)) throw new ArgumentException("Row index does not match matrix height");
+            if (t == VectorType.Col && (index >= Cols || index < 0) && (index != -1 || !insertAfter)) throw new ArgumentException("Column index does not match matrix width");
+            if (t == VectorType.Row && (index >= Rows || index < 0) && (index != -1 || !insertAfter)) throw new ArgumentException("Row index does not match matrix height");
 
             var temp = ToArray().ToList();
-            if ((t == VectorType.Row && !_asTransposeRef) || (t == VectorType.Col && _asTransposeRef))
+            if (t == VectorType.Row)
             {
                 if (index == temp.Count - 1 && insertAfter)
                 {
@@ -737,8 +748,7 @@ namespace numl.Math.LinearAlgebra
                 }
             }
 
-            var result = new Matrix(temp.ToArray());
-            return _asTransposeRef ? result.T : result;
+            return new Matrix(temp.ToArray());
         }
 
         /// <summary>Removes this object.</summary>

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using numl.Math.LinearAlgebra;
 
 namespace numl.Math.Functions
@@ -55,8 +53,8 @@ namespace numl.Math.Functions
         /// <returns></returns>
         public Vector Derivative(Vector x)
         {
-            Vector d = this.Compute(x);
-            return d * (1.0 - d);
+            Vector d = Compute(x);
+            return d * (1d - d);
         }
 
         /// <summary>
@@ -76,7 +74,7 @@ namespace numl.Math.Functions
         /// <returns>Double.</returns>
         public double Minimize(Vector x)
         {
-            return this.Compute(x).MaxIndex();
+            return Compute(x).MaxIndex();
         }
     }
 }
