@@ -1,10 +1,7 @@
 ﻿// file:	Math\Functions\IFunction.cs
 //
 // summary:	Declares the IFunction interface
-using System;
-using System.Linq;
 using numl.Math.LinearAlgebra;
-using System.Collections.Generic;
 
 namespace numl.Math.Functions
 {

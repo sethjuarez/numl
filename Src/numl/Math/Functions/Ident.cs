@@ -1,10 +1,6 @@
 // file:	Math\Functions\Ident.cs
 //
 // summary:	Implements the identifier class
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
 namespace numl.Math.Functions
 {
     /// <summary>An identifier / linear function.</summary>

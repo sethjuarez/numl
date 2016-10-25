@@ -1,10 +1,8 @@
 // file:	Math\Functions\Function.cs
 //
 // summary:	Implements the function class
-using System;
 using System.Linq;
 using numl.Math.LinearAlgebra;
-using System.Collections.Generic;
 
 namespace numl.Math.Functions
 {
