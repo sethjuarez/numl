@@ -32,7 +32,7 @@ namespace numl.Math.Functions.Cost
         {
             base.Initialize();
 
-            this.YReformed = this.Y.Reshape(X.Rows, VectorType.Row);
+            YReformed = Y.Reshape(X.Rows, VectorType.Row);
         }
 
         /// <summary>
@@ -44,14 +44,14 @@ namespace numl.Math.Functions.Cost
         {
             double j = 0.0;
 
-            Matrix ThetaX = theta.Slice(0, (R.Rows * this.CollaborativeFeatures) - 1).Reshape(this.CollaborativeFeatures, VectorType.Col);
-            Matrix ThetaY = theta.Slice((R.Rows * this.CollaborativeFeatures), theta.Length - 1).Reshape(this.CollaborativeFeatures, VectorType.Col);
+            Matrix ThetaX = theta.Slice(0, (R.Rows * CollaborativeFeatures) - 1).Reshape(CollaborativeFeatures, VectorType.Col);
+            Matrix ThetaY = theta.Slice((R.Rows * CollaborativeFeatures), theta.Length - 1).Reshape(CollaborativeFeatures, VectorType.Col);
 
-            j = (1.0 / 2.0) * ((ThetaY * ThetaX.T).T - this.YReformed).Each(i => System.Math.Pow(i, 2.0)).Each((v, r, c) => v * this.R[r, c]).Sum();
+            j = (1.0 / 2.0) * ((ThetaY * ThetaX.T).T - YReformed).Each(i => System.Math.Pow(i, 2.0)).Each((v, r, c) => v * R[r, c]).Sum();
 
-            if (this.Lambda != 0)
+            if (Lambda != 0)
             {
-                j = j + ((this.Lambda / 2.0) * (ThetaY.Each(i => System.Math.Pow(i, 2.0)).Sum()) + (this.Lambda / 2.0 * ThetaX.Each(i => System.Math.Pow(i, 2.0)).Sum()));
+                j = j + ((Lambda / 2.0) * (ThetaY.Each(i => System.Math.Pow(i, 2.0)).Sum()) + (Lambda / 2.0 * ThetaX.Each(i => System.Math.Pow(i, 2.0)).Sum()));
             }
             return j;
         }
@@ -63,14 +63,14 @@ namespace numl.Math.Functions.Cost
         /// <returns></returns>
         public override Vector ComputeGradient(Vector theta)
         {
-            Matrix ThetaX = theta.Slice(0, (R.Rows * this.CollaborativeFeatures) - 1).Reshape(this.CollaborativeFeatures, VectorType.Col);
-            Matrix ThetaY = theta.Slice((R.Rows * this.CollaborativeFeatures), theta.Length - 1).Reshape(this.CollaborativeFeatures, VectorType.Col);
+            Matrix ThetaX = theta.Slice(0, (R.Rows * CollaborativeFeatures) - 1).Reshape(CollaborativeFeatures, VectorType.Col);
+            Matrix ThetaY = theta.Slice((R.Rows * CollaborativeFeatures), theta.Length - 1).Reshape(CollaborativeFeatures, VectorType.Col);
 
-            Matrix A = ((ThetaY * ThetaX.T).T - this.YReformed);
-            Matrix S = A.Each(this.R, (i, j) => i * j);
+            Matrix A = ((ThetaY * ThetaX.T).T - YReformed);
+            Matrix S = A.Each(R, (i, j) => i * j);
 
-            Matrix gradX = (S * ThetaY) + (this.Lambda * ThetaX);
-            Matrix gradTheta = (S.T * ThetaX) + (this.Lambda * ThetaY);
+            Matrix gradX = (S * ThetaY) + (Lambda * ThetaX);
+            Matrix gradTheta = (S.T * ThetaX) + (Lambda * ThetaY);
 
             return Vector.Combine(gradX.Unshape(), gradTheta.Unshape());
         }

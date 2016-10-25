@@ -1,7 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using numl.Math.LinearAlgebra;
-using System.Collections.Generic;
 
 namespace numl.Math.Functions.Regularization
 {
@@ -30,11 +28,11 @@ namespace numl.Math.Functions.Regularization
         /// <summary>
         /// Applies regularization to the current gradient
         /// </summary>
-        /// <param name="theta">Current theta</param>
         /// <param name="gradient">Current gradient</param>
+        /// <param name="theta">Current theta</param>
         /// <param name="m">Training records</param>
         /// <param name="lambda">Regularization constant</param>
-        public Vector Regularize(Vector theta, Vector gradient, int m, double lambda)
+        public Vector Regularize(Vector gradient, Vector theta, int m, double lambda)
         {
             if (lambda != 0)
             {

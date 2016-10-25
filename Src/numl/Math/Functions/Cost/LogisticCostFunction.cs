@@ -1,7 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using numl.Math.LinearAlgebra;
-using System.Collections.Generic;
 
 namespace numl.Math.Functions.Cost
 {
@@ -20,8 +18,8 @@ namespace numl.Math.Functions.Cost
         /// </summary>
         public LogisticCostFunction()
         {
-            if (this.LogisticFunction == null)
-                this.LogisticFunction = new Math.Functions.Logistic();
+            if (LogisticFunction == null)
+                LogisticFunction = new Logistic();
         }
 
         /// <summary>
@@ -35,15 +33,15 @@ namespace numl.Math.Functions.Cost
 
             Vector s = (X * theta).ToVector();
 
-            s = s.Calc(v => this.LogisticFunction.Compute(v));
+            s = s.Calc(v => LogisticFunction.Compute(v));
 
             Vector slog = s.Calc(v => System.Math.Log(1.0 - v));
 
-            double j = (-1.0 / m) * (this.Y.Dot(s.Log()) + ((1.0 - this.Y).Dot(slog)));
+            double j = (-1.0 / m) * (Y.Dot(s.Log()) + ((1.0 - Y).Dot(slog)));
 
-            if (this.Lambda != 0)
+            if (Lambda != 0)
             {
-                j = this.Regularizer.Regularize(j, theta, m, this.Lambda);
+                j = Regularizer.Regularize(j, theta, m, Lambda);
             }
 
             return j;
@@ -61,16 +59,16 @@ namespace numl.Math.Functions.Cost
 
             Vector s = (X * theta).ToVector();
 
-            s = s.Each(v => this.LogisticFunction.Compute(v));
+            s = s.Each(v => LogisticFunction.Compute(v));
 
             for (int i = 0; i < theta.Length; i++)
             {
-                gradient[i] = (1.0 / m) * ((s - this.Y) * X[i, VectorType.Col]).Sum();
+                gradient[i] = (1.0 / m) * ((s - Y) * X[i, VectorType.Col]).Sum();
             }
 
-            if (this.Lambda != 0)
+            if (Lambda != 0)
             {
-                gradient = this.Regularizer.Regularize(theta, gradient, m, this.Lambda);
+                gradient = Regularizer.Regularize(gradient, theta, m, Lambda);
             }
 
             return gradient;
