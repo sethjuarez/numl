@@ -119,20 +119,20 @@ namespace numl.Tests.DataTests
         [Fact]
         public void Test_Char_Dictionary_Gen()
         {
-            var d = StringHelpers.BuildCharDictionary(ShortStrings);
+            var d = StringHelpers.BuildCharArray(ShortStrings);
             // should have the following:
-            // O(2), N(1), E(5), #SYM#(5), T(3), W(1), #NUM#(1), H(2), R(2)
-            var dict = new Dictionary<string, double>
+            // O, N, E, #SYM#, T, W, #NUM#, H, R
+            var dict = new string[]
             {
-                { "O", 2 },
-                { "N", 1 },
-                { "E", 5 },
-                { "#SYM#", 5 },
-                { "T", 3 },
-                { "W", 1 },
-                { "#NUM#", 1 },
-                { "H", 2 },
-                { "R", 2 },
+                "O",
+                "N",
+                "E", 
+                "#SYM#",
+                "T", 
+                "W", 	  
+                "#NUM#",
+                "H", 
+                "R", 		
             };
 
             Assert.Equal(dict, d);
@@ -141,14 +141,14 @@ namespace numl.Tests.DataTests
         [Fact]
         public void Test_Enum_Dictionary_Gen()
         {
-            var d = StringHelpers.BuildEnumDictionary(ShortStrings);
+            var d = StringHelpers.BuildEnumArray(ShortStrings);
             // should have the following:
-            // ONE(1), TWO2(1), THREE(2)
-            var dict = new Dictionary<string, double>
+            // ONE, TWO2, THREE
+            var dict = new string[]
             {
-                { "ONE", 1 },
-                { "TWO2", 1 },
-                { "THREE", 2 },
+                "ONE", 
+                "TWO2",
+                "THREE",
             };
 
             Assert.Equal(dict, d);
@@ -157,18 +157,18 @@ namespace numl.Tests.DataTests
         [Fact]
         public void Test_Word_Dictionary_Gen()
         {
-            var d = StringHelpers.BuildWordDictionary(WordStrings);
+            var d = StringHelpers.BuildDistinctWordArray(WordStrings);
             // should have the following:
-            var dict = new Dictionary<string, double>
+            var dict = new string[]
             {
-                { "THE", 2 },
-                { "QUICK", 2 },
-                { "BROWN", 2 },
-                { "FOX", 2 },
-                { "#NUM#", 2 },
-                { "SUPER", 1 },
-                { "BEAR", 2 },
-                { "UGLY", 1 },
+                "THE", 
+                "QUICK",
+                "BROWN",
+                "FOX", 
+                "#NUM#",
+                "SUPER",
+                "BEAR",
+                "UGLY",
             };
 
             Assert.Equal(dict, d);
@@ -401,9 +401,7 @@ namespace numl.Tests.DataTests
         {
             Descriptor d = new Descriptor();
 
-            var dictionary = StringHelpers.BuildWordDictionary(WordStrings)
-                                          .Select(k => k.Key)
-                                          .ToArray();
+            var dictionary = StringHelpers.BuildDistinctWordArray(WordStrings);
 
             d.Features = new Property[]
             {
@@ -438,9 +436,7 @@ namespace numl.Tests.DataTests
         {
             Descriptor d = new Descriptor();
 
-            var dictionary = StringHelpers.BuildWordDictionary(WordStrings)
-                                          .Select(k => k.Key)
-                                          .ToArray();
+            var dictionary = StringHelpers.BuildDistinctWordArray(WordStrings);
 
             d.Features = new Property[]
             {
@@ -483,9 +479,7 @@ namespace numl.Tests.DataTests
         {
             Descriptor d = new Descriptor();
 
-            var dictionary = StringHelpers.BuildCharDictionary(ShortStrings)
-                                          .Select(k => k.Key)
-                                          .ToArray();
+            var dictionary = StringHelpers.BuildCharArray(ShortStrings);
 
             d.Features = new Property[]
             {
@@ -521,9 +515,7 @@ namespace numl.Tests.DataTests
         {
             Descriptor d = new Descriptor();
 
-            var dictionary = StringHelpers.BuildCharDictionary(ShortStrings)
-                                          .Select(k => k.Key)
-                                          .ToArray();
+            var dictionary = StringHelpers.BuildCharArray(ShortStrings);
 
             d.Features = new Property[]
             {

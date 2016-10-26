@@ -112,27 +112,13 @@ namespace numl.Utils
         /// <returns>An array of double.</returns>
         public static double[] GetWordCount(string item, StringProperty property)
         {
-            double[] counts = new double[property.Dictionary.Length];
-            var d = new Dictionary<string, int>();
+			// get list of words (or chars) from source
+			IEnumerable<string> words = property.SplitType == StringSplitType.Character ?
+												 GetChars(item) :
+												 GetWords(item, property.Separator);
 
-            for (int i = 0; i < counts.Length; i++)
-            {
-                counts[i] = 0;
-                // for quick index lookup
-                d.Add(property.Dictionary[i], i);
-            }
-
-            // get list of words (or chars) from source
-            IEnumerable<string> words = property.SplitType == StringSplitType.Character ?
-                                                 GetChars(item) :
-                                                 GetWords(item, property.Separator);
-
-            // TODO: this is not too efficient. Perhaps reconsider how to do this
-            foreach (var s in words)
-                if (property.Dictionary.Contains(s))
-                    counts[d[s]]++;
-
-            return counts;
+			var groupedWords = words.ToLookup(w => w);
+			return property.Dictionary.Select(d => (double)groupedWords[d].Count()).ToArray();
         }
         /// <summary>Gets word position.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
@@ -142,89 +128,56 @@ namespace numl.Utils
         /// <returns>The word position.</returns>
         public static int GetWordPosition(string item, string[] dictionary, bool checkNumber = true)
         {
-            //string[] dictionary = property.Dictionary;
             if (dictionary == null || dictionary.Length == 0)
                 throw new InvalidOperationException("Cannot get word position with an empty dictionary");
 
             item = Sanitize(item, checkNumber);
-
-            // is this the smartest thing?
-            for (int i = 0; i < dictionary.Length; i++)
-                if (dictionary[i] == item)
-                    return i;
+			
+			var index = Array.IndexOf<string>(dictionary, item);
+			if (index > -1)
+				return index;
 
             throw new InvalidOperationException(
                 string.Format("\"{0}\" does not exist in the property dictionary", item));
         }
-        /// <summary>Builds character dictionary.</summary>
+        /// <summary>Builds character array.</summary>
         /// <param name="examples">The examples.</param>
         /// <param name="exclusion">(Optional) the exclusion.</param>
-        /// <returns>A Dictionary&lt;string,double&gt;</returns>
-        public static Dictionary<string, double> BuildCharDictionary(IEnumerable<string> examples, string[] exclusion = null)
+        /// <returns>A string array.</returns>
+        public static string[] BuildCharArray(IEnumerable<string> examples, string[] exclusion = null)
         {
-            Dictionary<string, double> d = new Dictionary<string, double>();
-
-            foreach (string o in examples)
-            {
-                foreach (string key in GetChars(o, exclusion))
-                {
-                    if (d.ContainsKey(key))
-                        d[key] += 1;
-                    else
-                        d.Add(key, 1);
-                }
-            }
-
-            return d;
+			return examples.SelectMany(o => GetChars(o, exclusion)).Distinct().ToArray();
         }
-        /// <summary>Builds enum dictionary.</summary>
+        /// <summary>Builds enum array.</summary>
         /// <param name="examples">The examples.</param>
-        /// <returns>A Dictionary&lt;string,double&gt;</returns>
-        public static Dictionary<string, double> BuildEnumDictionary(IEnumerable<string> examples)
+        /// <returns>A string array</returns>
+        public static string[] BuildEnumArray(IEnumerable<string> examples)
         {
-            // TODO: Really need to consider this as an enum builder
-            Dictionary<string, double> d = new Dictionary<string, double>();
+			// TODO: Really need to consider this as an enum builder
 
-            // for holding string
-            string s = string.Empty;
+			return examples.Select(o =>
+			{
+				var s = o.Trim().ToUpperInvariant();
 
-            foreach (string o in examples)
-            {
-                s = o.Trim().ToUpperInvariant();
+				// kill inlined stuff that creates noise
+				// (like punctuation etc.)
+				s = new string(s.ToCharArray().Where(c => (!Char.IsSymbol(c) && !Char.IsPunctuation(c) && !Char.IsSeparator(c))).ToArray());
 
-                // kill inlined stuff that creates noise
-                // (like punctuation etc.)
-                s = new string(s.ToCharArray().Where(c => (!Char.IsSymbol(c) && !Char.IsPunctuation(c) && !Char.IsSeparator(c))).ToArray());
+				// null or whitespace
+				if (string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s))
+					s = EMPTY_STRING;
 
-                // null or whitespace
-                if (string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s))
-                    s = EMPTY_STRING;
-
-                if (d.ContainsKey(s))
-                    d[s] += 1;
-                else
-                    d.Add(s, 1);
-            }
-
-            return d;
+				return s;
+			}).Distinct().ToArray();
         }
-        /// <summary>Builds word dictionary.</summary>
+        /// <summary>Builds distinct word array.</summary>
         /// <param name="examples">The examples.</param>
         /// <param name="separator">(Optional) separator string.</param>
         /// <param name="exclusion">(Optional) the exclusion.</param>
-        /// <returns>A Dictionary&lt;string,double&gt;</returns>
-        public static Dictionary<string, double> BuildWordDictionary(IEnumerable<string> examples, string separator = " ", string[] exclusion = null)
+        /// <returns>A string array</returns>
+        public static string[] BuildDistinctWordArray(IEnumerable<string> examples, string separator = " ", string[] exclusion = null)
         {
-            Dictionary<string, double> d = new Dictionary<string, double>();
-
-            foreach (string s in examples)
-                foreach (string key in GetWords(s, separator, exclusion))
-                    if (d.ContainsKey(key))
-                        d[key] += 1;
-                    else
-                        d.Add(key, 1);
-
-            return d;
+			return examples.SelectMany(s => GetWords(s, separator, exclusion)).Distinct().ToArray();
         }
     }
 }
