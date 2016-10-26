@@ -122,11 +122,6 @@ namespace numl.Supervised.NeuralNetwork
         /// <value>The activation.</value>
         public IFunction ActivationFunction { get; set; }
 
-        /// <summary>
-        /// Gets or sets the output function (optional).
-        /// </summary>
-        public IFunction OutputFunction { get; set; }
-
         /// <summary>Calculates and returns the Node's <see cref="Output"/> value.</summary>
         /// <remarks>Input is equal to the weights multiplied by the source <see cref="Neuron"/>'s Output.</remarks>
         /// <returns>A double.</returns>
@@ -138,9 +133,6 @@ namespace numl.Supervised.NeuralNetwork
             }
 
             Output = ActivationFunction.Compute(Input);
-
-            if (OutputFunction != null)
-                Output = OutputFunction.Compute(Input);
 
             return Output;
         }

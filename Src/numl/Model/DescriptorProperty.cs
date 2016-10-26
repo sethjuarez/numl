@@ -99,6 +99,20 @@ namespace numl.Model
             AddProperty(p);
             return _descriptor;
         }
+
+        /// <summary>
+        /// Adds a string property with character segmentation treated as enumerations to the descriptor.
+        /// </summary>
+        /// <returns>Descriptor.</returns>
+        public Descriptor AsCharEnum()
+        {
+            StringProperty p = new StringProperty();
+            p.Name = _name;
+            p.AsEnum = true;
+            AddProperty(p);
+            return _descriptor;
+        }
+
         /// <summary>Adds string property to descriptor with previously chained name.</summary>
         /// <returns>descriptor with added property.</returns>
         public Descriptor AsStringEnum()

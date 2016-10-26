@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using numl.Math;
 using numl.Math.LinearAlgebra;
 using numl.Math.Functions;
+using numl.Math.Functions.Loss;
 using numl.Utils;
 
 namespace numl.Supervised.NeuralNetwork.Recurrent
@@ -65,11 +67,13 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
         {
             this.SequenceLength = 1;
             this.Epsilon = double.NaN;
+            this.NormalizeFeatures = true;
             this.LearningRate = 0.1;
             this.Lambda = 0.0;
             this.ResetGate = new SteepLogistic();
             this.UpdateGate = new SteepLogistic();
             this.Activation = new Tanh();
+            this.OutputFunction = new Softmax();
             this.PreserveOrder = true;
         }
 
@@ -99,14 +103,17 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
                 MaxIterations = 500;
 
             Network network = Network.New().Create(X.Cols, Y.Cols, Activation, OutputFunction,
-                fnNodeInitializer: (i, j) => new RecurrentNeuron()
+                fnNodeInitializer: (i, j) =>
                 {
-                    ActivationFunction = this.Activation,
-                    ResetGate = this.ResetGate,
-                    MemoryGate = this.UpdateGate,
-
-                    DeltaH = Vector.Zeros(this.SequenceLength)
-                }, epsilon: Epsilon);
+                    if (i > 0) return new RecurrentNeuron()
+                    {
+                        ActivationFunction = this.Activation,
+                        ResetGate = this.ResetGate,
+                        MemoryGate = this.UpdateGate
+                    };
+                    else return new Neuron();
+                },
+                epsilon: Epsilon, lossFunction: new CrossEntropyLoss());
 
             var model = new GatedRecurrentModel
             {
@@ -137,15 +144,27 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
                 {
                     network.ResetStates(properties);
 
-                    for (int i = 0; idx < items.Count(); idx++)
+                    for (int i = 0; i < items.Count(); i++)
                     {
+                        properties[RecurrentNeuron.TimeStepLabel] = i;
                         network.Forward(items.ElementAt(i).Item1);
+
+                        foreach (RecurrentNeuron node in network.GetVertices().OfType<RecurrentNeuron>())
+                            if (node.IsHidden || node.IsOutput) node.State(properties);
+                    }
+
+                    for (int i = items.Count() - 1; i >= 0; i--)
+                    {
+                        properties[RecurrentNeuron.TimeStepLabel] = i;
                         network.Back(items.ElementAt(i).Item2, properties);
                     }
 
                 }, asParallel: false);
 
                 loss[pass] = network.Cost;
+
+                if (pass > 0 && loss[pass - 1] > loss[pass])
+                    if (loss[pass - 1] - loss[pass] <= Defaults.Epsilon) break;
 
                 var output = String.Format("Run ({0}/{1}): {2}", pass, MaxIterations, network.Cost);
                 OnModelChanged(this, ModelEventArgs.Make(model, output));

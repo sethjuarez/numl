@@ -5,9 +5,11 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-using numl.Math.LinearAlgebra;
-using numl.Model;
 using numl.Data;
+using numl.Math.LinearAlgebra;
+using numl.Math.Functions;
+using numl.Model;
+using numl.Math.Functions.Loss;
 
 namespace numl.Supervised.NeuralNetwork
 {
@@ -21,6 +23,16 @@ namespace numl.Supervised.NeuralNetwork
         /// <summary>Gets or sets the out.</summary>
         /// <value>The out.</value>
         public Neuron[] Out { get; set; }
+
+        /// <summary>
+        /// Gets or sets the output function (optional).
+        /// </summary>
+        public IFunction OutputFunction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the network loss function.
+        /// </summary>
+        public ILossFunction LossFunction { get; set; } = new L2Loss();
 
         /// <summary>
         /// Gets or sets the current loss of the network.
@@ -92,15 +104,7 @@ namespace numl.Supervised.NeuralNetwork
         /// <param name="properties">Network training properties for use in learning.</param>
         public void Back(double y, NetworkTrainingProperties properties)
         {
-            this.Cost = Score.ComputeRMSE(Vector.Create(this.Out.Length, () => y), this.Out.Select(s => s.Output).ToVector());
-
-            // propagate error gradients
-            for (int i = 0; i < Out.Length; i++)
-                Out[i].Error(y, properties);
-
-            // reset weights
-            for (int i = 0; i < Out.Length; i++)
-                Out[i].Update(properties);
+            this.Back(Vector.Create(this.Out.Length, () => y), properties);
         }
 
         /// <summary>Backpropagates the errors through the network given the supplied sequence label.</summary>
@@ -109,7 +113,7 @@ namespace numl.Supervised.NeuralNetwork
         /// <param name="update">Indicates whether to update the weights after computing the errors.</param>
         public void Back(Vector y, NetworkTrainingProperties properties, bool update = true)
         {
-            this.Cost = Score.ComputeRMSE(y, this.Out.Select(s => s.Output).ToVector());
+            this.Cost = this.LossFunction.Compute(this.Out.Select(s => s.Output).ToVector(), y);
 
             // CK
             // propagate error gradients

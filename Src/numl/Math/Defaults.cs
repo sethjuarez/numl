@@ -14,6 +14,6 @@ namespace numl.Math
         /// <summary>
         /// Default epsilon equal to 1e-8.
         /// </summary>
-        public const double DefaultEpsilon = 1e-8;
+        public const double Epsilon = 1e-8;
     }
 }

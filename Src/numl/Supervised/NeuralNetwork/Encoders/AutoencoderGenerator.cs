@@ -11,13 +11,13 @@ namespace numl.Supervised.NeuralNetwork.Encoders
 {
     /// <summary>
     /// An Autoencoding Network Generator.
-    /// <para>By default this works as a (linear) denoising autoencoder.  If the features used are within [0, 1] range then try specifying a different Output Function such as Logistic or Tanh.</para>
+    /// <para>By default this works as a (linear) denoising autoencoder.</para>
     /// </summary>
     public class AutoencoderGenerator : NeuralNetworkGenerator, ISequenceGenerator
     {
         /// <summary>
         /// Gets or sets the density of the encoder. Higher values will learn the identity function more easily but may not denoise features as well.
-        /// <para>When using a higher Density value than the number of inputs it is recommended to lower the <see cref="Sparsity"/> constraint value to be closer to zero.</para>
+        /// <para>When using a higher Density value than the number of inputs it is recommended to increase the <see cref="Sparsity"/> constraint value to keep weights closer to zero.</para>
         /// </summary>
         public int Density { get; set; }
 
@@ -60,12 +60,12 @@ namespace numl.Supervised.NeuralNetwork.Encoders
 
         public override ISequenceModel Generate(Matrix X, Matrix Y)
         {
-            // dense autoencoders learn the approximation identity function so ignore labels.
+            // autoencoders learn the approximation identity function so ignore labels.
             // the output layer is the number of columns in X
-
-            // default hidden layer to 2/3 of the input
+            
             this.Preprocess(X);
 
+            // default hidden layer to 2/3 of the input
             if (this.Density <= 0) this.Density = (int) System.Math.Ceiling(X.Cols * (2.0 / 3.0));
 
             if (this.MaxIterations <= 0) MaxIterations = 400; // because Seth said so...

@@ -2,11 +2,13 @@
 //
 // summary:	Implements the network class
 using System;
-using numl.Model;
 using System.Linq;
-using numl.Math.Functions;
-using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
+
+using numl.Math.Functions;
+using numl.Math.Functions.Loss;
+using numl.Math.LinearAlgebra;
+using numl.Model;
 using numl.Utils;
 
 namespace numl.Supervised.NeuralNetwork
@@ -22,7 +24,8 @@ namespace numl.Supervised.NeuralNetwork
         /// <param name="outputFunction">The ouput function for hidden nodes (Optional).</param>
         /// <param name="epsilon">epsilon</param>
         /// <returns>A Network.</returns>
-        public static Network Create(this Network network, Descriptor d, Matrix x, Vector y, IFunction activationFunction, IFunction outputFunction = null, double epsilon = double.NaN)
+        public static Network Create(this Network network, Descriptor d, Matrix x, Vector y, IFunction activationFunction, IFunction outputFunction = null, 
+                                        double epsilon = double.NaN, ILossFunction lossFunction = null)
         {
             // set output to number of choices of available
             // 1 if only two choices
@@ -40,12 +43,13 @@ namespace numl.Supervised.NeuralNetwork
                     if (l == 0) return new Neuron(false) { Label = d.ColumnAt(i - 1), ActivationFunction = activationFunction, NodeId = i, LayerId = l };
                     else if (l == 2) return new Neuron(false) { Label = Network.GetLabel(i, d), ActivationFunction = activationFunction, NodeId = i, LayerId = l };
                     else return new Neuron(false) { ActivationFunction = activationFunction, NodeId = i, LayerId = l };
-                }), hiddenLayers: hidden);
+                }), lossFunction: lossFunction, hiddenLayers: hidden);
         }
 
         /// <summary>
         /// Creates a new fully connected deep neural network based on the supplied size and depth parameters.
         /// </summary>
+        /// <param name="network">New network instance.</param>
         /// <param name="inputLayer">Neurons in the input layer.</param>
         /// <param name="outputLayer">Neurons in the output layer.</param>
         /// <param name="activationFunction">Activation function for the hidden and output layers.</param>
@@ -53,11 +57,12 @@ namespace numl.Supervised.NeuralNetwork
         /// <param name="fnNodeInitializer">(Optional) Function to call for initializing new Nodes - supplying parameters for the layer and node index.</param>
         /// <param name="fnWeightInitializer">(Optional) Function to call for initializing the weights of each connection (including bias nodes).
         /// <para>Where int1 = Source layer (0 is input layer), int2 = Source Node, int3 = Target node in the next layer.</para></param>
+        /// <param name="lossFunction">Loss function to apply in computing the error cost.</param>
         /// <param name="epsilon">Weight initialization parameter for random weight selection.  Weight will be in the range of: -epsilon to +epsilon.</param>
         /// <param name="hiddenLayers">An array of hidden neuron dimensions, where each element is the size of each layer (excluding bias nodes).</param>
         /// <returns>Returns an untrained neural network model.</returns>
         public static Network Create(this Network network, int inputLayer, int outputLayer, IFunction activationFunction, IFunction outputFunction = null, Func<int, int, Neuron> fnNodeInitializer = null, 
-            Func<int, int, int, double> fnWeightInitializer = null, double epsilon = double.NaN, params int[] hiddenLayers)
+            Func<int, int, int, double> fnWeightInitializer = null, ILossFunction lossFunction = null, double epsilon = double.NaN, params int[] hiddenLayers)
         {
             IFunction ident = new Ident();
 
@@ -107,7 +112,6 @@ namespace numl.Supervised.NeuralNetwork
                     layer[i] = fnNodeInitializer(layerIdx + 1, i);
                     layer[i].Label = (layer[i].Label ?? String.Format("H{0}.{1}", layerIdx + 1, i));
                     layer[i].ActivationFunction = (layer[i].ActivationFunction ?? activationFunction);
-                    layer[i].OutputFunction = layer[i].OutputFunction;
                     layer[i].LayerId = layerIdx + 1;
                     layer[i].NodeId = i;
 
@@ -139,7 +143,6 @@ namespace numl.Supervised.NeuralNetwork
                 network.Out[i] = fnNodeInitializer(hiddenLayers.Length + 1, i);
                 network.Out[i].Label = (network.Out[i].Label ?? String.Format("O{0}", i));
                 network.Out[i].ActivationFunction = (network.Out[i].ActivationFunction ?? activationFunction);
-                network.Out[i].OutputFunction = (network.Out[i].OutputFunction ?? outputFunction);
                 network.Out[i].LayerId = hiddenLayers.Length + 1;
                 network.Out[i].NodeId = i;
 
@@ -151,60 +154,8 @@ namespace numl.Supervised.NeuralNetwork
                 for (int j = 0; j < last.Length; j++)
                     network.AddEdge(Edge.Create(last[j], network.Out[i], weight: fnWeightInitializer(hiddenLayers.Length, j, i), epsilon: epsilon));
 
-            return network;
-        }
-
-        /// <summary>
-        /// Creates a new deep neural network based on the supplied inputs and layers.
-        /// </summary>
-        /// <param name="d">Descriptor object.</param>
-        /// <param name="X">Training examples</param>
-        /// <param name="y">Training labels</param>
-        /// <param name="activationFunction">Activation Function for each output layer.</param>
-        /// <param name="outputFunction">Ouput Function for each output layer.</param>
-        /// <param name="hiddenLayers">The intermediary (hidden) layers / ensembles in the network.</param>
-        /// <returns>A Deep Neural Network</returns>
-        public static Network Create(this Network network, Descriptor d, Matrix X, Vector y, IFunction activationFunction, IFunction outputFunction = null, params NetworkLayer[] hiddenLayers)
-        {
-            // set output to number of choices of available
-            // 1 if only two choices
-            int distinct = y.Distinct().Count();
-            int output = distinct > 2 ? distinct : 1;
-            // identity function for bias nodes
-            IFunction ident = new Ident();
-
-            // creating input nodes
-            network.In = new Neuron[X.Cols + 1];
-            network.In[0] = new Neuron { Label = "B0", ActivationFunction = ident };
-            for (int i = 1; i < X.Cols + 1; i++)
-                network.In[i] = new Neuron { Label = d.ColumnAt(i - 1), ActivationFunction = ident };
-
-            // creating output nodes
-            network.Out = new Neuron[output];
-            for (int i = 0; i < output; i++)
-                network.Out[i] = new Neuron { Label = Network.GetLabel(i, d), ActivationFunction = activationFunction, OutputFunction = outputFunction };
-
-            for (int layer = 0; layer < hiddenLayers.Count(); layer++)
-            {
-                if (layer == 0 && hiddenLayers[layer].IsAutoencoder)
-                {
-                    // init and train it.
-                }
-
-                // connect input with previous layer or input layer
-                // connect last layer with output layer
-            }
-
-            // link input to hidden. Note: there are
-            // no inputs to the hidden bias node
-            //for (int i = 1; i < h.Length; i++)
-            //    for (int j = 0; j < nn.In.Length; j++)
-            //        Edge.Create(nn.In[j], h[i]);
-
-            //// link from hidden to output (full)
-            //for (int i = 0; i < nn.Out.Length; i++)
-            //    for (int j = 0; j < h.Length; j++)
-            //        Edge.Create(h[j], nn.Out[i]);
+            network.OutputFunction = outputFunction;
+            network.LossFunction = (lossFunction ?? network.LossFunction);
 
             return network;
         }

@@ -37,9 +37,6 @@ namespace numl.Supervised.NeuralNetwork.Encoders
 
             Output = ActivationFunction.Compute(Input);
 
-            if (OutputFunction != null)
-                Output = OutputFunction.Compute(Input);
-
             return Output;
         }
 

@@ -39,10 +39,6 @@ namespace numl.Serialization.Supervised.NeuralNetwork
                 if (activation != null)
                     node.ActivationFunction = Ject.FindType(activation.ToString()).CreateDefault<IFunction>();
 
-                var output = reader.ReadProperty().Value;
-                if (output != null)
-                    node.ActivationFunction = Ject.FindType(output.ToString()).CreateDefault<IFunction>();
-
                 node.Constrained = (bool) reader.ReadProperty().Value;
                 node.delta = (double)reader.ReadProperty().Value;
                 node.Delta = (double)reader.ReadProperty().Value;
@@ -76,8 +72,6 @@ namespace numl.Serialization.Supervised.NeuralNetwork
                 writer.WriteProperty(nameof(Neuron.IsBias), node.IsBias);
 
                 writer.WriteProperty(nameof(Neuron.ActivationFunction), node.ActivationFunction.GetType().FullName);
-
-                writer.WriteProperty(nameof(Neuron.OutputFunction), node.OutputFunction?.GetType().FullName);
 
                 writer.WriteProperty(nameof(Neuron.Constrained), node.Constrained);
 

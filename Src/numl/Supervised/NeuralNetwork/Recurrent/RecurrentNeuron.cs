@@ -6,6 +6,7 @@ using System.Text;
 using numl.Math.LinearAlgebra;
 using numl.Math.Functions;
 using numl.Math.Probability;
+using numl.Utils;
 
 namespace numl.Supervised.NeuralNetwork.Recurrent
 {
@@ -14,10 +15,19 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
     /// </summary>
     public class RecurrentNeuron : Neuron
     {
+        public const string TimeStepLabel = "TimeStep";
+
+        protected double HtP = 0, DRx = 0, DRh = 0, DZx = 0, DZh = 0, DHh = 0;
+
         /// <summary>
-        /// Vector of H state deltas from previous time steps.
+        /// Gets or sets a map of H state deltas from previous time steps.
         /// </summary>
-        public Vector DeltaH { get; set; }
+        protected Dictionary<int, double> DeltaH { get; set; } = new Dictionary<int, double>();
+
+        /// <summary>
+        /// Gets or sets a map of hidden states for the current sequence.
+        /// </summary>
+        protected Dictionary<int, double> StatesH { get; set; } = new Dictionary<int, double>();
 
         /// <summary>
         /// Gets or Sets the hidden (internal) state of the neuron.
@@ -69,6 +79,11 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
         public double Zx { get; set; }
 
         /// <summary>
+        /// Gets or sets the Recurrent weight value.
+        /// </summary>
+        public double Hh { get; set; }
+
+        /// <summary>
         /// Gets or sets the reset gate function.
         /// </summary>
         public IFunction ResetGate { get; set; }
@@ -86,10 +101,11 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
             this.H = 0d;
             this.Rb = 0d;
             this.Zb = 0d;
-            this.Zx = Sampling.GetUniform();
-            this.Zh = Sampling.GetUniform();
-            this.Rx = Sampling.GetUniform();
-            this.Rh = Sampling.GetUniform();
+            this.Zx = Edge.GetWeight(0.5);
+            this.Zh = Edge.GetWeight(0.5);
+            this.Rx = Edge.GetWeight(0.5);
+            this.Rh = Edge.GetWeight(0.5);
+            this.Hh = Edge.GetWeight(1.5);
 
             if (this.ResetGate == null)
                 this.ResetGate = new Math.Functions.SteepLogistic();
@@ -97,6 +113,15 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
                 this.MemoryGate = new Math.Functions.SteepLogistic();
             if (this.ActivationFunction == null)
                 this.ActivationFunction = new Math.Functions.Tanh();
+        }
+
+        /// <summary>
+        /// Stores state information prior to computing the error derivatives.
+        /// </summary>
+        /// <param name="properties">Network training properties object.</param>
+        public void State(NetworkTrainingProperties properties)
+        {
+            this.StatesH[(int) properties[TimeStepLabel]] = this.H;
         }
 
         /// <summary>
@@ -111,16 +136,14 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
             if (base.In.Count > 0)
             {
                 // is hidden unit - apply memory states
-                // Input is equal to combined input weights with bias values
-
                 this.R = this.ResetGate.Compute((this.Rx * this.Input) + (this.Rh * this.H) + this.Rb);
                 this.Z = this.MemoryGate.Compute((this.Zx * this.Input) + (this.Zh * this.H) + this.Zb);
 
-                double htP = this.ActivationFunction.Compute(this.Input + (this.R * this.H));
+                this.HtP = this.ActivationFunction.Compute(this.Input + (this.R * this.H) * this.Hh);
 
-                this.H = (1.0 - this.Z) * this.H + this.Z * htP;
+                this.H = (1.0 - this.Z) * this.H + this.Z * this.HtP;
 
-                this.Output = (this.OutputFunction != null ? this.OutputFunction.Compute(this.H) : this.H);
+                this.Output = H;
             }
 
             return this.Output;
@@ -135,9 +158,50 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
         public override double Error(double t, NetworkTrainingProperties properties)
         {
             //TODO: Return the correct error.
-            base.Error(t, properties);
+            _DeltaL = Delta;
 
-            return this.Delta;
+            if (Out.Count == 0)
+                Delta = delta = -(t - Output);
+
+            else
+            {
+                int timestep = (int) properties[TimeStepLabel];
+                int seqlength = (int) properties[nameof(GatedRecurrentGenerator.SequenceLength)];
+
+                double htm1 = this.StatesH.ContainsKey(timestep - 1) ? this.StatesH[timestep - 1] : 0;
+                double h = (this.StatesH.ContainsKey(timestep) ? this.StatesH[timestep] : 0);
+
+                double seqmod = (1.0 / seqlength);
+
+                if (In.Count > 0 && Out.Count > 0)
+                {
+                    double dyhh = (1.0 - this.Z), dyhz = this.HtP - h;
+                    double dhtP = this.ActivationFunction.Derivative(this.Input + (this.R * htm1) * this.Hh);
+                    dhtP = dhtP * dyhh;
+
+                    double dr = this.ResetGate.Derivative((this.Rx * this.Input) + (this.Rh * h) + this.Rb);
+                    double dz = this.MemoryGate.Derivative((this.Zx * this.Input) + (this.Zh * h) + this.Zb);
+
+                    this.DRx = (seqmod * (dr * this.Input)); this.DRh = (seqmod * (dr * h));
+                    this.DZx = (seqmod * (dz * this.Input)); this.DZh = (seqmod * (dz * h));
+
+                    delta = Out.Sum(e => e.Weight * t) + this.Hh * dhtP;
+
+                    this.DeltaH[timestep] = this.DeltaH.GetValueOrDefault(timestep, 0) + this.DeltaH.GetValueOrDefault(timestep + 1, 0);
+                }
+
+                this.Delta = Out.Sum(s => s.Target.delta * this.Output) + this.DeltaH[timestep];
+            }
+
+            if (this.In.Count > 0)
+            {
+                for (int edge = 0; edge < this.In.Count; edge++)
+                {
+                    this.In[edge].Source.Error(this.Delta, properties);
+                }
+            }
+
+            return Delta;
         }
 
         /// <summary>
@@ -146,8 +210,33 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
         /// <param name="properties">Network training properties.</param>
         public override void Update(NetworkTrainingProperties properties)
         {
-            // TODO: Update recurrent weights.
-            base.Update(properties);
+            if (!this.Constrained)
+            {
+                double lm = (properties.Lambda / (int) properties[nameof(GatedRecurrentGenerator.SequenceLength)]);
+
+                this.Rx = this.Rx - properties.LearningRate * (this.DRx + (lm * this.Rx));
+                this.Rh = this.Rh - properties.LearningRate * (this.DRh + (lm * this.Rh));
+
+                this.Zx = this.Zx - properties.LearningRate * (this.DZx + (lm * this.Zx));
+                this.Zh = this.Zh - properties.LearningRate * (this.DZh + (lm * this.Zh));
+
+                this.Hh = this.Hh - properties.LearningRate * (this.DHh + (lm * this.Hh));
+            }
+
+            for (int edge = 0; edge < this.In.Count; edge++)
+            {
+                Delta = (1.0 / properties.Examples) * Delta;
+
+                if (!this.In[edge].Source.IsBias)
+                    Delta = Delta + ((properties.Lambda / properties.Examples) * this.In[edge].Weight);
+
+                if (!this.Constrained)
+                {
+                    this.In[edge].Weight = this.In[edge].Weight - properties.LearningRate * Delta;
+                }
+
+                this.In[edge].Source.Update(properties);
+            }
         }
 
         /// <summary>
@@ -156,9 +245,10 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
         /// <param name="properties">Network training properties.</param>
         public override void Reset(NetworkTrainingProperties properties)
         {
-            this.H = 0;
+            this.H = 0; this.HtP = 0; this.DRx = 0; this.DRh = 0; this.DZx = 0; this.DZh = 0; this.DHh = 0;
 
-            this.DeltaH = Vector.Zeros((int)properties[nameof(GatedRecurrentGenerator.SequenceLength)]);
+            this.DeltaH = new Dictionary<int, double>();
+            this.StatesH = new Dictionary<int, double>();
 
             base.Reset(properties);
         }
