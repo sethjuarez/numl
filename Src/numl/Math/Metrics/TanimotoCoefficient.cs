@@ -1,7 +1,6 @@
 // file:	Math\Metrics\TanimotoCoefficient.cs
 //
 // summary:	Implements the tanimoto coefficient class
-using System;
 using numl.Math.LinearAlgebra;
 
 namespace numl.Math.Metrics

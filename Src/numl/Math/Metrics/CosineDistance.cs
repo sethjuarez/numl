@@ -1,7 +1,6 @@
 // file:	Math\Metrics\CosineDistance.cs
 //
 // summary:	Implements the cosine distance class
-using System;
 using numl.Math.LinearAlgebra;
 
 namespace numl.Math.Metrics
