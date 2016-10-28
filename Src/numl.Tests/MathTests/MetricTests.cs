@@ -27,5 +27,24 @@ namespace numl.Tests.MathTests
 
             Assert.Equal(truth, result);
         }
+
+        [Theory]
+        [InlineData(new[] { 1d, 5, 2, 3, 10 }, new[] { 4d, 15, 10, 5, 5 }, typeof(EuclidianSimilarity), 0.06573467)]
+        [InlineData(new[] { 1d, 2, 3 }, new[] { 2d, 4, 6 }, typeof(CosineSimilarity), 1)]
+        [InlineData(new[] { 1d, 2, 6 }, new[] { 3d, 7, 20 }, typeof(PearsonCorrelation), 0.999321)]
+        [InlineData(new[] { 1d, 5, 3 }, new[] { 4d, 7, 20 }, typeof(TanimotoCoefficient), 0.2468827)]
+        public void Similarity_Test(double[] x, double[] y, Type t, double truth)
+        {
+            Assert.True(t.GetInterfaces().Contains(typeof(ISimilarity)));
+
+            var similarity = (ISimilarity)Activator.CreateInstance(t);
+            var result = similarity.Compute(new Vector(x), new Vector(y));
+
+            truth = System.Math.Round(truth, 4);
+            result = System.Math.Round(result, 4);
+
+            Assert.Equal(truth, result);
+        }
+
     }
 }
