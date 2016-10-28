@@ -4,7 +4,6 @@ using Xunit;
 using numl.Math.Metrics;
 using System.Reflection;
 using numl.Math.LinearAlgebra;
-using System.Collections.Generic;
 
 namespace numl.Tests.MathTests
 {
@@ -15,6 +14,7 @@ namespace numl.Tests.MathTests
         [InlineData(new[] { 1d, 5, 2, 3, 10 }, new[] { 4d, 15, 20, 5, 5 }, typeof(CosineDistance), 0.40629)]
         [InlineData(new[] { 1d, 2, 3 }, new[] { 2d, 4, 6 }, typeof(EuclidianDistance), 3.7416573867739413855837487323165)]
         [InlineData(new[] { 1d, 0, 0, 1, 1 }, new[] { 0d, 0, 1, 0, 1 }, typeof(HammingDistance), 3)]
+        [InlineData(new[] { 1d, 5, 3, 10 }, new[] { 4d, 15, 20, 5 }, typeof(ManhattanDistance), 35)]
         public void Distance_Test(double[] x, double[] y, Type t, double truth)
         {
             Assert.True(t.GetInterfaces().Contains(typeof(IDistance)));
