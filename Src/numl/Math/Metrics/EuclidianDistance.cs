@@ -1,7 +1,6 @@
 // file:	Math\Metrics\EuclidianDistance.cs
 //
 // summary:	Implements the euclidian distance class
-using System;
 using numl.Math.LinearAlgebra;
 
 

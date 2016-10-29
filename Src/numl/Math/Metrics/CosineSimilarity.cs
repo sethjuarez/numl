@@ -1,7 +1,6 @@
 // file:	Math\Metrics\CosineSimilarity.cs
 //
 // summary:	Implements the cosine similarity class
-using System;
 using numl.Math.LinearAlgebra;
 
 namespace numl.Math.Metrics

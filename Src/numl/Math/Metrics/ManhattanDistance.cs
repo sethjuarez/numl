@@ -1,7 +1,6 @@
 // file:	Math\Metrics\ManhattanDistance.cs
 //
 // summary:	Implements the manhattan distance class
-using System;
 using numl.Math.LinearAlgebra;
 
 namespace numl.Math.Metrics
