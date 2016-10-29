@@ -7,6 +7,7 @@ using numl.Math;
 using numl.Math.LinearAlgebra;
 using numl.Math.Functions;
 using numl.Math.Functions.Loss;
+using numl.Supervised.NeuralNetwork.Optimization;
 using numl.Utils;
 
 namespace numl.Supervised.NeuralNetwork.Recurrent
@@ -14,21 +15,8 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
     /// <summary>
     /// A Gated Recurrent Unit neural network generator.
     /// </summary>
-    public class GatedRecurrentGenerator : Generator, ISequenceGenerator
+    public class GatedRecurrentGenerator : NeuralNetworkGenerator, ISequenceGenerator
     {
-        /// <summary>Gets or sets the learning rate.</summary>
-        /// <value>The learning rate.</value>
-        public double LearningRate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Lambda or weight decay term.
-        /// </summary>
-        public double Lambda { get; set; }
-
-        /// <summary>Gets or sets the maximum iterations.</summary>
-        /// <value>The maximum iterations.</value>
-        public int MaxIterations { get; set; }
-
         /// <summary>
         /// Gets or sets the size of the memory timeframe.
         /// <para>A larger value will allow the network to learn greater long-term dependencies.  This value should be less than the size of the training set.</para>
@@ -44,21 +32,6 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
         /// Gets or sets the Update gating function used in the individual neurons.
         /// </summary>
         public IFunction UpdateGate { get; set; }
-
-        /// <summary>Gets or sets the activation.</summary>
-        /// <value>The activation.</value>
-        public IFunction Activation { get; set; }
-
-        /// <summary>
-        /// Gets or sets the output layer function (i.e. Softmax).
-        /// </summary>
-        public IFunction OutputFunction { get; set; }
-
-        /// <summary>
-        /// Gets or sets the weight initialization value.
-        /// <para>Weights will be randomly initialized between the range: -Epsilon and +Epsilon</para>
-        /// </summary>
-        public double Epsilon { get; set; }
 
         /// <summary>
         /// Initializes a new instance of a Gated Recurrent Network generator.
@@ -85,7 +58,9 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
         /// <returns></returns>
         public override IModel Generate(Matrix X, Vector y)
         {
-            return this.Generate(X, y.ToMatrix(VectorType.Col));
+            Matrix Y = this.ToEncoded(y);
+
+            return this.Generate(X, Y);
         }
 
         /// <summary>
@@ -94,7 +69,7 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
         /// <param name="X">Matrix of training data.</param>
         /// <param name="Y">Matrix of matching sequence labels.</param>
         /// <returns>GatedRecurrentModel.</returns>
-        public ISequenceModel Generate(Matrix X, Matrix Y)
+        public override ISequenceModel Generate(Matrix X, Matrix Y)
         {
             this.Preprocess(X);
 
@@ -103,13 +78,13 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
                 MaxIterations = 500;
 
             Network network = Network.New().Create(X.Cols, Y.Cols, Activation, OutputFunction,
-                fnNodeInitializer: (i, j) =>
+                fnNodeInitializer: (i, j, type) =>
                 {
-                    if (i > 0) return new RecurrentNeuron()
+                    if (type == NodeType.Hidden || type == NodeType.Output) return new RecurrentNeuron()
                     {
                         ActivationFunction = this.Activation,
                         ResetGate = this.ResetGate,
-                        MemoryGate = this.UpdateGate
+                        UpdateGate = this.UpdateGate
                     };
                     else return new Neuron();
                 },
@@ -131,6 +106,8 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
 
             NetworkTrainingProperties properties = NetworkTrainingProperties.Create(network, X.Rows, X.Cols, this.LearningRate, this.Lambda, this.MaxIterations,
                                                     new { this.SequenceLength });
+
+            INetworkTrainer trainer = new RMSPropTrainer();
 
             Vector loss = Vector.Zeros(MaxIterations);
 
@@ -156,18 +133,17 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
                     for (int i = items.Count() - 1; i >= 0; i--)
                     {
                         properties[RecurrentNeuron.TimeStepLabel] = i;
-                        network.Back(items.ElementAt(i).Item2, properties);
+                        network.Back(items.ElementAt(i).Item2, properties, trainer);
                     }
 
                 }, asParallel: false);
 
                 loss[pass] = network.Cost;
 
-                if (pass > 0 && loss[pass - 1] > loss[pass])
-                    if (loss[pass - 1] - loss[pass] <= Defaults.Epsilon) break;
-
                 var output = String.Format("Run ({0}/{1}): {2}", pass, MaxIterations, network.Cost);
                 OnModelChanged(this, ModelEventArgs.Make(model, output));
+
+                if (this.LossMinimized(loss, pass)) break;
             }
 
             return model;

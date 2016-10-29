@@ -92,6 +92,46 @@ namespace numl.Math.LinearAlgebra
             for (int i = v.Length - 1; i > -1; i--)
                 yield return v[i];
         }
+
+        /// <summary>
+        /// Returns a 1-of-k binary indexed Matrix (m x k) from the supplied Vector, where k is the number of distinct values.
+        /// </summary>
+        /// <param name="v">Vector of discrete values.</param>
+        /// <param name="expand">If True, a binary Vector is expanded to a m x 2 Matrix, otherwise a binary Matrix of m x 1 is returned.</param>
+        /// <returns>Matrix.</returns>
+        public static Matrix ToBinaryMatrix(this Vector v, bool expand = false)
+        {
+            SortedSet<double> sorted = new SortedSet<double>();
+
+            for (int i = 0; i < v.Length; i++)
+            {
+                sorted.Add(v[i]);
+            }
+
+            int count = (sorted.Count > 2 ? sorted.Count : expand ? sorted.Count : 1);
+
+            Matrix Y = Matrix.Zeros(v.Length, count);
+
+            for (int i = 0; i < v.Length; i++)
+            {
+                if (count > 2 || expand)
+                {
+                    for (int x = 0; x < sorted.Count; x++)
+                        if (sorted.ElementAt(x) == v[i])
+                        {
+                            Y[i, x] = 1.0;
+                            break;
+                        }
+                }
+                else
+                {
+                    Y[i, 0] = (sorted.ElementAt(1) == v[i] ? 1 : 0);
+                }
+            }
+
+            return Y;
+        }
+
         /// <summary>
         /// An IEnumerable&lt;int&gt; extension method that converts a seq to a vector.
         /// </summary>

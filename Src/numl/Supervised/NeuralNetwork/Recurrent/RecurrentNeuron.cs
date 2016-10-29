@@ -6,6 +6,7 @@ using System.Text;
 using numl.Math.LinearAlgebra;
 using numl.Math.Functions;
 using numl.Math.Probability;
+using numl.Supervised.NeuralNetwork.Optimization;
 using numl.Utils;
 
 namespace numl.Supervised.NeuralNetwork.Recurrent
@@ -17,7 +18,7 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
     {
         public const string TimeStepLabel = "TimeStep";
 
-        protected double HtP = 0, DRx = 0, DRh = 0, DZx = 0, DZh = 0, DHh = 0;
+        protected double Htm1 = 0, HtP = 0, DRx = 0, DRh = 0, DZx = 0, DZh = 0, DHh = 0;
 
         /// <summary>
         /// Gets or sets a map of H state deltas from previous time steps.
@@ -91,7 +92,7 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
         /// <summary>
         /// Gets or sets the update (memory) gate function.
         /// </summary>
-        public IFunction MemoryGate { get; set; }
+        public IFunction UpdateGate { get; set; }
 
         /// <summary>
         /// Initializes a new Recurrent Neuron.
@@ -101,16 +102,16 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
             this.H = 0d;
             this.Rb = 0d;
             this.Zb = 0d;
-            this.Zx = Edge.GetWeight(0.5);
-            this.Zh = Edge.GetWeight(0.5);
-            this.Rx = Edge.GetWeight(0.5);
-            this.Rh = Edge.GetWeight(0.5);
-            this.Hh = Edge.GetWeight(1.5);
+            this.Zx = Edge.GetWeight(0.05);
+            this.Zh = Edge.GetWeight(0.05);
+            this.Rx = Edge.GetWeight(0.05);
+            this.Rh = Edge.GetWeight(0.05);
+            this.Hh = Edge.GetWeight(0.05);
 
             if (this.ResetGate == null)
                 this.ResetGate = new Math.Functions.SteepLogistic();
-            if (this.MemoryGate == null)
-                this.MemoryGate = new Math.Functions.SteepLogistic();
+            if (this.UpdateGate == null)
+                this.UpdateGate = new Math.Functions.SteepLogistic();
             if (this.ActivationFunction == null)
                 this.ActivationFunction = new Math.Functions.Tanh();
         }
@@ -130,16 +131,15 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
         /// <returns></returns>
         public override double Evaluate()
         {
-            // guarantee updates to Input
-            base.Evaluate();
-
             if (base.In.Count > 0)
             {
+                this.Input = this.In.Sum(e => e.Weight * e.Source.Evaluate());
+
                 // is hidden unit - apply memory states
                 this.R = this.ResetGate.Compute((this.Rx * this.Input) + (this.Rh * this.H) + this.Rb);
-                this.Z = this.MemoryGate.Compute((this.Zx * this.Input) + (this.Zh * this.H) + this.Zb);
+                this.Z = this.UpdateGate.Compute((this.Zx * this.Input) + (this.Zh * this.H) + this.Zb);
 
-                this.HtP = this.ActivationFunction.Compute(this.Input + (this.R * this.H) * this.Hh);
+                this.HtP = this.ActivationFunction.Compute(this.Input + this.R * (this.Hh * this.H));
 
                 this.H = (1.0 - this.Z) * this.H + this.Z * this.HtP;
 
@@ -169,28 +169,28 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
                 int seqlength = (int) properties[nameof(GatedRecurrentGenerator.SequenceLength)];
 
                 double htm1 = this.StatesH.ContainsKey(timestep - 1) ? this.StatesH[timestep - 1] : 0;
-                double h = (this.StatesH.ContainsKey(timestep) ? this.StatesH[timestep] : 0);
+                double ht = this.StatesH.ContainsKey(timestep) ? this.StatesH[timestep] : 0;
 
                 double seqmod = (1.0 / seqlength);
 
                 if (In.Count > 0 && Out.Count > 0)
                 {
-                    double dyhh = (1.0 - this.Z), dyhz = this.HtP - h;
-                    double dhtP = this.ActivationFunction.Derivative(this.Input + (this.R * htm1) * this.Hh);
-                    dhtP = dhtP * dyhh;
+                    double dyhh = (1.0 - this.Z), dyhz = this.HtP - ht;
+                    double dHtP = this.ActivationFunction.Derivative(this.Input + (this.R * ht) * this.Hh);
+                    double dyHtP = dHtP * dyhh;
 
-                    double dr = this.ResetGate.Derivative((this.Rx * this.Input) + (this.Rh * h) + this.Rb);
-                    double dz = this.MemoryGate.Derivative((this.Zx * this.Input) + (this.Zh * h) + this.Zb);
+                    double dr = this.ResetGate.Derivative((this.Rx * this.Input) + (this.Rh * ht) + this.Rb);
+                    double dz = this.UpdateGate.Derivative((this.Zx * this.Input) + (this.Zh * ht) + this.Zb);
 
-                    this.DRx = (seqmod * (dr * this.Input)); this.DRh = (seqmod * (dr * h));
-                    this.DZx = (seqmod * (dz * this.Input)); this.DZh = (seqmod * (dz * h));
+                    this.DRx = (seqmod * (dr * this.Input)); this.DRh = (seqmod * (dr * ht));
+                    this.DZx = (seqmod * (dz * this.Input)); this.DZh = (seqmod * (dz * ht));
 
-                    delta = Out.Sum(e => e.Weight * t) + this.Hh * dhtP;
-
-                    this.DeltaH[timestep] = this.DeltaH.GetValueOrDefault(timestep, 0) + this.DeltaH.GetValueOrDefault(timestep + 1, 0);
+                    delta = Out.Sum(e => e.Weight * t) + this.DHh * htm1;
                 }
 
-                this.Delta = Out.Sum(s => s.Target.delta * this.Output) + this.DeltaH[timestep];
+                this.DHh = this.DeltaH[timestep] = this.DHh + this.DeltaH.GetValueOrDefault(timestep + 1, 0);
+
+                this.Delta = Out.Sum(s => s.Target.delta * this.Output) + this.DHh * htm1;
             }
 
             if (this.In.Count > 0)
@@ -205,22 +205,23 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
         }
 
         /// <summary>
-        /// Updates the weights using the supplied (<see cref="NetworkTrainingProperties"/>)
+        /// Propagates a weight update event upstream through the network.
         /// </summary>
         /// <param name="properties">Network training properties.</param>
-        public override void Update(NetworkTrainingProperties properties)
+        /// <param name="networkTrainer">Network training method.</param>
+        public override void Update(NetworkTrainingProperties properties, INetworkTrainer networkTrainer)
         {
+            double lm = (properties.Lambda / (int) properties[nameof(GatedRecurrentGenerator.SequenceLength)]);
+
             if (!this.Constrained)
             {
-                double lm = (properties.Lambda / (int) properties[nameof(GatedRecurrentGenerator.SequenceLength)]);
+                this.Rx = networkTrainer.Update(this.NodeId, this.NodeId, nameof(this.Rx), this.Rx, this.DRx, properties);
+                this.Rh = networkTrainer.Update(this.NodeId, this.NodeId, nameof(this.Rh), this.Rh, this.DRh, properties);
 
-                this.Rx = this.Rx - properties.LearningRate * (this.DRx + (lm * this.Rx));
-                this.Rh = this.Rh - properties.LearningRate * (this.DRh + (lm * this.Rh));
+                this.Zx = networkTrainer.Update(this.NodeId, this.NodeId, nameof(this.Zx), this.Zx, this.DZx, properties);
+                this.Zh = networkTrainer.Update(this.NodeId, this.NodeId, nameof(this.Zh), this.Zh, this.DZh, properties);
 
-                this.Zx = this.Zx - properties.LearningRate * (this.DZx + (lm * this.Zx));
-                this.Zh = this.Zh - properties.LearningRate * (this.DZh + (lm * this.Zh));
-
-                this.Hh = this.Hh - properties.LearningRate * (this.DHh + (lm * this.Hh));
+                this.Hh = networkTrainer.Update(this.NodeId, this.NodeId, nameof(this.Hh), this.Hh, this.DHh, properties);
             }
 
             for (int edge = 0; edge < this.In.Count; edge++)
@@ -228,14 +229,15 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
                 Delta = (1.0 / properties.Examples) * Delta;
 
                 if (!this.In[edge].Source.IsBias)
-                    Delta = Delta + ((properties.Lambda / properties.Examples) * this.In[edge].Weight);
+                    Delta = Delta + (lm * this.In[edge].Weight);
 
                 if (!this.Constrained)
                 {
-                    this.In[edge].Weight = this.In[edge].Weight - properties.LearningRate * Delta;
+                    this.In[edge].Weight = networkTrainer.Update(this.In[edge].ParentId, this.In[edge].ChildId, 
+                                                                    nameof(Edge.Weight), this.In[edge].Weight, Delta, properties);
                 }
 
-                this.In[edge].Source.Update(properties);
+                this.In[edge].Source.Update(properties, networkTrainer);
             }
         }
 

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using numl.Supervised.NeuralNetwork.Optimization;
+
 namespace numl.Supervised.NeuralNetwork.Encoders
 {
     /// <summary>
@@ -77,9 +79,12 @@ namespace numl.Supervised.NeuralNetwork.Encoders
             return Delta;
         }
 
-        /// <summary>Propagates a weight update event upstream through the network using the supplied learning rate.</summary>
+        /// <summary>
+        /// Propagates a weight update event upstream through the network.
+        /// </summary>
         /// <param name="properties">Network training properties.</param>
-        public override void Update(NetworkTrainingProperties properties)
+        /// <param name="networkTrainer">Network training method.</param>
+        public override void Update(NetworkTrainingProperties properties, INetworkTrainer networkTrainer)
         {
             for (int edge = 0; edge < this.In.Count; edge++)
             {
@@ -90,18 +95,16 @@ namespace numl.Supervised.NeuralNetwork.Encoders
 
                 if (!this.Constrained)
                 {
-                    // using stochastic gradient descent averaged over training examples.
-                    this.In[edge].Weight = this.In[edge].Weight - properties.LearningRate * Delta;
+                    this.In[edge].Weight = networkTrainer.Update(this.In[edge].ParentId, this.In[edge].ChildId,
+                                                                 nameof(Edge.Weight), this.In[edge].Weight, this.Delta, properties);
                 }
-                this.In[edge].Source.Update(properties);
+                this.In[edge].Source.Update(properties, networkTrainer);
             }
-
-            this.Mu = 0;
         }
 
         public override void Reset(NetworkTrainingProperties properties)
         {
-            //this.Mu = 0;
+            this.Mu = 0;
 
             base.Reset(properties);
         }

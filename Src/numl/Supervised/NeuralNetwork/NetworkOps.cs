@@ -13,6 +13,29 @@ using numl.Utils;
 
 namespace numl.Supervised.NeuralNetwork
 {
+    /// <summary>
+    /// Node Type
+    /// </summary>
+    public enum NodeType
+    {
+        /// <summary>
+        /// Input layer node.
+        /// </summary>
+        Input,
+        /// <summary>
+        /// Bias node
+        /// </summary>
+        Bias,
+        /// <summary>
+        /// Hidden node.
+        /// </summary>
+        Hidden,
+        /// <summary>
+        /// Output layer node.
+        /// </summary>
+        Output
+    }
+
     /// <summary>A network.</summary>
     public static class NetworkOps
     {
@@ -38,10 +61,10 @@ namespace numl.Supervised.NeuralNetwork
             int hidden = (int)System.Math.Ceiling((double)(x.Cols + output) * 2.0 / 3.0);
 
             return network.Create(x.Cols, output, activationFunction, outputFunction,
-                fnNodeInitializer: new Func<int, int, Neuron>((l, i) =>
+                fnNodeInitializer: new Func<int, int, NodeType, Neuron>((l, i, type) =>
                 {
-                    if (l == 0) return new Neuron(false) { Label = d.ColumnAt(i - 1), ActivationFunction = activationFunction, NodeId = i, LayerId = l };
-                    else if (l == 2) return new Neuron(false) { Label = Network.GetLabel(i, d), ActivationFunction = activationFunction, NodeId = i, LayerId = l };
+                    if (type == NodeType.Input) return new Neuron(false) { Label = d.ColumnAt(i - 1), ActivationFunction = activationFunction, NodeId = i, LayerId = l };
+                    else if (type == NodeType.Output) return new Neuron(false) { Label = Network.GetLabel(i, d), ActivationFunction = activationFunction, NodeId = i, LayerId = l };
                     else return new Neuron(false) { ActivationFunction = activationFunction, NodeId = i, LayerId = l };
                 }), lossFunction: lossFunction, hiddenLayers: hidden);
         }
@@ -54,14 +77,14 @@ namespace numl.Supervised.NeuralNetwork
         /// <param name="outputLayer">Neurons in the output layer.</param>
         /// <param name="activationFunction">Activation function for the hidden and output layers.</param>
         /// <param name="outputFunction">(Optional) Output function of the the Nodes in the output layer (overrides the Activation function).</param>
-        /// <param name="fnNodeInitializer">(Optional) Function to call for initializing new Nodes - supplying parameters for the layer and node index.</param>
+        /// <param name="fnNodeInitializer">(Optional) Function to call for initializing new Nodes, where int1: layer, int2: node index, NodeType: node type.</param>
         /// <param name="fnWeightInitializer">(Optional) Function to call for initializing the weights of each connection (including bias nodes).
         /// <para>Where int1 = Source layer (0 is input layer), int2 = Source Node, int3 = Target node in the next layer.</para></param>
         /// <param name="lossFunction">Loss function to apply in computing the error cost.</param>
         /// <param name="epsilon">Weight initialization parameter for random weight selection.  Weight will be in the range of: -epsilon to +epsilon.</param>
         /// <param name="hiddenLayers">An array of hidden neuron dimensions, where each element is the size of each layer (excluding bias nodes).</param>
         /// <returns>Returns an untrained neural network model.</returns>
-        public static Network Create(this Network network, int inputLayer, int outputLayer, IFunction activationFunction, IFunction outputFunction = null, Func<int, int, Neuron> fnNodeInitializer = null, 
+        public static Network Create(this Network network, int inputLayer, int outputLayer, IFunction activationFunction, IFunction outputFunction = null, Func<int, int, NodeType, Neuron> fnNodeInitializer = null, 
             Func<int, int, int, double> fnWeightInitializer = null, ILossFunction lossFunction = null, double epsilon = double.NaN, params int[] hiddenLayers)
         {
             IFunction ident = new Ident();
@@ -76,7 +99,7 @@ namespace numl.Supervised.NeuralNetwork
             layers.Add(outputLayer);
 
             if (fnNodeInitializer == null)
-                fnNodeInitializer = new Func<int, int, Neuron>((i, j) => new Neuron());
+                fnNodeInitializer = new Func<int, int, NodeType, Neuron>((i, j, type) => new Neuron());
 
             if (fnWeightInitializer == null)
                 fnWeightInitializer = new Func<int, int, int, double>((l, i, j) => {
@@ -92,7 +115,7 @@ namespace numl.Supervised.NeuralNetwork
 
             for (int i = 1; i < inputLayer + 1; i++)
             {
-                network.In[i] = fnNodeInitializer(0, i);
+                network.In[i] = fnNodeInitializer(0, i, NodeType.Input);
                 network.In[i].Label = (network.In[i].Label ?? string.Format("I{0}", i));
                 network.In[i].ActivationFunction = (network.In[i].ActivationFunction ?? ident);
                 network.In[i].LayerId = 0;
@@ -109,7 +132,7 @@ namespace numl.Supervised.NeuralNetwork
                 layer[0] = network.AddNode(new Neuron(true) { Label = $"B{layerIdx + 1}", ActivationFunction = ident, LayerId = layerIdx + 1, NodeId = 0 });
                 for (int i = 1; i < layer.Length; i++)
                 {
-                    layer[i] = fnNodeInitializer(layerIdx + 1, i);
+                    layer[i] = fnNodeInitializer(layerIdx + 1, i, NodeType.Hidden);
                     layer[i].Label = (layer[i].Label ?? String.Format("H{0}.{1}", layerIdx + 1, i));
                     layer[i].ActivationFunction = (layer[i].ActivationFunction ?? activationFunction);
                     layer[i].LayerId = layerIdx + 1;
@@ -140,7 +163,7 @@ namespace numl.Supervised.NeuralNetwork
             network.Out = new Neuron[outputLayer];
             for (int i = 0; i < outputLayer; i++)
             {
-                network.Out[i] = fnNodeInitializer(hiddenLayers.Length + 1, i);
+                network.Out[i] = fnNodeInitializer(hiddenLayers.Length + 1, i, NodeType.Output);
                 network.Out[i].Label = (network.Out[i].Label ?? String.Format("O{0}", i));
                 network.Out[i].ActivationFunction = (network.Out[i].ActivationFunction ?? activationFunction);
                 network.Out[i].LayerId = hiddenLayers.Length + 1;

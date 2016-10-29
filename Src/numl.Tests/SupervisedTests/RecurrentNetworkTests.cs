@@ -30,7 +30,7 @@ namespace numl.Tests.SupervisedTests
             var gru = new Supervised.NeuralNetwork.Recurrent.RecurrentNeuron()
             {
                 ActivationFunction = new Math.Functions.Tanh(),
-                MemoryGate = new Math.Functions.Logistic(),
+                UpdateGate = new Math.Functions.Logistic(),
                 ResetGate = new Math.Functions.Logistic(),
                 H = 0,
                 Rb = 0.0,
@@ -65,14 +65,15 @@ namespace numl.Tests.SupervisedTests
         {
             var input = new Supervised.NeuralNetwork.Neuron()
             {
-                ActivationFunction = new Math.Functions.Ident(),
-                Output = 10.0
+                ActivationFunction = new Math.Functions.Ident()
             };
+
+            input.Input = 10.0;
 
             var gru = new Supervised.NeuralNetwork.Recurrent.RecurrentNeuron()
             {
                 ActivationFunction = new Math.Functions.Tanh(),
-                MemoryGate = new Math.Functions.Logistic(),
+                UpdateGate = new Math.Functions.Logistic(),
                 ResetGate = new Math.Functions.Logistic(),
                 H = 0.0543,
                 Rb = 1.5,
@@ -81,21 +82,24 @@ namespace numl.Tests.SupervisedTests
                 Rx = 0.00112138,
                 Zh = 0.00899571,
                 Zx = 0.00999628,
+                Hh = 0.00423760
             };
 
             Supervised.NeuralNetwork.Edge.Create(input, gru, 1.0);
 
             double output = gru.Evaluate();
 
-            //Assert.Equal(0.24144242, output, 0.002, "First pass");
-            Almost.Equal(0.18775503, output, 0.002, "First pass");
+            Almost.Equal(0.24144243, output, 0.00001, "1: Hidden state");
+            Almost.Equal(0.81923206, gru.R, 0.00001, "1: Reset value");
+            Almost.Equal(0.19788773, gru.Z, 0.00001, "1: Update value");
 
-            input.Output = 20.0;
+            input.Input = 20.0;
 
             double output2 = gru.Evaluate();
 
-            //Assert.Equal(0.40416686, output2, 0.002, "Second pass");
-            Almost.Equal(0.30399969, output2, 0.002, "Second pass");
+            Almost.Equal(0.40416687, output2, 0.00001, "Second pass");
+            Almost.Equal(0.82085611, gru.R, 0.00001, "2: Reset value");
+            Almost.Equal(0.21451824, gru.Z, 0.00001, "2: Update value");
         }
 
         [Fact]

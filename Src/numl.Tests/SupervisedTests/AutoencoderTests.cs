@@ -67,7 +67,7 @@ namespace numl.Tests.SupervisedTests
             for (int i = 0; i < test.Rows; i++)
             {
                 var score1 = Score.ScorePredictions(encoder.PredictSequence(test[i, VectorType.Row]), test[i, VectorType.Row]);
-                Assert.True(score1.MeanAbsError <= 1.00);
+                Assert.True(score1.MeanAbsError <= 1.0);
             }
 
         }

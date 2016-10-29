@@ -10,6 +10,7 @@ using numl.Math.LinearAlgebra;
 using numl.Math.Functions;
 using numl.Model;
 using numl.Math.Functions.Loss;
+using numl.Supervised.NeuralNetwork.Optimization;
 
 namespace numl.Supervised.NeuralNetwork
 {
@@ -102,16 +103,18 @@ namespace numl.Supervised.NeuralNetwork
         /// <summary>Backpropagates the errors through the network given the supplied label.</summary>
         /// <param name="y">Label to process.</param>
         /// <param name="properties">Network training properties for use in learning.</param>
-        public void Back(double y, NetworkTrainingProperties properties)
+        /// <param name="networkTrainer">Network training method.</param>
+        public void Back(double y, NetworkTrainingProperties properties, INetworkTrainer networkTrainer)
         {
-            this.Back(Vector.Create(this.Out.Length, () => y), properties);
+            this.Back(Vector.Create(this.Out.Length, () => y), properties, networkTrainer);
         }
 
         /// <summary>Backpropagates the errors through the network given the supplied sequence label.</summary>
         /// <param name="y">Output vector to process.</param>
         /// <param name="properties">Network training properties for use in learning.</param>
+        /// <param name="networkTrainer">Network training method.</param>
         /// <param name="update">Indicates whether to update the weights after computing the errors.</param>
-        public void Back(Vector y, NetworkTrainingProperties properties, bool update = true)
+        public void Back(Vector y, NetworkTrainingProperties properties, INetworkTrainer networkTrainer, bool update = true)
         {
             this.Cost = this.LossFunction.Compute(this.Out.Select(s => s.Output).ToVector(), y);
 
@@ -124,7 +127,7 @@ namespace numl.Supervised.NeuralNetwork
             {
                 // reset weights
                 for (int i = 0; i < Out.Length; i++)
-                    Out[i].Update(properties);
+                    Out[i].Update(properties, networkTrainer);
             }
         }
 

@@ -45,7 +45,26 @@ namespace numl.Serialization.Supervised.NeuralNetwork
                 node.Input = (double)reader.ReadProperty().Value;
                 node.Output = (double)reader.ReadProperty().Value;
 
-                //TODO: Read in RNN properties
+                node.H = (double) reader.ReadProperty().Value;
+                node.Hh = (double) reader.ReadProperty().Value;
+
+                node.R = (double) reader.ReadProperty().Value;
+                node.Rb = (double) reader.ReadProperty().Value;
+                node.Rh = (double) reader.ReadProperty().Value;
+                node.Rx = (double) reader.ReadProperty().Value;
+
+                var reset = reader.ReadProperty().Value;
+                if (reset != null)
+                    node.ResetGate = Ject.FindType(reset.ToString()).CreateDefault<IFunction>();
+
+                node.Z = (double) reader.ReadProperty().Value;
+                node.Zb = (double) reader.ReadProperty().Value;
+                node.Zh = (double) reader.ReadProperty().Value;
+                node.Zx = (double) reader.ReadProperty().Value;
+
+                var update = reader.ReadProperty().Value;
+                if (update != null)
+                    node.UpdateGate = Ject.FindType(update.ToString()).CreateDefault<IFunction>();
 
                 return node;
             }
@@ -81,7 +100,22 @@ namespace numl.Serialization.Supervised.NeuralNetwork
                 writer.WriteProperty(nameof(Neuron.Input), node.Input);
                 writer.WriteProperty(nameof(Neuron.Output), node.Output);
 
-                //TODO: Write out RNN properties
+                writer.WriteProperty(nameof(RecurrentNeuron.H), node.H);
+                writer.WriteProperty(nameof(RecurrentNeuron.Hh), node.Hh);
+
+                writer.WriteProperty(nameof(RecurrentNeuron.R), node.R);
+                writer.WriteProperty(nameof(RecurrentNeuron.Rb), node.Rb);
+                writer.WriteProperty(nameof(RecurrentNeuron.Rh), node.Rh);
+                writer.WriteProperty(nameof(RecurrentNeuron.Rx), node.Rx);
+
+                writer.WriteProperty(nameof(RecurrentNeuron.ResetGate), node.ResetGate.GetType().FullName);
+
+                writer.WriteProperty(nameof(RecurrentNeuron.Z), node.Z);
+                writer.WriteProperty(nameof(RecurrentNeuron.Zb), node.Zb);
+                writer.WriteProperty(nameof(RecurrentNeuron.Zh), node.Zh);
+                writer.WriteProperty(nameof(RecurrentNeuron.Zx), node.Zx);
+
+                writer.WriteProperty(nameof(RecurrentNeuron.UpdateGate), node.UpdateGate.GetType().FullName);
             }
         }
     }

@@ -301,6 +301,38 @@ namespace numl.Tests.MathTests
             Vector swappedDifference = c - v;
             Assert.Equal(difference, -swappedDifference);
         }
+
+        [Fact]
+        public void Vector_ToBinary_Test()
+        {
+            Vector v1 = new Vector(new double[] { 0.1, 0.2, -0.1, 0.2, 0.1, -0.1 });
+            Matrix m1 = new Matrix(new double[,] { { 0, 1, 0 },
+                                                   { 0, 0, 1 },
+                                                   { 1, 0, 0 },
+                                                   { 0, 0, 1 },
+                                                   { 0, 1, 0 },
+                                                   { 1, 0, 0 } });
+            Assert.Equal(m1, v1.ToBinaryMatrix(true));
+
+            Vector v2 = new Vector(new double[] { 1, -1, 1, -1, 1, 1 });
+            Matrix m2 = new Matrix(new double[,] { { 1 },
+                                                   { 0 },
+                                                   { 1 },
+                                                   { 0 },
+                                                   { 1 },
+                                                   { 1 }});
+            Assert.Equal(m2, v2.ToBinaryMatrix(false));
+
+            Vector v3 = new Vector(new double[] { 10, 20, 10, 4, 10, 5 });
+            Matrix m3 = new Matrix(new double[,] { { 0, 0, 1, 0 },
+                                                   { 0, 0, 0, 1 },
+                                                   { 0, 0, 1, 0 },
+                                                   { 1, 0, 0, 0 },
+                                                   { 0, 0, 1, 0 },
+                                                   { 0, 1, 0, 0 } });
+
+            Assert.Equal(m3, v3.ToBinaryMatrix());
+        }
     }
 }
 

@@ -3,8 +3,10 @@
 // summary:	Implements the neuron class
 using System;
 using System.Linq;
-using numl.Math.Functions;
 using System.Collections.Generic;
+
+using numl.Math.Functions;
+using numl.Supervised.NeuralNetwork.Optimization;
 using numl.Utils;
 
 namespace numl.Supervised.NeuralNetwork
@@ -170,9 +172,12 @@ namespace numl.Supervised.NeuralNetwork
             return Delta;
         }
 
-        /// <summary>Propagates a weight update event upstream through the network using the supplied learning rate.</summary>
+        /// <summary>
+        /// Propagates a weight update event upstream through the network.
+        /// </summary>
         /// <param name="properties">Network training properties.</param>
-        public virtual void Update(NetworkTrainingProperties properties)
+        /// <param name="networkTrainer">Network training method.</param>
+        public virtual void Update(NetworkTrainingProperties properties, INetworkTrainer networkTrainer)
         {
             for (int edge = 0; edge < this.In.Count; edge++)
             {
@@ -183,14 +188,10 @@ namespace numl.Supervised.NeuralNetwork
 
                 if (!this.Constrained)
                 {
-                    // using stochastic gradient descent averaged over training examples.
-                    this.In[edge].Weight = this.In[edge].Weight - properties.LearningRate * Delta;
-
-                    // RMSProp (needs to move into a neural optimizer method)
-                    //double mean = (properties.Epsilon * _DeltaL) + ((1.0 - properties.Epsilon) * (Delta * Delta));
-                    //this.In[edge].Weight = this.In[edge].Weight - properties.LearningRate * (Delta / System.Math.Sqrt(mean * mean));
+                    this.In[edge].Weight = networkTrainer.Update(this.In[edge].ParentId, this.In[edge].ChildId, 
+                                                                 nameof(Edge.Weight), this.In[edge].Weight, Delta, properties);
                 }
-                this.In[edge].Source.Update(properties);
+                this.In[edge].Source.Update(properties, networkTrainer);
             }
         }
 
