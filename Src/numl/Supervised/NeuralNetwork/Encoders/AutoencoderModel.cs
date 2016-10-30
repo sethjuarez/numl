@@ -12,26 +12,17 @@ namespace numl.Supervised.NeuralNetwork.Encoders
     /// <summary>
     /// An Autoencoder model.
     /// </summary>
-    public class AutoencoderModel : Model, ISequenceModel
+    public class AutoencoderModel : NeuralNetworkModel, ISequenceModel
     {
         /// <summary>
-        /// Gets or sets the underlying neural network of the autoencoder.
+        /// Autoencodes the given example.
         /// </summary>
-        public Network Network { get; set; }
-
-        /// <summary>
-        /// Gets or sets the output layer function (i.e. Softmax).
-        /// </summary>
-        public IFunction OutputFunction { get; set; }
-
-        /// <summary>Predicts the given o.</summary>
         /// <param name="x">The Vector to process.</param>
         /// <returns>An object.</returns>
         public override double Predict(Vector x)
         {
             Vector output = this.PredictSequence(x);
-
-            return (this.OutputFunction != null ? this.OutputFunction.Minimize(output) : output.Sum());
+            return output.Sum();
         }
 
         /// <summary>
@@ -39,15 +30,14 @@ namespace numl.Supervised.NeuralNetwork.Encoders
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
-        public Vector PredictSequence(Vector x)
+        public override Vector PredictSequence(Vector x)
         {
             this.Preprocess(x);
 
             this.Network.Forward(x);
 
-            Vector output = Network.Out.Select(n => n.Output).ToVector();
-
-            return (this.OutputFunction != null ? this.OutputFunction.Compute(output) : output);
+            Vector output = this.Network.Output();
+            return output;
         }
     }
 }

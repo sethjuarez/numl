@@ -116,7 +116,7 @@ namespace numl.Supervised.NeuralNetwork
         /// <param name="update">Indicates whether to update the weights after computing the errors.</param>
         public void Back(Vector y, NetworkTrainingProperties properties, INetworkTrainer networkTrainer, bool update = true)
         {
-            this.Cost = this.LossFunction.Compute(this.Out.Select(s => s.Output).ToVector(), y);
+            this.Cost = this.LossFunction.Compute(this.Output(), y);
 
             // CK
             // propagate error gradients
@@ -129,6 +129,18 @@ namespace numl.Supervised.NeuralNetwork
                 for (int i = 0; i < Out.Length; i++)
                     Out[i].Update(properties, networkTrainer);
             }
+        }
+
+        /// <summary>
+        /// Returns the predicted output sequence from the Network after forwarding.
+        /// </summary>
+        /// <param name="network">Current network.</param>
+        /// <returns>Vector.</returns>
+        public Vector Output()
+        {
+            Vector output = this.Out.Select(n => n.Output).ToVector();
+            output = (this.OutputFunction != null ? this.OutputFunction.Compute(output) : output);
+            return output;
         }
 
         /// <summary>

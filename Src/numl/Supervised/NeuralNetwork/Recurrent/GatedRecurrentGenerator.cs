@@ -107,9 +107,11 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
             NetworkTrainingProperties properties = NetworkTrainingProperties.Create(network, X.Rows, X.Cols, this.LearningRate, this.Lambda, this.MaxIterations,
                                                     new { this.SequenceLength });
 
-            INetworkTrainer trainer = new RMSPropTrainer();
+            INetworkTrainer trainer = new GradientDescentTrainer();
 
             Vector loss = Vector.Zeros(MaxIterations);
+
+            Matrix Yt = Matrix.Zeros(Y.Rows, Y.Cols);
 
             var tuples = X.GetRows().Select((s, si) => new Tuple<Vector, Vector>(s, Y[si]));
 
@@ -128,17 +130,19 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
 
                         foreach (RecurrentNeuron node in network.GetVertices().OfType<RecurrentNeuron>())
                             if (node.IsHidden || node.IsOutput) node.State(properties);
+
+                        Yt[idx + i] = network.Output();
                     }
 
                     for (int i = items.Count() - 1; i >= 0; i--)
                     {
                         properties[RecurrentNeuron.TimeStepLabel] = i;
                         network.Back(items.ElementAt(i).Item2, properties, trainer);
+
+                        loss[pass] += network.Cost;
                     }
 
                 }, asParallel: false);
-
-                loss[pass] = network.Cost;
 
                 var output = String.Format("Run ({0}/{1}): {2}", pass, MaxIterations, network.Cost);
                 OnModelChanged(this, ModelEventArgs.Make(model, output));

@@ -20,15 +20,39 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
 
         protected double Htm1 = 0, HtP = 0, DRx = 0, DRh = 0, DZx = 0, DZh = 0, DHh = 0;
 
+        #region Fields
+
         /// <summary>
         /// Gets or sets a map of H state deltas from previous time steps.
         /// </summary>
         protected Dictionary<int, double> DeltaH { get; set; } = new Dictionary<int, double>();
 
         /// <summary>
-        /// Gets or sets a map of hidden states for the current sequence.
+        /// Gets or sets a map of output state values for the current sequence.
         /// </summary>
         protected Dictionary<int, double> StatesH { get; set; } = new Dictionary<int, double>();
+
+        /// <summary>
+        /// Gets or sets a map of candidate state values for the current sequence.
+        /// </summary>
+        protected Dictionary<int, double> StatesHP { get; set; } = new Dictionary<int, double>();
+
+        /// <summary>
+        /// Gets or sets a map of input response values for the current sequence.
+        /// </summary>
+        protected Dictionary<int, double> StatesI { get; set; } = new Dictionary<int, double>();
+
+        /// <summary>
+        /// Gets or sets a map of reset gate response values for the current sequence.
+        /// </summary>
+        protected Dictionary<int, double> StatesR { get; set; } = new Dictionary<int, double>();
+
+        /// <summary>
+        /// Gets or sets a map of update gate response values for the current sequence.
+        /// </summary>
+        protected Dictionary<int, double> StatesZ { get; set; } = new Dictionary<int, double>();
+
+        #endregion
 
         /// <summary>
         /// Gets or Sets the hidden (internal) state of the neuron.
@@ -122,7 +146,11 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
         /// <param name="properties">Network training properties object.</param>
         public void State(NetworkTrainingProperties properties)
         {
-            this.StatesH[(int) properties[TimeStepLabel]] = this.H;
+            this.StatesH[(int) properties[TimeStepLabel]] = this.Output;
+            this.StatesHP[(int) properties[TimeStepLabel]] = this.HtP;
+            this.StatesI[(int) properties[TimeStepLabel]] = this.Input;
+            this.StatesR[(int) properties[TimeStepLabel]] = this.R;
+            this.StatesZ[(int) properties[TimeStepLabel]] = this.Z;
         }
 
         /// <summary>
@@ -145,6 +173,10 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
 
                 this.Output = H;
             }
+            else
+            {
+                Output = ActivationFunction.Compute(Input);
+            }
 
             return this.Output;
         }
@@ -160,37 +192,43 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
             //TODO: Return the correct error.
             _DeltaL = Delta;
 
+            int timestep = (int) properties[TimeStepLabel];
+            double ht = this.StatesH.ContainsKey(timestep) ? this.StatesH[timestep] : 0;
+
             if (Out.Count == 0)
-                Delta = delta = -(t - Output);
+                Delta = delta = -(t - ht);
 
             else
             {
-                int timestep = (int) properties[TimeStepLabel];
-                int seqlength = (int) properties[nameof(GatedRecurrentGenerator.SequenceLength)];
-
-                double htm1 = this.StatesH.ContainsKey(timestep - 1) ? this.StatesH[timestep - 1] : 0;
-                double ht = this.StatesH.ContainsKey(timestep) ? this.StatesH[timestep] : 0;
-
-                double seqmod = (1.0 / seqlength);
-
                 if (In.Count > 0 && Out.Count > 0)
                 {
-                    double dyhh = (1.0 - this.Z), dyhz = this.HtP - ht;
-                    double dHtP = this.ActivationFunction.Derivative(this.Input + (this.R * ht) * this.Hh);
-                    double dyHtP = dHtP * dyhh;
+                    int seqlength = (int) properties[nameof(GatedRecurrentGenerator.SequenceLength)];
 
-                    double dr = this.ResetGate.Derivative((this.Rx * this.Input) + (this.Rh * ht) + this.Rb);
-                    double dz = this.UpdateGate.Derivative((this.Zx * this.Input) + (this.Zh * ht) + this.Zb);
+                    double htm1 = this.StatesH.ContainsKey(timestep - 1) ? this.StatesH[timestep - 1] : 0;
+                    double input = this.StatesI[timestep];
+                    double r = this.StatesR[timestep];
+                    double z = this.StatesZ[timestep];
 
-                    this.DRx = (seqmod * (dr * this.Input)); this.DRh = (seqmod * (dr * ht));
-                    this.DZx = (seqmod * (dz * this.Input)); this.DZh = (seqmod * (dz * ht));
+                    // seq mod
+                    double seqmod = (1.0 / seqlength);
 
-                    delta = Out.Sum(e => e.Weight * t) + this.DHh * htm1;
+                    // dyhh = delta(htm1) = 1-Z, dyhz = delta(Z) = HtP
+                    double dyhh = (1.0 - z), dyhz = this.StatesHP[timestep];
+                    double dHtP = this.ActivationFunction.Derivative(input + r * (htm1 * this.Hh));
+
+                    this.DHh = ((dHtP * dyhh) * htm1);
+                    this.DHh = this.DeltaH[timestep] = this.DeltaH.GetValueOrDefault(timestep + 1, 0) + this.DHh;
+
+                    double dr = this.ResetGate.Derivative((this.Rx * input) + (this.Rh * ht) + this.Rb);
+                    double dz = this.UpdateGate.Derivative((this.Zx * input) + (this.Zh * ht) + this.Zb);
+
+                    this.DRx = (seqmod * (dr * input)); this.DRh = (seqmod * (dr * ht));
+                    this.DZx = (seqmod * (dz * input)); this.DZh = (seqmod * (dz * ht));
+
+                    delta = Out.Sum(e => e.Weight * t);
                 }
 
-                this.DHh = this.DeltaH[timestep] = this.DHh + this.DeltaH.GetValueOrDefault(timestep + 1, 0);
-
-                this.Delta = Out.Sum(s => s.Target.delta * this.Output) + this.DHh * htm1;
+                this.Delta = Out.Sum(s => s.Target.delta * ht);
             }
 
             if (this.In.Count > 0)

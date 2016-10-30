@@ -4,6 +4,8 @@ using numl.Supervised.NeuralNetwork;
 using System.Reflection;
 using numl.Data;
 using numl.Serialization.Data;
+using numl.Utils;
+using numl.Math.Functions;
 
 namespace numl.Serialization.Supervised.NeuralNetwork
 {
@@ -34,6 +36,13 @@ namespace numl.Serialization.Supervised.NeuralNetwork
             {
                 var network = (Network)this.Create();
 
+                var outputFunction = reader.ReadProperty().Value;
+                if (outputFunction != null)
+                {
+                    var type = Ject.FindType(outputFunction.ToString());
+                    network.OutputFunction = (IFunction) Activator.CreateInstance(type);
+                }
+
                 var nodes = reader.ReadArrayProperty().Value.OfType<Neuron>();
                 var edges = reader.ReadArrayProperty().Value.OfType<Edge>();
 
@@ -56,6 +65,9 @@ namespace numl.Serialization.Supervised.NeuralNetwork
             {
                 var network = (Network)value;
 
+                // write out function
+                writer.WriteProperty(nameof(network.OutputFunction),
+                    network.OutputFunction?.GetType().FullName);
 
                 // write out nodes
                 writer.WriteArrayProperty("Nodes", 

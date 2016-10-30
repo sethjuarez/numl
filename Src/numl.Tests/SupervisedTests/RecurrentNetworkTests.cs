@@ -109,7 +109,7 @@ namespace numl.Tests.SupervisedTests
             Matrix X = new Matrix(new double[,]
             {
                 { 0 },
-                { 1 },
+                { 2 },
                 { 1 },
                 { 1 },
                 { 0 }
@@ -117,14 +117,14 @@ namespace numl.Tests.SupervisedTests
 
             Vector Y = new double[]
             {
-                1,
+                2,
                 1,
                 1,
                 0,
                 0
             };
 
-            var generator = new GatedRecurrentGenerator() { SequenceLength = X.Rows, NormalizeFeatures = false };
+            var generator = new GatedRecurrentGenerator() { SequenceLength = X.Rows, NormalizeFeatures = false, IsDiscrete = true, LearningRate = 0.01 };
             var model = (GatedRecurrentModel) generator.Generate(X, Y);
 
             Vector result = Vector.Zeros(Y.Length);

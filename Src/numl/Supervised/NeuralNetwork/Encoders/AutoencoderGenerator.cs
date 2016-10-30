@@ -86,8 +86,7 @@ namespace numl.Supervised.NeuralNetwork.Encoders
                 NormalizeFeatures = base.NormalizeFeatures,
                 FeatureNormalizer = base.FeatureNormalizer,
                 FeatureProperties = base.FeatureProperties,
-                Network = network,
-                OutputFunction = this.OutputFunction
+                Network = network
             };
 
             OnModelChanged(this, ModelEventArgs.Make(model, "Initialized"));
@@ -100,7 +99,7 @@ namespace numl.Supervised.NeuralNetwork.Encoders
             for (int i = 0; i < this.MaxIterations; i++)
             {
                 properties.Iteration = i;
-
+                
                 network.ResetStates(properties);
 
                 for (int x = 0; x < X.Rows; x++)
@@ -108,9 +107,9 @@ namespace numl.Supervised.NeuralNetwork.Encoders
                     network.Forward(X[x, VectorType.Row]);
                     //OnModelChanged(this, ModelEventArgs.Make(model, "Forward"));
                     network.Back(Y[x, VectorType.Row], properties, trainer);
-                }
 
-                loss[i] = network.Cost;
+                    loss[i] += network.Cost;
+                }
 
                 var result = String.Format("Run ({0}/{1}): {2}", i, MaxIterations, network.Cost);
                 OnModelChanged(this, ModelEventArgs.Make(model, result));

@@ -46,7 +46,7 @@ namespace numl.Supervised.NeuralNetwork
         /// <summary>
         /// Gets or sets whether to use early stopping during training if the loss isn't decreasing.
         /// </summary>
-        public bool UseEarlyStopping { get; set; } = true;
+        public bool UseEarlyStopping { get; set; }
 
         /// <summary>Default constructor.</summary>
         public NeuralNetworkGenerator()
@@ -55,6 +55,7 @@ namespace numl.Supervised.NeuralNetwork
             MaxIterations = -1;
             Epsilon = double.NaN;
             Activation = new Tanh();
+            UseEarlyStopping = true;
         }
 
         /// <summary>
@@ -65,6 +66,8 @@ namespace numl.Supervised.NeuralNetwork
         /// <returns>Boolean.</returns>
         protected bool LossMinimized(Vector loss, int iteration)
         {
+            if (!this.UseEarlyStopping) return false;
+
             if (iteration > 0)
             {
                 return ((loss[iteration - 1] > loss[iteration])
@@ -114,14 +117,16 @@ namespace numl.Supervised.NeuralNetwork
             {
                 properties.Iteration = i;
 
+                network.ResetStates(properties);
+
                 for (int x = 0; x < X.Rows; x++)
                 {
                     network.Forward(X[x, VectorType.Row]);
                     //OnModelChanged(this, ModelEventArgs.Make(model, "Forward"));
                     network.Back(Y[x, VectorType.Row], properties, trainer);
-                }
 
-                loss[i] = network.Cost;
+                    loss[i] += network.Cost;
+                }
 
                 var output = String.Format("Run ({0}/{1}): {2}", i, MaxIterations, network.Cost);
                 OnModelChanged(this, ModelEventArgs.Make(model, output));
