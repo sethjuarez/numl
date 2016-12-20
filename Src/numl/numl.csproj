@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+  <PropertyGroup>
+    <Description>numl is a machine learning library intended to ease the use of using standard modeling techniques for both prediction and clustering</Description>
+    <Copyright>2016</Copyright>
+    <AssemblyTitle>numl</AssemblyTitle>
+    <VersionPrefix>0.9.13-beta</VersionPrefix>
+    <Authors>Seth Juarez;Chris Kalle</Authors>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <AssemblyName>numl</AssemblyName>
+    <PackageTags>machine learning;framework</PackageTags>
+    <PackageIconUrl>http://numl.net/images/ico.png</PackageIconUrl>
+    <PackageProjectUrl>http://numl.net</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/sethjuarez/numl/master/LICENSE.md</PackageLicenseUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.3' ">$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="**\*.cs" />
+    <EmbeddedResource Include="**\*.resx" />
+    <EmbeddedResource Include="compiler\resources\**\*" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NETStandard.Library">
+      <Version>1.6.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.Threading.Tasks.Parallel" Version="4.3.0" />
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>
+  </PropertyGroup>
+</Project>

@@ -1,12 +1,12 @@
 #tool "nuget:?package=xunit.runner.console"
-#tool "docfx.msbuild"
 #addin "Newtonsoft.Json"
 #addin "Cake.DocFx"
+#tool "docfx.console"
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 //////////////////////////////////////////////////////////////////////
-var release = "0.9.12";
+var release = "0.9.13";
 var suffix = "-beta";
 var testFailOk = true;
 var copyright = string.Format("©{0}, Seth Juarez", DateTime.Now.Year);
@@ -45,6 +45,18 @@ public static void UpdateProjectJsonVersion(string version, FilePath projectPath
     System.IO.File.WriteAllText(projectPath.FullPath, project.ToString(), Encoding.UTF8);
 }
 
+public static void UpdateCsProjNode(FilePath csprojPath, string xpath, string contents)
+{
+    var doc = new System.Xml.XmlDocument();
+    doc.Load(csprojPath.FullPath);
+    var node = doc.SelectSingleNode(xpath);
+    if(node != null)
+    {
+        node.InnerText = contents;
+        doc.Save(csprojPath.FullPath);
+    }
+}
+
 //////////////////////////////////////////////////////////////////////
 // TASKS
 //////////////////////////////////////////////////////////////////////
@@ -73,28 +85,27 @@ Task("Version")
     // update assembly version
     Information("Updating AssembyInfo");
     CreateAssemblyInfo("../Src/numl/Properties/AssemblyInfo.cs", assemblyInfo);
-    // update project.json build
-    Information("Updating numl project.json to " + release+suffix);
-    UpdateProjectJsonVersion(release + suffix, "../Src/numl/project.json", "version");
-    // update test assembly project.json to match new version
-    Information("Updating numl.Tests reference to numl in project.json to " + release+suffix);
-    UpdateProjectJsonVersion(release + suffix, "../Src/numl.Tests/project.json", "dependencies+numl");
+    // update csproj build
+    Information("Updating numl project file");
+    UpdateCsProjNode("../Src/numl/numl.csproj", "//PropertyGroup/VersionPrefix", release+suffix);
 });
 
 Task("Restore")
     .IsDependentOn("Version")
     .Does(() =>
 {
-    DotNetCoreRestore("../Src");
+    
+    DotNetCoreRestore("../src/numl/numl.csproj");
+    DotNetCoreRestore("../src/numl.Tests/numl.Tests.csproj");
 });
 
 Task("Test")
     .IsDependentOn("Restore")
     .Does(() =>
 {
-    DotNetCoreTest("../Src/numl.Tests", new DotNetCoreTestSettings {
+    DotNetCoreTest("../Src/numl.Tests/numl.Tests.csproj", new DotNetCoreTestSettings {
         Configuration = configuration,
-        Framework = "netcoreapp1.0",
+        Framework = "netcoreapp1.1",
         OutputDirectory = buildDir,
         Verbose = true
     });
@@ -115,15 +126,18 @@ Task("Package")
         OutputDirectory = packageDir
     };
             
-    DotNetCorePack("../Src/numl", settings);
+    DotNetCorePack("../Src/numl/numl.csproj", settings);
 });
 
 Task("Docs")
-    .IsDependentOn("Package")
+    //.IsDependentOn("Package")
     .Does(() => 
 {
     // write out version in prep for doc gen
     UpdateProjectJsonVersion(release + suffix, "../Docs/version.json", "_appId");
+
+
+    //DocFxMetadata("../Docs/docfx.json");
 
     DocFx("../Docs/docfx.json", new DocFxSettings()
     {
@@ -131,7 +145,7 @@ Task("Docs")
     });
 
     // move to site repo
-    CopyDirectory("./Output/docs/_site", "../../numl.web");
+    //CopyDirectory("./Output/docs/_site", "../../numl.web");
     
 });
 
