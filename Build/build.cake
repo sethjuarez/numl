@@ -45,21 +45,11 @@ public static void UpdateProjectJsonVersion(string version, FilePath projectPath
     System.IO.File.WriteAllText(projectPath.FullPath, project.ToString(), Encoding.UTF8);
 }
 
-public static void UpdateCsProjNode(FilePath csprojPath, string xpath, string contents)
-{
-    var doc = new System.Xml.XmlDocument();
-    doc.Load(csprojPath.FullPath);
-    var node = doc.SelectSingleNode(xpath);
-    if(node != null)
-    {
-        node.InnerText = contents;
-        doc.Save(csprojPath.FullPath);
-    }
-}
-
 //////////////////////////////////////////////////////////////////////
 // TASKS
 //////////////////////////////////////////////////////////////////////
+
+/// CLEAN
 Task("Clean")
     .Does(() =>
 {
@@ -87,14 +77,13 @@ Task("Version")
     CreateAssemblyInfo("../Src/numl/Properties/AssemblyInfo.cs", assemblyInfo);
     // update csproj build
     Information("Updating numl project file");
-    UpdateCsProjNode("../Src/numl/numl.csproj", "//PropertyGroup/VersionPrefix", release+suffix);
+    XmlPoke(File("../Src/numl/numl.csproj"), "//PropertyGroup/VersionPrefix", release + suffix);
 });
 
 Task("Restore")
     .IsDependentOn("Version")
     .Does(() =>
 {
-    
     DotNetCoreRestore("../src/numl/numl.csproj");
     DotNetCoreRestore("../src/numl.Tests/numl.Tests.csproj");
 });
@@ -107,7 +96,7 @@ Task("Test")
         Configuration = configuration,
         Framework = "netcoreapp1.1",
         OutputDirectory = buildDir,
-        Verbose = true
+        Verbose = false
     });
 })
 .OnError(exception => 
@@ -130,7 +119,7 @@ Task("Package")
 });
 
 Task("Docs")
-    //.IsDependentOn("Package")
+    .IsDependentOn("Package")
     .Does(() => 
 {
     // write out version in prep for doc gen
@@ -145,7 +134,7 @@ Task("Docs")
     });
 
     // move to site repo
-    //CopyDirectory("./Output/docs/_site", "../../numl.web");
+    CopyDirectory("./Output/docs/_site", "../../numl.web");
     
 });
 
