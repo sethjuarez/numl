@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<?xml version="1.0" encoding="utf-8"?><Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
     <VersionPrefix>0.9.15</VersionPrefix>
@@ -8,6 +7,7 @@
     <Authors>Seth Juarez;Chris Kalle;Basia Fusinka</Authors>
     <AssemblyTitle>numl</AssemblyTitle>
     <AssemblyName>numl</AssemblyName>
+    <PackageId>numl</PackageId>
     <PackageTags>machine learning;framework</PackageTags>
     <PackageIconUrl>http://numl.net/images/ico.png</PackageIconUrl>
     <PackageProjectUrl>http://numl.net</PackageProjectUrl>
@@ -15,8 +15,16 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Description>numl is a machine learning library intended to ease the use of using standard modeling techniques for both prediction and clustering</Description>
     <Copyright>©2017, Seth Juarez</Copyright>
+    <NetStandardImplicitPackageVersion>1.6.0</NetStandardImplicitPackageVersion>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Include="**\*.resx" />
+    <EmbeddedResource Include="compiler\resources\**\*" />
     <Compile Remove="Properties\**" />
     <EmbeddedResource Remove="Properties\**" />
     <None Remove="Properties\**" />
