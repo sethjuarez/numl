@@ -15,9 +15,14 @@ namespace numl.Serialization
         {
             // is it an actual serializer?
             if (t.GetTypeInfo().ImplementedInterfaces.Contains(typeof(ISerializer)))
-                return _mapping.Values
-                                   .Where(s => s.GetType() == t)
-                                   .First();
+            {
+                if (_mapping.Values.Count != 0)
+                    return _mapping.Values
+                                       .Where(s => s.GetType() == t)
+                                       .First();
+                else
+                    return _serializers.Value.Where(s => s.GetType() == t).First();
+            }
             else // looking for a specific type serializer
             {
                 if (HasSerializer(t)) return _mapping[t];
