@@ -1,7 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <Description>numl is a machine learning library intended to ease the use of using standard modeling techniques for both prediction and clustering</Description>
-    <Copyright>2016</Copyright>
+    <Copyright>2017</Copyright>
     <AssemblyTitle>numl</AssemblyTitle>
     <VersionPrefix>0.9.13-beta</VersionPrefix>
     <Authors>Seth Juarez;Chris Kalle</Authors>
@@ -20,14 +20,6 @@
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="**\*.cs" />
-    <EmbeddedResource Include="**\*.resx" />
-    <EmbeddedResource Include="compiler\resources\**\*" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="NETStandard.Library">
-      <Version>1.6.1</Version>
-    </PackageReference>
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
     <PackageReference Include="System.Threading.Tasks.Parallel" Version="4.3.0" />
