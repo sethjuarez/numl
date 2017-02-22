@@ -14,18 +14,18 @@ namespace numl.Tests.Data
 
 	public class Student
 	{
-        [StringFeature(SplitType=StringSplitType.Character)]
+		[StringFeature(SplitType=StringSplitType.Character)]
 		public string Name { get; set; }
-        [Feature]
+		[Feature]
 		public Grade Grade { get; set; }
-        [Feature]
+		[Feature]
 		public double GPA { get; set; }
-        [Feature]
+		[Feature]
 		public int Age { get; set; }
 		public bool Tall { get; set; }
-        [Feature]
+		[Feature]
 		public int Friends { get; set; }
-        [Label]
+		[Label]
 		public bool Nice { get; set; }
 
 		public static Student[] GetData()

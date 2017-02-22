@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("numl")]
 [assembly: AssemblyVersion("0.9.13")]
 [assembly: AssemblyFileVersion("0.9.13")]
-[assembly: AssemblyCopyright("©2016, Seth Juarez")]
+[assembly: AssemblyCopyright("©2017, Seth Juarez")]
 [assembly: Guid("554363c6-5979-4c9a-90e6-e70af2d5cc09")]
 [assembly: ComVisible(false)]
 
