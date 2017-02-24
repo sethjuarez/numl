@@ -9,6 +9,7 @@ using numl.Supervised;
 using numl.Serialization;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Runtime.CompilerServices;
 
 namespace numl.Tests.SerializationTests
 {
@@ -23,8 +24,8 @@ namespace numl.Tests.SerializationTests
         internal static string GetPath(Type t)
         {
             var basePath = Path.Combine(new[]{
-                Directory.GetCurrentDirectory(),
-                "TestResults", 
+                Path.GetTempPath(),
+                "numl.Tests",
                 t.Name
             });
 
@@ -34,9 +35,8 @@ namespace numl.Tests.SerializationTests
             return basePath;
         }
 
-        internal void Serialize(object o)
+        internal void Serialize(object o, [CallerMemberName]string caller = "")
         {
-            var caller = GetCaller();
             string file = Path.Combine(GetPath(GetType()), $"{caller}.json");
 
             if (File.Exists(file)) File.Delete(file);
@@ -46,9 +46,8 @@ namespace numl.Tests.SerializationTests
                 new JsonWriter(f).Write(o);
         }
 
-        internal T Deserialize<T>()
+        internal T Deserialize<T>([CallerMemberName]string caller = "")
         {
-            var caller = GetCaller();
             string file = Path.Combine(GetPath(GetType()), $"{caller}.json");
 
             using (var fs = new FileStream(file, FileMode.Open))
@@ -59,9 +58,8 @@ namespace numl.Tests.SerializationTests
             }
         }
 
-        internal object Deserialize()
+        internal object Deserialize([CallerMemberName]string caller = "")
         {
-            var caller = GetCaller();
             string file = Path.Combine(GetPath(GetType()), $"{caller}.json");
 
             using (var fs = new FileStream(file, FileMode.Open))
@@ -69,9 +67,8 @@ namespace numl.Tests.SerializationTests
                 return new JsonReader(f).Read();
         }
 
-        internal JsonWriter GetWriter()
+        internal JsonWriter GetWriter([CallerMemberName]string caller = "")
         {
-            var caller = GetCaller();
             string file = Path.Combine(GetPath(GetType()), $"{caller}.json");
             if (File.Exists(file)) File.Delete(file);
 
@@ -80,28 +77,13 @@ namespace numl.Tests.SerializationTests
             return new JsonWriter(f);
         }
 
-        internal JsonReader GetReader()
+        internal JsonReader GetReader([CallerMemberName]string caller = "")
         {
-            var caller = GetCaller();
             string file = Path.Combine(GetPath(GetType()), $"{caller}.json");
 
             var fs = new FileStream(file, FileMode.Open);
             var f = new StreamReader(fs);
             return new JsonReader(f);
-        }
-
-
-        internal string GetCaller()
-        {
-            var stack = Environment.StackTrace.Split('\n')
-                            .Select(s => s.Trim())
-                            .SkipWhile(s => !s.Contains(GetType().GetTypeInfo().Name))
-                            .ToArray();
-
-            Regex regex = new Regex(@".\.(.*)\(");
-            var match = regex.Match(stack[0]);
-            var method = match.Groups[1].Value.Split('.').Last();
-            return method;
         }
     }
 }
