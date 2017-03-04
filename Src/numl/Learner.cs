@@ -96,7 +96,7 @@ namespace numl
 
             if (trainingPercentage > 1.0) trainingPercentage /= 100.0;
 
-            // safe for parallisation
+            // safe for parallelization
             // read-only references to the data model
             // and update indices independently
             for (int i = 0; i < models.Length; i++)

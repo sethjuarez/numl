@@ -52,7 +52,7 @@ namespace numl.Math.LinearAlgebra
         /// <param name="p">The int to process.</param>
         /// <param name="q">The int to process.</param>
         /// <returns>A Tuple&lt;double,double&gt;</returns>
-        private Tuple<double, double> Schur(Matrix a, int p, int q)
+        private (double c, double s) Schur(Matrix a, int p, int q)
         {
             double c, s = 0;
             if (a[q, q] == a[p, p])
@@ -77,7 +77,7 @@ namespace numl.Math.LinearAlgebra
                 s = 0;
             }
 
-            return new Tuple<double, double>(c, s);
+            return (c, s);
         }
         /// <summary>Sweeps.</summary>
         /// <param name="p">The int to process.</param>
@@ -85,9 +85,7 @@ namespace numl.Math.LinearAlgebra
         private void Sweep(int p, int q)
         {
             // set jacobi rotation matrix
-            var cs = Schur(A, p, q);
-            double c = cs.Item1;
-            double s = cs.Item2;
+            var (c, s) = Schur(A, p, q);
 
             if (c != 1 || s != 0) // if rotation
             {
