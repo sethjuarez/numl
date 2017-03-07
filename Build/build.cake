@@ -6,8 +6,8 @@
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 //////////////////////////////////////////////////////////////////////
-var release = "0.9.13";
-var suffix = "-beta";
+var release = "0.9.15";
+var suffix = "beta";
 var testFailOk = true;
 var copyright = string.Format("©{0}, Seth Juarez", DateTime.Now.Year);
 var target = Argument("target", "Default");
@@ -62,22 +62,11 @@ Task("Version")
     .IsDependentOn("Clean")
     .Does(() =>
 {
-    var assemblyInfo = new AssemblyInfoSettings
-    {
-        Product = "numl",
-        Description = "numl is a machine learning library intended to ease the use of using standard modeling techniques for both prediction and clustering",
-        Guid = "554363c6-5979-4c9a-90e6-e70af2d5cc09",
-        Version = release,
-        FileVersion = release,
-        ComVisible = false,
-        Copyright = copyright
-    };
-    // update assembly version
-    Information("Updating AssembyInfo");
-    CreateAssemblyInfo("../Src/numl/Properties/AssemblyInfo.cs", assemblyInfo);
     // update csproj build
     Information("Updating numl project file");
-    XmlPoke(File("../Src/numl/numl.csproj"), "//PropertyGroup/VersionPrefix", release + suffix);
+    XmlPoke(File("../Src/numl/numl.csproj"), "//PropertyGroup/VersionPrefix", release);
+    XmlPoke(File("../Src/numl/numl.csproj"), "//PropertyGroup/VersionSuffix", suffix);
+    XmlPoke(File("../Src/numl/numl.csproj"), "//PropertyGroup/Copyright", copyright);
 });
 
 Task("Restore")
