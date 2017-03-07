@@ -15,25 +15,6 @@ namespace numl.Tests.MathTests
     public class VectorTests
     {
         [Fact]
-        public void Vector_Serialize_Test()
-        {
-            string path = Path.Combine(BaseSerialization.GetPath(GetType()), "vector_serialize_test.json");
-
-            // want to test "ugly" members in the vector
-            Vector v1 = new[] { System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2, System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2 };
-
-            // serialize
-            // ensure we delete the file first 
-            // or we may have extra data
-            if (File.Exists(path)) File.Delete(path);
-            v1.Save(path);
-
-            // deserialize
-            Vector v2 = Vector.Load(path);
-            Assert.Equal(v1, v2);
-        }
-
-        [Fact]
         public void Vector_Random_Test()
         {
             Vector v1 = (Vector.Rand(5) * 10).Round();

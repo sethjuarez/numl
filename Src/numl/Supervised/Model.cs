@@ -1,14 +1,16 @@
 ﻿// file:	Supervised\Model.cs
 //
 // summary:	Implements the model class
-using System;
 using numl.Math;
-using numl.Utils;
-using numl.Model;
-using System.Linq;
 using numl.Math.LinearAlgebra;
 using numl.Math.Normalization;
-using System.Collections.Generic;
+using numl.Model;
+using numl.Serialization;
+using numl.Utils;
+using System;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace numl.Supervised
 {
@@ -20,7 +22,7 @@ namespace numl.Supervised
         public Descriptor Descriptor { get; set; }
 
         /// <summary>
-        /// Gets or Sets whether to perform feature normalisation using the specified Feature Normalizer.
+        /// Gets or Sets whether to perform feature normalization using the specified Feature Normalizer.
         /// </summary>
         public bool NormalizeFeatures { get; set; }
 
@@ -114,27 +116,24 @@ namespace numl.Supervised
         }
 
         // ----- saving stuff
-        /// <summary>Model persistance.</summary>
+        /// <summary>Model persistence.</summary>
         /// <param name="file">The file to load.</param>
         public virtual void Save(string file)
         {
-            throw new NotImplementedException();
+            if (File.Exists(file)) File.Delete(file);
+            using (var fs = new FileStream(file, FileMode.CreateNew))
+            using (var f = new StreamWriter(fs))
+                new JsonWriter(f).Write(this);
         }
 
         /// <summary>Converts this object to json.</summary>
         /// <returns>This object as a string.</returns>
         public virtual string ToJson()
         {
-            throw new NotImplementedException();
+            StringBuilder sb = new StringBuilder();
+            using (StringWriter sw = new StringWriter(sb))
+                new JsonWriter(sw).Write(this);
+            return sb.ToString();
         }
-
-        /// <summary>Loads a json string.</summary>
-        /// <param name="json">The json string.</param>
-        /// <returns>The Model.</returns>
-        public virtual IModel LoadJson(string json)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }

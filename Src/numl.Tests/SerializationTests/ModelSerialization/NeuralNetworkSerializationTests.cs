@@ -66,8 +66,34 @@ namespace numl.Tests.SerializationTests.ModelSerialization
                 p => p.Play
             );
 
-            Serialize(model);
-            var model2 = Deserialize<NeuralNetworkModel>();
+            var file = GetPath();
+            var model2 = SaveAndLoad(model, file);
+
+            Assert.Equal(model.Descriptor, model2.Descriptor);
+            AreEqual(model.Network, model2.Network);
+        }
+
+        [Fact]
+        public void Save_Model_Test_Json()
+        {
+
+            Tennis t = new Tennis
+            {
+                Humidity = Humidity.Normal,
+                Outlook = Outlook.Overcast,
+                Temperature = Temperature.Cool,
+                Windy = true
+            };
+
+            var model = (NeuralNetworkModel)BaseSupervised.Prediction<Tennis>(
+                new NeuralNetworkGenerator(),
+                Tennis.GetData(),
+                t,
+                p => p.Play
+            );
+
+            var file = GetPath();
+            var model2 = SaveAndLoadJson(model);
 
             Assert.Equal(model.Descriptor, model2.Descriptor);
             AreEqual(model.Network, model2.Network);
@@ -91,8 +117,31 @@ namespace numl.Tests.SerializationTests.ModelSerialization
                 p => p.Play
             );
 
-            Serialize(model.Network);
-            var network = Deserialize<Network>();
+            var file = GetPath();
+            var network = SaveAndLoad(model.Network, file);
+            AreEqual(model.Network, network);
+        }
+
+        [Fact]
+        public void Save_Network_Test_Json()
+        {
+            Tennis t = new Tennis
+            {
+                Humidity = Humidity.Normal,
+                Outlook = Outlook.Overcast,
+                Temperature = Temperature.Cool,
+                Windy = true
+            };
+
+            var model = (NeuralNetworkModel)BaseSupervised.Prediction<Tennis>(
+                new NeuralNetworkGenerator(),
+                Tennis.GetData(),
+                t,
+                p => p.Play
+            );
+
+            var file = GetPath();
+            var network = SaveAndLoadJson(model.Network);
             AreEqual(model.Network, network);
         }
     }

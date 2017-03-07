@@ -19,9 +19,23 @@ namespace numl.Tests.SerializationTests.ModelSerialization
             var generator = new NaiveBayesGenerator(2);
             var model = generator.Generate(description, data) as NaiveBayesModel;
 
-            Serialize(model);
+            var file = GetPath();
+            var lmodel = SaveAndLoad(model, file);
 
-            var lmodel = Deserialize<NaiveBayesModel>();
+            Assert.Equal(model.Root, lmodel.Root);
+        }
+
+        [Fact]
+        public void Tennis_Naive_Bayes_Save_And_Load_Test_Json()
+        {
+            var data = Tennis.GetData();
+            var description = Descriptor.Create<Tennis>();
+            var generator = new NaiveBayesGenerator(2);
+            var model = generator.Generate(description, data) as NaiveBayesModel;
+
+            var file = GetPath();
+            var lmodel = SaveAndLoadJson(model);
+
             Assert.Equal(model.Root, lmodel.Root);
         }
 
@@ -33,9 +47,23 @@ namespace numl.Tests.SerializationTests.ModelSerialization
             var generator = new NaiveBayesGenerator(2);
             var model = generator.Generate(description, data) as NaiveBayesModel;
 
-            Serialize(model);
+            var file = GetPath();
+            var lmodel = SaveAndLoad(model, file);
 
-            var lmodel = Deserialize<NaiveBayesModel>();
+            Assert.Equal(model.Root, lmodel.Root);
+        }
+
+        [Fact]
+        public void Iris_Naive_Bayes_Save_And_Load_Test_Json()
+        {
+            var data = Iris.Load();
+            var description = Descriptor.Create<Iris>();
+            var generator = new NaiveBayesGenerator(2);
+            var model = generator.Generate(description, data) as NaiveBayesModel;
+
+            var file = GetPath();
+            var lmodel = SaveAndLoadJson(model);
+
             Assert.Equal(model.Root, lmodel.Root);
         }
     }

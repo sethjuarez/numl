@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Collections;
 using numl.Math.LinearAlgebra;
 using System.Globalization;
+using System.Text;
 
 namespace numl.Serialization
 {
@@ -83,7 +84,6 @@ namespace numl.Serialization
 				if (!first) WriteToken(JsonConstants.COMMA);
 				WriteArray(vector as IEnumerable);
 				first = false;
-
 			}
 			WriteEndArray();
 		}
@@ -216,46 +216,44 @@ namespace numl.Serialization
 		/// <param name="value"></param>
 		public void Write(object value)
 		{
-			var action = determineWriteAction(value, value?.GetType());
-			action.Invoke();
-		}
-
-		private Action determineWriteAction(object value, Type type)
-		{
-			if (value == null)
-				return WriteNull;
-
-			if (type == typeof(bool))
-				return new Action(() => WriteBool((bool)value));
-
-			if (value is string)
-				return new Action(() => WriteString((string)value));
-
-			if (value is Guid)
-				return new Action(() => WriteString(value.ToString()));
-
-			if (Ject.CanUseSimpleType(type))
-				return new Action(() => WriteSimpleType(value));
-
-			if (type == typeof(Vector))
-				return new Action(() => WriteVector((Vector)value));
-
-			if (type == typeof(Matrix))
-				return new Action(() => WriteMatrix((Matrix)value));
-
-			if (type.HasSerializer())
-				return new Action(() =>
-				{
-					var serializer = type.GetSerializer();
-					serializer.PreWrite(this);
-					serializer.Write(this, value);
-					serializer.PostWrite(this);
-				});
-
-			if (value is IEnumerable)
-				return new Action(() => WriteArray(value as IEnumerable));
-
-			return new Action(() => WriteObject(value));
+            switch(value)
+            {
+                case null:
+                    WriteNull();
+                    break;
+                case bool b:
+                    WriteBool(b);
+                    break;
+                case string s:
+                    WriteString(s);
+                    break;
+                case Guid g:
+                    WriteString(g.ToString());
+                    break;
+                case Vector v:
+                    WriteVector(v);
+                    break;
+                case Matrix m:
+                    WriteMatrix(m);
+                    break;
+                case IEnumerable e:
+                    WriteArray(e);
+                    break;
+                default:
+                    Type type = value.GetType();
+                    if (Ject.CanUseSimpleType(type))
+                        WriteSimpleType(value);
+                    else if (type.HasSerializer())
+                    {
+                        var serializer = type.GetSerializer();
+                        serializer.PreWrite(this);
+                        serializer.Write(this, value);
+                        serializer.PostWrite(this);
+                    }
+                    else
+                        WriteObject(value);
+                    break;
+            }
 		}
 
 		/// <summary>
@@ -266,5 +264,28 @@ namespace numl.Serialization
 			if (_writer != null)
 				_writer.Dispose();
 		}
-	}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="o"></param>
+        /// <returns></returns>
+        public static string SaveJson<T>(T o)
+        {
+            StringBuilder sb = new StringBuilder();
+            using (StringWriter sw = new StringWriter(sb))
+                new JsonWriter(sw).Write(o);
+            return sb.ToString();
+        }
+
+        public static void Save<T>(T o, string file)
+        {
+            if (File.Exists(file)) File.Delete(file);
+
+            using (var fs = new FileStream(file, FileMode.CreateNew))
+            using (var f = new StreamWriter(fs))
+                new JsonWriter(f).Write(o);
+        }
+    }
 }

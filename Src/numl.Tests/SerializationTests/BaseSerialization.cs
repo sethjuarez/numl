@@ -21,69 +21,30 @@ namespace numl.Tests.SerializationTests
             Register.Assembly(GetType().GetTypeInfo().Assembly);
         }
 
-        internal static string GetPath(Type t)
+        internal string GetPath([CallerMemberName]string caller = "")
         {
             var basePath = Path.Combine(new[]{
                 Path.GetTempPath(),
                 "numl.Tests",
-                t.Name
+                GetType().Name
             });
 
             if (!Directory.Exists(basePath))
                 Directory.CreateDirectory(basePath);
 
-            return basePath;
+            return Path.Combine(basePath, $"{caller}.json");
         }
 
-        internal void Serialize(object o, [CallerMemberName]string caller = "")
+        internal T SaveAndLoad<T>(T o, string file)
         {
-            string file = Path.Combine(GetPath(GetType()), $"{caller}.json");
-
-            if (File.Exists(file)) File.Delete(file);
-
-            using (var fs = new FileStream(file, FileMode.CreateNew))
-            using (var f = new StreamWriter(fs))
-                new JsonWriter(f).Write(o);
+            JsonWriter.Save(o, file);
+            return JsonReader.Read<T>(file);
         }
 
-        internal T Deserialize<T>([CallerMemberName]string caller = "")
+        internal T SaveAndLoadJson<T>(T o)
         {
-            string file = Path.Combine(GetPath(GetType()), $"{caller}.json");
-
-            using (var fs = new FileStream(file, FileMode.Open))
-            using (var f = new StreamReader(fs))
-            {
-                var val = new JsonReader(f).Read();
-                return (T)val;
-            }
-        }
-
-        internal object Deserialize([CallerMemberName]string caller = "")
-        {
-            string file = Path.Combine(GetPath(GetType()), $"{caller}.json");
-
-            using (var fs = new FileStream(file, FileMode.Open))
-            using (var f = new StreamReader(fs))
-                return new JsonReader(f).Read();
-        }
-
-        internal JsonWriter GetWriter([CallerMemberName]string caller = "")
-        {
-            string file = Path.Combine(GetPath(GetType()), $"{caller}.json");
-            if (File.Exists(file)) File.Delete(file);
-
-            var fs = new FileStream(file, FileMode.CreateNew);
-            var f = new StreamWriter(fs);
-            return new JsonWriter(f);
-        }
-
-        internal JsonReader GetReader([CallerMemberName]string caller = "")
-        {
-            string file = Path.Combine(GetPath(GetType()), $"{caller}.json");
-
-            var fs = new FileStream(file, FileMode.Open);
-            var f = new StreamReader(fs);
-            return new JsonReader(f);
+            var json = JsonWriter.SaveJson(o);
+            return JsonReader.ReadJson<T>(json);
         }
     }
 }

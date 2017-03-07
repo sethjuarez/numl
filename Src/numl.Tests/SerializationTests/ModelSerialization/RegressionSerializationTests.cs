@@ -34,9 +34,8 @@ namespace numl.Tests.SerializationTests.ModelSerialization
             var learningModel = Learner.Learn(data, .80, 5, g); // changed from 1000
             model = (LinearRegressionModel)learningModel.Model;
 
-            Serialize(model);
-
-            var loadedModel = Deserialize<LinearRegressionModel>();
+            var file = GetPath();
+            var loadedModel = SaveAndLoad(model, file);
 
             Assert.Equal(model.Theta, loadedModel.Theta);
         }

@@ -206,6 +206,7 @@ namespace numl.Serialization
                 EatWhitespace();
 
                 token = ReadChar();
+
                 if (token != JsonConstants.COMMA && token != JsonConstants.END_ARRAY)
                     throw new InvalidOperationException("Unexpected token while parsing array!");
             }
@@ -251,7 +252,7 @@ namespace numl.Serialization
             ReadEndObject();
             return obj;
         }
-        
+
         #endregion
 
         /// <summary>
@@ -338,6 +339,50 @@ namespace numl.Serialization
         {
             if (_reader != null)
                 _reader.Dispose();
+        }
+
+        /// <summary>Loads a json string.</summary>
+        /// <param name="json">The json string.</param>
+        /// <returns>The Model.</returns>
+        public static T ReadJson<T>(string json)
+        {
+            using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(json)))
+            using (var f = new StreamReader(ms))
+                return (T)new JsonReader(f).Read();
+        }
+
+        /// <summary>Loads an object</summary>
+        /// <param name="file">The file </param>
+        /// <returns>The Model.</returns>
+        public static T Read<T>(string file)
+        {
+            using (var fs = new FileStream(file, FileMode.Open))
+            using (var f = new StreamReader(fs))
+                return (T)new JsonReader(f).Read();
+        }
+
+        /// <summary>
+        /// Reading a vector from a file
+        /// </summary>
+        /// <param name="file">file</param>
+        /// <returns>vector</returns>
+        public static Vector ReadVector(string file)
+        {
+            using (var fs = new FileStream(file, FileMode.Open))
+            using (var f = new StreamReader(fs))
+                return new JsonReader(f).ReadVector();
+        }
+
+        /// <summary>
+        /// Reading a matrix from a file
+        /// </summary>
+        /// <param name="file">file</param>
+        /// <returns>matrix</returns>
+        public static Matrix ReadMatrix(string file)
+        {
+            using (var fs = new FileStream(file, FileMode.Open))
+            using (var f = new StreamReader(fs))
+                return new JsonReader(f).ReadMatrix();
         }
     }
 }
