@@ -157,9 +157,9 @@ namespace numl.Supervised
             var dataset = (this.PreserveOrder ? examples : examples.Shuffle());
 
             var doubles = Descriptor.Convert(dataset);
-            var tuple = doubles.ToExamples();
+            var (X, Y) = doubles.ToExamples();
 
-            return Generate(tuple.Item1, tuple.Item2);
+            return Generate(X, Y);
         }
 
         /// <summary>

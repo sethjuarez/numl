@@ -132,11 +132,9 @@ namespace numl.Reinforcement
                 throw new InvalidOperationException("Invalid descriptor: Empty label!");
 
             var doubles = Descriptor.Convert(examples);
-            var tuple = doubles.ToExamples();
+            var (states, actions) = doubles.ToExamples();
 
-            Matrix states = tuple.Item1.Copy();
-            Vector actions = tuple.Item2;
-            Vector rewards = Vector.Rand(tuple.Item2.Length);
+            Vector rewards = Vector.Rand(actions.Length);
 
             var rewardProp = description.Features.GetPropertyOfType<RewardAttribute>();
             if (rewardProp != null)
@@ -211,21 +209,15 @@ namespace numl.Reinforcement
             }
 
             var doubles = this.Descriptor.Convert(examples1);
-            var tuple = doubles.ToExamples();
-
-            Matrix states = tuple.Item1.Copy();
-            Vector actions = tuple.Item2;
+            var (states, actions) = doubles.ToExamples();
 
             Matrix statesP = null;
-            Vector rewards = Vector.Rand(tuple.Item2.Length);
+            Vector rewards = Vector.Rand(actions.Length);
 
             if (hasTransitionStates)
             {
                 var doubles2 = this.TransitionDescriptor.Convert(examples2);
-                var tuple2 = doubles2.ToExamples();
-
-                statesP = tuple2.Item1;
-                rewards = tuple2.Item2;
+                (statesP, rewards) = doubles2.ToExamples();
             }
             else
             {

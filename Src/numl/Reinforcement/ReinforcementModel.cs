@@ -40,7 +40,7 @@ namespace numl.Reinforcement
             var doubles2 = TransitionDescriptor.Convert(stateP, true);
             var tuple2 = new double[][] { doubles2.ToArray() }.ToExamples();
 
-            this.Learn(tuple1.Item1[0], tuple1.Item2[0], tuple2.Item1[0], tuple2.Item2[0]);
+            this.Learn(tuple1.X[0], tuple1.Y[0], tuple2.X[0], tuple2.Y[0]);
         }
 
         /// <summary>

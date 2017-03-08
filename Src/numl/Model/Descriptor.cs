@@ -216,7 +216,7 @@ namespace numl.Model
 		/// <summary>Converts a list of examples into a Matrix/Vector tuple.</summary>
 		/// <param name="examples">Examples.</param>
 		/// <returns>Tuple containing Matrix and Vector.</returns>
-		public Tuple<Matrix, Vector> ToExamples(IEnumerable<object> examples)
+		public (Matrix X, Vector Y) ToExamples(IEnumerable<object> examples)
 		{
 			return Convert(examples).ToExamples();
 		}
