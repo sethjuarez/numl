@@ -188,21 +188,21 @@ namespace numl.Model
             if (features.HasFlag(DateTimeFeature.Year))
                 yield return getName(DateTimeFeature.Year);
             if (features.HasFlag(DateTimeFeature.DayOfYear))
-                yield return "DayOfYear";
+                yield return getName(DateTimeFeature.DayOfYear);
             if (features.HasFlag(DateTimeFeature.Month))
-                yield return "Month";
+                yield return getName(DateTimeFeature.Month);
             if (features.HasFlag(DateTimeFeature.Day))
-                yield return "Day";
+                yield return getName(DateTimeFeature.Day);
             if (features.HasFlag(DateTimeFeature.DayOfWeek))
-                yield return "DayOfWeek";
+                yield return getName(DateTimeFeature.DayOfWeek);
             if (features.HasFlag(DateTimeFeature.Hour))
-                yield return "Hour";
+                yield return getName(DateTimeFeature.Hour);
             if (features.HasFlag(DateTimeFeature.Minute))
-                yield return "Minute";
+                yield return getName(DateTimeFeature.Minute);
             if (features.HasFlag(DateTimeFeature.Second))
-                yield return "Second";
+                yield return getName(DateTimeFeature.Second);
             if (features.HasFlag(DateTimeFeature.Millisecond))
-                yield return "Millisecond";
+                yield return getName(DateTimeFeature.Millisecond);
         }
 
         /// <summary>
