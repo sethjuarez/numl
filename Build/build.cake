@@ -1,7 +1,8 @@
-#tool "nuget:?package=xunit.runner.console"
 #addin "Newtonsoft.Json"
 #addin "Cake.DocFx"
-#tool "docfx.console"
+#tool "nuget:?package=docfx.console&version=2.16.0"
+#tool "nuget:?package=xunit.runner.console"
+
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -112,7 +113,12 @@ Task("Docs")
     .Does(() => 
 {
     // write out version in prep for doc gen
-    UpdateProjectJsonVersion(release + suffix, "../Docs/version.json", "_appId");
+    if(suffix.Length > 0)
+        UpdateProjectJsonVersion(release + "-" + suffix, "../Docs/version.json", "_appId");
+    else
+        UpdateProjectJsonVersion(release, "../Docs/version.json", "_appId");
+
+    UpdateProjectJsonVersion(DateTime.Now.Year.ToString(), "../Docs/version.json", "_year");
 
 
     //DocFxMetadata("../Docs/docfx.json");

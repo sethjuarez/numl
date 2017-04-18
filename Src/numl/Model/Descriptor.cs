@@ -168,7 +168,7 @@ namespace numl.Model
 				// pre-process item
 				feature.PreProcess(item);
 
-				// start start position
+				// start position
 				if (feature.Start < 0)
 					feature.Start = i == 0 ? 0 : Features[i - 1].Start + Features[i - 1].Length;
 

@@ -8,7 +8,7 @@
       {{^_appFooter}}
       <div class="row inner-footer">
             <div class="col-md-10">
-                &copy;2016 — <a href="http://sethjuarez.com">Seth Juarez</a><br>
+                &copy;{{_year}} — <a href="http://sethjuarez.com">Seth Juarez</a><br>
                 <a href="https://www.nuget.org/packages/numl/">numl v{{_appId}}</a>
             </div>
             <div class="col-md-2">
