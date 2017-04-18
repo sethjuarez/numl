@@ -50,7 +50,7 @@ namespace numl.Supervised
         public bool PreserveOrder { get; set; }
 
         /// <summary>
-        /// Gets or sets whether to perform feature normalisation using the specified Feature Normalizer.
+        /// Gets or sets whether to perform feature normalization using the specified Feature Normalizer.
         /// </summary>
         public bool NormalizeFeatures { get; set; }
         /// <summary>
@@ -157,9 +157,9 @@ namespace numl.Supervised
             var dataset = (this.PreserveOrder ? examples : examples.Shuffle());
 
             var doubles = Descriptor.Convert(dataset);
-            var (X, Y) = doubles.ToExamples();
+            var tuple = doubles.ToExamples();
 
-            return Generate(X, Y);
+            return Generate(tuple.Item1, tuple.Item2);
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace numl.Supervised
         /// <returns>Model.</returns>
         public abstract IModel Generate(Matrix x, Vector y);
 
-        
+
     }
 
     /// <summary>Additional information for model events.</summary>
