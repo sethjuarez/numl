@@ -1,5 +1,6 @@
 ﻿using System;
 using numl.Data;
+using numl.Supervised;
 using System.Reflection;
 using numl.Supervised.DecisionTree;
 

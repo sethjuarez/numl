@@ -1,12 +1,10 @@
-﻿using numl.Serialization;
-using numl.Serialization.Data;
-using numl.Serialization.Supervised.NeuralNetwork;
-using numl.Supervised.NeuralNetwork;
-using Xunit;
+﻿using Xunit;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using numl.Serialization;
+using numl.Supervised.NeuralNetwork;
+using numl.Supervised.NeuralNetwork.Serializer;
+
 
 namespace numl.Tests.SerializationTests
 {

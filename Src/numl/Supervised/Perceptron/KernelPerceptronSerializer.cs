@@ -1,4 +1,5 @@
 using System;
+using numl.Supervised;
 using System.Reflection;
 using numl.Math.Kernels;
 using numl.Math.LinearAlgebra;

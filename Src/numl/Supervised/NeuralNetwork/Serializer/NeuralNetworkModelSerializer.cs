@@ -1,13 +1,10 @@
-﻿using numl.Math.Functions;
-using numl.Supervised.NeuralNetwork;
-using numl.Utils;
-using System.Reflection;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using numl.Model;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Reflection;
+using numl.Serialization;
 
-namespace numl.Serialization.Supervised.NeuralNetwork
+namespace numl.Supervised.NeuralNetwork.Serializer
 {
     /// <summary>
     /// Serializer for neural network model

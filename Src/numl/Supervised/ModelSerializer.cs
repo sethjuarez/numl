@@ -1,10 +1,11 @@
 ﻿using System;
 using numl.Utils;
 using System.Linq;
+using numl.Serialization;
 using numl.Math.Normalization;
 using System.Collections.Generic;
 
-namespace numl.Serialization.Supervised
+namespace numl.Supervised
 {
     /// <summary>
     /// A generic Model serializer object.

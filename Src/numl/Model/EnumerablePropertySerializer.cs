@@ -1,8 +1,8 @@
 ﻿using System;
-using numl.Model;
+using numl.Serialization;
 using System.Reflection;
 
-namespace numl.Serialization.Model
+namespace numl.Model
 {
     public class EnumerablePropertySerializer : PropertySerializer
     {

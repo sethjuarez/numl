@@ -1,11 +1,11 @@
-﻿using numl.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using numl.Serialization;
 
-namespace numl.Serialization.Data
+namespace numl.Data
 {
     public class GraphSerializer : JsonSerializer<Graph>
     {

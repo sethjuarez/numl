@@ -1,8 +1,8 @@
 ﻿using System;
-using numl.Data;
 using System.Reflection;
+using numl.Serialization;
 
-namespace numl.Serialization.Data
+namespace numl.Data
 {
     public class TreeSerializer : GraphSerializer
     {

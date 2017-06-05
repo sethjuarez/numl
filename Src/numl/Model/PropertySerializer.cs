@@ -1,10 +1,10 @@
 ﻿using System;
-using numl.Model;
+using numl.Serialization;
 using numl.Utils;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace numl.Serialization.Model
+namespace numl.Model
 {
     public class PropertySerializer : JsonSerializer<Property>
     {
