@@ -14,49 +14,33 @@ There are several links for installing the bits depending on your OS.
 ## Initializing a Project
 
 1. Create a folder for your project
-2. cd into it and `dotnet new` - this will create a basic
+2. cd into it and `dotnet new console` - this will create a basic
    console application
-3. Next we will edit the `project.json` file
-   in order to get `numl` (and its dependencies) referenced
-   in the project. Here is the what the file should look like:
+3. Next we will add `numl` (and its dependencies) to the project
+   via NuGet. Run `dotnet add package numl -v 0.9.9-*`. This modifies
+   the `.csproj` project file as follows:
 
-```json
-{
-    "version": "1.0.0-*",
-    "compilationOptions": {
-        "emitEntryPoint": true
-    },
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="numl" Version="0.9.9-*" />
+  </ItemGroup>
+</Project>```
 
-    "dependencies": {
-        "Microsoft.NETCore.Runtime": "1.0.1-beta-*",
-        "System.IO": "4.0.11-beta-*",
-        "System.Console": "4.0.0-*",
-        "System.Runtime": "4.0.21-beta-*",
-        "System.Reflection.TypeExtensions": "4.1.0-*",
-        "System.Linq": "4.0.1-*",
-        "System.Collections.Concurrent": "4.0.11-*",
-        "System.Linq.Expressions": "4.0.11-*",
-        "numl": "0.9.9-*"
-    },
+These were the lines added:
 
-    "frameworks": {
-        "dnxcore50": { }
-    }
-}
+```xml
+  <ItemGroup>
+    <PackageReference Include="numl" Version="0.9.9-*">
+  </ItemGroup>
 ```
 
-These were lines added:
-
-```json
-        "System.Reflection.TypeExtensions": "4.1.0-*",
-        "System.Linq": "4.0.1-*",
-        "System.Collections.Concurrent": "4.0.11-*",
-        "System.Linq.Expressions": "4.0.11-*",
-        "numl": "0.9.9-*"
-```
-
-If you are using Visual Studio Code, as soon as you make the changes to the
-`project.json` file it will ask you to update the dependencies.
+If you are using Visual Studio Code and edit the project file manually,
+it will ask you to update the dependencies.
    
 # Writing Some Code
 
@@ -89,8 +73,8 @@ namespace ConsoleApplication
 
 # Running the code
 
-1. From the comand line run `dotnet restore`
-2. Once the process is complete run `dotnet run`
+1. Run `dotnet restore` if you've made further changes to the `.csproj` file
+2. Run `dotnet run`
 
 ![numl running](..\images\firstrun.png)
 
