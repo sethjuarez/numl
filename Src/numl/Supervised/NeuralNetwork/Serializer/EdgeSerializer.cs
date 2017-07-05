@@ -5,7 +5,7 @@ using System.IO;
 using numl.Serialization;
 using numl.Supervised.NeuralNetwork;
 
-namespace numl.Serialization.Supervised.NeuralNetwork
+namespace numl.Supervised.NeuralNetwork.Serializer
 {
     /// <summary>
     /// Edge serializer.

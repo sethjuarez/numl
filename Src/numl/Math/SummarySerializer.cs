@@ -1,5 +1,6 @@
 ﻿using System;
 using numl.Math;
+using numl.Serialization;
 using System.Reflection;
 using numl.Math.LinearAlgebra;
 
@@ -12,7 +13,7 @@ namespace numl.Serialization.Supervised
     public class SummarySerializer : JsonSerializer
     {
         /// <summary>
-        /// Returns True if the specified Type can be converted to a Summmary object.
+        /// Returns True if the specified Type can be converted to a Summary object.
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>

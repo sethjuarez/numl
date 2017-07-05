@@ -1,10 +1,10 @@
 ﻿using System;
-using numl.Model;
 using numl.Utils;
 using System.Linq;
+using numl.Serialization;
 using System.Collections.Generic;
 
-namespace numl.Serialization.Model
+namespace numl.Model
 {
     public class DescriptorSerializer : JsonSerializer<Descriptor>
     {

@@ -1,8 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
-    <VersionPrefix>0.9.15</VersionPrefix>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VersionPrefix>0.9.18</VersionPrefix>
     <VersionSuffix>beta</VersionSuffix>
     <AssemblyTitle>numl</AssemblyTitle>
     <Authors>Seth Juarez;Chris Kalle;Basia Fusinka</Authors>
@@ -16,11 +18,6 @@
     <Description>numl is a machine learning library intended to ease the use of using standard modeling techniques for both prediction and clustering</Description>
     <Copyright>©2017, Seth Juarez</Copyright>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="Properties\**" />
-    <EmbeddedResource Remove="Properties\**" />
-    <None Remove="Properties\**" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />

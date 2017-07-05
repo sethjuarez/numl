@@ -7,7 +7,7 @@ using numl.Serialization;
 using numl.Supervised.NeuralNetwork;
 using numl.Utils;
 
-namespace numl.Serialization.Supervised.NeuralNetwork
+namespace numl.Supervised.NeuralNetwork.Serializer
 {
     /// <summary>
     /// Node serializer.

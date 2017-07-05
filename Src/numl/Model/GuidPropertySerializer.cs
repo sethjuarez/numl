@@ -1,9 +1,9 @@
 ﻿using System;
-using numl.Model;
+using numl.Serialization;
 using System.Linq;
 using System.Reflection;
 
-namespace numl.Serialization.Model
+namespace numl.Model
 {
 	public class GuidPropertySerializer : PropertySerializer
 	{

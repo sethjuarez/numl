@@ -1,10 +1,10 @@
 ﻿using System;
-using numl.Model;
 using System.Linq;
 using System.Reflection;
+using numl.Serialization;
 
 
-namespace numl.Serialization.Model
+namespace numl.Model
 {
     public class DateTimePropertySerializer : PropertySerializer
     {

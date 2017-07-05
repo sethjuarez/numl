@@ -9,7 +9,7 @@ using numl.Utils;
 using numl.Math.Functions;
 
 
-namespace numl.Serialization.Supervised.NeuralNetwork
+namespace numl.Supervised.NeuralNetwork.Serializer.Recurrent
 {
     /// <summary>
     /// Recurrent Node serializer.

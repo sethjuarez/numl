@@ -1,8 +1,7 @@
-﻿using numl.Supervised.NaiveBayes;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Reflection;
-using System.Text;
+using numl.Supervised;
+using numl.Supervised.NaiveBayes;
 
 namespace numl.Serialization.Supervised.NaiveBayes
 {
