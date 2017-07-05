@@ -41,6 +41,8 @@ namespace numl.Model
 		/// <returns>Descriptor.</returns>
 		public Descriptor Use(Func<object, double> conversion)
 		{
+            //TODO: Requires implementation... ?
+
 			throw new NotImplementedException("Not yet ;)");
 			//return _descriptor;
 		}
@@ -199,9 +201,11 @@ namespace numl.Model
 				_descriptor.Label = p;
 			else
 			{
-				var features = new List<Property>(_descriptor.Features ?? new Property[] { });
-				features.Add(p);
-				_descriptor.Features = features.ToArray();
+                var features = new List<Property>(_descriptor.Features ?? new Property[] { })
+                {
+                    p
+                };
+                _descriptor.Features = features.ToArray();
 			}
 		}
 	}
