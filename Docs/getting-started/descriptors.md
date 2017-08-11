@@ -82,14 +82,6 @@ var d = Descriptor.New()
             .With("PetalWidth").As(typeof(int))
             .Learn("Class").As(typeof(string));
 ```
-
-This style of declaration creates an empty descriptor [New( )] and adds 4 features and 
-a label. The general style of this fluent interface is the use of the With or Learn 
-method (which describes the name of the property that will be accessed) and the 
-As_ method (which describes the property type along with any additional information). 
-The With method adds a Feature to the descriptor while the Learn method overwrites the 
-Label of the descriptor.
-
 This style of declaration creates an empty descriptor [New( )] and adds 4 features and a label. The general style of this fluent interface is the use of the With or Learn method (which describes the name of the property that will be accessed) and the As_ method (which describes the property type along with any additional information). The With method adds a Feature to the descriptor while the Learn method overwrites the Label of the descriptor.
 
 There are sevaral As methods available:
@@ -103,7 +95,7 @@ There are sevaral As methods available:
 
 Utlimately the process of creating descriptors boils down to creating a collection 
 of features as well as an optional label that describes the types that will participate 
-in the learning algorithms. These all impement a conversion between the respective 
+in the learning algorithms. These all implement a conversion between the respective 
 types to a double. Some of these properties when expanded also could potential become 
 multivalued as in the case of Strings, Enumerables, and DateTimes. Here is a list of 
 available properties:
