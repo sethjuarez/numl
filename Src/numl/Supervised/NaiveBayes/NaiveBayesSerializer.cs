@@ -2,6 +2,7 @@
 using System.Reflection;
 using numl.Supervised;
 using numl.Supervised.NaiveBayes;
+using System.Linq;
 using numl.Math;
 
 namespace numl.Serialization.Supervised.NaiveBayes
@@ -67,7 +68,11 @@ namespace numl.Serialization.Supervised.NaiveBayes
 
                 measure.Label = reader.ReadProperty().Value.ToString();
                 measure.Discrete = (bool)reader.ReadProperty().Value;
-                measure.Probabilities = (Statistic[])reader.ReadArrayProperty().Value;
+                var probabilities = reader.ReadArrayProperty().Value;
+                if(probabilities != null)
+                    measure.Probabilities = probabilities
+                                                .Select(o => (Statistic)o)
+                                                .ToArray();
 
                 return measure;
             }
@@ -104,7 +109,11 @@ namespace numl.Serialization.Supervised.NaiveBayes
                 statistic.Count = int.Parse(reader.ReadProperty().Value.ToString());
                 statistic.X = (Range)reader.ReadProperty().Value;
                 statistic.Probability = (double)reader.ReadProperty().Value;
-                statistic.Conditionals = (Measure[])reader.ReadArrayProperty().Value;
+                var conditionals = reader.ReadArrayProperty().Value;
+                if(conditionals != null)
+                    statistic.Conditionals = conditionals
+                                                .Select(o => (Measure)o)
+                                                .ToArray();
 
                 return statistic;
             }

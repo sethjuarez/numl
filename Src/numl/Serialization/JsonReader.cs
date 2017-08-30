@@ -189,9 +189,7 @@ namespace numl.Serialization
             EatWhitespace();
 
             // null check on arrays...
-            if(_reader.Peek() == JsonConstants.NULL[0] &&
-                   ReadLiteral() == null)
-                return null;
+            if (IsNull()) return null;
 
             ReadToken(JsonConstants.BEGIN_ARRAY);
             List<object> array = new List<object>();
