@@ -36,6 +36,16 @@ namespace numl.Math.LinearAlgebra
         {
             return Vector.Log(v);
         }
+        /// <summary>
+        /// Returns the vector raised to the specified power.
+        /// </summary>
+        /// <param name="v">Vector to raise to the power.</param>
+        /// <param name="power">Double representing the power value.</param>
+        /// <returns>Vector.</returns>
+        public static Vector Pow(this Vector v, double power)
+        {
+            return Vector.Pow(v, power);
+        }
         /// <summary>A Vector extension method that products the given v.</summary>
         /// <param name="v">The v to act on.</param>
         /// <returns>A double.</returns>
@@ -818,6 +828,42 @@ namespace numl.Math.LinearAlgebra
         public static double GetRandom(this Vector v)
         {
             return v[Sampling.GetUniform(v.Length - 1)];
+        }
+
+        /// <summary>
+        /// Rescales the input vector to the specified range.
+        /// <para>When <paramref name="minValue"/> and <paramref name="maxValue"/> are null, the vector instance min and max values are used instead.</para>
+        /// </summary>
+        /// <param name="v">Vector to rescale.</param>
+        /// <param name="min">New lower bound value.</param>
+        /// <param name="max">New upper bound value.</param>
+        /// <param name="minValue">Lower bound value prior to rescaling.</param>
+        /// <param name="maxValue">Upper bound value prior to rescaling.</param>
+        /// <returns></returns>
+        public static Vector Rescale(this Vector v, double min, double max, double? minValue = null, double? maxValue = null)
+        {
+            double min_tm1 = (minValue ?? v.Min());
+            double max_tm1 = (maxValue ?? v.Max());
+
+            Vector v_t = v.Each(d => ((max - min) * (d - min_tm1)) / (max_tm1 - min_tm1), true);
+
+            return v_t;
+        }
+
+        /// <summary>
+        /// Normalizes the values so that the sum of all values is 1.
+        /// <para>Values should be positive prior to normalization for correctness.</para>
+        /// </summary>
+        /// <param name="v">Vector to normalize.</param>
+        /// <returns>Vector.</returns>
+        public static Vector Normalize(this Vector v)
+        {
+            double sum = v.Sum();
+            if (sum == 0) throw new InvalidOperationException("Cannot normalize a zero sequence.");
+
+            Vector v_t = v.Each(d => d / sum, true);
+
+            return v_t;
         }
     }
 }
