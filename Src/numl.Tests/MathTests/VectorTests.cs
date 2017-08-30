@@ -15,25 +15,6 @@ namespace numl.Tests.MathTests
     public class VectorTests
     {
         [Fact]
-        public void Vector_Serialize_Test()
-        {
-            string path = Path.Combine(BaseSerialization.GetPath(GetType()), "vector_serialize_test.json");
-
-            // want to test "ugly" members in the vector
-            Vector v1 = new[] { System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2, System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2 };
-
-            // serialize
-            // ensure we delete the file first 
-            // or we may have extra data
-            if (File.Exists(path)) File.Delete(path);
-            v1.Save(path);
-
-            // deserialize
-            Vector v2 = Vector.Load(path);
-            Assert.Equal(v1, v2);
-        }
-
-        [Fact]
         public void Vector_Random_Test()
         {
             Vector v1 = (Vector.Rand(5) * 10).Round();
@@ -300,6 +281,38 @@ namespace numl.Tests.MathTests
             Vector difference = v - c;
             Vector swappedDifference = c - v;
             Assert.Equal(difference, -swappedDifference);
+        }
+
+        [Fact]
+        public void Vector_ToBinary_Test()
+        {
+            Vector v1 = new Vector(new double[] { 0.1, 0.2, -0.1, 0.2, 0.1, -0.1 });
+            Matrix m1 = new Matrix(new double[,] { { 0, 1, 0 },
+                                                   { 0, 0, 1 },
+                                                   { 1, 0, 0 },
+                                                   { 0, 0, 1 },
+                                                   { 0, 1, 0 },
+                                                   { 1, 0, 0 } });
+            Assert.Equal(m1, v1.ToBinaryMatrix(true));
+
+            Vector v2 = new Vector(new double[] { 1, -1, 1, -1, 1, 1 });
+            Matrix m2 = new Matrix(new double[,] { { 1 },
+                                                   { 0 },
+                                                   { 1 },
+                                                   { 0 },
+                                                   { 1 },
+                                                   { 1 }});
+            Assert.Equal(m2, v2.ToBinaryMatrix(false));
+
+            Vector v3 = new Vector(new double[] { 10, 20, 10, 4, 10, 5 });
+            Matrix m3 = new Matrix(new double[,] { { 0, 0, 1, 0 },
+                                                   { 0, 0, 0, 1 },
+                                                   { 0, 0, 1, 0 },
+                                                   { 1, 0, 0, 0 },
+                                                   { 0, 0, 1, 0 },
+                                                   { 0, 1, 0, 0 } });
+
+            Assert.Equal(m3, v3.ToBinaryMatrix());
         }
     }
 }

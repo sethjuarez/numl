@@ -1,13 +1,14 @@
-#tool "nuget:?package=xunit.runner.console"
-#tool "docfx.msbuild"
 #addin "Newtonsoft.Json"
 #addin "Cake.DocFx"
+#tool "nuget:?package=docfx.console&version=2.16.0"
+#tool "nuget:?package=xunit.runner.console"
+
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 //////////////////////////////////////////////////////////////////////
-var release = "0.9.12";
-var suffix = "-beta";
+var release = "0.9.16";
+var suffix = "beta";
 var testFailOk = true;
 var copyright = string.Format("©{0}, Seth Juarez", DateTime.Now.Year);
 var target = Argument("target", "Default");
@@ -48,6 +49,8 @@ public static void UpdateProjectJsonVersion(string version, FilePath projectPath
 //////////////////////////////////////////////////////////////////////
 // TASKS
 //////////////////////////////////////////////////////////////////////
+
+/// CLEAN
 Task("Clean")
     .Does(() =>
 {
@@ -60,43 +63,30 @@ Task("Version")
     .IsDependentOn("Clean")
     .Does(() =>
 {
-    var assemblyInfo = new AssemblyInfoSettings
-    {
-        Product = "numl",
-        Description = "numl is a machine learning library intended to ease the use of using standard modeling techniques for both prediction and clustering",
-        Guid = "554363c6-5979-4c9a-90e6-e70af2d5cc09",
-        Version = release,
-        FileVersion = release,
-        ComVisible = false,
-        Copyright = copyright
-    };
-    // update assembly version
-    Information("Updating AssembyInfo");
-    CreateAssemblyInfo("../Src/numl/Properties/AssemblyInfo.cs", assemblyInfo);
-    // update project.json build
-    Information("Updating numl project.json to " + release+suffix);
-    UpdateProjectJsonVersion(release + suffix, "../Src/numl/project.json", "version");
-    // update test assembly project.json to match new version
-    Information("Updating numl.Tests reference to numl in project.json to " + release+suffix);
-    UpdateProjectJsonVersion(release + suffix, "../Src/numl.Tests/project.json", "dependencies+numl");
+    // update csproj build
+    Information("Updating numl project file");
+    XmlPoke(File("../Src/numl/numl.csproj"), "//PropertyGroup/VersionPrefix", release);
+    XmlPoke(File("../Src/numl/numl.csproj"), "//PropertyGroup/VersionSuffix", suffix);
+    XmlPoke(File("../Src/numl/numl.csproj"), "//PropertyGroup/Copyright", copyright);
 });
 
 Task("Restore")
     .IsDependentOn("Version")
     .Does(() =>
 {
-    DotNetCoreRestore("../Src");
+    DotNetCoreRestore("../src/numl/numl.csproj");
+    DotNetCoreRestore("../src/numl.Tests/numl.Tests.csproj");
 });
 
 Task("Test")
     .IsDependentOn("Restore")
     .Does(() =>
 {
-    DotNetCoreTest("../Src/numl.Tests", new DotNetCoreTestSettings {
+    DotNetCoreTest("../Src/numl.Tests/numl.Tests.csproj", new DotNetCoreTestSettings {
         Configuration = configuration,
-        Framework = "netcoreapp1.0",
+        Framework = "netcoreapp1.1",
         OutputDirectory = buildDir,
-        Verbose = true
+        Verbose = false
     });
 })
 .OnError(exception => 
@@ -115,7 +105,7 @@ Task("Package")
         OutputDirectory = packageDir
     };
             
-    DotNetCorePack("../Src/numl", settings);
+    DotNetCorePack("../Src/numl/numl.csproj", settings);
 });
 
 Task("Docs")
@@ -123,7 +113,15 @@ Task("Docs")
     .Does(() => 
 {
     // write out version in prep for doc gen
-    UpdateProjectJsonVersion(release + suffix, "../Docs/version.json", "_appId");
+    if(suffix.Length > 0)
+        UpdateProjectJsonVersion(release + "-" + suffix, "../Docs/version.json", "_appId");
+    else
+        UpdateProjectJsonVersion(release, "../Docs/version.json", "_appId");
+
+    UpdateProjectJsonVersion(DateTime.Now.Year.ToString(), "../Docs/version.json", "_year");
+
+
+    //DocFxMetadata("../Docs/docfx.json");
 
     DocFx("../Docs/docfx.json", new DocFxSettings()
     {

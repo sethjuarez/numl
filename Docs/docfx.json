@@ -4,7 +4,7 @@
       "src": [
         {
           "files": [
-            "project.json"
+            "numl.csproj"
           ],
           "exclude": [
             "**/obj/**",
@@ -60,17 +60,6 @@
         "files": [
           "images/**",
           "data/**"
-        ],
-        "exclude": [
-          "obj/**",
-          "_site/**"
-        ]
-      }
-    ],
-    "overwrite": [
-      {
-        "files": [
-          "apidoc/**.md"
         ],
         "exclude": [
           "obj/**",

@@ -3,6 +3,7 @@ using System.Linq;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 using numl.Utils;
+using numl.Math;
 
 namespace numl.Supervised
 {
@@ -99,6 +100,11 @@ namespace numl.Supervised
         /// Gets or sets the mean absolute error.
         /// </summary>
         public double MeanAbsError {  get; set; }
+
+        /// <summary>
+        /// Gets or sets the cross entropy loss.
+        /// </summary>
+        public double CrossEntropy { get; set; }
 
         /// <summary>
         /// Gets the Specificity of the model.
@@ -248,6 +254,17 @@ namespace numl.Supervised
             return (((y1 - y2) * (y1 - y2)).Sqrt().Mean());
         }
 
+        /// <summary>
+        /// Computes the Cross Entropy Loss for the given inputs.
+        /// </summary>
+        /// <param name="y1">Predicted values.</param>
+        /// <param name="y2">Actual values.</param>
+        /// <returns></returns>
+        public static double ComputeCrossEntropy(Vector y1, Vector y2)
+        {
+            return -(y2 * Vector.Log(y1 + Defaults.Epsilon)).Sum();
+        }
+
         #endregion
 
         /// <summary>
@@ -281,7 +298,9 @@ namespace numl.Supervised
                         $"\n\tRecall:\t\t{System.Math.Round(Recall, 6)}" +
                         $"\n\tSpecificity:\t\t{System.Math.Round(Specificity, 6)}" +
                         $"\n\tFallout:\t\t{System.Math.Round(Fallout, 6)}" +
-                        $"\n\tF-Score:\t\t{System.Math.Round(FScore, 6)}" )
+                        $"\n\tF-Score:\t\t{System.Math.Round(FScore, 6)}" +
+                        $"\n\tCross-Entropy:\t\t{System.Math.Round(CrossEntropy, 6)}")
+                       
                         : string.Empty +
                     "\n]");
         }
@@ -325,6 +344,7 @@ namespace numl.Supervised
             score.MeanAbsError = Score.ComputeMeanError(predictions, actual);
             score.SSE = Score.ComputeSSE(predictions, actual);
             score.MSE = Score.ComputeMSE(predictions, actual);
+            score.CrossEntropy = Score.ComputeCrossEntropy(predictions, actual);
 
             return score;
         }

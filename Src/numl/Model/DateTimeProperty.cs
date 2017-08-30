@@ -182,25 +182,25 @@ namespace numl.Model
         /// <returns></returns>
         public static IEnumerable<string> GetColumns(DateTimeFeature features)
         {
-            Func<DateTimeFeature, string> c = d => Enum.GetName(typeof(DateTimeFeature), d);
+
             if (features.HasFlag(DateTimeFeature.Year))
-                yield return c(DateTimeFeature.Year);
+                yield return nameof(DateTimeFeature.Year);
             if (features.HasFlag(DateTimeFeature.DayOfYear))
-                yield return "DayOfYear";
+                yield return nameof(DateTimeFeature.DayOfYear);
             if (features.HasFlag(DateTimeFeature.Month))
-                yield return "Month";
+                yield return nameof(DateTimeFeature.Month);
             if (features.HasFlag(DateTimeFeature.Day))
-                yield return "Day";
+                yield return nameof(DateTimeFeature.Day);
             if (features.HasFlag(DateTimeFeature.DayOfWeek))
-                yield return "DayOfWeek";
+                yield return nameof(DateTimeFeature.DayOfWeek);
             if (features.HasFlag(DateTimeFeature.Hour))
-                yield return "Hour";
+                yield return nameof(DateTimeFeature.Hour);
             if (features.HasFlag(DateTimeFeature.Minute))
-                yield return "Minute";
+                yield return nameof(DateTimeFeature.Minute);
             if (features.HasFlag(DateTimeFeature.Second))
-                yield return "Second";
+                yield return nameof(DateTimeFeature.Second);
             if (features.HasFlag(DateTimeFeature.Millisecond))
-                yield return "Millisecond";
+                yield return nameof(DateTimeFeature.Millisecond);
         }
 
         /// <summary>

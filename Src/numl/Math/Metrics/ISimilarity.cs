@@ -1,10 +1,7 @@
 ﻿// file:	Math\Metrics\ISimilarity.cs
 //
 // summary:	Declares the ISimilarity interface
-using System;
-using System.Linq;
 using numl.Math.LinearAlgebra;
-using System.Collections.Generic;
 
 namespace numl.Math.Metrics
 {

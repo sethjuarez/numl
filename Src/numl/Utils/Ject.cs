@@ -292,32 +292,32 @@ namespace numl.Utils
         {
             // null check for object
             // return NaN if its null
-            // since mathematicall null
+            // since mathematical null
             // should be NaN (not 0, -1,
             // etc)
-            if (o == null) return double.NaN;
-            var t = o.GetType();
-
-            if (t == typeof(bool))
-                return (bool)o ? Ject.DefaultTruthValue : Ject.DefaultFalseValue;
-            else if (t == typeof(bool))
-                return (double)o;
-            else if (t == typeof(char)) // ascii number of character
-                return (int)((char)o);
-            else if (o is Enum)
-                return (int)o;
-            else if (t == typeof(TimeSpan)) // get total seconds
-                return ((TimeSpan)o).TotalSeconds;
-            else
+            switch (o)
             {
-                try
-                {
-                    return System.Convert.ToDouble(o);
-                }
-                catch (InvalidCastException)
-                {
-                    throw new InvalidCastException(string.Format("Cannot convert {0} to double", o));
-                }
+                case null:
+                    return double.NaN;
+                case bool b when b:
+                    return Ject.DefaultTruthValue;
+                case bool b when !b:
+                    return Ject.DefaultFalseValue;
+                case char c:
+                    return c;
+                case Enum _:
+                    return (int)o;
+                case TimeSpan t:
+                    return t.TotalSeconds;
+                default:
+                    try
+                    {
+                        return System.Convert.ToDouble(o);
+                    }
+                    catch (InvalidCastException)
+                    {
+                        throw new InvalidCastException(string.Format("Cannot convert {0} to double", o));
+                    }
             }
         }
         /// <summary>

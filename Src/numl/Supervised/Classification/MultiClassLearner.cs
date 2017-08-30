@@ -75,7 +75,7 @@ namespace numl
             // convert label to 1's and 0's
             Vector y = MultiClassLearner.ChangeClassLabels(examples.ToArray(), descriptor, truthLabel);
 
-            IModel model = generator.Generate(training.Item1, y.Slice(trainingSlice));
+            IModel model = generator.Generate(training.X, y.Slice(trainingSlice));
 
             Score score = new Score();
 
@@ -91,7 +91,7 @@ namespace numl
 
                 for (int i = 0; i < testExamples.Length; i++)
                 {
-                    double result = model.Predict(testing.Item1[i, VectorType.Row]);
+                    double result = model.Predict(testing.X[i, VectorType.Row]);
 
                     y_pred[i] = result;
                 }
@@ -174,8 +174,8 @@ namespace numl
                 // fallback to single classifier for two class classification
 
                 var dataset = descriptor.Convert(examples, true).ToExamples();
-                var positives = examples.Slice(dataset.Item2.Indices(f => f == 1d)).ToArray();
-                var negatives = examples.Slice(dataset.Item2.Indices(w => w != 1d)).ToArray();
+                var positives = examples.Slice(dataset.Y.Indices(f => f == 1d)).ToArray();
+                var negatives = examples.Slice(dataset.Y.Indices(w => w != 1d)).ToArray();
 
                 var label = generator.Descriptor.GetValue(positives.First(), descriptor.Label);
 

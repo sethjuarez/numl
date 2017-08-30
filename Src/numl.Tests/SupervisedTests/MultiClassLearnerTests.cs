@@ -41,7 +41,7 @@ namespace numl.Tests.SupervisedTests
 
             Console.WriteLine($"Digit Test:\nOverall Accuracy => { accuracy }");
 
-            Assert.True(accuracy >= model.Accuracy);
+            Assert.True(accuracy >= model.Accuracy, $"{accuracy} >= {model.Accuracy}");
         }
 
         [Fact]

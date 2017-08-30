@@ -7,6 +7,7 @@ using numl.Supervised.NaiveBayes;
 using System.Collections.Generic;
 using numl.Math.Kernels;
 using numl.Supervised.Perceptron;
+using numl.Serialization;
 
 namespace numl.Tests.SerializationTests.ModelSerialization
 {
@@ -32,9 +33,8 @@ namespace numl.Tests.SerializationTests.ModelSerialization
 
             var model = generator.Generate(descriptor, data) as KernelPerceptronModel;
 
-            Serialize(model);
-
-            var lmodel = Deserialize<KernelPerceptronModel>();
+            var file = GetPath();
+            var lmodel = SaveAndLoad(model, file);
         }
     }
 }

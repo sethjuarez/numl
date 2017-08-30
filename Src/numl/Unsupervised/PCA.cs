@@ -34,7 +34,7 @@ namespace numl.Unsupervised
                     .Copy()
                     .Center(VectorType.Col);
 
-            // compute eigen-decomposition
+            // compute eigenvalue-decomposition
             // of covariance matrix
             var eigs = X.Covariance().Eigs();
             Eigenvalues = eigs.Item1;

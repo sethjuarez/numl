@@ -29,13 +29,8 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
         /// <returns></returns>
         public override double Predict(Vector x)
         {
-            this.Preprocess(x);
-
-            this.Network.Forward(x);
-            // predict the next item
-            Vector output = Network.Out.Select(n => n.Output).ToVector();
-
-            return (this.OutputFunction != null ? this.OutputFunction.Compute(output).Max() : output.Max());
+            Vector output = this.PredictSequence(x);
+            return (output.Length > 1 ? output.MaxIndex() : output.First());
         }
 
         /// <summary>
@@ -48,10 +43,9 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
             this.Preprocess(x);
 
             this.Network.Forward(x);
-            // predict the next sequence
-            Vector output = Network.Out.Select(n => n.Output).ToVector();
 
-            return (this.OutputFunction != null ? this.OutputFunction.Compute(output) : output);
+            Vector output = this.Network.Output();
+            return output;
         }
     }
 }

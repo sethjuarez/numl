@@ -85,10 +85,7 @@ namespace numl
             // count only once
             var total = examples.Count();
             var descriptor = generator.Descriptor;
-            var data = descriptor.Convert(examples).ToExamples();
-
-            Matrix x = data.Item1;
-            Vector y = data.Item2;
+            var (x, y) = descriptor.Convert(examples).ToExamples();
 
             var models = new IModel[repeat];
             //var accuracy = Vector.Zeros(repeat);
@@ -96,7 +93,7 @@ namespace numl
 
             if (trainingPercentage > 1.0) trainingPercentage /= 100.0;
 
-            // safe for parallisation
+            // safe for parallelization
             // read-only references to the data model
             // and update indices independently
             for (int i = 0; i < models.Length; i++)
@@ -149,7 +146,7 @@ namespace numl
                 // testing            
                 object[] test = GetTestExamples(testingSlice, examples);
                 Vector y_pred = new Vector(test.Length);
-                Vector y_test = descriptor.ToExamples(test).Item2;
+                Vector y_test = descriptor.ToExamples(test).Y;
 
                 bool isBinary = y_test.IsBinary();
                 if (isBinary)

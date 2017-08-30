@@ -3,21 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using numl.Math.LinearAlgebra;
 using numl.Math.Functions;
 using numl.Math.Normalization;
+using numl.Supervised.NeuralNetwork.Optimization;
 
 namespace numl.Supervised.NeuralNetwork.Encoders
 {
     /// <summary>
     /// An Autoencoding Network Generator.
-    /// <para>By default this works as a (linear) denoising autoencoder.  If the features used are within [0, 1] range then try specifying a different Output Function such as Logistic or Tanh.</para>
+    /// <para>By default this works as a (linear) denoising autoencoder.</para>
     /// </summary>
     public class AutoencoderGenerator : NeuralNetworkGenerator, ISequenceGenerator
     {
         /// <summary>
         /// Gets or sets the density of the encoder. Higher values will learn the identity function more easily but may not denoise features as well.
-        /// <para>When using a higher Density value than the number of inputs it is recommended to lower the <see cref="Sparsity"/> constraint value to be closer to zero.</para>
+        /// <para>When using a higher Density value than the number of inputs it is recommended to increase the <see cref="Sparsity"/> constraint value to keep weights closer to zero.</para>
         /// </summary>
         public int Density { get; set; }
 
@@ -38,7 +40,7 @@ namespace numl.Supervised.NeuralNetwork.Encoders
         public AutoencoderGenerator()
         {
             this.Density = -1;
-            this.Sparsity = 0.2;
+            this.Sparsity = 0.05;
             this.SparsityWeight = 1.0;
             this.LearningRate = 0.01;
             this.Epsilon = double.NaN;
@@ -60,18 +62,23 @@ namespace numl.Supervised.NeuralNetwork.Encoders
 
         public override ISequenceModel Generate(Matrix X, Matrix Y)
         {
-            // dense autoencoders learn the approximation identity function so ignore labels.
+            // autoencoders learn the approximation identity function so ignore labels.
             // the output layer is the number of columns in X
-
-            // default hidden layer to 2/3 of the input
+            
             this.Preprocess(X);
 
+            // default hidden layer to 2/3 of the input
             if (this.Density <= 0) this.Density = (int) System.Math.Ceiling(X.Cols * (2.0 / 3.0));
 
-            if (this.MaxIterations <= 0) MaxIterations = 400; // because Seth said so...
+            if (this.MaxIterations <= 0) MaxIterations = 400; 
 
-            Network network = Network.New().Create(X.Cols, X.Cols, this.Activation, this.OutputFunction,
-                                        (i, j) => new AutoencoderNeuron(), epsilon: this.Epsilon, hiddenLayers: new int[] { this.Density });
+            var identity = new Ident();
+
+            Network network = Network.New().Create(X.Cols, Y.Cols, this.Activation, this.OutputFunction,
+                                        (i, j, type) => new AutoencoderNeuron { ActivationFunction = (type == NodeType.Output ? identity : null) },
+                                        epsilon: this.Epsilon, hiddenLayers: new int[] { this.Density });
+
+            INetworkTrainer trainer = new RMSPropTrainer(); // because Geoffrey Hinton :) ...
 
             var model = new AutoencoderModel
             {
@@ -79,28 +86,35 @@ namespace numl.Supervised.NeuralNetwork.Encoders
                 NormalizeFeatures = base.NormalizeFeatures,
                 FeatureNormalizer = base.FeatureNormalizer,
                 FeatureProperties = base.FeatureProperties,
-                Network = network,
-                OutputFunction = this.OutputFunction
+                Network = network
             };
 
             OnModelChanged(this, ModelEventArgs.Make(model, "Initialized"));
 
-            NetworkTrainingProperties properties = NetworkTrainingProperties.Create(network, X.Rows, X.Cols, this.LearningRate,
+            NetworkTrainingProperties properties = NetworkTrainingProperties.Create(network, X.Rows, Y.Cols, this.LearningRate,
                 this.Lambda, this.MaxIterations, new { this.Density, this.Sparsity, this.SparsityWeight });
+
+            Vector loss = Vector.Zeros(this.MaxIterations);
 
             for (int i = 0; i < this.MaxIterations; i++)
             {
                 properties.Iteration = i;
+                
+                network.ResetStates(properties);
 
                 for (int x = 0; x < X.Rows; x++)
                 {
                     network.Forward(X[x, VectorType.Row]);
                     //OnModelChanged(this, ModelEventArgs.Make(model, "Forward"));
-                    network.Back(X[x, VectorType.Row], properties);
+                    network.Back(Y[x, VectorType.Row], properties, trainer);
+
+                    loss[i] += network.Cost;
                 }
 
                 var result = String.Format("Run ({0}/{1}): {2}", i, MaxIterations, network.Cost);
                 OnModelChanged(this, ModelEventArgs.Make(model, result));
+
+                if (this.LossMinimized(loss, i)) break;
             }
 
             return model;

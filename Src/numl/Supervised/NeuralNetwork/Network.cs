@@ -5,9 +5,12 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-using numl.Math.LinearAlgebra;
-using numl.Model;
 using numl.Data;
+using numl.Math.LinearAlgebra;
+using numl.Math.Functions;
+using numl.Model;
+using numl.Math.Functions.Loss;
+using numl.Supervised.NeuralNetwork.Optimization;
 
 namespace numl.Supervised.NeuralNetwork
 {
@@ -21,6 +24,16 @@ namespace numl.Supervised.NeuralNetwork
         /// <summary>Gets or sets the out.</summary>
         /// <value>The out.</value>
         public Neuron[] Out { get; set; }
+
+        /// <summary>
+        /// Gets or sets the output function (optional).
+        /// </summary>
+        public IFunction OutputFunction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the network loss function.
+        /// </summary>
+        public ILossFunction LossFunction { get; set; } = new L2Loss();
 
         /// <summary>
         /// Gets or sets the current loss of the network.
@@ -90,26 +103,20 @@ namespace numl.Supervised.NeuralNetwork
         /// <summary>Backpropagates the errors through the network given the supplied label.</summary>
         /// <param name="y">Label to process.</param>
         /// <param name="properties">Network training properties for use in learning.</param>
-        public void Back(double y, NetworkTrainingProperties properties)
+        /// <param name="networkTrainer">Network training method.</param>
+        public void Back(double y, NetworkTrainingProperties properties, INetworkTrainer networkTrainer)
         {
-            this.Cost = Score.ComputeRMSE(Vector.Create(this.Out.Length, () => y), this.Out.Select(s => s.Output).ToVector());
-
-            // propagate error gradients
-            for (int i = 0; i < Out.Length; i++)
-                Out[i].Error(y, properties);
-
-            // reset weights
-            for (int i = 0; i < Out.Length; i++)
-                Out[i].Update(properties);
+            this.Back(Vector.Create(this.Out.Length, () => y), properties, networkTrainer);
         }
 
         /// <summary>Backpropagates the errors through the network given the supplied sequence label.</summary>
         /// <param name="y">Output vector to process.</param>
         /// <param name="properties">Network training properties for use in learning.</param>
+        /// <param name="networkTrainer">Network training method.</param>
         /// <param name="update">Indicates whether to update the weights after computing the errors.</param>
-        public void Back(Vector y, NetworkTrainingProperties properties, bool update = true)
+        public void Back(Vector y, NetworkTrainingProperties properties, INetworkTrainer networkTrainer, bool update = true)
         {
-            this.Cost = Score.ComputeRMSE(y, this.Out.Select(s => s.Output).ToVector());
+            this.Cost = this.LossFunction.Compute(this.Output(), y);
 
             // CK
             // propagate error gradients
@@ -120,8 +127,20 @@ namespace numl.Supervised.NeuralNetwork
             {
                 // reset weights
                 for (int i = 0; i < Out.Length; i++)
-                    Out[i].Update(properties);
+                    Out[i].Update(properties, networkTrainer);
             }
+        }
+
+        /// <summary>
+        /// Returns the predicted output sequence from the Network after forwarding.
+        /// </summary>
+        /// <param name="network">Current network.</param>
+        /// <returns>Vector.</returns>
+        public Vector Output()
+        {
+            Vector output = this.Out.Select(n => n.Output).ToVector();
+            output = (this.OutputFunction != null ? this.OutputFunction.Compute(output) : output);
+            return output;
         }
 
         /// <summary>

@@ -97,7 +97,7 @@ namespace numl.Tests.SupervisedTests
                 PreviousCustomer = false
             };
 
-            Prediction<House>(
+            Prediction(
                 generator,              // generator
                 House.GetData(),        // Training data
                 h,                      // test object
@@ -161,7 +161,6 @@ namespace numl.Tests.SupervisedTests
             generator.Descriptor = Descriptor.Create<T>();
             // I can't assume it will always do a good job
             // especially because of overfitting
-            // var model = generator.Generate(description, data);
             var model = Learner.Learn(data, .7, 10, generator);
             Console.WriteLine($"{model}");
             var prediction = model.Model.Predict(item);

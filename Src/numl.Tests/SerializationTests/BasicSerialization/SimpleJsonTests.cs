@@ -22,14 +22,12 @@ namespace numl.Tests.SerializationTests.BasicSerialization
                 System.Math.PI * 1.2
             };
 
-            using (var w = GetWriter()) w.WriteVector(v);
-
-            using (var reader = GetReader())
-            {
-                Vector v3 = reader.ReadVector();
-                Assert.Equal(v, v3);
-            }
+            var file = GetPath();
+            JsonWriter.Save(v, file);
+            var v3 = JsonReader.ReadVector(file);
+            Assert.Equal(v, v3);
         }
+
         [Fact]
         public void MatrixSerializationTest()
         {
@@ -41,13 +39,10 @@ namespace numl.Tests.SerializationTests.BasicSerialization
                 { System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2, System.Math.PI, System.Math.PI / 2.3, System.Math.PI * 1.2 }
             };
 
-            using (var w = GetWriter()) w.WriteMatrix(m);
-
-            using (var reader = GetReader())
-            {
-                Matrix m3 = reader.ReadMatrix();
-                Assert.Equal(m, m3);
-            }
+            var file = GetPath();
+            JsonWriter.Save(m, file);
+            var m3 = JsonReader.ReadMatrix(file);
+            Assert.Equal(m, m3);
         }
     }
 }

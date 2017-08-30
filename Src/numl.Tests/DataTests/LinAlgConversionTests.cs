@@ -119,8 +119,8 @@ namespace numl.Tests.DataTests
 
             Vector v = new double[] { -1, 1, -1, 1, 1 };
 
-            Assert.Equal(m, tuple.Item1);
-            Assert.Equal(v, tuple.Item2);
+            Assert.Equal(m, tuple.X);
+            Assert.Equal(v, tuple.Y);
         }
 
         [Fact]
@@ -151,8 +151,8 @@ namespace numl.Tests.DataTests
             Vector v = new double[] { 0, 10, 0, 0, 0 };
 
 
-            Assert.Equal(m, tuple.Item1);
-            Assert.Equal(v, tuple.Item2);
+            Assert.Equal(m, tuple.X);
+            Assert.Equal(v, tuple.Y);
         }
     }
 }

@@ -1,7 +1,6 @@
 // file:	Math\Metrics\EuclidianSimilarity.cs
 //
 // summary:	Implements the euclidian similarity class
-using System;
 using numl.Math.LinearAlgebra;
 
 namespace numl.Math.Metrics

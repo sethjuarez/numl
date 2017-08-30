@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using numl.Math.LinearAlgebra;
 using numl.Math.Functions;
+using numl.Supervised.NeuralNetwork.Optimization;
+using numl.Math;
 
 namespace numl.Supervised.NeuralNetwork
 {
@@ -41,6 +43,11 @@ namespace numl.Supervised.NeuralNetwork
         /// </summary>
         public double Epsilon { get; set; }
 
+        /// <summary>
+        /// Gets or sets whether to use early stopping during training if the loss isn't decreasing.
+        /// </summary>
+        public bool UseEarlyStopping { get; set; }
+
         /// <summary>Default constructor.</summary>
         public NeuralNetworkGenerator()
         {
@@ -48,6 +55,26 @@ namespace numl.Supervised.NeuralNetwork
             MaxIterations = -1;
             Epsilon = double.NaN;
             Activation = new Tanh();
+            UseEarlyStopping = true;
+        }
+
+        /// <summary>
+        /// Returns True if training should continue, otherwise returns False if the loss is minimized.
+        /// </summary>
+        /// <param name="loss">Vector of loss values.</param>
+        /// <param name="iteration">Training iteration.</param>
+        /// <returns>Boolean.</returns>
+        protected bool LossMinimized(Vector loss, int iteration)
+        {
+            if (!this.UseEarlyStopping) return false;
+
+            if (iteration > 0)
+            {
+                return ((loss[iteration - 1] > loss[iteration])
+                        && (loss[iteration - 1] - loss[iteration] <= Defaults.Epsilon));
+            }
+            else
+                return false;
         }
 
         /// <summary>Generate model based on a set of examples.</summary>
@@ -56,7 +83,9 @@ namespace numl.Supervised.NeuralNetwork
         /// <returns>Model.</returns>
         public override IModel Generate(Matrix X, Vector y)
         {
-            return this.Generate(X, y.ToMatrix(VectorType.Col));
+            Matrix Y = this.ToEncoded(y);
+
+            return this.Generate(X, Y);
         }
 
         public virtual ISequenceModel Generate(Matrix X, Matrix Y)
@@ -66,6 +95,8 @@ namespace numl.Supervised.NeuralNetwork
             if (MaxIterations == -1) MaxIterations = 500;
 
             var network = Network.New().Create(X.Cols, Y.Cols, Activation, OutputFunction, epsilon: Epsilon);
+
+            INetworkTrainer trainer = new GradientDescentTrainer();
 
             var model = new NeuralNetworkModel
             {
@@ -80,19 +111,27 @@ namespace numl.Supervised.NeuralNetwork
 
             NetworkTrainingProperties properties = NetworkTrainingProperties.Create(network, X.Rows, X.Cols, this.LearningRate, this.Lambda, this.MaxIterations);
 
+            Vector loss = Vector.Zeros(this.MaxIterations);
+
             for (int i = 0; i < MaxIterations; i++)
             {
                 properties.Iteration = i;
+
+                network.ResetStates(properties);
 
                 for (int x = 0; x < X.Rows; x++)
                 {
                     network.Forward(X[x, VectorType.Row]);
                     //OnModelChanged(this, ModelEventArgs.Make(model, "Forward"));
-                    network.Back(Y[x, VectorType.Row], properties);
+                    network.Back(Y[x, VectorType.Row], properties, trainer);
+
+                    loss[i] += network.Cost;
                 }
 
                 var output = String.Format("Run ({0}/{1}): {2}", i, MaxIterations, network.Cost);
                 OnModelChanged(this, ModelEventArgs.Make(model, output));
+
+                if (this.LossMinimized(loss, i)) break;
             }
 
             return model;

@@ -20,8 +20,25 @@ namespace numl.Tests.SerializationTests.ModelSerialization
             var generator = new DecisionTreeGenerator { Depth = 50 };
             var model = generator.Generate(description, data) as DecisionTreeModel;
 
-            Serialize(model);
-            var lmodel = Deserialize<DecisionTreeModel>();
+            var file = GetPath();
+            var lmodel = SaveAndLoad(model, file);
+
+            Assert.Equal(model.Descriptor, lmodel.Descriptor);
+            Assert.Equal(model.Hint, lmodel.Hint);
+            Assert.Equal(model.Tree, lmodel.Tree);
+        }
+
+        [Fact]
+        public void Save_And_Load_HouseDT_Json()
+        {
+            var data = House.GetData();
+
+            var description = Descriptor.Create<House>();
+            var generator = new DecisionTreeGenerator { Depth = 50 };
+            var model = generator.Generate(description, data) as DecisionTreeModel;
+
+            var file = GetPath();
+            var lmodel = SaveAndLoadJson(model);
 
             Assert.Equal(model.Descriptor, lmodel.Descriptor);
             Assert.Equal(model.Hint, lmodel.Hint);
@@ -36,8 +53,25 @@ namespace numl.Tests.SerializationTests.ModelSerialization
             var generator = new DecisionTreeGenerator(50);
             var model = generator.Generate(description, data) as DecisionTreeModel;
 
-            Serialize(model);
-            var lmodel = Deserialize<DecisionTreeModel>();
+            var file = GetPath();
+            var lmodel = SaveAndLoad(model, file);
+
+            Assert.Equal(model.Descriptor, lmodel.Descriptor);
+            Assert.Equal(model.Hint, lmodel.Hint);
+            Assert.Equal(model.Tree, lmodel.Tree);
+        }
+
+        [Fact]
+        public void Save_And_Load_Iris_DT_Json()
+        {
+            var data = Iris.Load();
+            var description = Descriptor.Create<Iris>();
+            var generator = new DecisionTreeGenerator(50);
+            var model = generator.Generate(description, data) as DecisionTreeModel;
+
+            var file = GetPath();
+            var lmodel = SaveAndLoadJson(model);
+
             Assert.Equal(model.Descriptor, lmodel.Descriptor);
             Assert.Equal(model.Hint, lmodel.Hint);
             Assert.Equal(model.Tree, lmodel.Tree);

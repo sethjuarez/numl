@@ -45,6 +45,16 @@ namespace numl.Math.LinearAlgebra
 
             return m;
         }
+        /// <summary>
+        /// Returns the vector raised to the specified power.
+        /// </summary>
+        /// <param name="v">Vector to raise to the power of.</param>
+        /// <param name="power">Double that specifies the power.</param>
+        /// <returns></returns>
+        public static Vector Pow(Vector v, double power)
+        {
+            return Calc(v, d => System.Math.Pow(d, power));
+        }
         /// <summary>Exponents the given v.</summary>
         /// <param name="v">A variable-length parameters list containing v.</param>
         /// <returns>A Vector.</returns>
@@ -107,6 +117,21 @@ namespace numl.Math.LinearAlgebra
             double[] x = new double[n];
             for (int i = 0; i < n; i++)
                 x[i] = Sampling.GetUniform();
+
+            return new Vector(x);
+        }
+        /// <summary>
+        /// Random initializes a new Vector of size n, between a range.
+        /// </summary>
+        /// <param name="n">Vector dimension.</param>
+        /// <param name="min">Lower bound of the random initialization.</param>
+        /// <param name="max">Upper bound of the random initialization.</param>
+        /// <returns>Vector.</returns>
+        public static Vector Rand(int n, double min, double max)
+        {
+            double[] x = new double[n];
+            for (int i = 0; i < n; i++)
+                x[i] = Sampling.GetUniform(min, max);
 
             return new Vector(x);
         }

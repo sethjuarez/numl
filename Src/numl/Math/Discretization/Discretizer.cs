@@ -15,7 +15,7 @@ namespace numl.Math.Discretization
         /// <summary>
         /// Gets or sets the Epsilon regularization parameter, used to avoid mathematical divide-by-zero errors.
         /// </summary>
-        public double Epsilon { get; set; } = Defaults.DefaultEpsilon;
+        public double Epsilon { get; set; } = Defaults.Epsilon;
 
         /// <summary>
         /// Performs any preconditioning steps prior to discretizing values.

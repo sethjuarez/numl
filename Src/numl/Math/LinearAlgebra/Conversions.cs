@@ -34,7 +34,7 @@ namespace numl.Math.LinearAlgebra
 
             // if irregularities in jagged matrix, need to 
             // pad rows with less columns with additional
-            // zeros by subtractic max width with each
+            // zeros by subtracting max width with each
             // individual row and getting the sum
             var pad = cols.Select(c => d - c).Sum();
 
@@ -64,7 +64,7 @@ namespace numl.Math.LinearAlgebra
             for (int i = 0; i < m.Rows; i++)
                 for (int j = 0; j < m.Cols; j++)
                     if (j >= x[i].Length)  // over bound limits
-                        m[i, j] = 0;       // pad overlow to 0
+                        m[i, j] = 0;       // pad overflow to 0
                     else
                         m[i, j] = x[i][j];
 
@@ -76,7 +76,7 @@ namespace numl.Math.LinearAlgebra
         /// </summary>
         /// <param name="matrix">The matrix to act on.</param>
         /// <returns>matrix as a Tuple&lt;Matrix,Vector&gt;</returns>
-        public static Tuple<Matrix, Vector> ToExamples(this IEnumerable<IEnumerable<double>> matrix)
+        public static (Matrix X, Vector Y) ToExamples(this IEnumerable<IEnumerable<double>> matrix)
         {
             // materialize
             double[][] x = (from v in matrix select v.ToArray()).ToArray();
@@ -89,7 +89,7 @@ namespace numl.Math.LinearAlgebra
             for (int i = 0; i < m.Rows; i++)
                 for (int j = 0; j < m.Cols; j++)
                     if (j >= x[i].Length)  // over bound limits
-                        m[i, j] = 0;       // pad overlow to 0
+                        m[i, j] = 0;       // pad overflow to 0
                     else
                         m[i, j] = x[i][j];
 
@@ -101,8 +101,7 @@ namespace numl.Math.LinearAlgebra
                 else
                     y[i] = x[i][m.Cols];
 
-            return new Tuple<Matrix, Vector>(m, y);
-
+            return (m, y);
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using numl.Supervised.NeuralNetwork;
 using numl.Math.LinearAlgebra;
+using numl.Supervised.NeuralNetwork.Optimization;
 
 namespace numl.Tests.SupervisedTests
 {
@@ -159,12 +160,12 @@ namespace numl.Tests.SupervisedTests
         /// <summary>
         /// Function for updating the specified theta value and returning the new error.
         /// </summary>
-        private readonly Func<Network, Neuron, Vector, Vector, int, double, double> FnCostUpdateFunction = (network, n, input, output, id, theta) =>
+        private readonly Func<Network, Neuron, Vector, Vector, int, double, INetworkTrainer, double> FnCostUpdateFunction = (network, n, input, output, id, theta, trainer) =>
         {
             n.Out[id].Weight = theta;
 
             network.Forward(input);
-            network.Back(output, null, false);
+            network.Back(output, null, trainer, false);
 
             return network.Cost;
         };
@@ -242,7 +243,7 @@ namespace numl.Tests.SupervisedTests
                 Console.WriteLine($"Evaluating Pass {row}...");
 
                 net.Forward(X[row, VectorType.Row]);
-                net.Back(y[row, VectorType.Row], null, false);
+                net.Back(y[row, VectorType.Row], null, null, false);
 
                 for (int output = 0; output < net.Out.Count(); output++)
                 {
@@ -326,7 +327,7 @@ namespace numl.Tests.SupervisedTests
                 Console.WriteLine($"Evaluating Pass {row}...");
 
                 net.Forward(X[row, VectorType.Row]);
-                net.Back(y[row, VectorType.Row], null, false);
+                net.Back(y[row, VectorType.Row], null, null, false);
 
                 for (int output = 0; output < net.Out.Count(); output++)
                 {
@@ -425,7 +426,7 @@ namespace numl.Tests.SupervisedTests
             }, hiddenLayers: 2);
 
             net.Forward(xtest[0, VectorType.Row]);
-            net.Back(ytest[0, VectorType.Row], null, false);
+            net.Back(ytest[0, VectorType.Row], null, null, false);
 
             var hiddenNodes = net.GetNodes(1);
 

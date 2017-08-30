@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Reflection;
+using numl.Math;
 
 namespace numl.Supervised.NeuralNetwork
 {
@@ -84,7 +85,7 @@ namespace numl.Supervised.NeuralNetwork
         {
             this.LearningRate = 0.1;
             this.Momentum = 0.9;
-            this.Epsilon = 0.9;
+            this.Epsilon = Defaults.Epsilon;
 
             this._Parameters = parameters;
         }

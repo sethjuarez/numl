@@ -14,6 +14,8 @@ namespace numl.Supervised
     /// <summary>A generator.</summary>
     public abstract class Generator : IGenerator
     {
+        private Descriptor _Descriptor;
+
         /// <summary>Event queue for all listeners interested in ModelChanged events.</summary>
         public event EventHandler<ModelEventArgs> ModelChanged;
         /// <summary>Raises the model event.</summary>
@@ -28,7 +30,19 @@ namespace numl.Supervised
 
         /// <summary>Gets or sets the descriptor.</summary>
         /// <value>The descriptor.</value>
-        public Descriptor Descriptor { get; set; }
+        public Descriptor Descriptor
+        {
+            get { return this._Descriptor; }
+            set
+            {
+                this._Descriptor = value;
+
+                if (this._Descriptor != null)
+                {
+                    this.IsDiscrete = this._Descriptor.Label.Discrete;
+                }
+            }
+        }
 
         /// <summary>
         /// If <c>True</c>, examples will keep their original ordering from the set.
@@ -48,6 +62,11 @@ namespace numl.Supervised
         /// Gets or sets the Feature properties from the original training set.
         /// </summary>
         public numl.Math.Summary FeatureProperties { get; set; }
+
+        /// <summary>
+        /// Gets or sets whether the prediction label is discrete / categorical.
+        /// </summary>
+        public bool IsDiscrete { get; set; }
 
         /// <summary>
         /// Initializes a new Generator instance.
@@ -90,6 +109,22 @@ namespace numl.Supervised
             }
         }
 
+        /// <summary>
+        /// Converts a label Vector to a 1-of-k encoded Matrix for discrete values, otherwise returns a n x 1 continuous matrix.
+        /// </summary>
+        /// <param name="y">Vector of class labels.</param>
+        /// <returns>Matrix.</returns>
+        public virtual Matrix ToEncoded(Vector y)
+        {
+            // check IsDiscrete in case a descriptor is not provided.
+            if (this.IsDiscrete)
+            {
+                return y.ToBinaryMatrix();
+            }
+            else
+                return y.ToMatrix(VectorType.Col);
+        }
+
         /// <summary>Generate model based on a set of examples.</summary>
         /// <exception cref="InvalidOperationException">Thrown when the requested operation is invalid.</exception>
         /// <param name="examples">Example set.</param>
@@ -119,10 +154,12 @@ namespace numl.Supervised
             if (Descriptor.Label == null)
                 throw new InvalidOperationException("Invalid descriptor: Empty label!");
 
-            var doubles = Descriptor.Convert(examples.Shuffle());
-            var tuple = doubles.ToExamples();
+            var dataset = (this.PreserveOrder ? examples : examples.Shuffle());
 
-            return Generate(tuple.Item1, tuple.Item2);
+            var doubles = Descriptor.Convert(dataset);
+            var (X, Y) = doubles.ToExamples();
+
+            return Generate(X, Y);
         }
 
         /// <summary>
