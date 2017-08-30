@@ -7,7 +7,7 @@
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 //////////////////////////////////////////////////////////////////////
-var release = "0.9.16";
+var release = "0.9.19";
 var suffix = "beta";
 var testFailOk = true;
 var copyright = string.Format("©{0}, Seth Juarez", DateTime.Now.Year);
@@ -65,6 +65,7 @@ Task("Version")
 {
     // update csproj build
     Information("Updating numl project file");
+    Information(" ====> " + release + "-" + suffix + " (" + copyright + ")");
     XmlPoke(File("../Src/numl/numl.csproj"), "//PropertyGroup/VersionPrefix", release);
     XmlPoke(File("../Src/numl/numl.csproj"), "//PropertyGroup/VersionSuffix", suffix);
     XmlPoke(File("../Src/numl/numl.csproj"), "//PropertyGroup/Copyright", copyright);

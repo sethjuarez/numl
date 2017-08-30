@@ -1,10 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<?xml version="1.0" encoding="utf-8"?><Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
   </PropertyGroup>
   <PropertyGroup>
-    <VersionPrefix>0.9.18</VersionPrefix>
+    <VersionPrefix>0.9.19</VersionPrefix>
     <VersionSuffix>beta</VersionSuffix>
     <AssemblyTitle>numl</AssemblyTitle>
     <Authors>Seth Juarez;Chris Kalle;Basia Fusinka</Authors>
