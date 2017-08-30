@@ -9,13 +9,8 @@ using numl.Data;
 namespace numl.Supervised.NaiveBayes
 {
     /// <summary>A measure.</summary>
-    public class Measure : IVertex
+    public class Measure
     {
-        /// <summary>
-        /// Vertex identifier
-        /// </summary>
-        public int Id { get; set; }
-
         /// <summary>Gets or sets the label.</summary>
         /// <value>The label.</value>
         public string Label { get; set; }

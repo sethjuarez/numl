@@ -12,13 +12,8 @@ using numl.Data;
 namespace numl.Supervised.NaiveBayes
 {
     /// <summary>A statistic.</summary>
-    public class Statistic : IVertex
+    public class Statistic 
     {
-        /// <summary>
-        /// Vertex identifier
-        /// </summary>
-        public int Id { get; set; }
-
         /// <summary>Gets or sets the label.</summary>
         /// <value>The label.</value>
         public string Label { get; set; }
@@ -36,9 +31,7 @@ namespace numl.Supervised.NaiveBayes
         public double Probability { get; set; }
         /// <summary>Gets or sets the conditionals.</summary>
         /// <value>The conditionals.</value>
-        public Measure[] Conditionals { get; set; }
-
-        
+        public Measure[] Conditionals { get; set; }        
 
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>
@@ -46,6 +39,7 @@ namespace numl.Supervised.NaiveBayes
         {
             return $"P({Label}) = {Probability} [{Count}, {X}]";
         }
+
         /// <summary>Makes a deep copy of this object.</summary>
         /// <returns>A copy of this object.</returns>
         public Statistic Clone()

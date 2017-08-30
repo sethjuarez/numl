@@ -10,12 +10,18 @@ namespace numl.Math
     /// <summary>A range.</summary>
     public class Range
     {
+        public Range()
+        {
+            Min = -1;
+            Max = 1;
+        }
+
         /// <summary>Gets or sets the minimum.</summary>
         /// <value>The minimum value.</value>
-        public double Min { get; private set; }
+        public double Min { get; set; }
         /// <summary>Gets or sets the maximum.</summary>
         /// <value>The maximum value.</value>
-        public double Max { get; private set; }
+        public double Max { get; set; }
         /// <summary>Tests.</summary>
         /// <param name="d">The double to process.</param>
         /// <returns>true if it succeeds, false if it fails.</returns>
