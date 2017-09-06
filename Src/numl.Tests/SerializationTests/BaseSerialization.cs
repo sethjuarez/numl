@@ -17,8 +17,7 @@ namespace numl.Tests.SerializationTests
     {
         public BaseSerialization()
         {
-            // Need to register external assemblies
-            Register.Assembly(GetType().GetTypeInfo().Assembly);
+
         }
 
         internal string GetPath([CallerMemberName]string caller = "")

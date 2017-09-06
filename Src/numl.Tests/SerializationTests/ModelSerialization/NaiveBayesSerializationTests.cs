@@ -20,6 +20,7 @@ namespace numl.Tests.SerializationTests.ModelSerialization
             var model = generator.Generate(description, data) as NaiveBayesModel;
 
             var file = GetPath();
+            Register.Type<Tennis>();
             var lmodel = SaveAndLoad(model, file);
 
             Assert.Equal(model.Root, lmodel.Root);
@@ -34,6 +35,7 @@ namespace numl.Tests.SerializationTests.ModelSerialization
             var model = generator.Generate(description, data) as NaiveBayesModel;
 
             var file = GetPath();
+            Register.Type<Tennis>();
             var lmodel = SaveAndLoadJson(model);
 
             Assert.Equal(model.Root, lmodel.Root);
@@ -48,6 +50,7 @@ namespace numl.Tests.SerializationTests.ModelSerialization
             var model = generator.Generate(description, data) as NaiveBayesModel;
 
             var file = GetPath();
+            Register.Type<Iris>();
             var lmodel = SaveAndLoad(model, file);
 
             Assert.Equal(model.Root, lmodel.Root);
@@ -62,6 +65,7 @@ namespace numl.Tests.SerializationTests.ModelSerialization
             var model = generator.Generate(description, data) as NaiveBayesModel;
 
             var file = GetPath();
+            Register.Type<Iris>();
             var lmodel = SaveAndLoadJson(model);
 
             Assert.Equal(model.Root, lmodel.Root);

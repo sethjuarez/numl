@@ -32,6 +32,7 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
 			var examples = description.ToExamples(data);
 
             var file = GetPath();
+            Register.Type<Iris>();
             var d = SaveAndLoad(description, file);
 
 			Assert.Equal(description.Type, d.Type);
@@ -57,6 +58,7 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
             var examples = description.ToExamples(data);
 
             var file = GetPath();
+            Register.Type<Iris>();
             var d = SaveAndLoadJson(description);
 
             Assert.Equal(description.Type, d.Type);
@@ -82,6 +84,7 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
 			var examples = description.ToExamples(data);
 
             var file = GetPath();
+            Register.Type<Generic>();
             var d = SaveAndLoad(description, file);
 
             Assert.Equal(description.Type, d.Type);
@@ -105,6 +108,7 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
             var examples = description.ToExamples(data);
 
             var file = GetPath();
+            Register.Type<Generic>();
             var d = SaveAndLoadJson(description);
 
             Assert.Equal(description.Type, d.Type);
@@ -222,6 +226,7 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
 			var description = Descriptor.Create<House>();
 
             var file = GetPath();
+            Register.Type<House>();
             var d = SaveAndLoad(description, file);
 
             Assert.Equal(description, d);
@@ -233,6 +238,7 @@ namespace numl.Tests.SerializationTests.DescriptorSerialization
             var description = Descriptor.Create<House>();
 
             var file = GetPath();
+            Register.Type<House>();
             var d = SaveAndLoadJson(description);
 
             Assert.Equal(description, d);

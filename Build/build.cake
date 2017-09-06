@@ -1,6 +1,5 @@
 #addin "Newtonsoft.Json"
 #addin "Cake.DocFx"
-#tool "nuget:?package=docfx.console&version=2.16.0"
 #tool "nuget:?package=xunit.runner.console"
 
 

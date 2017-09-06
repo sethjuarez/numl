@@ -21,6 +21,7 @@ namespace numl.Tests.SerializationTests.ModelSerialization
             var model = generator.Generate(description, data) as DecisionTreeModel;
 
             var file = GetPath();
+            Register.Type<House>();
             var lmodel = SaveAndLoad(model, file);
 
             Assert.Equal(model.Descriptor, lmodel.Descriptor);
@@ -38,6 +39,7 @@ namespace numl.Tests.SerializationTests.ModelSerialization
             var model = generator.Generate(description, data) as DecisionTreeModel;
 
             var file = GetPath();
+            Register.Type<House>();
             var lmodel = SaveAndLoadJson(model);
 
             Assert.Equal(model.Descriptor, lmodel.Descriptor);
@@ -54,6 +56,7 @@ namespace numl.Tests.SerializationTests.ModelSerialization
             var model = generator.Generate(description, data) as DecisionTreeModel;
 
             var file = GetPath();
+            Register.Type<Iris>();
             var lmodel = SaveAndLoad(model, file);
 
             Assert.Equal(model.Descriptor, lmodel.Descriptor);
@@ -70,6 +73,7 @@ namespace numl.Tests.SerializationTests.ModelSerialization
             var model = generator.Generate(description, data) as DecisionTreeModel;
 
             var file = GetPath();
+            Register.Type<Iris>();
             var lmodel = SaveAndLoadJson(model);
 
             Assert.Equal(model.Descriptor, lmodel.Descriptor);
