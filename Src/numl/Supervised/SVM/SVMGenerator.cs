@@ -2,6 +2,7 @@
 using System.Linq;
 using numl.Math.Kernels;
 using numl.Math.LinearAlgebra;
+using numl.Supervised.SVM.Selection;
 using System.Collections.Generic;
 
 namespace numl.Supervised.SVM
@@ -38,7 +39,7 @@ namespace numl.Supervised.SVM
         /// <summary>
         /// Gets or sets the Working Set Selection function for selecting new i, j support vectors.
         /// </summary>
-        public numl.Supervised.SVM.Selection.ISelection SelectionFunction { get; set; }
+        public ISelection SelectionFunction { get; set; }
 
         /// <summary>
         /// Initialises a SVMGenerator object
@@ -53,7 +54,7 @@ namespace numl.Supervised.SVM
             this.NormalizeFeatures = true;
 
             if (this.SelectionFunction == null)
-                this.SelectionFunction = new numl.Supervised.SVM.Selection.WorkingSetSelection3();
+                this.SelectionFunction = new WorkingSetSelection3();
         }
 
         /// <summary>Generates a SVM model based on a set of examples.</summary>

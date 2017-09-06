@@ -161,7 +161,7 @@ namespace numl.Tests.SupervisedTests
             generator.Descriptor = Descriptor.Create<T>();
             // I can't assume it will always do a good job
             // especially because of overfitting
-            var model = Learner.Learn(data, .7, 10, generator);
+            var model = Learner.Learn(data, .8, 10, generator);
             Console.WriteLine($"{model}");
             var prediction = model.Model.Predict(item);
             Assert.True(test(prediction));

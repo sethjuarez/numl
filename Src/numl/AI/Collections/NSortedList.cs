@@ -362,6 +362,10 @@ namespace numl.AI.Collections
 
                 do
                 {
+                    if(index >= _Length)
+                    {
+                        // why does code reach this point?
+                    }
                     this.RemoveAt(index);
                 }
                 while (this[index].Equals(element));
