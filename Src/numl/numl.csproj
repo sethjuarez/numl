@@ -19,6 +19,9 @@
     <Copyright>©2017, Seth Juarez</Copyright>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Math\Functions\Softmax.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.4.0" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
     <PackageReference Include="System.Threading.Tasks.Parallel" Version="4.3.0" />

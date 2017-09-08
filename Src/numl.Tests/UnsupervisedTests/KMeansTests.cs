@@ -2,6 +2,7 @@
 using numl.Model;
 using System.Linq;
 using Xunit;
+using numl.Math;
 using numl.Tests.Data;
 using numl.Unsupervised;
 using numl.Math.Metrics;
@@ -41,7 +42,7 @@ namespace numl.Tests.UnsupervisedTests
             B[1, VectorType.Col] += 20;
 
             // stack them
-            var X = A.Stack(B);
+            var X = Matrix.Stack(A, B);
             return X;
         }
 

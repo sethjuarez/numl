@@ -7,24 +7,24 @@ namespace numl.Math.Functions
     /// <summary>
     /// Softmax function
     /// </summary>
-    public class Softmax : IFunction
+    public class Softmax : Function
     {
         /// <summary>
         /// Returns the minimum value from the function curve, equal to 0.0.
         /// </summary>
-        public double Minimum { get { return 0; } }
+        public override double Minimum { get { return 0; } }
 
         /// <summary>
         /// Returns the maximum value from the function curve, equal to 1.0.
         /// </summary>
-        public double Maximum { get { return 1; } }
+        public override double Maximum { get { return 1; } }
 
         /// <summary>
         /// Returns a softmax function vector from the supplied inputs.
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
-        public Vector Compute(Vector x)
+        public override Vector Compute(Vector x)
         {
             double max = x.Max();
             Vector softmax = x.Each(v => System.Math.Exp(v - max));
@@ -41,7 +41,7 @@ namespace numl.Math.Functions
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
-        public double Compute(double x)
+        public override double Compute(double x)
         {
             throw new NotImplementedException();
         }
@@ -51,7 +51,7 @@ namespace numl.Math.Functions
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
-        public Vector Derivative(Vector x)
+        public override Vector Derivative(Vector x)
         {
             Vector d = Compute(x);
             return d * (1d - d);
@@ -62,7 +62,7 @@ namespace numl.Math.Functions
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
-        public double Derivative(double x)
+        public override double Derivative(double x)
         {
             throw new NotImplementedException();
         }

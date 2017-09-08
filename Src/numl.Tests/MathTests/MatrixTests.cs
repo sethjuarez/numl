@@ -730,7 +730,7 @@ namespace numl.Tests.MathTests
             var L = t.Item2;
             var U = t.Item3;
 
-            var T = Matrix.Stack(P, L).Stack(U);
+            var T = Matrix.Stack(Matrix.Stack(P, L), U);
         }
 
         [Fact]

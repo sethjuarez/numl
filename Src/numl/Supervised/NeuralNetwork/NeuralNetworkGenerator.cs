@@ -18,10 +18,14 @@ namespace numl.Supervised.NeuralNetwork
             if (!Descriptor.Label.Discrete)
                 throw new InvalidOperationException("Can't do regression with this model");
 
-            Layers = new Layer[layers.Length + 1];
+            // add output layer
+            Array.Resize(ref layers, layers.Length + 1);
+            layers[layers.Length - 1] = Descriptor.Label.Length;
+
+            Layers = new Layer[layers.Length];
             int size = Descriptor.VectorLength;
 
-            // hidden layers
+            // layers
             for (int i = 0; i < layers.Length; i++)
             {
                 Layers[i] = new Layer
@@ -32,27 +36,21 @@ namespace numl.Supervised.NeuralNetwork
                 size = layers[i];
             }
 
-            // output layers
-            Layers[layers.Length] = new Layer
-            {
-                W = Matrix.Rand(size, Descriptor.Label.Length),
-                b = Vector.Zeros(Descriptor.Label.Length)
-            };
-
             Activation = typeof(T);
-            _activation = Ject.Create<IFunction>();
         }
 
         public void Forward(Matrix x, IFunction activation)
         {
+            var sigmoid = new Sigmoid();
             var APrev = x;
             for(int i = 0; i < Layers.Length; i++)
             {
-                var W = Layers[i].W;
-                var b = Layers[i].b;
-
-                Layers[i].Z = W * APrev + b;
-                Layers[i].A = APrev = activation.Compute(Layers[i].Z);
+                var Li = Layers[i];
+                Layers[i].Z = Li.W * APrev.T + Li.b;
+                Layers[i].A = APrev = 
+                    i == Layers.Length - 1 ?
+                    sigmoid.Compute(Layers[i].Z) :
+                    activation.Compute(Layers[i].Z);
             }
         }
 

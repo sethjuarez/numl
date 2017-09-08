@@ -44,7 +44,7 @@ namespace numl.Supervised.Regression
             this.MaxIterations = 500;
             this.PolynomialFeatures = 0;
             this.LearningRate = 0.3;
-            this.LogisticFunction = new Math.Functions.Logistic();
+            this.LogisticFunction = new Math.Functions.Sigmoid();
 
             this.NormalizeFeatures = true;
         }

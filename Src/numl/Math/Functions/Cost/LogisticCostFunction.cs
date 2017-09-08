@@ -19,7 +19,7 @@ namespace numl.Math.Functions.Cost
         public LogisticCostFunction()
         {
             if (LogisticFunction == null)
-                LogisticFunction = new Logistic();
+                LogisticFunction = new Sigmoid();
         }
 
         /// <summary>

@@ -41,7 +41,7 @@ namespace numl.Math.Kernels
         public LogisticKernel()
         {
             Lambda = 1d;
-            LogisticFunction = new Logistic();
+            LogisticFunction = new Sigmoid();
         }
 
         /// <summary>Computes a Logistic Kernel matrix from the given input matrix.</summary>

@@ -3,6 +3,7 @@ using numl.Math.LinearAlgebra;
 using numl.Math.Probability;
 using numl.Model;
 using numl.Supervised.NeuralNetwork;
+using numl.Tests.Data;
 using System;
 using Xunit;
 
@@ -15,21 +16,27 @@ namespace numl.Tests.SupervisedTests
         public void InitializationTest()
         {
             // for testing consistency
-            Sampling.SetSeed(1);
-            var v = Vector.Rand(100);
-
-
             NeuralNetworkGenerator generator = new NeuralNetworkGenerator();
-            generator.Descriptor = Descriptor.New("Initial")
-                                             .With("P1").As(typeof(double))
-                                             .With("P2").As(typeof(double))
-                                             .With("P3").As(typeof(double))
-                                             .With("P4").As(typeof(double))
-                                             .With("P5").As(typeof(double))
-                                             .Learn("L").As(typeof(bool));
-            int[] layers = new[] { 4 };
+            generator.Descriptor = Descriptor.Create<Tennis>();
+
+            int[] layers = new[] { 3 };
             generator.Initialize<ReLU>(layers);
             Assert.Equal(generator.Layers.Length, layers.Length + 1);
+        }
+
+        [Fact]
+        public void ForwardTest()
+        {
+            // for testing consistency
+            NeuralNetworkGenerator generator = new NeuralNetworkGenerator();
+            generator.Descriptor = Descriptor.Create<Tennis>();
+
+            int[] layers = new[] { 3 };
+            generator.Initialize<ReLU>(layers);
+
+            var (X, y) = generator.Descriptor.ToExamples(Tennis.GetData());
+            generator.Forward(X, new ReLU());
+
 
         }
     }

@@ -22,7 +22,7 @@ namespace numl.Math.Normalization
         /// </summary>
         public LogisticNormalizer()
         {
-            this.Logistic = new Logistic();
+            this.Logistic = new Sigmoid();
         }
         /// <summary>
         /// Normalize a row vector using Logistic normalization.

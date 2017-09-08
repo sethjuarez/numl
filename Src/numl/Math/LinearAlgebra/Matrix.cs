@@ -458,6 +458,7 @@ namespace numl.Math.LinearAlgebra
                 }
             }
             StringBuilder matrix = new StringBuilder();
+            matrix.Append($"({Rows}, {Cols})");
             matrix.Append("\n[");
             for (int i = 0; i < Rows; i++)
             {
