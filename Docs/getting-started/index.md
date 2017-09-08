@@ -89,7 +89,7 @@ namespace ConsoleApplication
 
 # Running the code
 
-1. From the comand line run `dotnet restore`
+1. From the command line run `dotnet restore`
 2. Once the process is complete run `dotnet run`
 
 ![numl running](..\images\firstrun.png)
