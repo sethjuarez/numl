@@ -32,6 +32,8 @@ namespace numl.Math.LinearAlgebra
             return matrix;
         }
 
+        public static implicit operator Vector(Matrix m) => m.ToVector();
+
         /// <summary>
         /// Performs an implicit conversion from <see cref="System.Double[][]"/> to <see cref="Matrix"/>.
         /// </summary>
@@ -99,6 +101,37 @@ namespace numl.Math.LinearAlgebra
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// additive broadcast of vector
+        /// </summary>
+        /// <param name="m"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static Matrix operator +(Matrix m, Vector b)
+        {
+            var s = m.Copy();
+            if(m.Rows == b.Length)
+                for (int i = 0; i < m.Rows; i++)
+                    s[i, VectorType.Row] += b[i];
+            else if(m.Cols == b.Length)
+                for (int i = 0; i < m.Cols; i++)
+                    s[i, VectorType.Col] += b[i];
+            else
+                throw new InvalidOperationException("Dimension mismatch");
+            return s;
+        }
+
+        /// <summary>
+        /// additive broadcast
+        /// </summary>
+        /// <param name="b"></param>
+        /// <param name="m"></param>
+        /// <returns></returns>
+        public static Matrix operator +(Vector b, Matrix m)
+        {
+            return m + b;
         }
 
         /// <summary>In memory addition of double to matrix.</summary>

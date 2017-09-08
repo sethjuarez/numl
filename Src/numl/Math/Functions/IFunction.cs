@@ -40,9 +40,23 @@ namespace numl.Math.Functions
         /// <returns>A Vector.</returns>
         Vector Compute(Vector x);
 
+        /// <summary>
+        /// Computes the function row-wise through the matrix
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
+        Matrix Compute(Matrix x);
+
         /// <summary>Derivatives the given x coordinate.</summary>
         /// <param name="x">The Vector to process.</param>
         /// <returns>A Vector.</returns>
         Vector Derivative(Vector x);
+
+        /// <summary>
+        /// Row-wise derivatives
+        /// </summary>
+        /// <param name="x">data</param>
+        /// <returns>derivative matrix</returns>
+        Matrix Derivative(Matrix x);
     }
 }

@@ -26,7 +26,7 @@ namespace numl.Genetic
         /// <summary>
         /// Gets the chromosomes in the current pool.
         /// </summary>
-        private NSortedList<IChromosome> _Chromosomes;
+        private NSortedList<IChromosome> _Chromosomes = null;
 
         /// <summary>
         /// Gets or sets the Fitness mode for evaluating chromosome performance.

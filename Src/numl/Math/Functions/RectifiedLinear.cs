@@ -15,7 +15,7 @@ namespace numl.Math.Functions
         /// <summary>
         /// Returns the maximum value from the function curve, equal to infinity.
         /// </summary>
-        public override double Maximum { get { return double.MaxValue; } }
+        public override double Maximum { get { return double.PositiveInfinity; } }
 
         /// <summary>Computes the given x coordinate.</summary>
         /// <param name="x">The value to process.</param>

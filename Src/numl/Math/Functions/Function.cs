@@ -47,12 +47,35 @@ namespace numl.Math.Functions
         {
             return x.Calc(d => Compute(d));
         }
+
+        /// <summary>Computes the given x coordinate.</summary>
+        /// <param name="x">The Vector to process.</param>
+        /// <returns>A Vector.</returns>
+        public Matrix Compute(Matrix x)
+        {
+            var s = x.Copy();
+            for (int i = 0; i < s.Rows; i++)
+                s[i] = Compute(s[i]);
+            return s;
+        }
+
         /// <summary>Derivatives the given x coordinate.</summary>
         /// <param name="x">The Vector to process.</param>
         /// <returns>A Vector.</returns>
         public Vector Derivative(Vector x)
         {
             return x.Calc(d => Derivative(d));
+        }
+
+        /// <summary>Derivatives the given x coordinate.</summary>
+        /// <param name="x">The Vector to process.</param>
+        /// <returns>A Vector.</returns>
+        public Matrix Derivative(Matrix x)
+        {
+            var s = x.Copy();
+            for (int i = 0; i < s.Rows; i++)
+                s[i] = Derivative(s[i]);
+            return s;
         }
 
         /// <summary>

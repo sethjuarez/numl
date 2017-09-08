@@ -220,6 +220,16 @@ namespace numl.Utils
             Func<object> ctor = GetCtor(type);
             return ctor.Invoke();
         }
+
+        /// <summary>
+        /// Crate a type with empty ctor
+        /// </summary>
+        /// <typeparam name="T">Type to create</typeparam>
+        /// <returns>Created Type</returns>
+        public static T Create<T>()
+        {
+            return (T)Create(typeof(T));
+        }
         /// <summary>Get a property value dynamically from a set of objects.</summary>
         /// <tparam name="T">Generic type parameter.</tparam>
         /// <param name="items">set of objects.</param>
@@ -365,6 +375,7 @@ namespace numl.Utils
             }
         }
 
+        
         private readonly static List<Assembly> _assemblies = new List<Assembly>();
         internal static void AddAssembly(Assembly assembly)
         {

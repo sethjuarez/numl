@@ -48,6 +48,11 @@ namespace numl.Math.Probability
         {
             m_w = u;
         }
+        
+        public static void SetSeed(long x)
+        {
+            SetSeed((uint)(x >> 16), (uint)(x % 4294967296));
+        }
 
         /// <summary>Creates random number generator seed.</summary>
         public static void SetSeedFromSystemTime()
