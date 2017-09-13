@@ -25,23 +25,31 @@ namespace numl.Tests.SupervisedTests
                                                         PolynomialFeatures = 0,
                                                         LearningRate = 0.1
                                                     },
-                                                digits, 0.8, 0.5);
+                                                digits, 1.0, 0.5);
 
-            double count = 0;
+            double traincount = 0;
+            foreach (var train in digits)
+            {
+                var prediction = (int) model.Predict(train);
+                traincount += (train.Label == prediction ? 1.0 : 0.0);
+            }
+
+            double trainaccuracy = traincount / (double) digits.Count();
+
+            double testcount = 0;
             var tests = Data.Digit.GetTestDigits();
             foreach (var test in tests)
             {
                 var prediction = (int)model.Predict(test);
-                count += (test.Label == prediction ? 1.0 : 0.0);
+                testcount += (test.Label == prediction ? 1.0 : 0.0);
             }
 
-            double accuracy = count / (double)tests.Count();
+            double testaccuracy = testcount / (double)tests.Count();
 
             Console.WriteLine($"LR Model Score: { model.Score }");
 
-            Console.WriteLine($"Digit Test:\nOverall Accuracy => { accuracy }");
-
-            Assert.True(accuracy >= model.Accuracy, $"{accuracy} >= {model.Accuracy}");
+            Assert.True(testaccuracy >= 0.9, $"{testaccuracy} >= {0.9}");
+            Assert.True(trainaccuracy >= 0.95, $"{trainaccuracy} >= {0.95}");
         }
 
         [Fact]

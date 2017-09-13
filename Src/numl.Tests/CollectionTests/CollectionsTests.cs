@@ -4,10 +4,11 @@ using System.Text;
 using System.Linq;
 
 using numl.AI.Collections;
-
+using numl.Math.Probability;
 using Xunit;
 
-using MATH = System.Math;
+using static System.Math;
+using static numl.Math.Probability.Sampling;
 using System.Diagnostics;
 
 namespace numl.Tests.CollectionTests
@@ -15,6 +16,13 @@ namespace numl.Tests.CollectionTests
     [Trait("CollectionTests", "CollectionTests")]
     public class CollectionsTests
     {
+        [Fact]
+        public void NSortedList_Sort_Test_1000()
+        {
+            for (int i = 0; i < 1000; i++)
+                NSortedList_Sort_Test();
+        }
+
         [Fact]
         public void NSortedList_Sort_Test()
         {
@@ -24,33 +32,36 @@ namespace numl.Tests.CollectionTests
 
                 var sorted = new NSortedList<int>(-1, reverse);
 
-                int length = Math.Probability.Sampling.GetUniform(10, 1024);
+                int length = GetUniform(10, 1024);
 
                 for (int i = 0; i < length; i++)
                 {
-                    int val = Math.Probability.Sampling.GetUniform(0, length - 1);
+                    int val = GetUniform(0, length - 1);
                     sorted.Add(val);
                 }
 
-                int remove = (int) MATH.Ceiling(length / 2.0);
+                int remove = (int) Ceiling(length / 2.0);
                 for (int i = 0; i < remove; i++)
                 {
-                    int index = Math.Probability.Sampling.GetUniform(0, sorted.Count - 1);
+                    int index = GetUniform(0, sorted.Count - 1);
                     sorted.Remove(index);
                 }
 
                 bool result = false;
                 for (int i = 1; i < (length - remove); i++)
                 {
-                    if (reverse)
+                    if (i < sorted.Count)
                     {
-                        result = sorted[i - 1] >= sorted[i];
-                        Assert.True(result, $"Item at {i - 1} was larger than expected");
-                    }
-                    else
-                    {
-                        result = sorted[i - 1] <= sorted[i];
-                        Assert.True(result, $"Item at {i - 1} was smaller than expected");
+                        if (reverse)
+                        {
+                            result = sorted[i - 1] >= sorted[i];
+                            Assert.True(result, $"Item at {i - 1} was larger than expected");
+                        }
+                        else
+                        {
+                            result = sorted[i - 1] <= sorted[i];
+                            Assert.True(result, $"Item at {i - 1} was smaller than expected");
+                        }
                     }
                 }
             }
@@ -61,14 +72,14 @@ namespace numl.Tests.CollectionTests
         {
             for (int run = 0; run < 2; run++)
             {
-                int length = Math.Probability.Sampling.GetUniform(10, 1024);
+                int length = GetUniform(10, 1024);
                 bool reverse = (run != 0);
 
                 var sorted = new NSortedList<int>(length, reverse);
                 
                 for (int i = 0; i < length; i++)
                 {
-                    int val = Math.Probability.Sampling.GetUniform(0, length - 1);
+                    int val = GetUniform(0, length - 1);
                     sorted.Add(val);
                 }
 
@@ -80,7 +91,7 @@ namespace numl.Tests.CollectionTests
 
                 for (int i = 0; i < length / 2; i++)
                 {
-                    int val = Math.Probability.Sampling.GetUniform(0, length - 1);
+                    int val = GetUniform(0, length - 1);
                     sorted.Add(val);
                 }
 
@@ -108,22 +119,22 @@ namespace numl.Tests.CollectionTests
         {
             var sorted = new NSortedList<int>();
 
-            int length = Math.Probability.Sampling.GetUniform(10, 1024);
+            int length = GetUniform(10, 1024);
 
             var dict = new Dictionary<int, int>();
 
             for (int i = 0; i < length; i++)
             {
-                int val = Math.Probability.Sampling.GetUniform(0, length - 1);
+                int val = GetUniform(0, length - 1);
                 sorted.Add(val);
 
                 dict[val] = (dict.ContainsKey(val) ? dict[val] + 1 : 1);
             }
 
-            int remove = (int) MATH.Ceiling(length / 2.0);
+            int remove = (int) Ceiling(length / 2.0);
             for (int i = 0; i < remove; i++)
             {
-                int val = Math.Probability.Sampling.GetUniform(0, sorted.Count - 1);
+                int val = GetUniform(0, sorted.Count - 1);
 
                 if (dict.ContainsKey(val))
                 {
@@ -202,7 +213,7 @@ namespace numl.Tests.CollectionTests
             {
                 var other = (Foo) obj;
 
-                return this.Weight.CompareTo(other.Weight);
+                return Weight.CompareTo(other.Weight);
             }
         }
     }

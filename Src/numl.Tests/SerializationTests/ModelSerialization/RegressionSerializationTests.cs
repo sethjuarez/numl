@@ -35,6 +35,7 @@ namespace numl.Tests.SerializationTests.ModelSerialization
             model = (LinearRegressionModel)learningModel.Model;
 
             var file = GetPath();
+            Register.Type<ModelItem>();
             var loadedModel = SaveAndLoad(model, file);
 
             Assert.Equal(model.Theta, loadedModel.Theta);

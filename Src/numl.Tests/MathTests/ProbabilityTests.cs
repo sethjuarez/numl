@@ -57,7 +57,7 @@ namespace numl.Tests.MathTests
         public void Test_Random_Bounds()
         {
             Random rnd = new Random();
-            for (int x = 0; x < 10000; x++)
+            for (int x = 0; x < 100000; x++)
             {
                 double min = rnd.Next(0, x);
                 double max = rnd.Next((int)min + 1, x + 1);

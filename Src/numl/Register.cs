@@ -22,5 +22,10 @@ namespace numl
             foreach (var a in assemblies)
                 Ject.AddAssembly(a);
         }
+
+        public static void Type<T>()
+        {
+            Assembly(typeof(T).GetTypeInfo().Assembly);
+        }
     }
 }

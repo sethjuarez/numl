@@ -187,6 +187,10 @@ namespace numl.Serialization
         internal object[] ReadArray()
         {
             EatWhitespace();
+
+            // null check on arrays...
+            if (IsNull()) return null;
+
             ReadToken(JsonConstants.BEGIN_ARRAY);
             List<object> array = new List<object>();
             int token = 0;

@@ -18,25 +18,6 @@ namespace numl.Tests.SupervisedTests
         }
 
         [Fact]
-        public void House_Tests()
-        {
-            // need to run multiple times since
-            // this model is a bit more sensitive
-            LearnerPrediction<House>(
-                new KNNGenerator(),
-                House.GetData(),
-                new House
-                {
-                    District = District.Rural,
-                    HouseType = HouseType.Detached,
-                    Income = Income.High,
-                    PreviousCustomer = false
-                },
-                p => p.Response
-            );
-        }
-
-        [Fact]
         public void Iris_Tests()
         {
             IrisPrediction(new KNNGenerator());

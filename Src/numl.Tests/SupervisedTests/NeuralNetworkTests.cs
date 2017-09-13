@@ -26,25 +26,6 @@ namespace numl.Tests.SupervisedTests
         }
 
         [Fact]
-        public void Iris_Tests()
-        {
-            // need to run multiple times since
-            // this model is a bit more sensitive
-            LearnerPrediction<Iris>(
-                new NeuralNetworkGenerator(),
-                Iris.Load(),
-                new Iris
-                {
-                    PetalWidth = 0.5m,
-                    PetalLength = 2.3m,
-                    SepalLength = 2.1m,
-                    SepalWidth = 2.1m
-                },
-                i => "Iris-setosa".Sanitize() == i.Class
-            );
-        }
-
-        [Fact]
         public void XOR_Test_Learner()
         {
             var xor = new[]

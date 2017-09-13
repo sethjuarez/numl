@@ -67,6 +67,7 @@ namespace numl.Tests.SerializationTests.ModelSerialization
             );
 
             var file = GetPath();
+            Register.Type<Tennis>();
             var model2 = SaveAndLoad(model, file);
 
             Assert.Equal(model.Descriptor, model2.Descriptor);
@@ -93,6 +94,7 @@ namespace numl.Tests.SerializationTests.ModelSerialization
             );
 
             var file = GetPath();
+            Register.Type<Tennis>();
             var model2 = SaveAndLoadJson(model);
 
             Assert.Equal(model.Descriptor, model2.Descriptor);

@@ -12,13 +12,19 @@ namespace numl.Math
     /// <summary>A range.</summary>
     public class Range
     {
+        public Range()
+        {
+            Min = -1;
+            Max = 1;
+        }
+
         /// <summary>Gets or sets the minimum.</summary>
         /// <value>The minimum value.</value>
-        public double Min { get; private set; }
+        public double Min { get; set; }
 
         /// <summary>Gets or sets the maximum.</summary>
         /// <value>The maximum value.</value>
-        public double Max { get; private set; }
+        public double Max { get; set; }
 
         /// <summary>Returns True if the value is between the current range.</summary>
         /// <param name="d">The double to process.</param>
@@ -28,7 +34,7 @@ namespace numl.Math
             return d >= Min && d <= Max;
         }
 
-        /// <summary>Constructor taking min and max vaue to create Range.</summary>
+        /// <summary>Constructor taking min and max value to create Range.</summary>
         /// <param name="min">The minimum.</param>
         /// <param name="max">The maximum.</param>
         public Range(double min, double max)
