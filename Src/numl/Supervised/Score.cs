@@ -335,7 +335,7 @@ namespace numl.Supervised
             // if the labels are continuous values then calculate accuracy manually
             if (!score._IsBinary)
             {
-                score._totalAccuracy = (predictions.Where((d, idx) => d == actual[idx]).Count() / predictions.Length);
+                score._totalAccuracy = (((double)predictions.Where((d, idx) => d == actual[idx]).Count()) / predictions.Length);
             }
 
             score.RMSE = Score.ComputeRMSE(predictions, actual);

@@ -152,6 +152,7 @@ namespace numl.Tests.SupervisedTests
             generator.Descriptor = description;
             var lmodel = Learner.Learn(data, .80, 10, generator);
             var prediction = lmodel.Model.Predict(item);
+            Assert.True(lmodel.Accuracy >= 0.75);
             Assert.True(test(prediction));
         }
 
