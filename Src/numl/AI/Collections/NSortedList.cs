@@ -354,7 +354,7 @@ namespace numl.AI.Collections
         public bool Remove(T element)
         {
             int index = this.GetHeuristic(element);
-
+            
             if (index >= 0)
             {
                 while (index > 0 && this[index - 1].Equals(element))
@@ -362,11 +362,8 @@ namespace numl.AI.Collections
 
                 do
                 {
-                    if(index >= _Length)
-                    {
-                        // why does code reach this point?
-                    }
                     this.RemoveAt(index);
+                    if (index == this._Length) index--;
                 }
                 while (this[index].Equals(element));
             }

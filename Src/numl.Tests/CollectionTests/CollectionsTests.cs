@@ -50,15 +50,18 @@ namespace numl.Tests.CollectionTests
                 bool result = false;
                 for (int i = 1; i < (length - remove); i++)
                 {
-                    if (reverse)
+                    if (i < sorted.Count)
                     {
-                        result = sorted[i - 1] >= sorted[i];
-                        Assert.True(result, $"Item at {i - 1} was larger than expected");
-                    }
-                    else
-                    {
-                        result = sorted[i - 1] <= sorted[i];
-                        Assert.True(result, $"Item at {i - 1} was smaller than expected");
+                        if (reverse)
+                        {
+                            result = sorted[i - 1] >= sorted[i];
+                            Assert.True(result, $"Item at {i - 1} was larger than expected");
+                        }
+                        else
+                        {
+                            result = sorted[i - 1] <= sorted[i];
+                            Assert.True(result, $"Item at {i - 1} was smaller than expected");
+                        }
                     }
                 }
             }

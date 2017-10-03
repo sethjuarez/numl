@@ -4,7 +4,7 @@
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
   </PropertyGroup>
   <PropertyGroup>
-    <VersionPrefix>0.9.19</VersionPrefix>
+    <VersionPrefix>0.9.20</VersionPrefix>
     <VersionSuffix>beta</VersionSuffix>
     <AssemblyTitle>numl</AssemblyTitle>
     <Authors>Seth Juarez;Chris Kalle;Basia Fusinka</Authors>

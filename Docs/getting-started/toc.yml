@@ -2,3 +2,7 @@
   href: index.md
 - name: Descriptors
   href: descriptors.md
+  name: Models
+  href: models.md
+  name: FAQ
+  href: faq.md

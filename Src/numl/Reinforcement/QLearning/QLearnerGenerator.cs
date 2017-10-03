@@ -24,10 +24,10 @@ namespace numl.Reinforcement.QLearning
         public double LearningRate { get; set; }
 
         /// <summary>
-        /// Gets or sets the lambda (discount factor) value. A higher value will prefer long-term rewards over short-term ones.
+        /// Gets or sets the gamma (discount factor) value. A higher value will prefer long-term rewards over short-term ones.
         /// <para>This value should be between 0 and 1.</para>
         /// </summary>
-        public double Lambda { get; set; }
+        public double Gamma { get; set; }
 
         /// <summary>
         /// Gets or sets the Q-value initialization parameter for the Q-utility table.
@@ -52,7 +52,7 @@ namespace numl.Reinforcement.QLearning
         public QLearnerGenerator()
         {
             this.LearningRate = 0.1;
-            this.Lambda = 0.3;
+            this.Gamma = 0.3;
             this.QValue = -0.03;
             this.Epsilon = 10e-6;
             this.MaxIterations = 100;
@@ -103,8 +103,7 @@ namespace numl.Reinforcement.QLearning
                     IState stateP = statesP.ElementAt(i);
                     double reward = r[i];
 
-                    double q = (1.0 - this.LearningRate) * Q[state, action]
-                                        + this.LearningRate * (reward + this.Lambda * Q[stateP, Q.GetMaxAction(stateP)]);
+                    double q = QLearnerModel.ComputeQ(Q, this.Gamma, this.LearningRate, state, action, stateP, reward);
 
                     change += (1.0 / count) * System.Math.Abs((Q[state, action] - q));
 
@@ -124,7 +123,7 @@ namespace numl.Reinforcement.QLearning
                 FeatureProperties = this.FeatureProperties,
                 FeatureDiscretizer = this.FeatureDiscretizer,
                 LearningRate = this.LearningRate,
-                Lambda = this.Lambda,
+                Gamma = this.Gamma,
                 Q = Q
             };
         }

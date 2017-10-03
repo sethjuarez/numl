@@ -18,16 +18,18 @@ namespace numl.Reinforcement.QLearning
     /// </summary>
     public class QLearnerModel : ReinforcementModel
     {
+        private Vector _state;
+
         /// <summary>
         /// Gets or sets the learning rate (alpha).
         /// </summary>
         public double LearningRate { get; set; }
 
         /// <summary>
-        /// Gets or sets the lambda (discount factor) value. A higher value will prefer long-term rewards over immediate rewards.
+        /// Gets or sets the gamma (discount factor) value. A higher value will prefer long-term rewards over immediate rewards.
         /// <para>This value should be between 0 and 1.</para>
         /// </summary>
-        public double Lambda { get; set; }
+        public double Gamma { get; set; }
 
         /// <summary>
         /// Gets or sets the Q utility table.
@@ -62,14 +64,13 @@ namespace numl.Reinforcement.QLearning
         /// <param name="r">Reward value.</param>
         public override void Learn(Vector x, double y, double r)
         {
-            var state = this.Q.Keys.Last();
-            var stateP = MDPConverter.GetState(x, this.FeatureProperties, this.FeatureDiscretizer);
-            var action = MDPConverter.GetAction(y, state.Id, stateP.Id);
+            if (this._state == null)
+            {
+                _state = x;
+                return;
+            }
 
-            this.Q.AddOrUpdate(stateP, action, r);
-
-            this.Q[state, action] = (1.0 - this.LearningRate) * Q[state, action]
-                                        + this.LearningRate * (r + this.Lambda * Q[stateP, Q.GetMaxAction(stateP)]);
+            this.Learn(this._state, y, x, r);
         }
 
         /// <summary>
@@ -93,8 +94,20 @@ namespace numl.Reinforcement.QLearning
             if (!Q.ContainsKey(stateP))
                 Q.AddKey(stateP);
 
-            this.Q[state, action] = (1.0 - this.LearningRate) * Q[state, action]
-                                        + this.LearningRate * (r + this.Lambda * Q[stateP, Q.GetMaxAction(stateP)]);
+            this.Update(state, action, stateP, r);
         }
+
+        public static double ComputeQ(QTable Q, double gamma, double alpha, 
+            IState state, IAction action, IState stateP, double reward)
+        {
+            return (1.0 - alpha) * Q[state, action]
+                + alpha * (reward + gamma * Q[stateP, Q.GetMaxAction(stateP)]);
+        }
+
+        protected void Update(IState state, IAction action, IState stateP, double reward)
+        {
+            this.Q[state, action] = 
+                ComputeQ(this.Q, this.Gamma, this.LearningRate, state, action, stateP, reward);
+        }   
     }
 }

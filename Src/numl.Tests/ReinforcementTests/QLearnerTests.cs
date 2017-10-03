@@ -45,7 +45,7 @@ namespace numl.Tests.ReinforcementTests
             Assert.Equal(7, examples.Item3.Rows);
             Assert.Equal(7, examples.Item4.Length);
 
-            var generator = new Reinforcement.QLearning.QLearnerGenerator() { Lambda = 0.9 };
+            var generator = new Reinforcement.QLearning.QLearnerGenerator() { Gamma = 0.9 };
             Reinforcement.QLearning.QLearnerModel model = (Reinforcement.QLearning.QLearnerModel) generator.Generate(examples.Item1, examples.Item2, examples.Item3, examples.Item4);
 
             Assert.Equal(3, (int) model.Predict(kitchen.ToVector())/*, "Expected to move from kitchen to entrance hall"*/);
