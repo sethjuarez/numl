@@ -47,7 +47,7 @@ namespace numl.Serialization
         public void PreWrite(JsonWriter writer)
         {
             writer.WriteStartObject();
-            writer.WriteFirstProperty(SERIALIZER_ATTRIBUTE, GetType().FullName);
+            writer.WriteFirstProperty(SERIALIZER_ATTRIBUTE, GetType().Name);
         }
 
         /// <summary>

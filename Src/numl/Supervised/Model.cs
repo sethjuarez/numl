@@ -135,5 +135,27 @@ namespace numl.Supervised
                 new JsonWriter(sw).Write(this);
             return sb.ToString();
         }
+
+        /// <summary>
+        /// Model loader
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>Model</returns>
+        public static T Load<T>(string file)
+            where T : Model
+        {
+            return JsonReader.Read<T>(file);
+        }
+
+        /// <summary>
+        /// Model loader
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>Model</returns>
+        public static T LoadJson<T>(string json)
+            where T : Model
+        {
+            return JsonReader.ReadJson<T>(json);
+        }
     }
 }

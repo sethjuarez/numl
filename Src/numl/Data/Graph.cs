@@ -118,7 +118,7 @@ namespace numl.Data
             foreach (var edge in edges)
                 this.AddEdge(edge);
         }
-        
+
         /// <summary>
         /// Removes the Edge object from the graph.
         /// </summary>
@@ -135,8 +135,9 @@ namespace numl.Data
         /// <returns>IEnumerable&lt;IEdge&gt;</returns>
         public IEnumerable<IEdge> GetOutEdges(IVertex v)
         {
-            foreach (var edges in _edges[v.Id])
-                yield return edges.Value;
+            if (_edges.ContainsKey(v.Id))
+                foreach (var edges in _edges[v.Id])
+                    yield return edges.Value;
         }
 
         /// <summary>
@@ -222,7 +223,7 @@ namespace numl.Data
                         return false;
                 }
 
-                foreach(int from in _edges.Keys)
+                foreach (int from in _edges.Keys)
                 {
                     if (!g._edges.ContainsKey(from))
                         return false;
