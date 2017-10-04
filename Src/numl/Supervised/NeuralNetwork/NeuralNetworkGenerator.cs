@@ -49,8 +49,8 @@ namespace numl.Supervised.NeuralNetwork
                 Layers[i].Z = Li.W * APrev.T + Li.b;
                 Layers[i].A = APrev = 
                     i == Layers.Length - 1 ?
-                    sigmoid.Compute(Layers[i].Z) :
-                    activation.Compute(Layers[i].Z);
+                    sigmoid.Compute(Layers[i].Z.T) :
+                    activation.Compute(Layers[i].Z.T);
             }
         }
 

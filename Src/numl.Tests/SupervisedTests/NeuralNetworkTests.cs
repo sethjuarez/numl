@@ -19,7 +19,7 @@ namespace numl.Tests.SupervisedTests
             NeuralNetworkGenerator generator = new NeuralNetworkGenerator();
             generator.Descriptor = Descriptor.Create<Tennis>();
 
-            int[] layers = new[] { 3 };
+            int[] layers = new[] { 3, 2 };
             generator.Initialize<ReLU>(layers);
             Assert.Equal(generator.Layers.Length, layers.Length + 1);
         }
@@ -31,7 +31,7 @@ namespace numl.Tests.SupervisedTests
             NeuralNetworkGenerator generator = new NeuralNetworkGenerator();
             generator.Descriptor = Descriptor.Create<Tennis>();
 
-            int[] layers = new[] { 3 };
+            int[] layers = new[] { 3, 2 };
             generator.Initialize<ReLU>(layers);
 
             var (X, y) = generator.Descriptor.ToExamples(Tennis.GetData());
