@@ -39,7 +39,8 @@ namespace numl.Math.Functions
         /// <returns>Double.</returns>
         public override double Derivative(double x, bool cached = false)
         {
-            return 1d / (1d + exp(-x));
+            double c = (cached ? x : Compute(x));
+            return 1.0 + (1.0 / (-exp(c)));
         }
     }
 }
