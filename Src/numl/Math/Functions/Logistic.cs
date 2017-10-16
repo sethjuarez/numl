@@ -27,9 +27,9 @@ namespace numl.Math.Functions
         /// <summary>Derivatives the given x coordinate.</summary>
         /// <param name="x">The Vector to process.</param>
         /// <returns>A Vector.</returns>
-        public override double Derivative(double x)
+        public override double Derivative(double x, bool cached = false)
         {
-            var c = Compute(x);
+            var c = (cached ? x : Compute(x));
             return c * (1d - c);
         }
     }

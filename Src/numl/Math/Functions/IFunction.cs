@@ -25,8 +25,9 @@ namespace numl.Math.Functions
 
         /// <summary>Derivatives the given x coordinate.</summary>
         /// <param name="x">The Vector to process.</param>
+        /// <param name="cached">If True, uses the previously computed activation.</param>
         /// <returns>A Vector.</returns>
-        double Derivative(double x);
+        double Derivative(double x, bool cached = false);
 
         /// <summary>
         /// Computes and condenses the given x coordinate.
@@ -43,6 +44,6 @@ namespace numl.Math.Functions
         /// <summary>Derivatives the given x coordinate.</summary>
         /// <param name="x">The Vector to process.</param>
         /// <returns>A Vector.</returns>
-        Vector Derivative(Vector x);
+        Vector Derivative(Vector x, bool cached = false);
     }
 }

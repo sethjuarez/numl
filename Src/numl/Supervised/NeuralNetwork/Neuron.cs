@@ -154,7 +154,7 @@ namespace numl.Supervised.NeuralNetwork
             {
                 if (In.Count > 0 && Out.Count > 0)
                 {
-                    double hp = this.ActivationFunction.Derivative(this.Input);
+                    double hp = this.ActivationFunction.Derivative(this.Output, true);
                     delta = Out.Sum(e => e.Weight * t) * hp;
                 }
 
@@ -183,7 +183,7 @@ namespace numl.Supervised.NeuralNetwork
             {
                 Delta = (1.0 / properties.Examples) * Delta;
 
-                if (edge > 0)
+                if (!this.In[edge].Source.IsBias)
                     Delta = Delta + ((properties.Lambda / properties.Examples) * this.In[edge].Weight);
 
                 if (!this.Constrained)

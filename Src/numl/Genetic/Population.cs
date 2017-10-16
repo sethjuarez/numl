@@ -22,6 +22,10 @@ namespace numl.Genetic
     /// </summary>
     public class Population : IEnumerable<IChromosome>
     {
+        /// <summary>
+        /// Gets the default Population size (500).
+        /// </summary>
+        public const int DefaultPoolSize = 500;
 
         /// <summary>
         /// Gets the chromosomes in the current pool.
@@ -148,10 +152,11 @@ namespace numl.Genetic
             }
         }
 
-        protected Population(IFitnessMetric fitnessMetric, FitnessMode fitnessMode)
+        protected Population(int poolSize, IFitnessMetric fitnessMetric, FitnessMode fitnessMode)
         {
             this.FitnessMetric = fitnessMetric;
             this.FitnessMode = fitnessMode;
+            this._Chromosomes = new NSortedList<IChromosome>();
         }
 
         /// <summary>
@@ -161,7 +166,7 @@ namespace numl.Genetic
         /// <param name="fitnessMetric">Fitness function for evaluating chromosomes.</param>
         /// <param name="fitnessMode">Fitness mode.</param>
         public Population(IEnumerable<IChromosome> chromosomes, IFitnessMetric fitnessMetric, FitnessMode fitnessMode)
-            : this(fitnessMetric, fitnessMode)
+            : this(DefaultPoolSize, fitnessMetric, fitnessMode)
         {
             this.Apply(chromosomes);
         }
@@ -175,7 +180,7 @@ namespace numl.Genetic
         /// <param name="fitnessMetric">Fitness function for evaluating chromosomes.</param>
         /// <param name="fitnessMode">Fitness mode.</param>
         public Population(int poolSize, Func<IChromosome> fnInitializer, IFitnessMetric fitnessMetric, FitnessMode fitnessMode)
-            : this(fitnessMetric, fitnessMode)
+            : this(DefaultPoolSize, fitnessMetric, fitnessMode)
         {
             var chromosomes = new IChromosome[poolSize];
 

@@ -38,7 +38,7 @@ namespace numl.Math.Functions
         /// <summary>Derivatives the given x coordinate.</summary>
         /// <param name="x">The Vector to process.</param>
         /// <returns>A Vector.</returns>
-        public abstract double Derivative(double x);
+        public abstract double Derivative(double x, bool cached = false);
 
         /// <summary>Computes the given x coordinate.</summary>
         /// <param name="x">The Vector to process.</param>
@@ -49,10 +49,11 @@ namespace numl.Math.Functions
         }
         /// <summary>Derivatives the given x coordinate.</summary>
         /// <param name="x">The Vector to process.</param>
+        /// <param name="cached">If True, uses the previously computed activation.</param>
         /// <returns>A Vector.</returns>
-        public Vector Derivative(Vector x)
+        public Vector Derivative(Vector x, bool cached = false)
         {
-            return x.Calc(d => Derivative(d));
+            return x.Calc(d => Derivative(d, cached));
         }
 
         /// <summary>

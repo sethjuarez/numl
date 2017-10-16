@@ -29,6 +29,7 @@ namespace numl.Math.Functions
         {
             MaxValue = 5d;
         }
+
         /// <summary>Computes the given x coordinate.</summary>
         /// <param name="x">The Vector to process.</param>
         /// <returns>A Vector.</returns>
@@ -36,10 +37,12 @@ namespace numl.Math.Functions
         {
             return (x > 0d ? (x > MaxValue ? MaxValue : x) : 0d);
         }
+
         /// <summary>Derivatives the given x coordinate.</summary>
         /// <param name="x">The Vector to process.</param>
+        /// <param name="cached">If True, uses the previously computed activation.</param>
         /// <returns>A Vector.</returns>
-        public override double Derivative(double x)
+        public override double Derivative(double x, bool cached = false)
         {
             return (x > 0d && x < MaxValue ? 1 : 0);
         }

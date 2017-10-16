@@ -35,8 +35,9 @@ namespace numl.Math.Functions
         /// Derivatives the given x coordinate.
         /// </summary>
         /// <param name="x">The double to process.</param>
+        /// <param name="cached">If True, uses the previously computed activation.</param>
         /// <returns>Double.</returns>
-        public override double Derivative(double x)
+        public override double Derivative(double x, bool cached = false)
         {
             return 1d / (1d + exp(-x));
         }

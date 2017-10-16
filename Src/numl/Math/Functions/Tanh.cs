@@ -24,12 +24,15 @@ namespace numl.Math.Functions
         {
             return (exp(x) - exp(-x)) / (exp(x) + exp(-x));
         }
+
         /// <summary>Derivatives the given x coordinate.</summary>
         /// <param name="x">The Vector to process.</param>
+        /// <param name="cached">If True, uses the previously computed activation.</param>
         /// <returns>A Vector.</returns>
-        public override double Derivative(double x)
+        public override double Derivative(double x, bool cached = false)
         {
-            return 1 - pow(Compute(x), 2);
+            double c = (cached ? x : Compute(x));
+            return 1 - pow(x, 2);
         }
     }
 }

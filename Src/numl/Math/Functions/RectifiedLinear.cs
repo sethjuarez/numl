@@ -24,10 +24,12 @@ namespace numl.Math.Functions
         {
             return (x > 0d ? x : 0d);
         }
+
         /// <summary>Derivatives the given x coordinate.</summary>
         /// <param name="x">The value to process.</param>
+        /// <param name="cached">If True, uses the previously computed activation.</param>
         /// <returns>A double.</returns>
-        public override double Derivative(double x)
+        public override double Derivative(double x, bool cached = false)
         {
             return (x > 0d ? 1 : 0);
         }

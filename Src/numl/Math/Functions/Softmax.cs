@@ -27,11 +27,11 @@ namespace numl.Math.Functions
         public Vector Compute(Vector x)
         {
             double max = x.Max();
-            Vector softmax = x.Each(v => System.Math.Exp(v - max));
+            Vector softmax = Vector.Exp(x - max);
 
             double sum = softmax.Sum();
 
-            softmax = softmax.Each(s => s / sum); 
+            softmax = (softmax / sum); 
 
             return softmax;
         }
@@ -50,10 +50,11 @@ namespace numl.Math.Functions
         /// Computes the derivation of the softmax function.
         /// </summary>
         /// <param name="x"></param>
+        /// <param name="cached">If True, uses the previously computed activation.</param>
         /// <returns></returns>
-        public Vector Derivative(Vector x)
+        public Vector Derivative(Vector x, bool cached = false)
         {
-            Vector d = Compute(x);
+            Vector d = (cached ? x : Compute(x));
             return d * (1d - d);
         }
 
@@ -61,8 +62,9 @@ namespace numl.Math.Functions
         /// Not used.
         /// </summary>
         /// <param name="x"></param>
+        /// <param name="cached">If True, uses the previously computed activation.</param>
         /// <returns></returns>
-        public double Derivative(double x)
+        public double Derivative(double x, bool cache = false)
         {
             throw new NotImplementedException();
         }
