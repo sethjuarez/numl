@@ -154,7 +154,7 @@ namespace numl.Supervised.NeuralNetwork
             {
                 if (In.Count > 0 && Out.Count > 0)
                 {
-                    double hp = this.ActivationFunction.Derivative(this.Input, false);
+                    double hp = this.ActivationFunction.Derivative(this.Input, this.Output);
                     delta = Out.Sum(e => e.Weight * t) * hp;
                 }
 

@@ -24,14 +24,14 @@ namespace numl.Math.Functions
         {
             return 1d / (1d + exp(-System.Math.PI * x));
         }
+
         /// <summary>Derivatives the given x coordinate.</summary>
-        /// <param name="x">The Vector to process.</param>
-        /// <param name="cached">If True, uses the previously computed activation.</param>
-        /// <returns>A Vector.</returns>
-        public override double Derivative(double x, bool cached = false)
+        /// <param name="x">The input to the function.</param>
+        /// <param name="y">Precomputed softplus output.</param>
+        /// <returns>Double.</returns>
+        public override double Derivative(double x, double y)
         {
-            var c = (cached ? x : Compute(x));
-            return System.Math.PI * c * (1d - c);
+            return System.Math.PI * y * (1d - y);
         }
     }
 }

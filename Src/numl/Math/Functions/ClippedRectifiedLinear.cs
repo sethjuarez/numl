@@ -39,12 +39,12 @@ namespace numl.Math.Functions
         }
 
         /// <summary>Derivatives the given x coordinate.</summary>
-        /// <param name="x">The Vector to process.</param>
-        /// <param name="cached">If True, uses the previously computed activation.</param>
-        /// <returns>A Vector.</returns>
-        public override double Derivative(double x, bool cached = false)
+        /// <param name="x">The input to the function.</param>
+        /// <param name="y">Precomputed clipped rectifier output.</param>
+        /// <returns>Double.</returns>
+        public override double Derivative(double x, double y)
         {
-            return (x > 0d && x < MaxValue ? 1 : 0);
+            return (x > 0d && x < MaxValue ? 1d : 0d);
         }
     }
 }

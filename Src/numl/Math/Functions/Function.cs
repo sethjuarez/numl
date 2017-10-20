@@ -36,24 +36,26 @@ namespace numl.Math.Functions
         public abstract double Compute(double x);
 
         /// <summary>Derivatives the given x coordinate.</summary>
-        /// <param name="x">The Vector to process.</param>
-        /// <returns>A Vector.</returns>
-        public abstract double Derivative(double x, bool cached = false);
+        /// <param name="x">The input to the function.</param>
+        /// <param name="y">Precomputed output of the function.</param>
+        /// <returns>Double.</returns>
+        public abstract double Derivative(double x, double y);
 
         /// <summary>Computes the given x coordinate.</summary>
         /// <param name="x">The Vector to process.</param>
         /// <returns>A Vector.</returns>
-        public Vector Compute(Vector x)
+        public virtual Vector Compute(Vector x)
         {
             return x.Calc(d => Compute(d));
         }
+
         /// <summary>Derivatives the given x coordinate.</summary>
-        /// <param name="x">The Vector to process.</param>
-        /// <param name="cached">If True, uses the previously computed activation.</param>
-        /// <returns>A Vector.</returns>
-        public Vector Derivative(Vector x, bool cached = false)
+        /// <param name="x">The input to process.</param>
+        /// <param name="y">Precomputed output of the function.</param>
+        /// <returns>Vector.</returns>
+        public virtual Vector Derivative(Vector x, Vector y)
         {
-            return x.Calc(d => Derivative(d, cached));
+            return x.Each((xi, idx) => Derivative(xi, y[idx]));
         }
 
         /// <summary>
