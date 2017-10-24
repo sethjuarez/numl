@@ -52,7 +52,7 @@ namespace numl.Model
 				else return Features[i];
 			}
 		}
-		/// <summary>Index intor features (for convenience)</summary>
+		/// <summary>Index into features (for convenience)</summary>
 		/// <param name="name">Feature name.</param>
 		/// <returns>Feature Property.</returns>
 		public Property this[string name]
@@ -193,13 +193,13 @@ namespace numl.Model
 		/// <param name="items">Examples.</param>
 		/// <param name="withLabels">True to include labels, otherwise False</param>
 		/// <returns>Lazy double enumerable of doubles.</returns>
-		public IEnumerable<IEnumerable<double>> Convert(IEnumerable<object> items, bool withLabels = true)
+		public IEnumerable<IEnumerable<double>> Convert(IEnumerable<object> items, bool withLabels = true, bool updateLabels = true)
 		{
 			// Pre processing items
 			foreach (Property feature in Features)
 				feature.PreProcess(items);
 
-			if (Label != null)
+			if (Label != null && updateLabels)
 				Label.PreProcess(items);
 
 			// convert items
@@ -210,15 +210,15 @@ namespace numl.Model
 			foreach (Property feature in Features)
 				feature.PostProcess(items);
 
-			if (Label != null)
+			if (Label != null && updateLabels)
 				Label.PostProcess(items);
 		}
 		/// <summary>Converts a list of examples into a Matrix/Vector tuple.</summary>
 		/// <param name="examples">Examples.</param>
 		/// <returns>Tuple containing Matrix and Vector.</returns>
-		public (Matrix X, Vector Y) ToExamples(IEnumerable<object> examples)
+		public (Matrix X, Vector Y) ToExamples(IEnumerable<object> examples, bool updateLabels = true)
 		{
-			return Convert(examples).ToExamples();
+			return Convert(examples, true, updateLabels).ToExamples();
 		}
 		/// <summary>Converts a list of examples into a Matrix.</summary>
 		/// <param name="examples">Examples.</param>

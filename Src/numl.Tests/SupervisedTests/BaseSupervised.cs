@@ -82,7 +82,9 @@ namespace numl.Tests.SupervisedTests
                 generator,              // generator
                 House.GetData(),        // Training data
                 h,                      // test object
-                p => p.Response         // should be true
+                p => p.Response,        // should be true
+                100,                    // Need to repeat enough to get proper accuracy on small sample size
+                0.66                    // House only contains 14 samples, leaving only 3 samples for testing
             );
         }
 
@@ -112,8 +114,8 @@ namespace numl.Tests.SupervisedTests
             {
                 PetalWidth = 0.5m,
                 PetalLength = 2.3m,
-                SepalLength = 2.1m,
-                SepalWidth = 2.1m
+                SepalLength = 5.5m,
+                SepalWidth = 3.1m
             };
 
 
@@ -121,7 +123,8 @@ namespace numl.Tests.SupervisedTests
                generator,
                 Iris.Load(),
                 iris,
-                i => "Iris-setosa".Sanitize() == i.Class    // should be true
+                i => "Iris-setosa".Sanitize() == i.Class,    // should be true
+                20                                           // Need to repeat enough to get proper accuracy on small sample size
             );
         }
 
@@ -132,8 +135,8 @@ namespace numl.Tests.SupervisedTests
             {
                 PetalWidth = 0.5m,
                 PetalLength = 2.3m,
-                SepalLength = 2.1m,
-                SepalWidth = 2.1m
+                SepalLength = 5.5m,
+                SepalWidth = 3.1m
             };
 
 
@@ -145,14 +148,14 @@ namespace numl.Tests.SupervisedTests
             );
         }
 
-        public static void LearnerPrediction<T>(IGenerator generator, IEnumerable<T> data, T item, Func<T, bool> test)
+        public static void LearnerPrediction<T>(IGenerator generator, IEnumerable<T> data, T item, Func<T, bool> test, int repeat = 10, double minimumAccuracy = 0.75)
             where T : class
         {
             var description = Descriptor.Create<T>();
             generator.Descriptor = description;
-            var lmodel = Learner.Learn(data, .80, 10, generator);
+            var lmodel = Learner.Learn(data, 0.8, repeat, generator);
             var prediction = lmodel.Model.Predict(item);
-            Assert.True(lmodel.Accuracy >= 0.75);
+            Assert.True(lmodel.Accuracy >= minimumAccuracy);
             Assert.True(test(prediction));
         }
 
@@ -167,9 +170,9 @@ namespace numl.Tests.SupervisedTests
             var prediction = model.Model.Predict(item);
             Assert.True(test(prediction));
             return model.Model;
-        }
+      }
 
-        public void TennisLearnerPrediction(IGenerator generator)
+      public void TennisLearnerPrediction(IGenerator generator)
         {
             Tennis t = new Tennis
             {
@@ -183,7 +186,9 @@ namespace numl.Tests.SupervisedTests
                 generator,              // generator
                 Tennis.GetData(),       // training data
                 t,                      // test object
-                p => p.Play             // should be true
+                p => p.Play,            // should be true
+                100,                    // Need to repeat enough to get proper accuracy on small sample size
+                0.66                    // Tennis only contains 14 samples, leaving only 3 samples for testing
             );
         }
 

@@ -146,7 +146,11 @@ namespace numl
                 // testing            
                 object[] test = GetTestExamples(testingSlice, examples);
                 Vector y_pred = new Vector(test.Length);
-                Vector y_test = descriptor.ToExamples(test).Y;
+
+                // Do not update the labels with the test samples as they could
+                // contain less labels than the training set thus causing an Out of index exception
+                // because the predicted label would have been removed from the descriptor.
+                Vector y_test = descriptor.ToExamples(test, false).Y;
 
                 bool isBinary = y_test.IsBinary();
                 if (isBinary)
