@@ -34,10 +34,12 @@ namespace numl.Supervised.NaiveBayes
                 lp[i] = System.Math.Log(stat.Probability);
                 for (int j = 0; j < y.Length; j++)
                 {
+                    const double probabilityEpsilon = 10e-10;
                     Measure conditional = stat.Conditionals[j];
                     var p = conditional.GetStatisticFor(y[j]);
+
                     // check for missing range, assign bad probability
-                    lp[i] += System.Math.Log(p == null ? 10e-10 : p.Probability);
+                    lp[i] += System.Math.Log(p == null ? probabilityEpsilon : (p.Probability == 0 ? probabilityEpsilon : p.Probability));
                 }
             }
             var idx = lp.MaxIndex();

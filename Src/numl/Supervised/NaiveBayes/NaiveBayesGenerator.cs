@@ -56,7 +56,9 @@ namespace numl.Supervised.NaiveBayes
             {
                 var stat = statistics.Where(s => s.X.Min == y[i]).First();
                 if (stat.Conditionals == null)
+                {
                     stat.Conditionals = CloneMeasure(features);
+                }
 
                 for (int j = 0; j < X.Cols; j++)
                 {
@@ -117,10 +119,10 @@ namespace numl.Supervised.NaiveBayes
                 IEnumerable<Statistic> fstats;
                 if (f.Discrete)
                     fstats = x[i, VectorType.Col].Distinct().OrderBy(d => d)
-                                                 .Select(d => Statistic.Make(p.Convert(d).ToString(), d, 1));
+                                                 .Select(d => Statistic.Make(p.Convert(d).ToString(), d));
                 else
                     fstats = x[i, VectorType.Col].Segment(Width)
-                                                 .Select(d => Statistic.Make(f.Label, d, 1));
+                                                 .Select(d => Statistic.Make(f.Label, d));
 
                 f.Probabilities = fstats.ToArray();
                 features[i] = f;
