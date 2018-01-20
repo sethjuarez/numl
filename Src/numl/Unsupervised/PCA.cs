@@ -2,7 +2,7 @@
 //
 // summary:	Implements the pca class
 using System;
-using numl.Model;
+using AutoTensor;
 using System.Linq;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;

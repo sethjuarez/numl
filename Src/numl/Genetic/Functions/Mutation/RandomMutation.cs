@@ -17,7 +17,7 @@ namespace numl.Genetic.Functions.Mutation
         /// <summary>
         /// Gets or sets the range of values used in replacement.
         /// </summary>
-        public Range Range { get; set; } = (0, 1);
+        public numl.Math.Range Range { get; set; } = (0, 1);
 
         /// <summary>
         /// Initializes a new Random mutator with replacement between range 0 and 1.
@@ -31,7 +31,7 @@ namespace numl.Genetic.Functions.Mutation
         /// <param name="maxValue">Maximum value used during random replacement.</param>
         public RandomMutation(double minValue, double maxValue)
         {
-            this.Range = new Range(minValue, maxValue);
+            this.Range = new numl.Math.Range(minValue, maxValue);
         }
 
         /// <summary>

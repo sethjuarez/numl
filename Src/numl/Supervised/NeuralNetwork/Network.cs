@@ -8,9 +8,10 @@ using System.Collections.Generic;
 using numl.Data;
 using numl.Math.LinearAlgebra;
 using numl.Math.Functions;
-using numl.Model;
+using AutoTensor;
 using numl.Math.Functions.Loss;
 using numl.Supervised.NeuralNetwork.Optimization;
+using AutoTensor.Properties;
 
 namespace numl.Supervised.NeuralNetwork
 {

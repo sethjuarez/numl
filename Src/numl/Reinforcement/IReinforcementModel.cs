@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using numl.Math;
 using numl.Math.Normalization;
 using numl.Math.LinearAlgebra;
-using numl.Model;
+using AutoTensor;
 using numl.Supervised;
 
 namespace numl.Reinforcement

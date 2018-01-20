@@ -25,7 +25,7 @@ namespace numl.Supervised.NaiveBayes
         public int Count { get; set; }
         /// <summary>Gets or sets the x coordinate.</summary>
         /// <value>The x coordinate.</value>
-        public Range X { get; set; }
+        public numl.Math.Range X { get; set; }
         /// <summary>Gets or sets the probability.</summary>
         /// <value>The probability.</value>
         public double Probability { get; set; }
@@ -68,7 +68,7 @@ namespace numl.Supervised.NaiveBayes
         /// <param name="x">The Range to process.</param>
         /// <param name="count">(Optional) number of.</param>
         /// <returns>A Statistic.</returns>
-        public static Statistic Make(string label, Range x, int count = 0)
+        public static Statistic Make(string label, numl.Math.Range x, int count = 0)
         {
             return new Statistic
             {
@@ -90,7 +90,7 @@ namespace numl.Supervised.NaiveBayes
                 Label = label,
                 Discrete = true,
                 Count = count,
-                X = new Range(val)
+                X = new numl.Math.Range(val)
             };
         }
         /// <summary>Tests if this object is considered equal to another.</summary>

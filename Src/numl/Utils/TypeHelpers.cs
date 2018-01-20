@@ -2,7 +2,7 @@
 //
 // summary:	Implements the type helpers class
 using System;
-using numl.Model;
+using AutoTensor;
 using System.Linq;
 using System.Reflection;
 using System.Collections;

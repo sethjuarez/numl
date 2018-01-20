@@ -4,7 +4,7 @@
 using numl.Math;
 using numl.Math.LinearAlgebra;
 using numl.Math.Normalization;
-using numl.Model;
+using AutoTensor;
 using numl.Serialization;
 using numl.Utils;
 using System;

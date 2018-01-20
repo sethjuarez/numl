@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoTensor;
 using numl.Utils;
 using System.Linq;
 using numl.Serialization;
@@ -33,7 +34,7 @@ namespace numl.Supervised
             else
             {
                 var model = (numl.Supervised.Model)Create();
-                model.Descriptor = (numl.Model.Descriptor)reader.ReadProperty().Value;
+                model.Descriptor = (AutoTensor.Descriptor)reader.ReadProperty().Value;
                 model.NormalizeFeatures = (bool)reader.ReadProperty().Value;
 
                 var normalizer = Ject.FindType(reader.ReadProperty().Value.ToString());

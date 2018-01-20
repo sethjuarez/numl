@@ -3,7 +3,7 @@
 // summary:	Declares the IModel interface
 using System;
 using System.IO;
-using numl.Model;
+using AutoTensor;
 using System.Linq;
 
 using numl.Math.LinearAlgebra;

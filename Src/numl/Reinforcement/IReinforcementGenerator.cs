@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using numl.Math.LinearAlgebra;
-using numl.Model;
+using AutoTensor;
 using numl.AI;
 
 namespace numl.Reinforcement

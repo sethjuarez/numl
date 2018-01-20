@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using AutoTensor;
 
 namespace numl
 {
@@ -19,8 +20,7 @@ namespace numl
         public static void Assembly(params Assembly[] assemblies)
         {
             // register assemblies
-            foreach (var a in assemblies)
-                Ject.AddAssembly(a);
+/
         }
 
         public static void Type<T>()

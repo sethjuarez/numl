@@ -2,11 +2,12 @@
 //
 // summary:	Implements the naive bayes generator class
 using System;
-using numl.Model;
+using AutoTensor;
 using System.Linq;
 using numl.Math.LinearAlgebra;
 using System.Collections.Generic;
 using numl.Data;
+using AutoTensor.Properties;
 
 namespace numl.Supervised.NaiveBayes
 {

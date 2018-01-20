@@ -42,7 +42,7 @@ namespace numl.Serialization.Supervised.NaiveBayes
         }
     }
 
-    public class RangeSerializer : JsonSerializer<Range> { }
+    public class RangeSerializer : JsonSerializer<numl.Math.Range> { }
 
     public class MeasureSerializer : JsonSerializer<Measure>
     {
@@ -107,7 +107,7 @@ namespace numl.Serialization.Supervised.NaiveBayes
                 statistic.Label = reader.ReadProperty().Value.ToString();
                 statistic.Discrete = (bool)reader.ReadProperty().Value;
                 statistic.Count = int.Parse(reader.ReadProperty().Value.ToString());
-                statistic.X = (Range)reader.ReadProperty().Value;
+                statistic.X = (numl.Math.Range)reader.ReadProperty().Value;
                 statistic.Probability = (double)reader.ReadProperty().Value;
                 var conditionals = reader.ReadArrayProperty().Value;
                 if(conditionals != null)

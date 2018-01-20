@@ -15,7 +15,7 @@ namespace numl.Recommendation
         /// <summary>
         /// Gets or sets the Range of the ratings, values outside of this will be treated as not provided.
         /// </summary>
-        public Range Ratings { get; set; }
+        public numl.Math.Range Ratings { get; set; }
 
         /// <summary>
         /// Gets the Reference features mapping index of reference items and their corresponding col index.
@@ -74,7 +74,7 @@ namespace numl.Recommendation
             // inputs are ratings from each user (X = entities x ratings), y = entity id.
             // create rating range in case we don't have one already
             if (this.Ratings == null)
-                this.Ratings = new Range(X.Min(), X.Max());
+                this.Ratings = new numl.Math.Range(X.Min(), X.Max());
 
             // indicator matrix of 1's where rating was provided otherwise 0's.
             Matrix R = X.ToBinary(f => this.Ratings.Test(f));

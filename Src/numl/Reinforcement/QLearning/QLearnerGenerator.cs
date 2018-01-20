@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using numl.AI;
 using numl.AI.Functions;
 using numl.Math.LinearAlgebra;
-using numl.Model;
+using AutoTensor;
 using numl.Supervised;
 using numl.Utils;
 

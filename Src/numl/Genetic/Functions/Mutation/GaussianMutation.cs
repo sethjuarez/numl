@@ -31,7 +31,7 @@ namespace numl.Genetic.Functions.Mutation
         /// <summary>
         /// Gets or sets the lower and upper limits of the mutated sequence values.
         /// </summary>
-        public Range Range { get; set; }
+        public numl.Math.Range Range { get; set; }
 
         /// <summary>
         /// Initializes a new Gaussian mutation with mean 0 and deviation 1.

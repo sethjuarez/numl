@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard1.3</TargetFramework>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <PropertyGroup>
     <VersionPrefix>0.9.20</VersionPrefix>
@@ -19,12 +18,6 @@
     <Copyright>©2017, Seth Juarez</Copyright>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Supervised\NaiveBayes\Label.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.4.0" />
-    <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
-    <PackageReference Include="System.Threading.Tasks.Parallel" Version="4.3.0" />
-    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
+    <PackageReference Include="AutoTensor" Version="0.1.4-e20171204-1" />
   </ItemGroup>
 </Project>

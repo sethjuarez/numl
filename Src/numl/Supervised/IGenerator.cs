@@ -2,7 +2,7 @@
 //
 // summary:	Declares the IGenerator interface
 using System;
-using numl.Model;
+using AutoTensor;
 using System.Linq;
 using System.Collections.Generic;
 using numl.Math.LinearAlgebra;

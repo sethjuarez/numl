@@ -3,7 +3,7 @@
 // summary:	Implements the gmm class
 using System;
 using numl.Math;
-using numl.Model;
+using AutoTensor;
 using System.Linq;
 using System.Collections.Generic;
 using numl.Math.LinearAlgebra;

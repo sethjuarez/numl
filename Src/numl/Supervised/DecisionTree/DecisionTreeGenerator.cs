@@ -2,7 +2,7 @@
 //
 // summary:	Implements the decision tree generator class
 using System;
-using numl.Model;
+using AutoTensor;
 using System.Linq;
 using numl.Math.Information;
 using numl.Math.LinearAlgebra;

@@ -2,7 +2,7 @@
 //
 // summary:	Implements the means class
 using System;
-using numl.Model;
+using AutoTensor;
 using System.Linq;
 using numl.Math.Metrics;
 using numl.Math.Probability;

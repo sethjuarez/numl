@@ -2,7 +2,7 @@
 //
 // summary:	Implements the cluster model class
 using System;
-using numl.Model;
+using AutoTensor;
 using System.Linq;
 using numl.Math.Linkers;
 using numl.Math.LinearAlgebra;

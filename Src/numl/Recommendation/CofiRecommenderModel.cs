@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using numl.Math.LinearAlgebra;
-using numl.Model;
+using AutoTensor;
 using numl.Utils;
 using numl.Math;
 using numl.Math.Metrics;
@@ -33,7 +33,7 @@ namespace numl.Recommendation
         /// <summary>
         /// Gets or sets the Range of the ratings, values outside of this will be treated as not provided.
         /// </summary>
-        public Range Ratings { get; set; }
+        public numl.Math.Range Ratings { get; set; }
 
         /// <summary>
         /// Gets the Reference features mapping index of reference items and their corresponding col index.

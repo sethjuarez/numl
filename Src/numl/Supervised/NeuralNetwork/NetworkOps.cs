@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using numl.Math.Functions;
 using numl.Math.Functions.Loss;
 using numl.Math.LinearAlgebra;
-using numl.Model;
+using AutoTensor;
 using numl.Utils;
 
 namespace numl.Supervised.NeuralNetwork

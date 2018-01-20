@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using numl.AI;
-using numl.Model;
+using AutoTensor;
 using numl.Math.LinearAlgebra;
 using numl.Supervised;
 using numl.Utils;
@@ -136,14 +136,14 @@ namespace numl.Reinforcement
 
             Vector rewards = Vector.Rand(actions.Length);
 
-            var rewardProp = description.Features.GetPropertyOfType<RewardAttribute>();
-            if (rewardProp != null)
-            {
-                for (int x = 0; x < examples.Count(); x++)
-                {
-                    rewards[x] = rewardProp.Convert(examples.ElementAt(x)).First();
-                }
-            }
+            //var rewardProp = description.Features.GetPropertyOfType<RewardAttribute>();
+            //if (rewardProp != null)
+            //{
+            //    for (int x = 0; x < examples.Count(); x++)
+            //    {
+            //        rewards[x] = rewardProp.Convert(examples.ElementAt(x)).First();
+            //    }
+            //}
 
             return this.Generate(states, actions, rewards);
         }

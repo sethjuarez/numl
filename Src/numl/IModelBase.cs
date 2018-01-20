@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using numl.Model;
+using AutoTensor;
 using numl.Math.Normalization;
 using numl.Math;
 

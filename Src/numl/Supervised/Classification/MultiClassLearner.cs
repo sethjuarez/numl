@@ -1,6 +1,6 @@
 ﻿using numl.Math.LinearAlgebra;
 using numl.Math.Probability;
-using numl.Model;
+using AutoTensor;
 using numl.Supervised;
 using numl.Utils;
 using System;
