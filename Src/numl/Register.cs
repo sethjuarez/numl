@@ -20,7 +20,8 @@ namespace numl
         public static void Assembly(params Assembly[] assemblies)
         {
             // register assemblies
-/
+            //foreach (var a in assemblies)
+            //    Ject.AddAssembly(a);
         }
 
         public static void Type<T>()
