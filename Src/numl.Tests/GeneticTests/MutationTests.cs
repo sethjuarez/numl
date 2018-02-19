@@ -62,7 +62,7 @@ namespace numl.Tests.GeneticTests
         }
 
         [Fact]
-        public void Test_Mutation_Guassian()
+        public void Test_Mutation_Gaussian()
         {
             int count = 0;
 
