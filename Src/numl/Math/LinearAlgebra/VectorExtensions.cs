@@ -160,8 +160,7 @@ namespace numl.Math.LinearAlgebra
         /// <returns>e as a Matrix.</returns>
         public static Matrix ToMatrix(this IEnumerable<Vector> source, VectorType vectorType = VectorType.Row)
         {
-            var c = source.Count();
-            if (c == 0)
+            if (!source.Any())
                 throw new InvalidOperationException("Cannot create matrix from an empty set.");
 
             return Matrix.Stack(vectorType, source.ToArray());
@@ -333,7 +332,7 @@ namespace numl.Math.LinearAlgebra
                     select new
                     {
                         key = g.Key,
-                        count = source.Where(d => d == g.Key).Count()
+                        count = source.Count(d => d == g.Key)
                     };
 
             double mode = -1;
@@ -801,7 +800,9 @@ namespace numl.Math.LinearAlgebra
         public static bool IsBinary(this Vector vector)
         {
             var v = vector.Distinct();
-            return ((v.Count() == 2 && (v.Contains(1d) && (v.Contains(0d) || v.Contains(-1d)))) || (v.Count() == 1 && (v.Contains(1d) || v.Contains(0d) || v.Contains(-1d))));
+            var count = v.Count();
+
+            return ((count == 2 && (v.Contains(1d) && (v.Contains(0d) || v.Contains(-1d)))) || (count == 1 && (v.Contains(1d) || v.Contains(0d) || v.Contains(-1d))));
         }
 
         /// <summary>

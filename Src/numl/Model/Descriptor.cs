@@ -59,10 +59,7 @@ namespace numl.Model
 		{
 			get
 			{
-				if (Features.Where(p => p.Name == name).Count() == 1)
-					return Features.Where(p => p.Name == name).First();
-				else
-					return null;
+			    return Features.Count(p => p.Name == name) == 1 ? Features.First(p => p.Name == name) : null;
 			}
 		}
 		/// <summary>

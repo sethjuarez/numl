@@ -318,8 +318,8 @@ namespace numl.Supervised
         {
             var score = new numl.Supervised.Score()
             {
-                TotalPositives = actual.Where(w => w == truthLabel).Count(),
-                TotalNegatives = actual.Where(w => (w == falseLabel || w != truthLabel)).Count(),
+                TotalPositives = actual.Count(w => w == truthLabel),
+                TotalNegatives = actual.Count(w => (w == falseLabel || w != truthLabel)),
 
                 TruePositives = actual.Where((i, idx) => i == truthLabel && i == predictions[idx]).Count(),
                 FalsePositives = actual.Where((i, idx) => (i == falseLabel || i != truthLabel) && predictions[idx] == truthLabel).Count(),

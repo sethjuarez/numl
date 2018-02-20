@@ -167,8 +167,8 @@ namespace numl.Tests.DataTests
 
             g.RemoveVertex(vertex1);
 
-            Assert.Equal(0, g.GetVertices().Where(v => v.Id == 1).Count());
-            Assert.Equal(0, g.GetEdges().Where(e => e.ParentId == 1 || e.ChildId == 1).Count());
+            Assert.Equal(0, g.GetVertices().Count(v => v.Id == 1));
+            Assert.Equal(0, g.GetEdges().Count(e => e.ParentId == 1 || e.ChildId == 1));
         }
 
         [Fact]
@@ -190,7 +190,7 @@ namespace numl.Tests.DataTests
 
             g.RemoveEdge(edge);
 
-            Assert.Equal(0, g.GetEdges().Where(e => e.ParentId == 1 && e.ChildId == 5).Count());
+            Assert.Equal(0, g.GetEdges().Count(e => e.ParentId == 1 && e.ChildId == 5));
 
         }
 

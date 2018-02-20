@@ -700,8 +700,8 @@ namespace numl.Math.LinearAlgebra
 		{
 			var q = indices.Distinct();
 
-			int rows = t == VectorType.Row ? q.Where(j => j < m.Rows).Count() : m.Rows;
-			int cols = t == VectorType.Col ? q.Where(j => j < m.Cols).Count() : m.Cols;
+			int rows = t == VectorType.Row ? q.Count(j => j < m.Rows) : m.Rows;
+			int cols = t == VectorType.Col ? q.Count(j => j < m.Cols) : m.Cols;
 
 			Matrix n = new Matrix(rows, cols);
 
