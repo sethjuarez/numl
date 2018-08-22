@@ -31,16 +31,13 @@ namespace numl.Math.Functions
             return System.Math.Log(1d + exp(x));
         }
 
-        /// <summary>
-        /// Derivatives the given x coordinate.
-        /// </summary>
-        /// <param name="x">The double to process.</param>
-        /// <param name="cached">If True, uses the previously computed activation.</param>
+        /// <summary>Derivatives the given x coordinate.</summary>
+        /// <param name="x">The input to the function.</param>
+        /// <param name="y">Precomputed softplus output.</param>
         /// <returns>Double.</returns>
-        public override double Derivative(double x, bool cached = false)
+        public override double Derivative(double x, double y)
         {
-            double c = (cached ? x : Compute(x));
-            return 1.0 + (1.0 / (-exp(c)));
+            return 1d / (1d + exp(-x));
         }
     }
 }

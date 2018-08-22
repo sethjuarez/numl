@@ -23,13 +23,14 @@ namespace numl.Math.Functions
         {
             return x;
         }
+
         /// <summary>Derivatives the given x coordinate.</summary>
-        /// <param name="x">The Vector to process.</param>
-        /// <param name="cached">If True, uses the previously computed activation.</param>
-        /// <returns>A Vector.</returns>
-        public override double Derivative(double x, bool cached = false)
+        /// <param name="x">The input to the function.</param>
+        /// <param name="y">Precomputed output of the function.</param>
+        /// <returns>Double.</returns>
+        public override double Derivative(double x, double y)
         {
-            return 1;
+            return 1d;
         }
     }
 }

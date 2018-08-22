@@ -214,13 +214,13 @@ namespace numl.Supervised.NeuralNetwork.Recurrent
 
                     // dyhh = delta(htm1) = 1-Z, dyhz = delta(Z) = HtP
                     double dyhh = (1.0 - z), dyhz = this.StatesHP[timestep];
-                    double dHtP = this.ActivationFunction.Derivative(input + r * (htm1 * this.Hh));
+                    double dHtP = this.ActivationFunction.Derivative(input + r * (htm1 * this.Hh), this.HtP);
 
                     this.DHh = ((dHtP * dyhh) * htm1);
                     this.DHh = this.DeltaH[timestep] = this.DeltaH.GetValueOrDefault(timestep + 1, 0) + this.DHh;
 
-                    double dr = this.ResetGate.Derivative((this.Rx * input) + (this.Rh * ht) + this.Rb);
-                    double dz = this.UpdateGate.Derivative((this.Zx * input) + (this.Zh * ht) + this.Zb);
+                    double dr = this.ResetGate.Derivative((this.Rx * input) + (this.Rh * ht) + this.Rb, this.R);
+                    double dz = this.UpdateGate.Derivative((this.Zx * input) + (this.Zh * ht) + this.Zb, this.Z);
 
                     this.DRx = (seqmod * (dr * input)); this.DRh = (seqmod * (dr * ht));
                     this.DZx = (seqmod * (dz * input)); this.DZh = (seqmod * (dz * ht));

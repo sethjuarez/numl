@@ -58,7 +58,7 @@ namespace numl.Supervised.NeuralNetwork.Encoders
             {
                 if (In.Count > 0 && Out.Count > 0)
                 {
-                    double hp = this.ActivationFunction.Derivative(this.Input);
+                    double hp = this.ActivationFunction.Derivative(this.Input, this.Output);
                     double divergence = AutoencoderNeuron.Divergence((double)properties[nameof(AutoencoderGenerator.Sparsity)], 
                                                                      (double)properties[nameof(AutoencoderGenerator.SparsityWeight)], 
                                                                      this.Mu);

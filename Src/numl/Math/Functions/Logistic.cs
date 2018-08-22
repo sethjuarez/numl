@@ -18,19 +18,20 @@ namespace numl.Math.Functions
         public override double Maximum { get { return 1; } }
 
         /// <summary>Computes the given x coordinate.</summary>
-        /// <param name="x">The Vector to process.</param>
-        /// <returns>A Vector.</returns>
+        /// <param name="x">The value to process.</param>
+        /// <returns>A double.</returns>
         public override double Compute(double x)
         {
             return 1d / (1d + exp(-x));
         }
+
         /// <summary>Derivatives the given x coordinate.</summary>
-        /// <param name="x">The Vector to process.</param>
-        /// <returns>A Vector.</returns>
-        public override double Derivative(double x, bool cached = false)
+        /// <param name="x">The input to the function.</param>
+        /// <param name="y">Precomputed logistic output.</param>
+        /// <returns>Double.</returns>
+        public override double Derivative(double x, double y)
         {
-            var c = (cached ? x : Compute(x));
-            return c * (1d - c);
+            return y * (1d - y);
         }
     }
 }
