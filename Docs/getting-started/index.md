@@ -76,5 +76,5 @@ namespace ConsoleApplication
 1. Run `dotnet restore` if you've made further changes to the `.csproj` file
 2. Run `dotnet run`
 
-![numl running](..\images\firstrun.png)
+![numl running](../images/firstrun.png)
 
