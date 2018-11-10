@@ -141,7 +141,7 @@ namespace numl
 
             Score score = new Score();
 
-            if (testingSlice.Count() > 0)
+            if (testingSlice.Any())
             {
                 // testing            
                 object[] test = GetTestExamples(testingSlice, examples);

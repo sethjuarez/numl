@@ -28,7 +28,7 @@ namespace numl.AI.Search
                         .Where(n => n.Cost == v && n.State.IsTerminal);
 
             Node r;
-            if (q.Count() > 0) // favor terminal nodes first
+            if (q.Any()) // favor terminal nodes first
                 r = q.Random();
             else
                 r = node.Children

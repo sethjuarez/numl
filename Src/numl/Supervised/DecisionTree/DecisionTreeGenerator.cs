@@ -184,7 +184,7 @@ namespace numl.Supervised.DecisionTree
                 // if this number is 0 then this edge 
                 // leads to a dead end - the edge will 
                 // not be built
-                if (slice.Count() > 0)
+                if (slice.Any())
                 {
                     Vector ySlice = y.Slice(slice);
                     // only one answer, set leaf

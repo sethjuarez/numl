@@ -82,7 +82,7 @@ namespace numl.Recommendation
             // The mean needs to be values within rating range only.
             Vector mean = X.GetRows().Select(s => 
                                         s.Where(w => this.Ratings.Test(w)).Sum() / 
-                                        s.Where(w => this.Ratings.Test(w)).Count()
+                                        s.Count(w => this.Ratings.Test(w))
                                     ).ToVector();
 
             // update feature averages before preprocessing features.

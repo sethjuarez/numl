@@ -123,7 +123,7 @@ namespace numl.Reinforcement
         /// <returns>IReinforcementModel.</returns>
         public IReinforcementModel Generate(Descriptor description, IEnumerable<object> examples)
         {
-            if (examples.Count() == 0) throw new InvalidOperationException("Empty example set.");
+            if (!examples.Any()) throw new InvalidOperationException("Empty example set.");
 
             Descriptor = description;
             if (Descriptor.Features == null || Descriptor.Features.Length == 0)
@@ -169,7 +169,7 @@ namespace numl.Reinforcement
         /// <returns>IReinforcementModel.</returns>
         public IReinforcementModel Generate(IEnumerable<object> examples1, IEnumerable<object> examples2)
         {
-            if (examples1.Count() == 0) throw new InvalidOperationException("Empty example set.");
+            if (!examples1.Any()) throw new InvalidOperationException("Empty example set.");
 
             if (this.Descriptor == null)
                 throw new InvalidOperationException("Descriptor is null");
@@ -188,7 +188,7 @@ namespace numl.Reinforcement
         /// <returns>IReinforcementModel.</returns>
         public IReinforcementModel Generate(Descriptor descriptor, IEnumerable<object> examples1, Descriptor transitionDescriptor, IEnumerable<object> examples2)
         {
-            if (examples1.Count() == 0) throw new InvalidOperationException("Empty example set.");
+            if (!examples1.Any()) throw new InvalidOperationException("Empty example set.");
 
             bool hasTransitionStates = (examples2 != null && examples2.Any());
 

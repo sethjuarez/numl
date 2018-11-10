@@ -137,7 +137,7 @@ namespace numl.Tests.CollectionTests
 
             var contains = (dict.Where(w => w.Value == 0 && sorted.Contains(w.Key)));
 
-            bool result = (contains.Count() == 0);
+            bool result = (!contains.Any());
 
             Assert.True(result, "Length was not equal to the elements in the collection");
 

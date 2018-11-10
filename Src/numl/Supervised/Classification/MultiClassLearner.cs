@@ -79,7 +79,7 @@ namespace numl
 
             Score score = new Score();
 
-            if (testingSlice.Count() > 0)
+            if (testingSlice.Any())
             {
                 object[] testExamples = examples.Slice(testingSlice).ToArray();
                 var testing = generator.Descriptor.Convert(testExamples, true).ToExamples();

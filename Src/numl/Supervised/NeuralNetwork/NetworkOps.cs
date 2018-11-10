@@ -194,7 +194,8 @@ namespace numl.Supervised.NeuralNetwork
         /// <returns></returns>
         public static Network AddConnections(this Network network, Neuron node, IEnumerable<Neuron> parentNodes, IEnumerable<Neuron> childNodes, double epsilon = double.NaN)
         {
-            if (epsilon == double.NaN)
+            //episilon == double.Nan will be always false, even if epsilon is Nan
+            if (double.IsNaN(epsilon))
                 epsilon = Edge.GetEpsilon(node.ActivationFunction.Minimum, node.ActivationFunction.Maximum, parentNodes.Count(), childNodes.Count());
 
             if (parentNodes != null)
@@ -257,7 +258,7 @@ namespace numl.Supervised.NeuralNetwork
 
             var nodes = network.GetNodes(layer + 1).ToArray();
 
-            Vector biases = Vector.Zeros(nodes.Where(w => !w.IsBias).Count());
+            Vector biases = Vector.Zeros(nodes.Count(w => !w.IsBias));
 
             for (int i = 0; i < nodes.Length; i++)
             {
